@@ -4,6 +4,8 @@ namespace Phpro\SoapClient;
 
 use Phpro\SoapClient\Event;
 use Phpro\SoapClient\Soap\SoapClient;
+use Phpro\SoapClient\Type\Request\RequestInterface;
+use Phpro\SoapClient\Type\Request\ResultInterface;
 use SoapFault;
 use SoapHeader;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -75,25 +77,25 @@ class Client implements ClientInterface
     }
 
     /**
-     * @param       $method
-     * @param array $params
+     * @param string            $method
+     * @param RequestInterface  $params
      *
-     * @return mixed
+     * @return ResultInterface
      * @throws SoapFault
      */
-    protected function call($method, array $params = [])
+    protected function call($method, RequestInterface $request)
     {
-        $requestEvent = new Event\RequestEvent($method, $params);
+        $requestEvent = new Event\RequestEvent($method, $request);
         $this->dispatcher->dispatch(Events::REQUEST, $requestEvent);
 
         try {
-            $result = $this->soapClient->$method($params);
+            $result = $this->soapClient->$method($request);
         } catch (SoapFault $soapFault) {
             $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($soapFault, $requestEvent));
             throw $soapFault;
         }
 
-        $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($requestEvent, $result->result));
-        return $result->result;
+        $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($requestEvent, $result));
+        return $result;
     }
 }

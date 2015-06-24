@@ -34,7 +34,7 @@ class LogPlugin implements EventSubscriberInterface
         $this->logger->info(sprintf(
             '[phpro/soap-client] request: call "%s" with params %s',
             $event->getMethod(),
-            \json_encode($event->getParams())
+            print_r($event->getRequest(), true)
         ));
     }
 
@@ -45,7 +45,7 @@ class LogPlugin implements EventSubscriberInterface
     {
         $this->logger->info(sprintf(
             '[phpro/soap-client] response: %s',
-            \print_r($event->getResponse(), true)
+            print_r($event->getResponse(), true)
         ));
     }
 
@@ -58,7 +58,7 @@ class LogPlugin implements EventSubscriberInterface
             '[phpforce/soap-client] fault "%s" for request "%s" with params %s',
             $event->getSoapFault()->getMessage(),
             $event->getRequestEvent()->getMethod(),
-            \json_encode($event->getRequestEvent()->getParams())
+            print_r($event->getRequestEvent()->getRequest(), true)
         ));
     }
 
