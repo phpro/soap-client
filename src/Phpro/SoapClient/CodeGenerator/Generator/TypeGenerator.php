@@ -9,24 +9,16 @@ namespace Phpro\SoapClient\CodeGenerator\Generator;
  */
 class TypeGenerator
 {
-
-    /**
-     * @var string
-     */
-    private $destination;
-
     /**
      * @var string
      */
     private $namespace;
 
     /**
-     * @param $destination
      * @param $namespace
      */
-    public function __construct($destination, $namespace)
+    public function __construct($namespace)
     {
-        $this->destination = $destination;
         $this->namespace = $namespace;
     }
 

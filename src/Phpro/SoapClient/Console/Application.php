@@ -3,7 +3,7 @@
 
 namespace Phpro\SoapClient\Console;
 
-use Phpro\SoapClient\Console\Command\GenerateTypesCommand;
+use Phpro\SoapClient\Console\Command;
 use Symfony\Component\Console\Application as SymfonyApplication;
 
 /**
@@ -35,7 +35,8 @@ class Application extends SymfonyApplication
     protected function getDefaultCommands()
     {
         $commands = parent::getDefaultCommands();
-        $commands[] = new GenerateTypesCommand();
+        $commands[] = new Command\GenerateTypesCommand();
+        $commands[] = new Command\GenerateClassmapCommand();
 
         return $commands;
     }
