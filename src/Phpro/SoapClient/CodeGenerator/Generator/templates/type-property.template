@@ -1,0 +1,5 @@
+
+    /**
+     * @var %type%
+     */
+    protected $%property%;
