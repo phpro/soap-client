@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\Event;
 
-use Phpro\SoapClient\Type\Request\RequestInterface;
+use Phpro\SoapClient\Type\RequestInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

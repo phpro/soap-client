@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\Type\Request;
+namespace Phpro\SoapClient\Type;
 
 /**
  * Interface RequestInterface

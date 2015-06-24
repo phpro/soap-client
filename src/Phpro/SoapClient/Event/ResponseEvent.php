@@ -1,7 +1,7 @@
 <?php
 namespace Phpro\SoapClient\Event;
 
-use Phpro\SoapClient\Type\Request\ResultInterface;
+use Phpro\SoapClient\Type\ResultInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
