@@ -52,6 +52,12 @@ class TypeGenerator
         $template = $this->getTypePropertyTemplate();
         $rendered = '';
         foreach ($properties as $property => $type) {
+            $type = strtr($type, [
+                'long' => 'int',
+                'dateTime' => '\\DateTime',
+                'date' => '\\DateTime',
+            ]);
+
             $values = [
                 '%property%' => $property,
                 '%type%' => $type
