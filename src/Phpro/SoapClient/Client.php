@@ -20,12 +20,12 @@ class Client implements ClientInterface
     /**
      * @var SoapClient
      */
-    private $soapClient;
+    protected $soapClient;
 
     /**
      * @var EventDispatcher
      */
-    private $dispatcher;
+    protected $dispatcher;
 
     /**
      * @param SoapClient      $soapClient
