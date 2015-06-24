@@ -40,7 +40,7 @@ class Client implements ClientInterface
      *
      * @return $this
      */
-    public function addHeader(SoapHeader $soapHeader)
+    public function addSoapHeader(SoapHeader $soapHeader)
     {
         $this->soapClient->__setSoapHeaders($soapHeader);
 
@@ -52,7 +52,7 @@ class Client implements ClientInterface
      *
      * @return array
      */
-    public function debugLastRequest()
+    public function debugLastSoapRequest()
     {
         return [
             'request' => [
