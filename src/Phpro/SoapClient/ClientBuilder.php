@@ -18,6 +18,12 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class ClientBuilder
 {
+
+    /**
+     * @var ClientFactoryInterface
+     */
+    private $clientFactory;
+
     /**
      * @var ClassMapCollection
      */
@@ -49,14 +55,16 @@ class ClientBuilder
     private $soapOptions;
 
     /**
-     * @param string $wsdl
-     * @param array $soapOptions
+     * @param ClientFactoryInterface $clientFactory
+     * @param string                 $wsdl
+     * @param array                  $soapOptions
      */
-    public function __construct($wsdl, array $soapOptions = [])
+    public function __construct(ClientFactoryInterface $clientFactory, $wsdl, array $soapOptions = [])
     {
         $this->classMaps = new ClassMapCollection();
         $this->converters = new TypeConverterCollection();
         $this->dispatcher = new EventDispatcher();
+        $this->clientFactory = $clientFactory;
         $this->wsdl = $wsdl;
         $this->soapOptions = $soapOptions;
     }
@@ -110,7 +118,7 @@ class ClientBuilder
     }
 
     /**
-     * @return Client
+     * @return object
      */
     public function build()
     {
@@ -121,6 +129,6 @@ class ClientBuilder
             $this->dispatcher->addSubscriber(new LogPlugin($this->logger));
         }
 
-        return new Client($soapClient, $this->dispatcher);
+        return $this->clientFactory->factory($soapClient, $this->dispatcher);
     }
 }

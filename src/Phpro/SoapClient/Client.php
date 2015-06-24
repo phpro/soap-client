@@ -5,6 +5,7 @@ namespace Phpro\SoapClient;
 use Phpro\SoapClient\Event;
 use Phpro\SoapClient\Soap\SoapClient;
 use SoapFault;
+use SoapHeader;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -32,6 +33,18 @@ class Client implements ClientInterface
     {
         $this->soapClient = $soapClient;
         $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * @param SoapHeader $soapHeader
+     *
+     * @return $this
+     */
+    public function addHeader(SoapHeader $soapHeader)
+    {
+        $this->soapClient->__setSoapHeaders($soapHeader);
+
+        return $this;
     }
 
     /**
