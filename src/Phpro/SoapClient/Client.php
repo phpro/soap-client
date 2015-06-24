@@ -48,6 +48,33 @@ class Client implements ClientInterface
     }
 
     /**
+     * Make it possible to debug the last request.
+     *
+     * @return array
+     */
+    public function debugLastRequest()
+    {
+        return [
+            'request' => [
+                'headers' => $this->soapClient->__getLastRequestHeaders(),
+                'body' => $this->soapClient->__getLastRequest(),
+            ],
+            'response' => [
+               'headers' => $this->soapClient->__getLastResponseHeaders(),
+                'body' => $this->soapClient->__getLastResponse(),
+            ],
+        ];
+    }
+
+    /**
+     * @param string $location
+     */
+    public function changeSoapLocation($location)
+    {
+        $this->soapClient->__setLocation($location);
+    }
+
+    /**
      * @param       $method
      * @param array $params
      *
