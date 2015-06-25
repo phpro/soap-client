@@ -6,6 +6,7 @@ use Phpro\SoapClient\Event;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
+use Phpro\SoapClient\Type\ResultProviderInterface;
 use SoapFault;
 use SoapHeader;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -90,6 +91,9 @@ class Client implements ClientInterface
 
         try {
             $result = $this->soapClient->$method($request);
+            if ($result instanceof ResultProviderInterface) {
+                $result = $result->getResult();
+            }
         } catch (SoapFault $soapFault) {
             $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($soapFault, $requestEvent));
             throw $soapFault;
