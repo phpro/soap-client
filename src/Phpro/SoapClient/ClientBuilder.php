@@ -6,6 +6,7 @@ use Phpro\SoapClient\Plugin\LogPlugin;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapInterface;
 use Phpro\SoapClient\Soap\SoapClientFactory;
+use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterInterface;
 use Psr\Log\LoggerInterface;
@@ -68,6 +69,10 @@ class ClientBuilder
         $this->clientFactory = $clientFactory;
         $this->wsdl = $wsdl;
         $this->soapOptions = $soapOptions;
+
+        // Add default converters:
+        $this->addTypeConverter(new TypeConverter\DateTimeTypeConverter());
+        $this->addTypeConverter(new TypeConverter\DateTypeConverter());
     }
 
     /**
