@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -33,6 +34,7 @@ class GenerateTypesCommand extends Command
             ->addArgument('destination', InputArgument::REQUIRED, 'Destination folder')
             ->addOption('wsdl', null, InputOption::VALUE_REQUIRED, 'The WSDL on which you base the types')
             ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Resulting namespace')
+            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default')
         ;
     }
 
@@ -58,12 +60,34 @@ class GenerateTypesCommand extends Command
 
         $generator = new TypeGenerator($destination, $namespace);
         foreach ($types as $type => $properties) {
-            $data = $generator->generate($type, $properties);
+            // Check if file exists:
             $file = sprintf('%s/%s.php', $destination, ucfirst($type));
+            if ($fileSystem->exists($file) && !$this->askForOverwrite($input, $output, $type)) {
+                $output->writeln(sprintf('Skipped %s', $type));
+                continue;
+            }
+
+            // Generate:
+            $data = $generator->generate($type, $properties);
             file_put_contents($file, $data);
             $output->writeln(sprintf('Generated class %s to %s', $type, $file));
         }
 
         $output->writeln('Done');
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $type
+     *
+     * @return bool
+     */
+    protected function askForOverwrite(InputInterface $input, OutputInterface $output, $type)
+    {
+        $questionString = sprintf('A %s class already exists. Do you want to overwrite it?', $type);
+        $overwriteByDefault = $input->getOption('overwrite');
+        $question = new ConfirmationQuestion($questionString, $overwriteByDefault);
+        return $this->getHelper('question')->ask($input, $output, $question);
     }
 }
