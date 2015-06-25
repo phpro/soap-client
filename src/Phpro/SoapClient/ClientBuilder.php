@@ -124,7 +124,7 @@ class ClientBuilder
     }
 
     /**
-     * @return object
+     * @return ClientInterface
      */
     public function build()
     {
