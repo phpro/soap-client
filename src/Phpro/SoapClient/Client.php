@@ -9,7 +9,7 @@ use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
 use SoapFault;
 use SoapHeader;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class Client
@@ -24,15 +24,15 @@ class Client implements ClientInterface
     protected $soapClient;
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     protected $dispatcher;
 
     /**
      * @param SoapClient      $soapClient
-     * @param EventDispatcher $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(SoapClient $soapClient, EventDispatcher $dispatcher)
+    public function __construct(SoapClient $soapClient, EventDispatcherInterface $dispatcher)
     {
         $this->soapClient = $soapClient;
         $this->dispatcher = $dispatcher;

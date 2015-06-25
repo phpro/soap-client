@@ -10,6 +10,7 @@ use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class ClientBuilder
@@ -35,7 +36,7 @@ class ClientBuilder
     private $converters;
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     private $dispatcher;
 
@@ -78,9 +79,9 @@ class ClientBuilder
     }
 
     /**
-     * @param EventDispatcher $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function withEventDispatcher(EventDispatcher $dispatcher)
+    public function withEventDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
     }

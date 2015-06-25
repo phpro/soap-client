@@ -3,8 +3,8 @@
 namespace Phpro\SoapClient;
 
 use Phpro\SoapClient\Soap\SoapClient;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use ReflectionClass;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class ClientFactory
@@ -29,11 +29,11 @@ class ClientFactory implements ClientFactoryInterface
 
     /**
      * @param SoapClient      $soapClient
-     * @param EventDispatcher $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      *
      * @return object
      */
-    public function factory(SoapClient $soapClient, EventDispatcher $dispatcher)
+    public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher)
     {
         $rc = new ReflectionClass($this->className);
         return $rc->newInstance($soapClient, $dispatcher);
