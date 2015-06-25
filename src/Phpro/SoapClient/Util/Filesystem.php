@@ -37,6 +37,10 @@ class Filesystem
      */
     public function getFileContents($path)
     {
+        if (!$this->fileExists($path)) {
+            throw new InvalidArgumentException(sprintf('File %s does not exist.', $path));
+        }
+
         return file_get_contents($path);
     }
 
@@ -66,14 +70,6 @@ class Filesystem
      */
     public function replaceFile($file, $new, $backup = true)
     {
-        if (!$this->fileExists($file)) {
-            throw new InvalidArgumentException(sprintf('Original file %s does not exist.', $file));
-        }
-
-        if (!$this->fileExists($new)) {
-            throw new InvalidArgumentException(sprintf('New file %s does not exist.', $new));
-        }
-
         if ($backup) {
             $backupFile = $file . '.backup';
             copy($file, $backupFile);
