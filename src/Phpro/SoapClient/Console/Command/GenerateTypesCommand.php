@@ -2,16 +2,18 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
+use Phpro\SoapClient\CodeGenerator\Patcher;
+use Phpro\SoapClient\Exception\PatchException;
 use Phpro\SoapClient\Exception\RunTimeException;
 use Phpro\SoapClient\CodeGenerator\Generator\TypeGenerator;
 use Phpro\SoapClient\Soap\SoapClient;
+use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class GenerateTypesCommand
@@ -22,6 +24,20 @@ class GenerateTypesCommand extends Command
 {
 
     const COMMAND_NAME = 'generate:types';
+
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
+     * @param Filesystem $filesystem
+     */
+    public function __construct(Filesystem $filesystem = null)
+    {
+        parent::__construct(null);
+        $this->filesystem = $filesystem ?: new Filesystem();
+    }
 
     /**
      * Configure the command.
@@ -43,9 +59,8 @@ class GenerateTypesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $fileSystem = new Filesystem();
         $destination = rtrim($input->getArgument('destination'), '/\\');
-        if (!$fileSystem->exists($destination)) {
+        if (!$this->filesystem->dirextoryExists($destination)) {
             throw new RunTimeException(sprintf('The destination %s does not exist.', $destination));
         }
 
@@ -58,18 +73,20 @@ class GenerateTypesCommand extends Command
         $soapClient = new SoapClient($wsdl, []);
         $types = $soapClient->getSoapTypes();
 
-        $generator = new TypeGenerator($destination, $namespace);
+        $generator = new TypeGenerator($namespace);
         foreach ($types as $type => $properties) {
             // Check if file exists:
             $file = sprintf('%s/%s.php', $destination, ucfirst($type));
-            if ($fileSystem->exists($file) && !$this->askForOverwrite($input, $output, $type)) {
-                $output->writeln(sprintf('Skipped %s', $type));
+            $data = $generator->generate($type, $properties);
+
+            // Existing files ...
+            if ($this->filesystem->fileExists($file)) {
+                $this->handleExistingFile($input, $output, $file, $type, $data);
                 continue;
             }
 
-            // Generate:
-            $data = $generator->generate($type, $properties);
-            file_put_contents($file, $data);
+            // New files...
+            $this->filesystem->putFileContents($file, $data);
             $output->writeln(sprintf('Generated class %s to %s', $type, $file));
         }
 
@@ -79,15 +96,63 @@ class GenerateTypesCommand extends Command
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
+     * @param string          $file
      * @param string          $type
+     * @param string          $newContent
+     */
+    protected function handleExistingFile(InputInterface $input, OutputInterface $output, $file, $type, $newContent)
+    {
+        $output->write(sprintf('Type %s exists. Trying to patch ...', $type));
+
+        // Patch the file
+        $patched = $this->patchExistingFile($output, $file, $newContent);
+        if ($patched) {
+            $output->writeln('Patched!');
+            return;
+        }
+        $output->writeln('Could not patch.');
+
+        // Ask for overwriting the file:
+        $allowOverwrite = $this->askForOverwrite($input, $output, $newContent);
+        if (!$allowOverwrite) {
+            $output->writeln(sprintf('Skipping %s', $type));
+            return;
+        }
+
+        // Overwrite
+        $this->filesystem->putFileContents($file, $newContent);
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param                 $file
+     * @param                 $newContent
      *
      * @return bool
      */
-    protected function askForOverwrite(InputInterface $input, OutputInterface $output, $type)
+    protected function patchExistingFile(OutputInterface $output, $file, $newContent)
     {
-        $questionString = sprintf('A %s class already exists. Do you want to overwrite it?', $type);
+        $patcher = new Patcher($this->filesystem);
+        try {
+            $patcher->patch($file, $newContent);
+        } catch (PatchException $e) {
+            $output->writeln('<fg=red>' . $e->getMessage() . '</fg=red>');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return bool
+     */
+    protected function askForOverwrite(InputInterface $input, OutputInterface $output)
+    {
         $overwriteByDefault = $input->getOption('overwrite');
-        $question = new ConfirmationQuestion($questionString, $overwriteByDefault);
+        $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
         return $this->getHelper('question')->ask($input, $output, $question);
     }
 }
