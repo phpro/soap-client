@@ -1,7 +1,7 @@
 <?php
 
-
 namespace PhproTest\SoapClient\Soap;
+
 use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
 
 /**
