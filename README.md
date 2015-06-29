@@ -2,7 +2,6 @@
 
 ## Basic Usage
 ```php
-
 $wsdl = 'http://path.to/your.wsdl';
 $clientFactory = new ClientFactory(Client::class);
 $soapOptions = [];
@@ -13,6 +12,26 @@ $clientBuilder->addClassMap(new ClassMap('WsdlType', PhpType::class));
 $clientBuilder->addTypeConverter(new DateTimeTypeConverter());
 $client = $clientBuilder->build();
 ```
+
+## Client types
+Wsdl Types:
+- RequestInterface
+- ResponseInterface
+- ResponseProviderInterface
+
+Soap: 
+- ClientInterface
+- ClassMapInterface
+- TypeConverterInterface
+
+## Event system:
+- ResponseEvent
+- RequestEvent
+- FaultEvent
+
+## Plugins
+### Logger
+
 
 ## Generators
 
