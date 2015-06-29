@@ -35,6 +35,7 @@ class Patcher
      */
     public function patch($original, $newContent)
     {
+        $original = realpath($original);
         $basename = pathinfo($original, PATHINFO_BASENAME);
         $tmpFile = $this->tmpFolder . DIRECTORY_SEPARATOR . time() . $basename;
         $patchFile = $tmpFile . '.patch';

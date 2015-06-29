@@ -2,14 +2,14 @@
 
 namespace Phpro\SoapClient\Soap;
 
-use SoapClient as PhpSoapClient;
-
 /**
  * Class SoapClient
  *
  * @package Phpro\SoapClient\Soap
+ *
+ * Note: Make sure to extend the \SoapClient without alias for php-vcr implementations.
  */
-class SoapClient extends PhpSoapClient
+class SoapClient extends \SoapClient
 {
     /**
      * SOAP types derived from WSDL
