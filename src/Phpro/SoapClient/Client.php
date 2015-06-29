@@ -3,10 +3,10 @@
 namespace Phpro\SoapClient;
 
 use Phpro\SoapClient\Event;
-use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
+use SoapClient;
 use SoapFault;
 use SoapHeader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

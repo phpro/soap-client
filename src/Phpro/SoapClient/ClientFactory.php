@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient;
 
-use Phpro\SoapClient\Soap\SoapClient;
+use SoapClient;
 use ReflectionClass;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
