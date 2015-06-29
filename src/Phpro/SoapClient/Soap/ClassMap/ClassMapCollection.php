@@ -1,6 +1,7 @@
 <?php
 
 namespace Phpro\SoapClient\Soap\ClassMap;
+
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 
 /**
@@ -31,7 +32,7 @@ class ClassMapCollection
      *
      * @return ClassMapCollection
      */
-    public function add(ClassMap $classMap)
+    public function add(ClassMapInterface $classMap)
     {
         if ($this->has($classMap)) {
             throw new InvalidArgumentException('The classmap already exists!');
@@ -45,7 +46,7 @@ class ClassMapCollection
      *
      * @return $this
      */
-    public function set(ClassMap $classMap)
+    public function set(ClassMapInterface $classMap)
     {
         $this->classMaps[$classMap->getWsdlType()] = $classMap;
         return $this;
@@ -56,7 +57,7 @@ class ClassMapCollection
      *
      * @return bool
      */
-    public function has(ClassMap $classMap)
+    public function has(ClassMapInterface $classMap)
     {
         return array_key_exists($classMap->getWsdlType(), $this->classMaps);
     }

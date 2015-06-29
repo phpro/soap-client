@@ -18,8 +18,9 @@
     "symfony/process": "~2.3"
   },
   "require-dev": {
-    "phpro/grumphp": "0.2.*",
-    "squizlabs/php_codesniffer": "~2.3"
+    "phpro/grumphp": "~0.2",
+    "squizlabs/php_codesniffer": "~2.3",
+    "phpspec/phpspec": "~2.2"
   },
   "suggest": {
     "doctrine/common": "For caching SOAP responses",

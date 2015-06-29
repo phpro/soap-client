@@ -7,3 +7,4 @@ parameters:
             ignore_patterns:
                 - "*Spec.php"
                 - "*Test.php"
+        phpspec: ~
