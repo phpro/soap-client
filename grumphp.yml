@@ -8,3 +8,4 @@ parameters:
                 - "*Spec.php"
                 - "*Test.php"
         phpspec: ~
+        phpunit: ~

@@ -20,7 +20,10 @@
   "require-dev": {
     "phpro/grumphp": "~0.2",
     "squizlabs/php_codesniffer": "~2.3",
-    "phpspec/phpspec": "~2.2"
+    "phpspec/phpspec": "~2.2",
+    "phpunit/phpunit": "~4.7",
+    "php-vcr/php-vcr": "~1.2",
+    "php-vcr/phpunit-testlistener-vcr": "~1.1"
   },
   "suggest": {
     "doctrine/common": "For caching SOAP responses",
@@ -29,6 +32,11 @@
   "autoload": {
     "psr-0": {
       "Phpro\\SoapClient\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-0": {
+      "PhproTest\\SoapClient\\": "test/"
     }
   },
   "bin": ["bin/soap-client"]

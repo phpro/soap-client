@@ -1,0 +1,10 @@
+<phpunit bootstrap="./test/bootstrap.php" colors="true">
+    <listeners>
+        <listener class="PHPUnit_Util_Log_VCR" file="vendor/php-vcr/phpunit-testlistener-vcr/PHPUnit/Util/Log/VCR.php" />
+    </listeners>
+    <testsuites>
+        <testsuite name="Soap">
+            <directory>./test/PhproTest/SoapClient/Soap</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
