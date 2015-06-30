@@ -48,6 +48,7 @@ class TypeGenerator
                 'long' => 'int',
                 'dateTime' => '\\DateTime',
                 'date' => '\\DateTime',
+                'boolean' => 'bool',
             ]);
 
             $values = [
