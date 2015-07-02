@@ -129,7 +129,7 @@ class HelloWorldRequest implements RequestInterface
     // Generated code
 }
 
-class HelloWorldRequest implements ResponseProviderInterface
+class HelloWorldResponse implements ResponseProviderInterface
 {
     // Generated code
     
@@ -167,7 +167,18 @@ Options:
 
 This command will generate a class map and display it on the screen.
  You will just need to copy it and next paste it in the `ClientBuilder`.
+ 
+Example output:
 
+```php
+return new ClassMapCollection(
+    [
+        new ClassMap('HelloWorldRequest', \HelloWorldRequest::class),
+        new ClassMap('HelloWorldResponse', \HelloWorldResponse::class),
+        new ClassMap('Greeting', \Greeting::class),
+    ]
+);
+```
 
 ## Convert SOAP types
 
@@ -276,7 +287,7 @@ As mentioned earlier, it is very easy to integrate this project with [php-vcr](h
  */
 function it_should_greet()
 {
-    $response = $client->helloWorld(new HelloWorldRequest('name'));
+    $response = $this->client->helloWorld(new HelloWorldRequest('name'));
     $this->assertEquals('Hello name', $response->getGreeting());
 }
 ```
