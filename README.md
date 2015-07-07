@@ -248,7 +248,7 @@ The `Client` class has a build-in EventDispatcher.
 
 You can subscribe your own listeners to the configured `EventDispatcher`. For example:
 
-```
+```php
 class ResponseFailedSubscriber implements SubscriberInterface
 {
     // implement interface
@@ -279,7 +279,7 @@ As mentioned earlier, it is very easy to integrate this project with [php-vcr](h
  This will make your tests fast, deterministic and accurate!
  Her is an example of a PHPUnit test:
  
-```
+```php
 /**
  * @test
  * @vcr my-fixture-file.yml
