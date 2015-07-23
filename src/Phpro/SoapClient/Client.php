@@ -39,14 +39,12 @@ class Client implements ClientInterface
     }
 
     /**
-     * @param SoapHeader $soapHeader
-     *
+     * @param SoapHeader|SoapHeader[] $soapHeaders
      * @return $this
      */
-    public function addSoapHeader(SoapHeader $soapHeader)
+    public function applySoapHeaders($soapHeaders)
     {
-        $this->soapClient->__setSoapHeaders($soapHeader);
-
+        $this->soapClient->__setSoapHeaders($soapHeaders);
         return $this;
     }
 
