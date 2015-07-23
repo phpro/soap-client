@@ -12,4 +12,5 @@ final class Events
     const REQUEST    = 'phpro.soap_client.request';
     const RESPONSE   = 'phpro.soap_client.response';
     const FAULT      = 'phpro.soap_client.fault';
+    const DEBUG      = 'phpro.soap_client.debug';
 }

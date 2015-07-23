@@ -100,6 +100,14 @@ class Client implements ClientInterface
         }
 
         $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($requestEvent, $result));
+        $this->dispatcher->dispatch(
+            Events::DEBUG,
+            new Event\DebugEvent(
+                $requestEvent,
+                $result,
+                $this->debugLastSoapRequest()
+            )
+        );
         return $result;
     }
 }
