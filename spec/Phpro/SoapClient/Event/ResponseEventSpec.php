@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\Event;
 
+use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Event\RequestEvent;
 use Phpro\SoapClient\Event\ResponseEvent;
 use Phpro\SoapClient\Type\ResultInterface;
@@ -11,9 +12,9 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ResponseEventSpec extends ObjectBehavior
 {
-    function let(RequestEvent $requestEvent, ResultInterface $response)
+    function let(Client $client, RequestEvent $requestEvent, ResultInterface $response)
     {
-        $this->beConstructedWith($requestEvent, $response);
+        $this->beConstructedWith($client, $requestEvent, $response);
     }
 
     function it_is_initializable()

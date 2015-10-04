@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\Event;
 
+use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Type\RequestInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -9,9 +10,9 @@ use Symfony\Component\EventDispatcher\Event;
 
 class RequestEventSpec extends ObjectBehavior
 {
-    function let(RequestInterface $request)
+    function let(Client $client, RequestInterface $request)
     {
-        $this->beConstructedWith('method', $request);
+        $this->beConstructedWith($client, 'method', $request);
     }
 
     function it_is_initializable()
@@ -32,5 +33,10 @@ class RequestEventSpec extends ObjectBehavior
     function it_should_know_the_request(RequestInterface $request)
     {
         $this->getRequest()->shouldReturn($request);
+    }
+
+    function it_should_know_the_client(Client $client)
+    {
+        $this->getClient()->shouldReturn($client);
     }
 }

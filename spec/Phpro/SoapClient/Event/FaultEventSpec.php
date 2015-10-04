@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\Event;
 
+use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Event\FaultEvent;
 use Phpro\SoapClient\Event\RequestEvent;
 use PhpSpec\ObjectBehavior;
@@ -10,9 +11,9 @@ use Symfony\Component\EventDispatcher\Event;
 
 class FaultEventSpec extends ObjectBehavior
 {
-    function let(\SoapFault $soapFault, RequestEvent $requestEvent)
+    function let(Client $client,\SoapFault $soapFault, RequestEvent $requestEvent)
     {
-        $this->beConstructedWith($soapFault, $requestEvent);
+        $this->beConstructedWith($client, $soapFault, $requestEvent);
     }
 
     function it_is_initializable()
@@ -33,5 +34,10 @@ class FaultEventSpec extends ObjectBehavior
     function it_should_know_the_fault(\SoapFault $soapFault)
     {
         $this->getSoapFault()->shouldReturn($soapFault);
+    }
+
+    function it_should_know_the_client(Client $client)
+    {
+        $this->getClient()->shouldReturn($client);
     }
 }
