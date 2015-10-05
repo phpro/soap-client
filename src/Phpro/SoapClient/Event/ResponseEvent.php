@@ -1,6 +1,7 @@
 <?php
 namespace Phpro\SoapClient\Event;
 
+use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Type\ResultInterface;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -22,11 +23,18 @@ class ResponseEvent extends Event
     protected $response;
 
     /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * @param Client $client
      * @param RequestEvent $requestEvent
      * @param ResultInterface $response
      */
-    public function __construct(RequestEvent $requestEvent, ResultInterface $response)
+    public function __construct(Client $client, RequestEvent $requestEvent, ResultInterface $response)
     {
+        $this->client = $client;
         $this->requestEvent = $requestEvent;
         $this->response = $response;
     }
@@ -46,5 +54,12 @@ class ResponseEvent extends Event
     {
         return $this->response;
     }
-}
 
+    /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+}

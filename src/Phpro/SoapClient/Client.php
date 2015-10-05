@@ -84,7 +84,7 @@ class Client implements ClientInterface
      */
     protected function call($method, RequestInterface $request)
     {
-        $requestEvent = new Event\RequestEvent($method, $request);
+        $requestEvent = new Event\RequestEvent($this, $method, $request);
         $this->dispatcher->dispatch(Events::REQUEST, $requestEvent);
 
         try {
@@ -93,11 +93,11 @@ class Client implements ClientInterface
                 $result = $result->getResult();
             }
         } catch (SoapFault $soapFault) {
-            $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($soapFault, $requestEvent));
+            $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($this, $soapFault, $requestEvent));
             throw $soapFault;
         }
 
-        $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($requestEvent, $result));
+        $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($this, $requestEvent, $result));
         return $result;
     }
 }
