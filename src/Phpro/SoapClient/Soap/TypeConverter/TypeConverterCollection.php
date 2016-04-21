@@ -60,7 +60,7 @@ class TypeConverterCollection
     }
 
     /**
-     * Set (overwrite) a type converter in the collection 
+     * Set (overwrite) a type converter in the collection
      *
      * @param TypeConverterInterface $converter Type converter
      *
@@ -94,7 +94,7 @@ class TypeConverterCollection
 
     /**
      * Get this collection as a typemap that can be used in PHP's \SoapClient
-     * 
+     *
      * @return array
      */
     public function toSoapTypeMap()
@@ -105,10 +105,10 @@ class TypeConverterCollection
             $typemap[] = [
                 'type_name' => $converter->getTypeName(),
                 'type_ns'   => $converter->getTypeNamespace(),
-                'from_xml'  => function($input) use ($converter) {
+                'from_xml'  => function ($input) use ($converter) {
                     return $converter->convertXmlToPhp($input);
                 },
-                'to_xml'    => function($input) use ($converter) {
+                'to_xml'    => function ($input) use ($converter) {
                     return $converter->convertPhpToXml($input);
                 },
             ];

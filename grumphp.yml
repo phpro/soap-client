@@ -5,7 +5,7 @@ parameters:
         phpcs:
             standard: "PSR2"
             ignore_patterns:
-                - "*Spec.php"
-                - "*Test.php"
+                - "spec/*Spec.php"
+                - "*test/*.php"
         phpspec: ~
         phpunit: ~

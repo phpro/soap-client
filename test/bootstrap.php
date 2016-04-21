@@ -2,7 +2,9 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 \VCR\VCR::configure()
-    ->setCassettePath('test/fixtures')
+    ->setCassettePath('test/fixtures/vcr')
     ->enableLibraryHooks(['soap'])
 ;
 \VCR\VCR::turnOn();
+
+define('FIXTURE_DIR', realpath(__DIR__ . '/fixtures'));

@@ -1,13 +1,13 @@
 <?php
 
-namespace PhproTest\SoapClient\Soap;
+namespace PhproTest\SoapClient\Integration\Soap;
 
 use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
 
 /**
  * Class SoapClientTest
  *
- * @package PhproTest\SoapClient\Soap
+ * @package PhproTest\SoapClient\Integration\Soap
  */
 class SoapClientTest extends \PHPUnit_Framework_TestCase
 {

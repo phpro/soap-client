@@ -1,6 +1,7 @@
 <?php
 
 namespace Phpro\SoapClient\Util;
+
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 
 /**

@@ -16,5 +16,4 @@ interface ResultProviderInterface
      * @return ResultInterface
      */
     public function getResult();
-
 }

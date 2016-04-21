@@ -3,8 +3,11 @@
         <listener class="PHPUnit_Util_Log_VCR" file="vendor/php-vcr/phpunit-testlistener-vcr/PHPUnit/Util/Log/VCR.php" />
     </listeners>
     <testsuites>
-        <testsuite name="Soap">
-            <directory>./test/PhproTest/SoapClient/Soap</directory>
+        <testsuite name="Unit">
+            <directory>./test/PhproTest/SoapClient/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>./test/PhproTest/SoapClient/Integration</directory>
         </testsuite>
     </testsuites>
 </phpunit>
