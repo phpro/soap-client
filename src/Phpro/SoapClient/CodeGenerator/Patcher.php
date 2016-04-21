@@ -43,6 +43,7 @@ class Patcher
 
         // Patch content:
         try {
+            // Try to patch the original file into the new temporary file:
             $patchData = $this->createPatch($original, $tmpFile, $patchFile);
             // No patch needs to be applied ...
             if (!$patchData) {
@@ -50,8 +51,8 @@ class Patcher
                 return;
             }
 
-            // Apply patch:
-            $this->applyPatch($patchFile);
+            // Apply patch to the temporary new file:
+            $this->applyPatch($patchFile, $tmpFile);
         } catch (PatchException $e) {
             $this->cleanTmpFiles([$tmpFile, $patchFile]);
             throw $e;
@@ -90,9 +91,9 @@ class Patcher
      *
      * @return string
      */
-    protected function applyPatch($patch)
+    protected function applyPatch($patch, $targetFile)
     {
-        $process = ProcessBuilder::create(['patch', '-N', '--input=' . $patch])
+        $process = ProcessBuilder::create(['patch', '-N', $targetFile, $patch])
             ->setWorkingDirectory($this->tmpFolder)
             ->getProcess();
         $process->run();
