@@ -38,29 +38,58 @@ class Patcher
         $original = realpath($original);
         $basename = pathinfo($original, PATHINFO_BASENAME);
         $tmpFile = $this->tmpFolder . DIRECTORY_SEPARATOR . time() . $basename;
+        $tmpFilePatched = $tmpFile . 'patch';
+        $functions = $this->getFunctions($original);
         $patchFile = $tmpFile . '.patch';
         $this->filesystem->putFileContents($tmpFile, $newContent);
-
+        $this->filesystem->putFileContents($tmpFilePatched, $this->filesystem->getFileContents($original));
         // Patch content:
         try {
             // Try to patch the original file into the new temporary file:
-            $patchData = $this->createPatch($original, $tmpFile, $patchFile);
+            $patchData = $this->createPatch($tmpFilePatched, $tmpFile, $patchFile);
             // No patch needs to be applied ...
             if (!$patchData) {
-                $this->cleanTmpFiles([$tmpFile, $patchFile]);
+                $this->cleanTmpFiles([$tmpFile, $patchFile, $tmpFilePatched]);
                 return;
             }
 
             // Apply patch to the temporary new file:
-            $this->applyPatch($patchFile, $tmpFile);
+            $this->applyPatch($patchFile, $tmpFilePatched);
         } catch (PatchException $e) {
-            $this->cleanTmpFiles([$tmpFile, $patchFile]);
+            $this->cleanTmpFiles([$tmpFile, $patchFile, $tmpFilePatched]);
             throw $e;
         }
 
         // Write with backup:
-        $this->filesystem->replaceFile($original, $tmpFile, true);
-        $this->cleanTmpFiles([$tmpFile, $patchFile]);
+        $this->filesystem->replaceFile($original, $tmpFilePatched, true);
+        $endClassPos = strrpos($this->filesystem->getFileContents($original), '}') ;
+        $this->filesystem->addToFile($original, $functions, $endClassPos);
+        $this->cleanTmpFiles([$tmpFile, $patchFile, $tmpFilePatched]);
+    }
+
+    /**
+     * @param string $original
+     *
+     * @return string
+     */
+    protected function getFunctions($original)
+    {
+        $originalContent = $this->filesystem->getFileContents($original);
+        $functionsStartPos = strpos($originalContent, 'public function');
+        if ($functionsStartPos === false) {
+            return '';
+        }
+        //Get the beginning of the functions by looking for the first new line
+        // before the first '/*' (PhpDoc) before the first public function. Add 1 to remove the new line symbol.
+        $functionsStartPos = strrpos(
+            substr($originalContent, 0, strrpos(
+                substr($originalContent, 0, $functionsStartPos),
+                '/*'
+            )),
+            "\n"
+        ) + 1;
+        $functionsLength = strrpos($originalContent, "}", $functionsStartPos) - $functionsStartPos;
+        return substr($originalContent, $functionsStartPos, $functionsLength);
     }
 
     /**
@@ -72,7 +101,7 @@ class Patcher
      */
     protected function createPatch($original, $new, $patchFile)
     {
-        $process = ProcessBuilder::create(['diff', '-uN', $new, $original])
+        $process = ProcessBuilder::create(['diff', '-uN', $original, $new])
             ->setWorkingDirectory($this->tmpFolder)
             ->getProcess();
         $process->run();
