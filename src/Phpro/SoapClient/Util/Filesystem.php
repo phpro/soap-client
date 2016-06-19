@@ -78,4 +78,22 @@ class Filesystem
 
         $this->putFileContents($file, $this->getFileContents($new));
     }
+
+    /**
+     * @param string $file
+     * @param string $newContent
+     * @param int $pos the position at which to insert the content. (default to NULL, understood as append)
+     */
+    public function addToFile($file, $newContent, $pos = null)
+    {
+        if ($pos === null) {
+            $content = $this->getFileContents($file);
+            $content .= $newContent;
+        } else {
+            $content = substr($this->getFileContents($file), 0, $pos);
+            $content .= $newContent;
+            $content .= substr($this->getFileContents($file), $pos);
+        }
+        $this->putFileContents($file, $content);
+    }
 }
