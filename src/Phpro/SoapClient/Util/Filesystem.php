@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\Util;
 
 use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Exception\RunTimeException;
 
 /**
  * Class Filesystem
@@ -55,27 +56,28 @@ class Filesystem
     }
 
     /**
-     * @param $file
-     *
-     * @return bool
+     * @param string $file
      */
-    public function removeFile($file)
+    public function createBackup($file)
     {
-        return unlink($file);
+        if (!$this->fileExists($file)) {
+            throw new RunTimeException('Could not create a backup from a non existing file: ' . $file);
+        }
+
+        $backupFile = preg_replace('{\.backup$}', '', $file) . '.backup';
+        copy($file, $backupFile);
     }
 
     /**
      * @param string $file
-     * @param string $new
-     * @param bool $backup
      */
-    public function replaceFile($file, $new, $backup = true)
+    public function removeBackup($file)
     {
-        if ($backup) {
-            $backupFile = $file . '.backup';
-            copy($file, $backupFile);
+        $backupFile = preg_replace('{\.backup$}', '', $file) . '.backup';
+        if (!$this->fileExists($backupFile)) {
+            return;
         }
 
-        $this->putFileContents($file, $this->getFileContents($new));
+        unlink($backupFile);
     }
 }

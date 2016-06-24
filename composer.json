@@ -15,7 +15,8 @@
     "symfony/event-dispatcher": "~2.3|~3.0",
     "symfony/console": "~2.3|~3.0",
     "symfony/filesystem": "~2.3|~3.0",
-    "symfony/process": "~2.3|~3.0"
+    "symfony/process": "~2.3|~3.0",
+    "zendframework/zend-code": "^3.0"
   },
   "require-dev": {
     "phpro/grumphp": "~0.9",
