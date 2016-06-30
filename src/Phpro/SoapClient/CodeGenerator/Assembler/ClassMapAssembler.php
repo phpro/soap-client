@@ -42,7 +42,7 @@ class ClassMapAssembler implements AssemblerInterface
 
             $linefeed = $file::LINE_FEED;
             $classMap = $this->assembleClassMap($typeMap, $linefeed, $file->getIndentation());
-            $code = $this->assembleClassMapCollection($classMap, $linefeed);
+            $code = $this->assembleClassMapCollection($classMap, $linefeed) . $linefeed;
             $file->setBody($code);
 
         } catch (\Exception $e) {
