@@ -155,7 +155,7 @@ class GenerateTypesCommand extends Command
         $path
     ) {
         $output->write(sprintf('Type %s exists. Trying to patch ...', $type->getName()));
-        $patched = $this->patchExistingFile($generator, $type, $path);
+        $patched = $this->patchExistingFile($output, $generator, $type, $path);
 
         if ($patched) {
             $output->writeln('Patched!');
@@ -170,22 +170,21 @@ class GenerateTypesCommand extends Command
     /**
      * This method tries to patch an existing type class.
      *
-     * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param string        $path
+     * @param OutputInterface $output
+     * @param TypeGenerator   $generator
+     * @param Type            $type
+     * @param string          $path
      *
      * @return bool
      */
-    protected function patchExistingFile(TypeGenerator $generator, Type $type, $path)
+    protected function patchExistingFile(OutputInterface $output, TypeGenerator $generator, Type $type, $path)
     {
         try {
             $this->filesystem->createBackup($path);
             $file = FileGenerator::fromReflectedFileName($path);
             $this->generateType($file, $generator, $type, $path);
         } catch (\Exception $e) {
-            // TODO REMOVE ME:
-            echo ($e->getMessage());
-
+            $output->writeln('<fg=red>' . $e->getMessage() . '</fg=red>');
             $this->filesystem->removeBackup($path);
             return false;
         }
@@ -203,11 +202,8 @@ class GenerateTypesCommand extends Command
      */
     protected function generateType(FileGenerator $file, TypeGenerator $generator, Type $type, $path)
     {
-        $fileClass = $file->getClass();
-        $class = $fileClass ?: new ClassGenerator();
-        $generator->generate($class, $type);
-        $file->setClass($class);
-        $this->filesystem->putFileContents($path, $file->generate());
+        $code = $generator->generate($file, $type);
+        $this->filesystem->putFileContents($path, $code);
     }
 
     /**

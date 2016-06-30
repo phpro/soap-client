@@ -7,13 +7,14 @@ use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\FileGenerator;
 
 /**
  * Class TypeGenerator
  *
  * @package Phpro\SoapClient\CodeGenerator
  */
-class TypeGenerator
+class TypeGenerator implements GeneratorInterface
 {
     /**
      * @var RuleSetInterface
@@ -31,13 +32,14 @@ class TypeGenerator
     }
 
     /**
-     * @param ClassGenerator $class
-     * @param Type                              $type
+     * @param FileGenerator $file
+     * @param Type          $type
      *
      * @return string
      */
-    public function generate(ClassGenerator $class, Type $type)
+    public function generate(FileGenerator $file, $type)
     {
+        $class = $file->getClass() ?: new ClassGenerator();
         $class->setNamespaceName($type->getNamespace());
         $class->setName($type->getName());
 
@@ -47,6 +49,8 @@ class TypeGenerator
             $this->ruleSet->applyRules(new PropertyContext($class, $type, $property));
         }
 
-        return $class->generate();
+        $file->setClass($class);
+
+        return $file->generate();
     }
 }

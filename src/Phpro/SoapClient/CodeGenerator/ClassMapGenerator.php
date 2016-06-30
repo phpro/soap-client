@@ -12,7 +12,7 @@ use Zend\Code\Generator\FileGenerator;
  *
  * @package Phpro\SoapClient\CodeGenerator
  */
-class ClassMapGenerator
+class ClassMapGenerator implements GeneratorInterface
 {
     /**
      * @var RuleSetInterface
@@ -35,7 +35,7 @@ class ClassMapGenerator
      * 
      * @return string
      */
-    public function generate(FileGenerator $file, TypeMap $typeMap)
+    public function generate(FileGenerator $file, $typeMap)
     {
         $this->ruleSet->applyRules(new ClassMapContext($file, $typeMap));
         

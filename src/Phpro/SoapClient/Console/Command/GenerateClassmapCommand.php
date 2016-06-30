@@ -2,13 +2,18 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
-use Phpro\SoapClient\CodeGenerator\Generator\ClassmapGenerator;
+use Phpro\SoapClient\CodeGenerator\Assembler\ClassMapAssembler;
+use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
+use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
+use Phpro\SoapClient\CodeGenerator\Rules\AssembleRule;
+use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\Exception\RunTimeException;
 use Phpro\SoapClient\Soap\SoapClient;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Zend\Code\Generator\FileGenerator;
 
 /**
  * Class GenerateTypesCommand
@@ -40,14 +45,19 @@ class GenerateClassmapCommand extends Command
     {
         $wsdl = $input->getOption('wsdl');
         if (!$wsdl) {
-            throw new RuntimeException('You MUST specify a WSDL endpoint.');
+            throw new RunTimeException('You MUST specify a WSDL endpoint.');
         }
 
         $namespace = $input->getOption('namespace');
         $soapClient = new SoapClient($wsdl, []);
-        $types = $soapClient->getSoapTypes();
+        $typeMap = TypeMap::fromSoapClient($namespace, $soapClient);
+        
+        $ruleSet = new RuleSet([
+            new AssembleRule(new ClassMapAssembler())
+        ]);
 
-        $generator = new ClassmapGenerator($namespace);
-        $output->write($generator->generate($types));
+        $file = new FileGenerator();
+        $generator = new ClassMapGenerator($ruleSet);
+        $output->write($generator->generate($file, $typeMap));
     }
 }

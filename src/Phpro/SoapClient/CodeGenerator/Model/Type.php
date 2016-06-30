@@ -20,6 +20,11 @@ class Type
     /**
      * @var string
      */
+    private $xsdName;
+
+    /**
+     * @var string
+     */
     private $name;
 
     /**
@@ -38,6 +43,7 @@ class Type
     public function __construct($namespace, $name, array $properties)
     {
         $this->namespace = Normalizer::normalizeNamespace($namespace);
+        $this->xsdName = $name;
         $this->name = Normalizer::normalizeClassname($name);
 
         foreach ($properties as $property => $type) {
@@ -59,6 +65,14 @@ class Type
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getXsdName()
+    {
+        return $this->xsdName;
     }
 
     /**
