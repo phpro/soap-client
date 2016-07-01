@@ -2,17 +2,16 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
-use Phpro\SoapClient\CodeGenerator\Assembler\ClassMapAssembler;
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
-use Phpro\SoapClient\CodeGenerator\Rules\AssembleRule;
-use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
-use Phpro\SoapClient\Exception\RunTimeException;
+use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Zend\Code\Generator\FileGenerator;
 
 /**
@@ -26,38 +25,59 @@ class GenerateClassmapCommand extends Command
     const COMMAND_NAME = 'generate:classmap';
 
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
+     * GenerateClassmapCommand constructor.
+     *
+     * @param Filesystem $filesystem
+     */
+    public function __construct(Filesystem $filesystem)
+    {
+        parent::__construct();
+        $this->filesystem = $filesystem;
+    }
+
+    /**
      * Configure the command.
      */
     protected function configure()
     {
         $this
             ->setName(self::COMMAND_NAME)
-            ->setDescription('Generates classmap based on WSDL.')
-            ->addOption('wsdl', null, InputOption::VALUE_REQUIRED, 'The WSDL on which you base the types')
-            ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Resulting namespace')
+            ->setDescription('Generates a classmap based on WSDL.')
+            ->addOption(
+                'config',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The location of the soap code-generator config file'
+            )
         ;
     }
 
     /**
      * {@inheritdoc}
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $wsdl = $input->getOption('wsdl');
-        if (!$wsdl) {
-            throw new RunTimeException('You MUST specify a WSDL endpoint.');
+        $configFile = $input->getOption('config');
+        if (!$configFile || !$this->filesystem->exists($configFile)) {
+            throw InvalidArgumentException::invalidConfigFile();
         }
 
-        $namespace = $input->getOption('namespace');
-        $soapClient = new SoapClient($wsdl, []);
-        $typeMap = TypeMap::fromSoapClient($namespace, $soapClient);
-        
-        $ruleSet = new RuleSet([
-            new AssembleRule(new ClassMapAssembler())
-        ]);
+        $config = include $configFile;
+        if (!$config instanceof ConfigInterface) {
+            throw InvalidArgumentException::invalidConfigFile();
+        }
+
+        $soapClient = new SoapClient($config->getWsdl(), []);
+        $typeMap = TypeMap::fromSoapClient($config->getNamespace(), $soapClient);
 
         $file = new FileGenerator();
-        $generator = new ClassMapGenerator($ruleSet);
+        $generator = new ClassMapGenerator($config->getRuleSet());
         $output->write($generator->generate($file, $typeMap));
     }
 }
