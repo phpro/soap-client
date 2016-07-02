@@ -6,6 +6,6 @@ parameters:
             standard: "PSR2"
             ignore_patterns:
                 - "spec/*Spec.php"
-                - "*test/*.php"
+                - "test/*.php"
         phpspec: ~
         phpunit: ~

@@ -90,7 +90,9 @@ class Type
      */
     public function getFullName()
     {
-        return sprintf('%s\\%s', $this->getNamespace(), $this->getName());
+        $fqnName = sprintf('%s\\%s', $this->getNamespace(), $this->getName());
+
+        return Normalizer::normalizeNamespace($fqnName);
     }
 
     /**

@@ -4,8 +4,8 @@
 namespace Phpro\SoapClient\Console;
 
 use Phpro\SoapClient\Console\Command;
+use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Application as SymfonyApplication;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class Application
@@ -16,11 +16,6 @@ class Application extends SymfonyApplication
 {
     const APP_NAME = 'SoapClient';
     const APP_VERSION = '0.1.0';
-
-    /**
-     * @var ContainerBuilder
-     */
-    protected $container;
 
     /**
      * Set up application:

@@ -7,11 +7,11 @@ use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
+use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Zend\Code\Generator\FileGenerator;
 
 /**
@@ -64,7 +64,7 @@ class GenerateClassmapCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $configFile = $input->getOption('config');
-        if (!$configFile || !$this->filesystem->exists($configFile)) {
+        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
             throw InvalidArgumentException::invalidConfigFile();
         }
 

@@ -35,12 +35,12 @@ class GetterAssembler implements AssemblerInterface
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
-            $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
+            $methodName = Normalizer::generatePropertyMethod('get', $property->getName());
             $class->removeMethod($methodName);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
                     'name' => $methodName,
-                    'parameters' => $property->getName(),
+                    'parameters' => [],
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                     'body' => sprintf('return $this->%s;', $property->getName()),
                     'docblock' => DocBlockGenerator::fromArray([

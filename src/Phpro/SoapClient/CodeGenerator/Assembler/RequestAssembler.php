@@ -29,20 +29,11 @@ class RequestAssembler implements AssemblerInterface
      */
     public function assemble(ContextInterface $context)
     {
-        $class = $context->getClass();
-        $interface = RequestInterface::class;
-
         try {
-            if (!in_array($interface, $class->getUses())) {
-                $class->addUse($interface);
+            $interfaceAssembler = new InterfaceAssembler(RequestInterface::class);
+            if ($interfaceAssembler->canAssemble($context)) {
+                $interfaceAssembler->assemble($context);
             }
-
-            $interfaces = $class->getImplementedInterfaces();
-            if (!in_array($interface, $interfaces)) {
-                $interfaces[] = $interface;
-                $class->setImplementedInterfaces($interfaces);
-            }
-
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }

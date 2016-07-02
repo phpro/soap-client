@@ -32,7 +32,7 @@ class ClassMapGenerator implements GeneratorInterface
     /**
      * @param FileGenerator $file
      * @param TypeMap       $typeMap
-     * 
+     *
      * @return string
      */
     public function generate(FileGenerator $file, $typeMap)

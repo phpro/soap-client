@@ -20,14 +20,6 @@ class InvalidArgumentException extends \InvalidArgumentException
     /**
      * @return InvalidArgumentException
      */
-    public static function namespaceConfigurationIsMissing()
-    {
-        return new static('You did not configure a namespace.');
-    }
-
-    /**
-     * @return InvalidArgumentException
-     */
     public static function destinationConfigurationIsMissing()
     {
         return new static('You did not configure a destination.');

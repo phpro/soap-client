@@ -4,7 +4,11 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\Exception\AssemblerException;
+use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\DocBlockGenerator;
+use Zend\Code\Generator\MethodGenerator;
 
 /**
  * Class IteratorAssembler
@@ -30,9 +34,52 @@ class IteratorAssembler implements AssemblerInterface
      */
     public function assemble(ContextInterface $context)
     {
-        throw new AssemblerException('Not implemented yet!');
+        $class = $context->getClass();
+        $properties = $context->getType()->getProperties();
+        $firstProperty = count($properties) ? current($properties) : null;
 
-        // TODO: this assembler will add an \IteratorAggregate interface and a getIterator method.
-        // TODO: It is also a possibility to define an ArrayAccess interface
+        try {
+            $interfaceAssembler = new InterfaceAssembler(\IteratorAggregate::class);
+            if ($interfaceAssembler->canAssemble($context)) {
+                $interfaceAssembler->assemble($context);
+            }
+
+            if ($firstProperty) {
+                $this->implementGetIterator($class, $firstProperty);
+            }
+        } catch (\Exception $e) {
+            throw AssemblerException::fromException($e);
+        }
+    }
+
+    /**
+     * @param ClassGenerator $class
+     * @param Property       $firstProperty
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     */
+    private function implementGetIterator($class, $firstProperty)
+    {
+        $methodName = 'getIterator';
+        $class->removeMethod($methodName);
+        $class->addMethodFromGenerator(
+            MethodGenerator::fromArray([
+                'name' => $methodName,
+                'parameters' => [],
+                'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
+                'body' => sprintf(
+                    'return new \\ArrayIterator(is_array($this->%1$s) ? $this->%1$s : []);',
+                    $firstProperty->getName()
+                ),
+                'docblock' => DocBlockGenerator::fromArray([
+                    'tags' => [
+                        [
+                            'name' => 'return',
+                            'description' => '\\ArrayIterator'
+                        ]
+                    ]
+                ])
+            ])
+        );
     }
 }

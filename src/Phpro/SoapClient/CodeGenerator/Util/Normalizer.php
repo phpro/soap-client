@@ -17,7 +17,7 @@ class Normalizer
      */
     public static function normalizeNamespace($namespace)
     {
-        return rtrim(str_replace('/', '\\', $namespace), '\\');
+        return trim(str_replace('/', '\\', $namespace), '\\');
     }
 
     /**

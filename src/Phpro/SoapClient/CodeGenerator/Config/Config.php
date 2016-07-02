@@ -70,10 +70,6 @@ class Config implements ConfigInterface
      */
     public function getNamespace()
     {
-        if (!$this->namespace) {
-            throw InvalidArgumentException::namespaceConfigurationIsMissing();
-        }
-
         return $this->namespace;
     }
 
@@ -146,7 +142,7 @@ class Config implements ConfigInterface
 
     /**
      * @param RuleInterface $rule
-     * 
+     *
      * @return Config
      */
     public function addRule(RuleInterface $rule)
