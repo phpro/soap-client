@@ -2,6 +2,7 @@
 
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
+use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\RequestAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
@@ -14,6 +15,16 @@ use Zend\Code\Generator\ClassGenerator;
  */
 class RequestAssemblerTest extends \PHPUnit_Framework_TestCase
 {
+
+    /**
+     * @test
+     */
+    function it_is_an_assembler()
+    {
+        $assembler = new RequestAssembler();
+        $this->assertInstanceOf(AssemblerInterface::class, $assembler);
+    }
+
     /**
      * @test
      */

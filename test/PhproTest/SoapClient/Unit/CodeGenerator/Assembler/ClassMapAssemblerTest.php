@@ -2,6 +2,7 @@
 
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
+use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ClassMapAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
@@ -14,6 +15,15 @@ use Zend\Code\Generator\FileGenerator;
  */
 class ClassMapAssemblerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @test
+     */
+    function it_is_an_assembler()
+    {
+        $assembler = new ClassMapAssembler();
+        $this->assertInstanceOf(AssemblerInterface::class, $assembler);
+    }
+
     /**
      * @test
      */

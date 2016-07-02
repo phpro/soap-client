@@ -30,9 +30,9 @@ class RuleSet implements RuleSetInterface
     }
 
     /**
-     * @param $rule
+     * @param RuleInterface $rule
      */
-    public function addRule($rule)
+    public function addRule(RuleInterface $rule)
     {
         $this->rules[] = $rule;
     }

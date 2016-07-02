@@ -37,14 +37,14 @@ class Type
      * TypeModel constructor.
      *
      * @param string     $namespace
-     * @param string     $name
+     * @param string     $xsdName
      * @param Property[] $properties
      */
-    public function __construct($namespace, $name, array $properties)
+    public function __construct($namespace, $xsdName, array $properties)
     {
         $this->namespace = Normalizer::normalizeNamespace($namespace);
-        $this->xsdName = $name;
-        $this->name = Normalizer::normalizeClassname($name);
+        $this->xsdName = $xsdName;
+        $this->name = Normalizer::normalizeClassname($xsdName);
 
         foreach ($properties as $property => $type) {
             $this->properties[] = new Property($property, $type);

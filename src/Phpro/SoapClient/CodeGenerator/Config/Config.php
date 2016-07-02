@@ -41,13 +41,11 @@ class Config implements ConfigInterface
     /**
      * Config constructor.
      *
-     * @param string $namespace
      * @param string $wsdl
      * @param string $destination
      */
-    public function __construct($namespace = '', $wsdl = '', $destination = '')
+    public function __construct($wsdl = '', $destination = '')
     {
-        $this->setNamespace($namespace);
         $this->setWsdl($wsdl);
         $this->setDestination($destination);
         $this->ruleSet = new RuleSet([
