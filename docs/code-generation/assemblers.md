@@ -8,6 +8,7 @@ You can create your own assembler to generate the code you want to add to the ge
 
 - [ClassMapAssembler](#classmapassembler)
 - [GetterAssembler](#GetterAssembler)
+- [InterfaceAssembler](#InterfaceAssembler)
 - [IteratorAssembler](#IteratorAssembler)
 - [PropertyAssembler](#PropertyAssembler)
 - [RequestAssembler](#RequestAssembler)
@@ -39,6 +40,10 @@ return new ClassMapCollection(
 TODO
 
 ## GetterAssembler
+
+TODO
+
+## InterfaceAssembler
 
 TODO
 
