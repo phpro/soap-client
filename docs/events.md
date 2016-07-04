@@ -20,8 +20,6 @@ $dispatcher->addSubscriber(new ResponseFailedSubscriber());
 
 This package ships with some default subscriber plugins:
 
-
-docs/plugins/logger.md
-docs/plugins/caching.md
-
+- [Logger plugin](plugins/logger.md)
+- [Caching plugin](plugins/caching.md)
 

@@ -27,7 +27,7 @@ Keep in mind that the WSDL must provide all XSD types for the generation of valu
 
 Options:
 
-- **config**: A [configuration file](code-generation/configuration.md) is required to build the types. 
+- **config**: A [configuration file](../code-generation/configuration.md) is required to build the types. 
 - **overwrite**: The soap-client overrides a file that cannot be patched without asking for confirmation.
 
 
@@ -66,4 +66,4 @@ class Greeting implements ResponseInterface
 
 ```
 
-This can be done by specifying some code generation [rules](code-generation/rules.md) and [assemblers](code-generation/assemblers.md).
+This can be done by specifying some code generation [rules](../code-generation/rules.md) and [assemblers](../code-generation/assemblers.md).

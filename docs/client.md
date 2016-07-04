@@ -30,3 +30,25 @@ The methods of the class are explicitly defined and have explicit parameters and
  SOAP responses can have 2 types: `ResultProviderInterface` or `ResultInterface`.
  The `ResultProviderInterface` can be used if the response type is wrapping a `ResultInterface`.
  The `call` method will initailize the SOAP call and trigger the subscribed event listeners.
+
+
+## My SOAP service does not work with Request / Response objects.
+
+In older SOAP services, it is possible that it is impossible to request with a `RequestInterface`.
+ Those services typically require multiple SOAP arguments in the method.
+ This is why we created a `MixedArgumentRequestInterface`.
+ With this interface, you can still use our SOAP client, but send multiple arguments to the SOAP service.
+
+```php
+$request = new MultiArgumentRequest(['argument1', 'argument2'])
+$response = $client->someMethodWithMultipleArguments($request)
+```
+
+When the SOAP service is returning an internal PHP type, the result is being wrapped with a `MixedResult` class.
+  This way, you don't have to worry about the internal type of the SOAP response.
+  
+```php
+/** @var MixedResult $result */
+$result = $client->someMethodWithInternalTypeResult($request);
+$actualResponse = $response->getResponse();
+```

@@ -20,7 +20,7 @@ This command will generate a class map and display it on the screen.
 
 Options:
 
-- **config**: A [configuration file](code-generation/configuration.md) is required to build the classmap. 
+- **config**: A [configuration file](../code-generation/configuration.md) is required to build the classmap. 
 
  
 Example output:
