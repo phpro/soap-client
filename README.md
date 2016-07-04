@@ -38,6 +38,11 @@ This package will force you into wrapping a SoapClient into your own Client.
 In lots of SOAP integrations the logging, caching and Soap calls are in the same method.
  This makes your code hard to read and dependent on other classes / packages.
 
+Creating a great OO SOAP client means that you'll have to create a lot of code.
+ This can be a tedious task which can be automated. 
+ That is why we've added the tools to automatically generate the SOAP objects from the XSD scheme inside the WSDL.
+ It is even possible to specify your own code-generation rules and code assemblers or use one of our many built-in classes.
+
 It is important keep your code clean. This is why we added an event-listener to your Soap client.
  You can hook in at every important step of the SOAP flow.
  This way it is possible to add logging, caching and error handling with event subscribers. 
@@ -67,8 +72,8 @@ $ composer require phpro/soap-client
 3. [Generate a class map](docs/cli/generate-classmap.md)
 4. [Add type converters](docs/type-converter.md)
 5. [Listen to events](docs/events.md)
-  * [Logger plugin](docs/plugins/logger.md)
-  * [Caching plugin](docs/plugins/caching.md)
+  - [Logger plugin](docs/plugins/logger.md)
+  - [Caching plugin](docs/plugins/caching.md)
 6. [Use your SOAP client.](docs/usage.md)
 7. [Test your SOAP client.](docs/testing.md)
 
