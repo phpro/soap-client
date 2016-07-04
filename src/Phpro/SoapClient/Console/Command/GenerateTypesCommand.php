@@ -77,7 +77,7 @@ class GenerateTypesCommand extends Command
         $this->output = $output;
 
         $configFile = $this->input->getOption('config');
-        if (!$configFile || !$this->filesystem->exists($configFile)) {
+        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
             throw InvalidArgumentException::invalidConfigFile();
         }
 
