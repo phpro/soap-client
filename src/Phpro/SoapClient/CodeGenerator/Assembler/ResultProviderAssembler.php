@@ -69,8 +69,8 @@ class ResultProviderAssembler implements AssemblerInterface
                 'parameters' => [],
                 'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                 'body' => sprintf(
-                    'return $this->%s();',
-                    Normalizer::generatePropertyMethod('get', $property->getName())
+                    'return $this->%s;',
+                    $property->getName()
                 ),
                 'docblock' => DocBlockGenerator::fromArray([
                     'tags' => [

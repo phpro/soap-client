@@ -61,7 +61,7 @@ class ConstructorAssembler implements AssemblerInterface
         ]);
 
         foreach ($type->getProperties() as $property) {
-            $body[] = sprintf('$this->%1$s = $%1$s', $property->getName());
+            $body[] = sprintf('$this->%1$s = $%1$s;', $property->getName());
             $constructor->setParameter([
                 'name' => $property->getName()
             ]);

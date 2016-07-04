@@ -57,7 +57,7 @@ class MyType implements ResultProviderInterface
      */
     public function getResult()
     {
-        return \$this->getProp1();
+        return \$this->prop1;
     }
 
 

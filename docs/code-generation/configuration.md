@@ -11,9 +11,9 @@ use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Assembler;
 
 return Config::create()
-    ->setWsdl('')
-    ->setNamespace('')
-    ->setDestination('')
+    ->setWsdl('http://localhost/path/to/soap.wsdl')
+    ->setDestination('src/SoapTypes')
+    ->setNamespace('SoapTypes')
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler()))
     ->addRule(new Rules\TypenameMatchesRule(
         new Rules\AssembleRule(new Assembler\RequestAssembler()),
@@ -26,30 +26,30 @@ return Config::create()
 ;
 ```
 
-*wsdl*
+**wsdl**
 
 String - REQUIRED
 
 The full path the the WSDL file you want to parse
- 
- 
-*namespace*
+
+**destination**
 
 String - REQUIRED
+
+The destination of the generated PHP classes. 
+
+
+**namespace**
+
+String - OPTIONAL
 
 The namespace of the PHP Classes you want to generate.
 
 
-*destination*
-
-String - REQUIRED
-
-The destination of the generated PHP classes.
-
-
-*rules*
+**rules**
 
 RuleInterface - OPTIONAL
 
-You can specify your own code generation rules. More information in the [rules](rules.md) section.
+You can specify how you want to generate your code.
+More information about the topic is available in the [rules](rules.md) and [assemblers](assemblers.md) section.
 
