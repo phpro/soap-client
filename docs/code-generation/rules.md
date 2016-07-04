@@ -1,0 +1,82 @@
+# Code generation rules
+
+Since every application has it's own rules on how to write and structure code,
+we made it possible to configure the way your code is auto generated.
+You can specify your own rules and apply them to the code generator.
+
+The goal of a rule is to run a code assembler.
+[Here you can find a full list of built-in code assemblers](assemblers.md#built-in-assemblers).
+
+ 
+# Built-in rules
+
+- [AssemblerRule](#assemblerrule)
+- [TypenameMatchesRule](#typenamematchesrule)
+
+## AssemblerRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+
+$rule = Rules\AssembleRule(new Assembler\GetterAssembler())
+```
+
+The `AssemblerRule` will always apply an assembler in the right context. 
+This way, the code is added during every code generation command.
+
+In the example above, a getter will be created for every property in the SOAP type.
+
+
+## TypenameMatchesRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+
+new Rules\TypenameMatchesRule(
+    new Rules\AssembleRule(new Assembler\RequestAssembler()),
+    '/Request$/'
+)
+```
+
+The `TypenameMatchesRule` can be used in the types generation command and contains a subRule and a regular expression.
+The subRule is mostly a regular AssmbleRule, but can be any class that implements the RuleInterface.
+The regular expression will be matched against the normalized SOAP type name. 
+If the regular expression matches and the subRule is accepted, the defined assembler will run.
+ 
+In the example above, the `RequestInterface` is added to the class if the SOAP property ends on `Request`.
+
+
+# Creating your own Rule
+
+Creating your own Rule is pretty easy. 
+The only thing you'll need to do is implementing the `RuleInterface`.
+
+```php
+/**
+ * Interface RuleInterface
+ *
+ * @package Phpro\SoapClient\CodeGenerator\Rules
+ */
+interface RuleInterface
+{
+    /**
+     * @param ContextInterface $context
+     *
+     * @return bool
+     */
+    public function appliesToContext(ContextInterface $context);
+
+    /**
+     * @param ContextInterface $context
+     */
+    public function apply(ContextInterface $context);
+}
+```
+
+Possible contexts:
+
+- `ClassMapContext`: Triggered during the `generate:classmap` command.
+- `TypeContext`: Triggered during the `generate:types` command for every type in the SOAP scheme.
+- `PropertyContext`: Triggered during the `generate:types` command for every property in a SOAP type.

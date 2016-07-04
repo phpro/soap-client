@@ -4,6 +4,7 @@
 namespace Phpro\SoapClient\Console;
 
 use Phpro\SoapClient\Console\Command;
+use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Application as SymfonyApplication;
 
 /**
@@ -15,11 +16,6 @@ class Application extends SymfonyApplication
 {
     const APP_NAME = 'SoapClient';
     const APP_VERSION = '0.1.0';
-
-    /**
-     * @var ContainerBuilder
-     */
-    protected $container;
 
     /**
      * Set up application:
@@ -34,9 +30,10 @@ class Application extends SymfonyApplication
      */
     protected function getDefaultCommands()
     {
+        $filesystem = new Filesystem();
         $commands = parent::getDefaultCommands();
-        $commands[] = new Command\GenerateTypesCommand();
-        $commands[] = new Command\GenerateClassmapCommand();
+        $commands[] = new Command\GenerateTypesCommand($filesystem);
+        $commands[] = new Command\GenerateClassmapCommand($filesystem);
 
         return $commands;
     }
