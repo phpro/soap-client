@@ -86,7 +86,13 @@ class GenerateTypesCommand extends Command
             throw InvalidArgumentException::invalidConfigFile();
         }
 
-        $soapClient = new SoapClient($config->getWsdl(), []);
+        $soapClient = new SoapClient($config->getWsdl(), [
+			'trace' => true,
+			'exceptions' => true,
+			'keep_alive' => true,
+			'cache_wsdl' => WSDL_CACHE_BOTH,
+			'features' => SOAP_SINGLE_ELEMENT_ARRAYS
+		]);
         $typeMap = TypeMap::fromSoapClient($config->getNamespace(), $soapClient);
         $generator = new TypeGenerator($config->getRuleSet());
         
