@@ -22,6 +22,11 @@ interface ConfigInterface
     public function getWsdl();
 
     /**
+     * array
+     */
+    public function getSoapOptions();
+
+    /**
      * @return string
      */
     public function getDestination();

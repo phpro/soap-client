@@ -73,7 +73,7 @@ class GenerateClassmapCommand extends Command
             throw InvalidArgumentException::invalidConfigFile();
         }
 
-        $soapClient = new SoapClient($config->getWsdl(), []);
+        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getNamespace(), $soapClient);
 
         $file = new FileGenerator();

@@ -29,6 +29,16 @@ class Config implements ConfigInterface
     protected $wsdl = '';
 
     /**
+     * @var array
+     */
+    protected $soapOptions = [
+        'trace' => false,
+        'exceptions' => true,
+        'keep_alive' => true,
+        'cache_wsdl' => WSDL_CACHE_NONE,
+    ];
+
+    /**
      * @var string
      */
     protected $destination = '';
@@ -93,6 +103,39 @@ class Config implements ConfigInterface
         }
 
         return $this->wsdl;
+    }
+
+    /**
+     * @param array $soapOptions
+     *
+     * @return $this
+     */
+    public function setSoapOptions(array $soapOptions)
+    {
+        $this->soapOptions = $soapOptions;
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return $this
+     */
+    public function addSoapOption($key, $value)
+    {
+        $this->soapOptions[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSoapOptions()
+    {
+        return $this->soapOptions;
     }
 
     /**
