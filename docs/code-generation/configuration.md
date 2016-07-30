@@ -14,6 +14,7 @@ return Config::create()
     ->setWsdl('http://localhost/path/to/soap.wsdl')
     ->setDestination('src/SoapTypes')
     ->setNamespace('SoapTypes')
+    ->addSoapOption('features', SOAP_SINGLE_ELEMENT_ARRAYS)
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler()))
     ->addRule(new Rules\TypenameMatchesRule(
         new Rules\AssembleRule(new Assembler\RequestAssembler()),
@@ -32,11 +33,30 @@ String - REQUIRED
 
 The full path the the WSDL file you want to parse
 
+
 **destination**
 
 String - REQUIRED
 
 The destination of the generated PHP classes. 
+
+
+**soapOptions**
+
+Array - OPTIONAL
+
+The soap options you want to add to the SoapClient during code generation.
+Default values:
+
+
+```php
+[
+    'trace' => false,
+    'exceptions' => true,
+    'keep_alive' => true,
+    'cache_wsdl' => WSDL_CACHE_NONE,
+]
+```
 
 
 **namespace**

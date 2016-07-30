@@ -60,4 +60,20 @@ class ConfigSpec extends ObjectBehavior
         $this->setRuleSet($value = new RuleSet([]));
         $this->getRuleSet()->shouldBe($value);
     }
+
+    function it_had_soap_options()
+    {
+        $this->getSoapOptions()->shouldBe([
+            'trace' => false,
+            'exceptions' => true,
+            'keep_alive' => true,
+            'cache_wsdl' => WSDL_CACHE_NONE,
+        ]);
+
+        $this->setSoapOptions($value = []);
+        $this->getSoapOptions()->shouldBe($value);
+
+        $this->addSoapOption('key', 'value');
+        $this->getSoapOptions()->shouldBe(['key' => 'value']);
+    }
 }
