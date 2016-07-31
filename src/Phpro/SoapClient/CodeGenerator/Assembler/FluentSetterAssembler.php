@@ -20,7 +20,8 @@ class FluentSetterAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble (ContextInterface $context) {
+    public function canAssemble(ContextInterface $context)
+    {
         return $context instanceof PropertyContext;
     }
 
@@ -28,7 +29,8 @@ class FluentSetterAssembler implements AssemblerInterface
      * @param ContextInterface|PropertyContext $context
      * @throws AssemblerException
      */
-    public function assemble (ContextInterface $context) {
+    public function assemble(ContextInterface $context)
+    {
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
