@@ -27,7 +27,8 @@ class TraitAssembler implements AssemblerInterface
      * @param $traitName
      * @param $traitAlias
      */
-    public function __construct ($traitName, $traitAlias = null) {
+    public function __construct($traitName, $traitAlias = null)
+    {
         $this->traitName = $traitName;
         $this->traitAlias = $traitAlias;
     }
@@ -36,14 +37,16 @@ class TraitAssembler implements AssemblerInterface
      * @param ContextInterface $context
      * @return bool
      */
-    public function canAssemble (ContextInterface $context) {
+    public function canAssemble(ContextInterface $context)
+    {
         return $context instanceof TypeContext;
     }
 
     /**
      * @param ContextInterface|TypeContext $context
      */
-    public function assemble (ContextInterface $context) {
+    public function assemble(ContextInterface $context)
+    {
         $class = $context->getClass();
 
         try {
