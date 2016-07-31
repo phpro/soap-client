@@ -14,11 +14,11 @@ use Phpro\SoapClient\Exception\AssemblerException;
 class TraitAssembler implements AssemblerInterface
 {
     /**
-     * @var
+     * @var string
      */
     private $traitName;
     /**
-     * @var
+     * @var string
      */
     private $traitAlias;
 
