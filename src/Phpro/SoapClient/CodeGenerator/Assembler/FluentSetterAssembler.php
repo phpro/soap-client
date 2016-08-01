@@ -41,7 +41,7 @@ class FluentSetterAssembler implements AssemblerInterface
                     'name' => $methodName,
                     'parameters' => [$property->getName()],
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                    'body' => sprintf('$this->%1$s = $%1$s;%2$sreturn $this;', $property->getName(), "\n"),
+                    'body' => sprintf('$this->%1$s = $%1$s;%2$sreturn $this;', $property->getName(), $class::LINE_FEED),
                     'docblock' => DocBlockGenerator::fromArray([
                         'tags' => [
                             [
