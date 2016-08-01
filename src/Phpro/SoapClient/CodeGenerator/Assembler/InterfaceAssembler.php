@@ -47,8 +47,9 @@ class InterfaceAssembler implements AssemblerInterface
         $interface = $this->interfaceName;
 
         try {
-            if (!in_array($interface, $class->getUses())) {
-                $class->addUse($interface);
+            $useAssembler = new UseAssembler($interface);
+            if ($useAssembler->canAssemble($context)) {
+                $useAssembler->assemble($context);
             }
 
             $interfaces = $class->getImplementedInterfaces();
