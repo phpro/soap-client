@@ -97,10 +97,7 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'string',
-            'prop2' => 'int'
-        ]);
+        $type = new Type('MyNamespace', 'MyType', []);
 
         return new TypeContext($class, $type);
     }
