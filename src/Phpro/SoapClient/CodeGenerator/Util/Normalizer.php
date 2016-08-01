@@ -66,4 +66,14 @@ class Normalizer
     {
         return strtolower($prefix) . ucfirst(self::normalizeProperty($property));
     }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    public static function lastPart($name)
+    {
+        $arr = explode('\\', $name);
+        return array_pop($arr);
+    }
 }

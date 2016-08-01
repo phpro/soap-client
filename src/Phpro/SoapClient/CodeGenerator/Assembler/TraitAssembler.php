@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
@@ -55,8 +56,7 @@ class TraitAssembler implements AssemblerInterface
             }
             $traitAlias = $this->traitAlias;
             if (!$traitAlias) {
-                $a = explode('\\', $this->traitName);
-                $traitAlias = array_pop($a);
+                $traitAlias = Normalizer::lastPart($this->traitName);
             }
             $class->addTrait($traitAlias);
         } catch (\Exception $e) {
