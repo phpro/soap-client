@@ -64,6 +64,34 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_adds_a_trait_with_alias()
+    {
+        $assembler = new TraitAssembler('\Namespace\MyTrait', 'TraitAlias');
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+use Namespace\MyTrait;
+
+class MyType
+{
+
+    use MyTrait as TraitAlias;
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @return TypeContext
      */
     private function createContext()
