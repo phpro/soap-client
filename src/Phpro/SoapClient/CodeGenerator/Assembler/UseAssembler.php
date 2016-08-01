@@ -4,34 +4,33 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
- * Class TraitAssembler
+ * Class UseAssembler
  *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
-class TraitAssembler implements AssemblerInterface
+class UseAssembler implements AssemblerInterface
 {
     /**
      * @var string
      */
-    private $traitName;
+    private $useName;
     /**
      * @var string
      */
-    private $traitAlias;
+    private $useAlias;
 
     /**
      * TraitAssembler constructor.
-     * @param $traitName
-     * @param $traitAlias
+     * @param $useName
+     * @param $useAlias
      */
-    public function __construct($traitName, $traitAlias = null)
+    public function __construct($useName, $useAlias = null)
     {
-        $this->traitName = $traitName;
-        $this->traitAlias = $traitAlias;
+        $this->useName = $useName;
+        $this->useAlias = $useAlias;
     }
 
     /**
@@ -51,18 +50,24 @@ class TraitAssembler implements AssemblerInterface
         $class = $context->getClass();
 
         try {
-            $useAssembler = new UseAssembler($this->traitName, $this->traitAlias);
-            if ($useAssembler->canAssemble($context)) {
-                $useAssembler->assemble($context);
+
+            if (!in_array($this->fullName(), $class->getUses())) {
+                $class->addUse($this->useName, $this->useAlias);
             }
 
-            $traitAlias = $this->traitAlias;
-            if (!$traitAlias) {
-                $traitAlias = Normalizer::lastPart($this->traitName);
-            }
-            $class->addTrait($traitAlias);
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function fullName() {
+        $use = $this->useName;
+        if (!empty($this->useAlias)) {
+            $use .= ' as ' . $this->useAlias;
+        }
+        return $use;
     }
 }
