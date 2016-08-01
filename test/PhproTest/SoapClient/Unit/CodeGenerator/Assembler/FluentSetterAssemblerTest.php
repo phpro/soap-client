@@ -55,6 +55,7 @@ class MyType
 
     /**
      * @param string \$prop1
+     * @return \$this
      */
     public function setProp1(\$prop1)
     {
