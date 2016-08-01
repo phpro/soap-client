@@ -50,10 +50,11 @@ namespace MyNamespace;
 
 use MyTrait;
 
-class MyType implements Iterator
+class MyType
 {
 
     use MyTrait;
+    
 
 }
 

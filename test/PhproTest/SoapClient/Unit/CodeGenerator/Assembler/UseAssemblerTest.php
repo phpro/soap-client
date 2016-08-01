@@ -50,7 +50,7 @@ namespace MyNamespace;
 
 use MyUsedClass;
 
-class MyType implements Iterator
+class MyType
 {
 
 
