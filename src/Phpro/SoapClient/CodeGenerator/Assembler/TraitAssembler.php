@@ -58,10 +58,7 @@ class TraitAssembler implements AssemblerInterface
                 $a = explode('\\', $this->traitName);
                 $traitAlias = array_pop($a);
             }
-            $traits = $class->getTraits();
-            if (!in_array($traitAlias, $traits)) {
-                $class->addTrait($traitAlias);
-            }
+            $class->addTrait($traitAlias);
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
