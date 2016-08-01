@@ -50,11 +50,9 @@ class UseAssembler implements AssemblerInterface
         $class = $context->getClass();
 
         try {
-
             if (!in_array($this->fullName(), $class->getUses())) {
                 $class->addUse($this->useName, $this->useAlias);
             }
-
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
@@ -63,7 +61,8 @@ class UseAssembler implements AssemblerInterface
     /**
      * @return string
      */
-    protected function fullName() {
+    protected function fullName()
+    {
         $use = $this->useName;
         if (!empty($this->useAlias)) {
             $use .= ' as ' . $this->useAlias;
