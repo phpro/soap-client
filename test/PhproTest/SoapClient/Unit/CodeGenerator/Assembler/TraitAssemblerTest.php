@@ -54,7 +54,7 @@ class MyType
 {
 
     use MyTrait;
-    
+
 
 }
 
