@@ -71,7 +71,7 @@ class Normalizer
      * @param string $name
      * @return string
      */
-    public static function lastPart($name)
+    public static function getClassNameFromFQN($name)
     {
         $arr = explode('\\', $name);
         return array_pop($arr);

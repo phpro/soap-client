@@ -58,7 +58,7 @@ class TraitAssembler implements AssemblerInterface
 
             $traitAlias = $this->traitAlias;
             if (!$traitAlias) {
-                $traitAlias = Normalizer::lastPart($this->traitName);
+                $traitAlias = Normalizer::getClassNameFromFQN($this->traitName);
             }
             $class->addTrait($traitAlias);
         } catch (\Exception $e) {
