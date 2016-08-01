@@ -76,4 +76,19 @@ class Normalizer
         $arr = explode('\\', $name);
         return array_pop($arr);
     }
+
+    /**
+     * @param string $useName
+     * @param string $useAlias
+     * @return string
+     */
+    public static function getCompleteUseStatement($useName, $useAlias)
+    {
+        $use = $useName;
+        if (!empty($useAlias)) {
+            $use .= ' as ' . $useAlias;
+        }
+        return $use;
+    }
+
 }

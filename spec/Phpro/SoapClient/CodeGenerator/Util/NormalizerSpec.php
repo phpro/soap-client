@@ -64,4 +64,11 @@ class NormalizerSpec extends ObjectBehavior
         $this->getClassNameFromFQN('\Namespace\MyClass')->shouldReturn('MyClass');
         $this->getClassNameFromFQN('Vendor\Namespace\MyClass')->shouldReturn('MyClass');
     }
+
+    function it_gets_complete_use_statement()
+    {
+        $this->getCompleteUseStatement('Namespace\MyClass', 'ClassAlias')->shouldReturn('Namespace\MyClass as ClassAlias');
+        $this->getCompleteUseStatement('Namespace\MyClass', null)->shouldReturn('Namespace\MyClass');
+        $this->getCompleteUseStatement('MyClass', '')->shouldReturn('MyClass');
+    }
 }

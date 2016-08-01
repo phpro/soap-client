@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
@@ -50,23 +51,11 @@ class UseAssembler implements AssemblerInterface
         $class = $context->getClass();
 
         try {
-            if (!in_array($this->fullName(), $class->getUses())) {
+            if (!in_array(Normalizer::getCompleteUseStatement($this->useName, $this->useAlias), $class->getUses())) {
                 $class->addUse($this->useName, $this->useAlias);
             }
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
-    }
-
-    /**
-     * @return string
-     */
-    protected function fullName()
-    {
-        $use = $this->useName;
-        if (!empty($this->useAlias)) {
-            $use .= ' as ' . $this->useAlias;
-        }
-        return $use;
     }
 }
