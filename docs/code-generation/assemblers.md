@@ -61,6 +61,25 @@ Example output:
 ```
 
 
+## FluentSetterAssembler
+
+The `FluentSetterAssembler` will add a setter method to the generated class. The method will return the current instance to enable chaining.
+
+Example output:
+
+```php
+    /**
+     * @param string $prop1
+     * @return $this
+     */
+    public function setProp1($prop1)
+    {
+        $this->prop1 = $prop1;
+        return $this;
+    }
+```
+
+
 ## GetterAssembler
 
 The `GetterAssembler` will add a getter method to the generated class.
@@ -201,25 +220,6 @@ Example output:
     public function setProp1($prop1)
     {
         $this->prop1 = $prop1;
-    }
-```
-
-
-## FluentSetterAssembler
-
-The `FluentSetterAssembler` will add a setter method to the generated class. The method will return the current instance to enable chaining.
-
-Example output:
-
-```php
-    /**
-     * @param string $prop1
-     * @return $this
-     */
-    public function setProp1($prop1)
-    {
-        $this->prop1 = $prop1;
-        return $this;
     }
 ```
 
