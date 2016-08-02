@@ -31,7 +31,7 @@ class TraitAssembler implements AssemblerInterface
      */
     public function __construct($traitName, $traitAlias = null)
     {
-        $this->traitName = Normalizer::normalizeClassname($traitName);
+        $this->traitName = Normalizer::normalizeNamespace($traitName);
         $this->traitAlias = $traitAlias;
     }
 

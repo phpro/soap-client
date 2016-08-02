@@ -76,12 +76,12 @@ CODE;
         $expected = <<<CODE
 namespace MyNamespace;
 
-use Namespace\MyTrait;
+use Namespace\MyTrait as TraitAlias;
 
 class MyType
 {
 
-    use MyTrait as TraitAlias;
+    use TraitAlias;
 
 
 }
