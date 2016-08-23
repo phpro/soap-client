@@ -55,7 +55,7 @@ class LogPlugin implements EventSubscriberInterface
     public function onClientFault(FaultEvent $event)
     {
         $this->logger->error(sprintf(
-            '[phpforce/soap-client] fault "%s" for request "%s" with params %s',
+            '[phpro/soap-client] fault "%s" for request "%s" with params %s',
             $event->getSoapFault()->getMessage(),
             $event->getRequestEvent()->getMethod(),
             print_r($event->getRequestEvent()->getRequest(), true)
