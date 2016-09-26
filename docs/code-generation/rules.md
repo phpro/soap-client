@@ -11,6 +11,8 @@ The goal of a rule is to run a code assembler.
 # Built-in rules
 
 - [AssemblerRule](#assemblerrule)
+- [MultiRule](#multirule)
+- [TypeMapRule](#TypeMapRule)
 - [TypenameMatchesRule](#typenamematchesrule)
 
 ## AssemblerRule
@@ -26,6 +28,52 @@ The `AssemblerRule` will always apply an assembler in the right context.
 This way, the code is added during every code generation command.
 
 In the example above, a getter will be created for every property in the SOAP type.
+
+## MultiRule
+
+```
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+
+$rule = Rules\TypeMapRule([
+    Rules\AssembleRule(new Assembler\GetterAssembler()),
+    Rules\AssembleRule(new Assembler\SetterAssembler()),
+]);
+```
+
+The `TypeMapRule` makes it possible to define multiple rules that need to be applied on a SOAP type.
+This rule can be very handy in combination with rules like the `TypeMapRule` or `TypenameMatchesRule`.
+By using the `MultiRule`, you can e.g. specify the regex once but run multiple assemblers.
+
+In the example above, both the getters and setters are added for every property in the SOAP type.
+
+
+## TypeMapRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+
+$resultProviderRule = new Rules\AssembleRule(new Assembler\ResultProviderAssembler());
+$resultRule = new Rules\AssembleRule(new Assembler\ResultAssembler());
+
+new Rules\TypeMapRule(
+    [
+        'SomeType' => $resultProviderRule,
+        'NullType' => null
+    ]
+    $resultRule
+)
+```
+
+The `TypeMapRule` can be used in the types generation command and contains a map of types with a subrule.
+When the SOAP type is found in the TypeMap, the configured rule will be applied.
+The last parameter is the default rule. When the type cannot be found in the TypeMap, the default Rule will apply.
+This rule will make it easy to apply some specific rules for specific templates.
+ 
+In the example above, the `ResultProviderInterface` is added to the class if the SOAP type equals `SomeType`.
+On the SOAP type `NullType`, no actions are executed.
+On all other SOAP types, the `ResultInterface` is added.
 
 
 ## TypenameMatchesRule
