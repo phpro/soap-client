@@ -79,6 +79,20 @@ Example output:
     }
 ```
 
+## FinalClassAssembler
+
+The `FinalClassAssembler` can be used to mark a generated class as final.
+
+Example output:
+
+```php
+
+final class MyType
+{
+
+
+}
+```
 
 ## GetterAssembler
 
