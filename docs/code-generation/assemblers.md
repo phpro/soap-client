@@ -7,6 +7,8 @@ to generate the code you want to add to the generated SOAP types.
 # Built-in assemblers
 
 - [ClassMapAssembler](#classmapassembler)
+- [ConstructorAssembler](#constructorassembler)
+- [FinalClassAssembler](#finalclassassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
 - [InterfaceAssembler](#interfaceassembler)
