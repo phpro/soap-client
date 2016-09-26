@@ -213,7 +213,7 @@ class MyType implements ResultProviderInterface
 {
 
     /**
-     * @return SomeClass|Phpro\SoapClient\Type\ResultInterface
+     * @return SomeClass|\Phpro\SoapClient\Type\ResultInterface
      */
     public function getResult()
     {
@@ -221,6 +221,32 @@ class MyType implements ResultProviderInterface
     }
 }
 ```
+
+It is also possible to add an optional `wrapperClass` to the constructor.
+This way, the result is wrapped with a class you specified.
+
+Example output:
+
+```
+namespace MyNamespace;
+
+use Phpro\SoapClient\Type\ResultProviderInterface;
+
+class MyType implements ResultProviderInterface
+{
+
+    /**
+     * @return \Phpro\SoapClient\Type\MixedResult
+     */
+    public function getResult()
+    {
+        return new \Phpro\SoapClient\Type\MixedResult($this->prop1);
+    }
+
+
+}
+```
+
 
 
 ## SetterAssembler

@@ -5,7 +5,6 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
@@ -20,6 +19,21 @@ use Zend\Code\Generator\MethodGenerator;
  */
 class ResultProviderAssembler implements AssemblerInterface
 {
+    /**
+     * @var null|string
+     */
+    private $wrapperClass;
+
+    /**
+     * ResultProviderAssembler constructor.
+     *
+     * @param null $wrapperClass
+     */
+    public function __construct($wrapperClass = null)
+    {
+        $this->wrapperClass = ($wrapperClass !== null) ? ltrim($wrapperClass, '\\') : null;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -68,19 +82,44 @@ class ResultProviderAssembler implements AssemblerInterface
                 'name' => $methodName,
                 'parameters' => [],
                 'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                'body' => sprintf(
-                    'return $this->%s;',
-                    $property->getName()
-                ),
+                'body' => $this->generateGetResultBody($property),
                 'docblock' => DocBlockGenerator::fromArray([
                     'tags' => [
                         [
                             'name' => 'return',
-                            'description' => $property->getType() . '|' . ResultInterface::class
+                            'description' => $this->generateGetResultReturnTag($property)
                         ]
                     ]
                 ])
             ])
         );
+    }
+
+    /**
+     * @param Property $property
+     *
+     * @return string
+     */
+    private function generateGetResultBody(Property $property)
+    {
+        if ($this->wrapperClass === null) {
+            return sprintf('return $this->%s;', $property->getName());
+        }
+
+        return sprintf('return new \\%s($this->%s);', $this->wrapperClass, $property->getName());
+    }
+
+    /**
+     * @param Property $property
+     *
+     * @return string
+     */
+    private function generateGetResultReturnTag(Property $property)
+    {
+        if ($this->wrapperClass === null) {
+            return $property->getType() . '|\\' . ResultInterface::class;
+        }
+
+        return '\\' . $this->wrapperClass;
     }
 }
