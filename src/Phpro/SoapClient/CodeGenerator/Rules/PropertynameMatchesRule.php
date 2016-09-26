@@ -50,7 +50,6 @@ class PropertynameMatchesRule implements RuleInterface
             return false;
         }
 
-
         return $this->subRule->appliesToContext($context);
     }
 

@@ -68,7 +68,8 @@ class TypeMapRule implements RuleInterface
     public function apply(ContextInterface $context)
     {
         $type = $context->getType();
-        $rule = $this->typeMap[$type->getName()] ?? $this->defaultRule;
+        $typeName = $type->getName();
+        $rule = array_key_exists($typeName, $this->typeMap) ? $this->typeMap[$typeName] : $this->defaultRule;
         $rule->apply($context);
     }
 }
