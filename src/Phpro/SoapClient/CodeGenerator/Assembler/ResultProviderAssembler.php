@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
@@ -60,7 +61,7 @@ class ResultProviderAssembler implements AssemblerInterface
             }
 
             if ($firstProperty) {
-                $this->implementGetResult($class, $firstProperty);
+                $this->implementGetResult($context, $class, $firstProperty);
             }
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
@@ -68,13 +69,19 @@ class ResultProviderAssembler implements AssemblerInterface
     }
 
     /**
-     * @param ClassGenerator $class
-     * @param Property       $property
+     * @param ContextInterface $context
+     * @param ClassGenerator   $class
+     * @param Property         $property
      *
      * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
-    private function implementGetResult(ClassGenerator $class, Property $property)
+    private function implementGetResult(ContextInterface $context, ClassGenerator $class, Property $property)
     {
+        $useAssembler = new UseAssembler($this->wrapperClass ?: ResultInterface::class);
+        if ($useAssembler->canAssemble($context)) {
+            $useAssembler->assemble($context);
+        }
+
         $methodName = 'getResult';
         $class->removeMethod($methodName);
         $class->addMethodFromGenerator(
@@ -106,7 +113,11 @@ class ResultProviderAssembler implements AssemblerInterface
             return sprintf('return $this->%s;', $property->getName());
         }
 
-        return sprintf('return new \\%s($this->%s);', $this->wrapperClass, $property->getName());
+        return sprintf(
+            'return new %s($this->%s);',
+            Normalizer::getClassNameFromFQN($this->wrapperClass),
+            $property->getName()
+        );
     }
 
     /**
@@ -117,9 +128,9 @@ class ResultProviderAssembler implements AssemblerInterface
     private function generateGetResultReturnTag(Property $property)
     {
         if ($this->wrapperClass === null) {
-            return $property->getType() . '|\\' . ResultInterface::class;
+            return $property->getType() . '|' . Normalizer::getClassNameFromFQN(ResultInterface::class);
         }
 
-        return '\\' . $this->wrapperClass;
+        return Normalizer::getClassNameFromFQN($this->wrapperClass);
     }
 }
