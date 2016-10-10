@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\Exception\AssemblerException;
 
@@ -35,7 +36,7 @@ class InterfaceAssembler implements AssemblerInterface
      */
     public function canAssemble(ContextInterface $context)
     {
-        return $context instanceof TypeContext;
+        return $context instanceof TypeContext || $context instanceof PropertyContext;
     }
 
     /**

@@ -4,7 +4,9 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\InterfaceAssembler;
+use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Zend\Code\Generator\ClassGenerator;
 
@@ -32,6 +34,19 @@ class InterfaceAssemblerTest extends \PHPUnit_Framework_TestCase
     {
         $assembler = new InterfaceAssembler(\Iterator::class);
         $context = $this->createContext();
+        $this->assertTrue($assembler->canAssemble($context));
+    }
+
+    /**
+     * @test
+     */
+    function it_can_assemble_property_context()
+    {
+        $assembler = new InterfaceAssembler('MyUsedClass');
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $type = new Type('MyNamespace', 'MyType', []);
+        $property = new Property('prop1', 'string');
+        $context = new PropertyContext($class, $type, $property);
         $this->assertTrue($assembler->canAssemble($context));
     }
 
