@@ -3,50 +3,34 @@
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
-use Phpro\SoapClient\CodeGenerator\Assembler\InterfaceAssembler;
-use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
+use Phpro\SoapClient\CodeGenerator\Assembler\FinalClassAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
-use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Zend\Code\Generator\ClassGenerator;
 
 /**
- * Class InterfaceAssemblerTest
+ * Class FinalClassAssemblerTest
  *
  * @package PhproTest\SoapClient\Unit\CodeGenerator\Assembler
  */
-class InterfaceAssemblerTest extends \PHPUnit_Framework_TestCase
+class FinalClassAssemblerTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @test
      */
     function it_is_an_assembler()
     {
-        $assembler = new InterfaceAssembler(\Iterator::class);
+        $assembler = new FinalClassAssembler();
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
-
+    
     /**
      * @test
      */
     function it_can_assemble_type_context()
     {
-        $assembler = new InterfaceAssembler(\Iterator::class);
+        $assembler = new FinalClassAssembler();
         $context = $this->createContext();
-        $this->assertTrue($assembler->canAssemble($context));
-    }
-
-    /**
-     * @test
-     */
-    function it_can_assemble_property_context()
-    {
-        $assembler = new InterfaceAssembler('MyUsedClass');
-        $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', []);
-        $property = new Property('prop1', 'string');
-        $context = new PropertyContext($class, $type, $property);
         $this->assertTrue($assembler->canAssemble($context));
     }
 
@@ -55,7 +39,7 @@ class InterfaceAssemblerTest extends \PHPUnit_Framework_TestCase
      */
     function it_assembles_a_type()
     {
-        $assembler = new InterfaceAssembler(\Iterator::class);
+        $assembler = new FinalClassAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
 
@@ -63,9 +47,7 @@ class InterfaceAssemblerTest extends \PHPUnit_Framework_TestCase
         $expected = <<<CODE
 namespace MyNamespace;
 
-use Iterator;
-
-class MyType implements Iterator
+final class MyType
 {
 
 

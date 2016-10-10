@@ -7,6 +7,8 @@ to generate the code you want to add to the generated SOAP types.
 # Built-in assemblers
 
 - [ClassMapAssembler](#classmapassembler)
+- [ConstructorAssembler](#constructorassembler)
+- [FinalClassAssembler](#finalclassassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
 - [InterfaceAssembler](#interfaceassembler)
@@ -79,6 +81,20 @@ Example output:
     }
 ```
 
+## FinalClassAssembler
+
+The `FinalClassAssembler` can be used to mark a generated class as final.
+
+Example output:
+
+```php
+
+final class MyType
+{
+
+
+}
+```
 
 ## GetterAssembler
 
@@ -192,12 +208,13 @@ Example output:
 
 ```php
 use Phpro\SoapClient\Type\ResultProviderInterface;
+use Phpro\SoapClient\Type\ResultInterface;
 
 class MyType implements ResultProviderInterface
 {
 
     /**
-     * @return SomeClass|Phpro\SoapClient\Type\ResultInterface
+     * @return SomeClass|ResultInterface
      */
     public function getResult()
     {
@@ -205,6 +222,33 @@ class MyType implements ResultProviderInterface
     }
 }
 ```
+
+It is also possible to add an optional `wrapperClass` to the constructor.
+This way, the result is wrapped with a class you specified.
+
+Example output:
+
+```
+namespace MyNamespace;
+
+use Phpro\SoapClient\Type\ResultProviderInterface;
+use Phpro\SoapClient\Type\MixedResult
+
+class MyType implements ResultProviderInterface
+{
+
+    /**
+     * @return MixedResult
+     */
+    public function getResult()
+    {
+        return new MixedResult($this->prop1);
+    }
+
+
+}
+```
+
 
 
 ## SetterAssembler

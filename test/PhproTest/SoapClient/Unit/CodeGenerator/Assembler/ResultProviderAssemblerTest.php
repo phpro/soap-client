@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ResultProviderAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use Phpro\SoapClient\Type\MixedResult;
 use Zend\Code\Generator\ClassGenerator;
 
 /**
@@ -48,16 +49,87 @@ class ResultProviderAssemblerTest extends \PHPUnit_Framework_TestCase
 namespace MyNamespace;
 
 use Phpro\SoapClient\Type\ResultProviderInterface;
+use Phpro\SoapClient\Type\ResultInterface;
 
 class MyType implements ResultProviderInterface
 {
 
     /**
-     * @return SomeClass|Phpro\SoapClient\Type\ResultInterface
+     * @return SomeClass|ResultInterface
      */
     public function getResult()
     {
         return \$this->prop1;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_a_type_with_wrapper_class()
+    {
+        $assembler = new ResultProviderAssembler(MixedResult::class);
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+use Phpro\SoapClient\Type\ResultProviderInterface;
+use Phpro\SoapClient\Type\MixedResult;
+
+class MyType implements ResultProviderInterface
+{
+
+    /**
+     * @return MixedResult
+     */
+    public function getResult()
+    {
+        return new MixedResult(\$this->prop1);
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_a_type_with_wrapper_class_with_prefixed_slash()
+    {
+        $assembler = new ResultProviderAssembler('\\' . MixedResult::class);
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+use Phpro\SoapClient\Type\ResultProviderInterface;
+use Phpro\SoapClient\Type\MixedResult;
+
+class MyType implements ResultProviderInterface
+{
+
+    /**
+     * @return MixedResult
+     */
+    public function getResult()
+    {
+        return new MixedResult(\$this->prop1);
     }
 
 

@@ -11,6 +11,9 @@ The goal of a rule is to run a code assembler.
 # Built-in rules
 
 - [AssemblerRule](#assemblerrule)
+- [MultiRule](#multirule)
+- [PopertynameMatchesRule](#propertynamematchesrule)
+- [TypeMapRule](#TypeMapRule)
 - [TypenameMatchesRule](#typenamematchesrule)
 
 ## AssemblerRule
@@ -26,6 +29,72 @@ The `AssemblerRule` will always apply an assembler in the right context.
 This way, the code is added during every code generation command.
 
 In the example above, a getter will be created for every property in the SOAP type.
+
+## MultiRule
+
+```
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+
+$rule = Rules\MultiRule([
+    Rules\AssembleRule(new Assembler\GetterAssembler()),
+    Rules\AssembleRule(new Assembler\SetterAssembler()),
+]);
+```
+
+The `MultiRule` makes it possible to define multiple rules that need to be applied on a SOAP type.
+This rule can be very handy in combination with rules like the `TypeMapRule` or `TypenameMatchesRule`.
+By using the `MultiRule`, you can e.g. specify the regex once but run multiple assemblers.
+
+In the example above, both the getters and setters are added for every property in the SOAP type.
+
+
+## PropertynameMatchesRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+
+new Rules\PropertynameMatchesRule(
+    new Rules\AssembleRule(new Assembler\InterfaceAssembler(ApiKeyAwareInterface::class)),
+    '/^ApiKey$/'
+)
+```
+
+The `PropertynameMatchesRule` can be used in the types generation command and contains a subRule and a regular expression.
+The subRule is mostly a regular AssmbleRule, but can be any class that implements the RuleInterface.
+The regular expression will be matched against the normalized SOAP property name. 
+If the regular expression matches and the subRule is accepted, the defined assembler will run.
+ 
+In the example above, the `ApiKeyAwareInterface` is added to the class if the SOAP property `ApiKey` exists.
+
+
+## TypeMapRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+
+$resultProviderRule = new Rules\AssembleRule(new Assembler\ResultProviderAssembler());
+$defaultRule = new Rules\AssembleRule(new Assembler\ResultAssembler());
+
+new Rules\TypeMapRule(
+    [
+        'SomeType' => $resultProviderRule,
+        'NullType' => null
+    ]
+    $defaultRule
+)
+```
+
+The `TypeMapRule` can be used in the types generation command and contains a map of types with a subrule.
+When the SOAP type is found in the TypeMap, the configured rule will be applied.
+The last parameter is the default rule. When the type cannot be found in the TypeMap, the default Rule will apply.
+This rule will make it easy to apply some specific rules for specific templates.
+ 
+In the example above, the `ResultProviderInterface` is added to the class if the SOAP type equals `SomeType`.
+On the SOAP type `NullType`, no actions are executed.
+On all other SOAP types, the `ResultInterface` is added.
 
 
 ## TypenameMatchesRule
@@ -45,7 +114,7 @@ The subRule is mostly a regular AssmbleRule, but can be any class that implement
 The regular expression will be matched against the normalized SOAP type name. 
 If the regular expression matches and the subRule is accepted, the defined assembler will run.
  
-In the example above, the `RequestInterface` is added to the class if the SOAP property ends on `Request`.
+In the example above, the `RequestInterface` is added to the class if the SOAP type ends on `Request`.
 
 
 # Creating your own Rule
