@@ -3,39 +3,45 @@
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
- * Class InterfaceAssembler
+ * Class TraitAssembler
  *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
-class InterfaceAssembler implements AssemblerInterface
+class TraitAssembler implements AssemblerInterface
 {
     /**
-     * @var
+     * @var string
      */
-    private $interfaceName;
+    private $traitName;
+    /**
+     * @var string
+     */
+    private $traitAlias;
 
     /**
-     * InterfaceAssembler constructor.
-     *
-     * @param $interfaceName
+     * TraitAssembler constructor.
+     * @param $traitName
+     * @param $traitAlias
      */
-    public function __construct($interfaceName)
+    public function __construct($traitName, $traitAlias = null)
     {
-        $this->interfaceName = $interfaceName;
+        $this->traitName = Normalizer::normalizeNamespace($traitName);
+        $this->traitAlias = $traitAlias;
     }
 
     /**
      * @param ContextInterface $context
-     *
      * @return bool
      */
     public function canAssemble(ContextInterface $context)
     {
-        return $context instanceof TypeContext;
+        return $context instanceof TypeContext || $context instanceof PropertyContext;
     }
 
     /**
@@ -44,19 +50,16 @@ class InterfaceAssembler implements AssemblerInterface
     public function assemble(ContextInterface $context)
     {
         $class = $context->getClass();
-        $interface = $this->interfaceName;
 
         try {
-            $useAssembler = new UseAssembler($interface);
+            $useAssembler = new UseAssembler($this->traitName, $this->traitAlias);
             if ($useAssembler->canAssemble($context)) {
                 $useAssembler->assemble($context);
             }
 
-            $interfaces = $class->getImplementedInterfaces();
-            if (!in_array($interface, $interfaces)) {
-                $interfaces[] = $interface;
-                $class->setImplementedInterfaces($interfaces);
-            }
+            $traitAlias = $this->traitAlias ?: Normalizer::getClassNameFromFQN($this->traitName);
+
+            $class->addTrait($traitAlias);
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }

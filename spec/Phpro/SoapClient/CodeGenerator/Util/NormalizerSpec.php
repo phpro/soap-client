@@ -57,4 +57,18 @@ class NormalizerSpec extends ObjectBehavior
         $this->generatePropertyMethod('set', 'prop1')->shouldReturn('setProp1');
         $this->generatePropertyMethod('get', 'prop1_test*./')->shouldReturn('getProp1_test');
     }
+
+    function it_gets_classname_from_fqn()
+    {
+        $this->getClassNameFromFQN('MyClass')->shouldReturn('MyClass');
+        $this->getClassNameFromFQN('\Namespace\MyClass')->shouldReturn('MyClass');
+        $this->getClassNameFromFQN('Vendor\Namespace\MyClass')->shouldReturn('MyClass');
+    }
+
+    function it_gets_complete_use_statement()
+    {
+        $this->getCompleteUseStatement('Namespace\MyClass', 'ClassAlias')->shouldReturn('Namespace\MyClass as ClassAlias');
+        $this->getCompleteUseStatement('Namespace\MyClass', null)->shouldReturn('Namespace\MyClass');
+        $this->getCompleteUseStatement('MyClass', '')->shouldReturn('MyClass');
+    }
 }

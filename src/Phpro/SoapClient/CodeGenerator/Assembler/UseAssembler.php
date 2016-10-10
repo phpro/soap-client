@@ -4,33 +4,38 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
- * Class InterfaceAssembler
+ * Class UseAssembler
  *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
-class InterfaceAssembler implements AssemblerInterface
+class UseAssembler implements AssemblerInterface
 {
     /**
-     * @var
+     * @var string
      */
-    private $interfaceName;
+    private $useName;
+    /**
+     * @var string
+     */
+    private $useAlias;
 
     /**
-     * InterfaceAssembler constructor.
-     *
-     * @param $interfaceName
+     * TraitAssembler constructor.
+     * @param $useName
+     * @param $useAlias
      */
-    public function __construct($interfaceName)
+    public function __construct($useName, $useAlias = null)
     {
-        $this->interfaceName = $interfaceName;
+        $this->useName = $useName;
+        $this->useAlias = $useAlias;
     }
 
     /**
      * @param ContextInterface $context
-     *
      * @return bool
      */
     public function canAssemble(ContextInterface $context)
@@ -44,18 +49,14 @@ class InterfaceAssembler implements AssemblerInterface
     public function assemble(ContextInterface $context)
     {
         $class = $context->getClass();
-        $interface = $this->interfaceName;
 
         try {
-            $useAssembler = new UseAssembler($interface);
-            if ($useAssembler->canAssemble($context)) {
-                $useAssembler->assemble($context);
-            }
+            $uses = $class->getUses();
 
-            $interfaces = $class->getImplementedInterfaces();
-            if (!in_array($interface, $interfaces)) {
-                $interfaces[] = $interface;
-                $class->setImplementedInterfaces($interfaces);
+            if (!in_array(Normalizer::getCompleteUseStatement($this->useName, $this->useAlias), $uses)
+                && !in_array($this->useName, $uses)
+            ) {
+                $class->addUse($this->useName, $this->useAlias);
             }
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
