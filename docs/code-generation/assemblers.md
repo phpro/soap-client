@@ -7,6 +7,7 @@ to generate the code you want to add to the generated SOAP types.
 # Built-in assemblers
 
 - [ClassMapAssembler](#classmapassembler)
+- [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
 - [InterfaceAssembler](#interfaceassembler)
 - [IteratorAssembler](#iteratorassembler)
@@ -15,7 +16,6 @@ to generate the code you want to add to the generated SOAP types.
 - [ResultAssembler](#resultassembler)
 - [ResultProviderAssembler](#resultproviderassembler)
 - [SetterAssembler](#setterassembler)
-- [FluentSetterAssembler](#fluentsetterassembler)
 - [TraitAssembler](#traitassembler)
 - [UseAssembler](#useassembler)
 

@@ -51,7 +51,11 @@ class UseAssembler implements AssemblerInterface
         $class = $context->getClass();
 
         try {
-            if (!in_array(Normalizer::getCompleteUseStatement($this->useName, $this->useAlias), $class->getUses())) {
+            $uses = $class->getUses();
+
+            if (!in_array(Normalizer::getCompleteUseStatement($this->useName, $this->useAlias), $uses)
+                && !in_array($this->useName, $uses)
+            ) {
                 $class->addUse($this->useName, $this->useAlias);
             }
         } catch (\Exception $e) {

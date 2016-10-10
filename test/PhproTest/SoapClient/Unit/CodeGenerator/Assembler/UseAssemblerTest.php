@@ -62,6 +62,59 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_a_type_with_alias()
+    {
+        $assembler = new UseAssembler('MyUsedClass', 'Alias');
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+use MyUsedClass as Alias;
+
+class MyType
+{
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_an_existing_use_with_alias()
+    {
+        $assembler = new UseAssembler('MyUsedClass', 'Alias');
+        $context = $this->createContext();
+        $context->getClass()->addUse('MyUsedClass');
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+use MyUsedClass;
+
+class MyType
+{
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @return TypeContext
      */
     private function createContext()
