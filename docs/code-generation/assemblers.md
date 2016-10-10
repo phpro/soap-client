@@ -16,6 +16,8 @@ to generate the code you want to add to the generated SOAP types.
 - [ResultProviderAssembler](#resultproviderassembler)
 - [SetterAssembler](#setterassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
+- [TraitAssembler](#traitassembler)
+- [UseAssembler](#useassembler)
 
 
 ## ClassMapAssembler
@@ -55,6 +57,25 @@ Example output:
     {
         $this->prop1 = $prop1;
         $this->prop2 = $prop2;
+    }
+```
+
+
+## FluentSetterAssembler
+
+The `FluentSetterAssembler` will add a setter method to the generated class. The method will return the current instance to enable chaining.
+
+Example output:
+
+```php
+    /**
+     * @param string $prop1
+     * @return $this
+     */
+    public function setProp1($prop1)
+    {
+        $this->prop1 = $prop1;
+        return $this;
     }
 ```
 
@@ -203,22 +224,40 @@ Example output:
 ```
 
 
-## FluentSetterAssembler
+## TraitAssembler
 
-The `FluentSetterAssembler` will add a setter method to the generated class. The method will return the current instance to enable chaining.
+The `TraitAssembler` can be used to add a specific trait to the generated class. An alias can be used by passing it in as second argument.
 
 Example output:
 
 ```php
-    /**
-     * @param string $prop1
-     * @return $this
-     */
-    public function setProp1($prop1)
-    {
-        $this->prop1 = $prop1;
-        return $this;
-    }
+
+use MyTrait;
+
+class MyType
+{
+
+    use MyTrait
+
+}
+```
+
+
+## UseAssembler
+
+The `UseAssembler` can be used to add usage statements to the generated class. Often used internally to add uses for interfaces or traits. An alias can be used by passing it in as second argument.
+
+Example output:
+
+```php
+
+use MyTrait as TraitAlias;
+
+class MyType
+{
+
+
+}
 ```
 
 
