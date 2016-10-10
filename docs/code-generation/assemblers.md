@@ -208,12 +208,13 @@ Example output:
 
 ```php
 use Phpro\SoapClient\Type\ResultProviderInterface;
+use Phpro\SoapClient\Type\ResultInterface;
 
 class MyType implements ResultProviderInterface
 {
 
     /**
-     * @return SomeClass|\Phpro\SoapClient\Type\ResultInterface
+     * @return SomeClass|ResultInterface
      */
     public function getResult()
     {
@@ -231,16 +232,17 @@ Example output:
 namespace MyNamespace;
 
 use Phpro\SoapClient\Type\ResultProviderInterface;
+use Phpro\SoapClient\Type\MixedResult
 
 class MyType implements ResultProviderInterface
 {
 
     /**
-     * @return \Phpro\SoapClient\Type\MixedResult
+     * @return MixedResult
      */
     public function getResult()
     {
-        return new \Phpro\SoapClient\Type\MixedResult($this->prop1);
+        return new MixedResult($this->prop1);
     }
 
 

@@ -36,13 +36,13 @@ In the example above, a getter will be created for every property in the SOAP ty
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
-$rule = Rules\TypeMapRule([
+$rule = Rules\MultiRule([
     Rules\AssembleRule(new Assembler\GetterAssembler()),
     Rules\AssembleRule(new Assembler\SetterAssembler()),
 ]);
 ```
 
-The `TypeMapRule` makes it possible to define multiple rules that need to be applied on a SOAP type.
+The `MultiRule` makes it possible to define multiple rules that need to be applied on a SOAP type.
 This rule can be very handy in combination with rules like the `TypeMapRule` or `TypenameMatchesRule`.
 By using the `MultiRule`, you can e.g. specify the regex once but run multiple assemblers.
 
@@ -69,7 +69,6 @@ If the regular expression matches and the subRule is accepted, the defined assem
 In the example above, the `ApiKeyAwareInterface` is added to the class if the SOAP property `ApiKey` exists.
 
 
-
 ## TypeMapRule
 
 ```php
@@ -77,14 +76,14 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
 $resultProviderRule = new Rules\AssembleRule(new Assembler\ResultProviderAssembler());
-$resultRule = new Rules\AssembleRule(new Assembler\ResultAssembler());
+$defaultRule = new Rules\AssembleRule(new Assembler\ResultAssembler());
 
 new Rules\TypeMapRule(
     [
         'SomeType' => $resultProviderRule,
         'NullType' => null
     ]
-    $resultRule
+    $defaultRule
 )
 ```
 
