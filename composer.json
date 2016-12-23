@@ -16,7 +16,10 @@
     "symfony/console": "~2.3|~3.0",
     "symfony/filesystem": "~2.3|~3.0",
     "symfony/process": "~2.3|~3.0",
-    "zendframework/zend-code": "^3.0.4"
+    "zendframework/zend-code": "^3.0.4",
+    "psr/http-message": "^1.0",
+    "guzzlehttp/guzzle": "^6.2",
+    "meng-tian/soap-http-binding": "^0.2.3"
   },
   "require-dev": {
     "phpro/grumphp": "~0.9",
