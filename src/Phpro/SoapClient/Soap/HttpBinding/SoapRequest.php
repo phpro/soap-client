@@ -2,11 +2,6 @@
 
 namespace Phpro\SoapClient\Soap\HttpBinding;
 
-use Meng\Soap\HttpBinding\RequestBuilder;
-use Meng\Soap\HttpBinding\RequestException;
-use Psr\Http\Message\RequestInterface;
-use Zend\Diactoros\Stream;
-
 /**
  * Class SoapRequest
  *
@@ -95,31 +90,5 @@ class SoapRequest
     public function getOneWay(): int
     {
         return $this->oneWay;
-    }
-
-    /**
-     * @return RequestInterface
-     * @throws \Meng\Soap\HttpBinding\RequestException
-     * @throws \InvalidArgumentException
-     */
-    public function toPsr7Request(): RequestInterface
-    {
-        $builder = new RequestBuilder();
-
-        $stream = new Stream('php://temp', 'r+');
-        $stream->write($this->getRequest());
-        $stream->rewind();
-
-        $this->getVersion() === 1 ? $builder->isSOAP11() : $builder->isSOAP12();
-        $builder->setEndpoint($this->getLocation());
-        $builder->setSoapAction($this->getAction());
-        $builder->setSoapMessage($stream);
-
-        try {
-            return $builder->getSoapHttpRequest();
-        } catch (RequestException $exception) {
-            $stream->close();
-            throw $exception;
-        }
     }
 }

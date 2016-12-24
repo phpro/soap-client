@@ -10,28 +10,33 @@
     }
   ],
   "require": {
-    "psr/log": "^1.0",
     "doctrine/collections": "~1.3",
-    "symfony/event-dispatcher": "~2.3|~3.0",
+    "http-interop/http-factory": "^0.2.0",
+    "http-interop/http-middleware": "^0.4.0",
+    "psr/http-message": "^1.0",
+    "psr/log": "^1.0",
     "symfony/console": "~2.3|~3.0",
+    "symfony/event-dispatcher": "~2.3|~3.0",
     "symfony/filesystem": "~2.3|~3.0",
     "symfony/process": "~2.3|~3.0",
     "zendframework/zend-code": "^3.0.4",
-    "psr/http-message": "^1.0",
-    "guzzlehttp/guzzle": "^6.2",
-    "meng-tian/soap-http-binding": "^0.2.3"
+    "zendframework/zend-diactoros": "^1.3"
   },
   "require-dev": {
+    "guzzlehttp/guzzle": "^6.2",
+    "http-interop/http-factory-guzzle": "@dev",
+    "php-vcr/php-vcr": "^1.2.8",
+    "php-vcr/phpunit-testlistener-vcr": "^1.1.7",
     "phpro/grumphp": "~0.9",
-    "squizlabs/php_codesniffer": "~2.6",
     "phpspec/phpspec": "~2.5",
     "phpspec/prophecy": "~1.6",
     "phpunit/phpunit": "~4.8",
-    "php-vcr/php-vcr": "^1.2.8",
-    "php-vcr/phpunit-testlistener-vcr": "^1.1.7"
+    "squizlabs/php_codesniffer": "~2.6"
   },
   "suggest": {
     "doctrine/common": "For caching SOAP responses",
+    "guzzlehttp/guzzle": "For requestng SOAP through Guzzle",
+    "http-interop/http-factory-guzzle": "For requestng SOAP through Guzzle",
     "monolog/monolog": "For logging SOAP transactions"
   },
   "autoload": {
@@ -44,5 +49,14 @@
       "PhproTest\\SoapClient\\": "test/"
     }
   },
-  "bin": ["bin/soap-client"]
+  "bin": ["bin/soap-client"],
+  "config": {
+    "sort-packages": true
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/http-interop/http-factory-guzzle"
+    }
+  ]
 }

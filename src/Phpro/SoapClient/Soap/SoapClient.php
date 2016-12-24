@@ -2,6 +2,10 @@
 
 namespace Phpro\SoapClient\Soap;
 
+use Phpro\SoapClient\Soap\Handler\HandlerInterface;
+use Phpro\SoapClient\Soap\Handler\SoapHandle;
+use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
+
 /**
  * Class SoapClient
  *
@@ -17,6 +21,33 @@ class SoapClient extends \SoapClient
      * @var array
      */
     protected $types;
+
+    /**
+     * @var HandlerInterface
+     */
+    protected $handler;
+
+    /**
+     * SoapClient constructor.
+     *
+     * @param mixed      $wsdl
+     * @param array|null $options
+     */
+    public function __construct($wsdl, array $options = null)
+    {
+        parent::__construct($wsdl, $options);
+
+        // Use the SoapHandle by default.
+        $this->handler = new SoapHandle($this);
+    }
+
+    /**
+     * @param HandlerInterface $handler
+     */
+    public function setHandler(HandlerInterface $handler)
+    {
+        $this->handler = $handler;
+    }
 
     /**
      * Retrieve SOAP types from the WSDL and parse them
@@ -39,7 +70,7 @@ class SoapClient extends \SoapClient
             $typeName = $matches[1];
 
             foreach (array_slice($lines, 1) as $line) {
-                if ($line == '}') {
+                if ($line === '}') {
                     continue;
                 }
                 preg_match('/\s* (.*) (.*);/', $line, $matches);
@@ -88,5 +119,35 @@ class SoapClient extends \SoapClient
         if ($elements && isset($elements[$element])) {
             return $elements[$element];
         }
+    }
+
+    /**
+     * @param string $request
+     * @param string $location
+     * @param string $action
+     * @param int $version
+     * @param int $one_way
+     */
+    public function __doInternalRequest($request, $location, $action, $version, $one_way = 0)
+    {
+        parent::__doRequest($request, $location, $action, $version, $one_way);
+    }
+
+    /**
+     * @param string $request
+     * @param string $location
+     * @param string $action
+     * @param int    $version
+     * @param int    $one_way
+     *
+     * @return string
+     */
+    public function __doRequest($request, $location, $action, $version, $one_way = 0)
+    {
+        // TODO: Make sure that last request / response is available when the trace option is set!!!
+        $request = new SoapRequest($request, $location, $action, $version, $one_way);
+
+        $response = $this->handler->createRequest($request);
+        return $response->getResponse();
     }
 }
