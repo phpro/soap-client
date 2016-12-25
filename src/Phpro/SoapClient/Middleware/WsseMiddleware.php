@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\MiddleWare;
+namespace Phpro\SoapClient\Middleware;
 
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
@@ -15,39 +15,182 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
  */
 class WsseMiddleware extends Middleware
 {
-    /**
-     * @var callable
-     */
-    private $prepareWsseRequest;
 
     /**
-     * @var callable
+     * @var string
      */
-    private $prepareWsseResponse;
+    private $privateKeyFile = '';
+
+    /**
+     * @var string
+     */
+    private $publicKeyFile = '';
+
+    /**
+     * @var string
+     */
+    private $serverCertificateFile = '';
+
+    /**
+     * @var int
+     */
+    private $timestamp = 3600;
+
+    /**
+     * @var bool
+     */
+    private $signAllHeaders = false;
+
+    /**
+     * @var string
+     */
+    private $digitalSignType = XMLSecurityKey::RSA_SHA1;
+
+    /**
+     * @var string
+     */
+    private $userTokenName = '';
+
+    /**
+     * @var string
+     */
+    private $userTokenPassword = '';
+
+    /**
+     * @var bool
+     */
+    private $userTokenDigest = false;
+
+    /**
+     * @var bool
+     */
+    private $encrypt = false;
+
+    /**
+     * @var bool
+     */
+    private $userToken = false;
 
     /**
      * WsseMiddleware constructor.
      *
-     * @param callable $prepareWsseRequest
-     * @param callable $prepareWsseResponse
+     * @param string $privateKeyFile
+     * @param string $publicKeyFile
      */
-    public function __construct(callable $prepareWsseRequest, callable $prepareWsseResponse)
+    public function __construct(string $privateKeyFile, string $publicKeyFile)
     {
-        $this->prepareWsseRequest = $prepareWsseRequest;
-        $this->prepareWsseResponse = $prepareWsseResponse;
+        $this->privateKeyFile = $privateKeyFile;
+        $this->publicKeyFile = $publicKeyFile;
     }
 
     /**
-     * {@inheritdoc}
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @param int $timestamp
+     *
+     * @return $this
+     */
+    public function withTimestamp(int $timestamp = 3600)
+    {
+        $this->timestamp = $timestamp;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function withAllHeadersSigned()
+    {
+        $this->signAllHeaders = true;
+
+        return $this;
+    }
+
+    /**
+     * @param string $digitalSignType
+     *
+     * @return $this
+     */
+    public function withDigitalSignType(string $digitalSignType)
+    {
+        $this->digitalSignType = $digitalSignType;
+
+        return $this;
+    }
+
+    /**
+     * @param string      $username
+     * @param string|null $password
+     * @param bool        $digest
+     *
+     * @return $this
+     */
+    public function withUserToken(string $username, string $password = null, $digest = false)
+    {
+        $this->userToken = true;
+        $this->userTokenName = $username;
+        $this->userTokenPassword = $password;
+        $this->userTokenDigest = $digest;
+
+        return $this;
+    }
+
+    /**
+     * @param $serverCertificateFile
+     *
+     * @return $this
+     */
+    public function withEncryption($serverCertificateFile)
+    {
+        $this->encrypt = true;
+        $this->serverCertificateFile = $serverCertificateFile;
+
+        return $this;
+    }
+
+    /**
+     * @param callable         $handler
+     * @param RequestInterface $request
+     * @param array            $options
+     *
+     * @return mixed
      */
     public function beforeRequest(callable $handler, RequestInterface $request, array $options)
     {
-        $xml = SoapXml::fromStream($request->getBody()->getContents());
+
+        $xml = SoapXml::fromStream($request->getBody());
 
         $wsse = new WSSESoap($xml->getXmlDocument());
-        $this->prepareWsseRequest($wsse, $xml);
+
+        // Prepare the WSSE soap class:
+        $wsse->signAllHeaders = $this->signAllHeaders;
+        $wsse->addTimestamp($this->timestamp);
+
+        // Add a user token if this is configured.
+        if ($this->userToken) {
+            $wsse->addUserToken($this->userTokenName, $this->userTokenPassword, $this->userTokenDigest);
+        }
+
+        // Create new XMLSec Key using the dsigType and type is private key
+        $key = new XMLSecurityKey($this->digitalSignType, ['type' => 'private']);
+        $key->loadKey($this->privateKeyFile, true);
+        $wsse->signSoapDoc($key);
+
+        //  Add certificate (BinarySecurityToken) to the message and attach pointer to Signature:
+        $token = $wsse->addBinaryToken(file_get_contents($this->publicKeyFile));
+        $wsse->attachTokentoSig($token);
+
+        // Add end-to-end encryption if configured:
+        if ($this->encrypt) {
+            $key = new XMLSecurityKey(XMLSecurityKey::AES256_CBC);
+            $key->generateSessionKey();
+            $siteKey = new XMLSecurityKey(XMLSecurityKey::RSA_OAEP_MGF1P, ['type' => 'public']);
+            $siteKey->loadKey($this->serverCertificateFile, true, true);
+            $wsse->encryptSoapDoc($siteKey, $key,  [
+                'KeyInfo' => [
+                    'X509SubjectKeyIdentifier' => true
+                ]
+            ]);
+        }
 
         $request = $request->withBody($xml->toStream());
 
@@ -55,127 +198,28 @@ class WsseMiddleware extends Middleware
     }
 
     /**
-     * {@inheritdoc}
+     * @param ResponseInterface $response
+     *
+     * @return ResponseInterface
      */
     public function afterResponse(ResponseInterface $response)
     {
-        $xml = SoapXml::fromStream($response->getBody()->getContents());
+        if (!$this->encrypt) {
+            return $response;
+        }
 
+        $xml = SoapXml::fromStream($response->getBody());
         $wsse = new WSSESoap($xml->getXmlDocument());
-        $this->prepareWsseResponse($wsse, $xml);
+        $wsse->decryptSoapDoc($xml->getXmlDocument(), [
+            'keys' => [
+                'private' => [
+                    'key' => $this->privateKeyFile,
+                    'isFile' => true,
+                    'isCert' => false
+                ]
+            ]
+        ]);
 
         return $response->withBody($xml->toStream());
-    }
-
-    /**
-     * @return WsseMiddleware
-     */
-    public static function wsa(
-        string $publicKey,
-        string $privateKey,
-        string $dsigMethod = XMLSecurityKey::RSA_SHA1
-    ): WsseMiddleware
-    {
-        return new self(
-            function(WSSESoap $wsse) use ($publicKey, $privateKey, $dsigMethod) {
-                // Make sure the WSA headers get signed and add a timestamp:
-                $wsse->signAllHeaders = true;
-                $wsse->addTimestamp();
-
-                // Sign the SOAP document with your private key:
-                $key = new XMLSecurityKey($dsigMethod, ['type' => 'private']);
-                $key->loadKey($privateKey, true);
-                $wsse->signSoapDoc($key);
-
-                // Add the public key to the request:
-                $token = $wsse->addBinaryToken(file_get_contents($publicKey));
-                $wsse->attachTokentoSig($token);
-            },
-            function() {}
-        );
-    }
-
-    /**
-     * TODO: certificates
-     *
-     * @param string $username
-     * @param string $password
-     * @param bool   $digest
-     *
-     * @return WsseMiddleware
-     */
-    public static function userSigned(string $username, string $password, bool $digest = false)
-    {
-        return new self(
-            function (WSSESoap $wsse) use ($username, $password, $digest) {
-                /* Sign all headers to include signing the WS-Addressing headers */
-                $wsse->signAllHeaders = true;
-                $wsse->addTimestamp();
-                $wsse->addUserToken($username, $password, $digest);
-
-                /* create new XMLSec Key using RSA SHA-1 and type is private key */
-                $key = new XMLSecurityKey(XMLSecurityKey::RSA_SHA1, array('type' => 'private'));
-                $key->loadKey(PRIVATE_KEY, true);
-                $wsse->signSoapDoc($key);
-
-                /* Add certificate (BinarySecurityToken) to the message and attach pointer to Signature */
-                $token = $wsse->addBinaryToken(file_get_contents(CERT_FILE));
-                $wsse->attachTokentoSig($token);
-            },
-            function() {}
-        );
-        
-    }
-
-    /**
-     * @return WsseMiddleware
-     * @throws \Exception
-     */
-    public static function encrypt(
-        string $publicKey,
-        string $privateKey,
-        string $serviceCertificate,
-        string $dsigMethod = XMLSecurityKey::RSA_SHA1
-    )
-    {
-        return new self(
-            function(WSSESoap $wsse) use ($publicKey, $privateKey, $serviceCertificate, $dsigMethod) {
-                $wsse->addTimestamp();
-
-                $key = new XMLSecurityKey($dsigMethod, ['type' => 'private']);
-                $key->loadKey(PRIVATE_KEY, true);
-
-                /* Sign the message - also signs appropiate WS-Security items */
-                $wsse->signSoapDoc($key, [
-                    'insertBefore' => false
-                ]);
-
-                /* Add certificate (BinarySecurityToken) to the message */
-                $token = $wsse->addBinaryToken(file_get_contents($publicKey));
-                $wsse->attachTokentoSig($token);
-
-                /* Attach pointer to Signature */
-                $key = new XMLSecurityKey(XMLSecurityKey::AES256_CBC);
-                $key->generateSessionKey();
-                $siteKey = new XMLSecurityKey(XMLSecurityKey::RSA_OAEP_MGF1P, ['type' => 'public']);
-                $siteKey->loadKey($serviceCertificate, true, true);
-                $wsse->encryptSoapDoc($siteKey, $key,  [
-                    'KeyInfo' => [
-                        'X509SubjectKeyIdentifier' => true
-                    ]
-                ]);
-            },
-            function(WSSESoap $wsse, SoapXml $xml) use($privateKey) {
-                $wsse->decryptSoapDoc($xml->getXmlDocument(), [
-                    'keys' => [
-                        'private' => [
-                            'key' => $privateKey,
-                            'isFile' => true,
-                            'isCert' => false
-                        ]
-                    ]
-                ]);
-            }
-        );
     }
 }
