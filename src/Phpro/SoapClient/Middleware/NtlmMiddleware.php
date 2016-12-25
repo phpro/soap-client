@@ -5,11 +5,11 @@ namespace Phpro\SoapClient\MiddleWare;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * Class BasicAuthMiddleware
+ * Class NtlmMiddleware
  *
- * @package Phpro\SoapClient\MiddleWare
+ * @package Phpro\SoapClient\Middleware
  */
-class BasicAuthMiddleware extends Middleware
+class NtlmMiddleware extends Middleware
 {
     /**
      * @var string
@@ -35,16 +35,12 @@ class BasicAuthMiddleware extends Middleware
 
     /**
      * {@inheritdoc}
-     * @throws \InvalidArgumentException
      */
     public function beforeRequest(callable $handler, RequestInterface $request, array $options)
     {
-        $request = $request->withHeader(
-            'Authentication',
-            sprintf('Basic %s', base64_encode(
-                sprintf('%s:%s', $this->username, $this->password)
-            ))
-        );
+        $options['curl'] = $options['curl'] ?? [];
+        $options['curl'][CURLOPT_HTTPAUTH] = CURLAUTH_NTLM;
+        $options['curl'][CURLOPT_USERPWD] = sprintf('%s:%s', $this->username, $this->password);
 
         return $handler($request, $options);
     }

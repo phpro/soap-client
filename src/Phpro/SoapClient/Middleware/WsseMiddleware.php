@@ -10,7 +10,7 @@ use RobRichards\WsePhp\WSSESoap;
 /**
  * Class WsseMiddleware
  *
- * @package Phpro\SoapClient\MiddleWare
+ * @package Phpro\SoapClient\Middleware
  */
 class WsseMiddleware extends Middleware
 {

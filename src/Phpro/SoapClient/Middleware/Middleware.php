@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class Middleware
  *
- * @package Phpro\SoapClient\MiddleWare
+ * @package Phpro\SoapClient\Middleware
  */
 class Middleware implements MiddlewareInterface
 {
