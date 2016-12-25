@@ -137,7 +137,8 @@ class SoapXml
      */
     public static function fromStream(StreamInterface $stream): SoapXml
     {
-        $xml = new DOMDocument($stream->getContents());
+        $xml = new DOMDocument();
+        $xml->loadXML($stream->getContents());
 
         return new self($xml);
     }
