@@ -1,0 +1,47 @@
+<?php
+
+namespace Phpro\SoapClient\MiddleWare;
+
+use Psr\Http\Message\RequestInterface;
+
+/**
+ * Class NtlmMiddleware
+ *
+ * @package Phpro\SoapClient\MiddleWare
+ */
+class NtlmMiddleware extends Middleware
+{
+    /**
+     * @var string
+     */
+    private $username;
+
+    /**
+     * @var string
+     */
+    private $password;
+
+    /**
+     * NtlmMiddleware constructor.
+     *
+     * @param string $username
+     * @param string $password
+     */
+    public function __construct(string $username, string $password)
+    {
+        $this->username = $username;
+        $this->password = $password;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    {
+        $options['curl'] = $options['curl'] ?? [];
+        $options['curl'][CURLOPT_HTTPAUTH] = CURLAUTH_NTLM;
+        $options['curl'][CURLOPT_USERPWD] = sprintf('%s:%s', $this->username, $this->password);
+
+        return $handler($request, $options);
+    }
+}

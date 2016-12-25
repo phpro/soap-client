@@ -31,13 +31,15 @@
     "phpspec/phpspec": "~2.5",
     "phpspec/prophecy": "~1.6",
     "phpunit/phpunit": "~4.8",
+    "robrichards/xmlseclibs": "^2.0",
     "squizlabs/php_codesniffer": "~2.6"
   },
   "suggest": {
     "doctrine/common": "For caching SOAP responses",
     "guzzlehttp/guzzle": "For requestng SOAP through Guzzle",
     "http-interop/http-factory-guzzle": "For requestng SOAP through Guzzle",
-    "monolog/monolog": "For logging SOAP transactions"
+    "monolog/monolog": "For logging SOAP transactions",
+    "robrichards/xmlseclibs": "If you want to use the WSA or WSSE middleware"
   },
   "autoload": {
     "psr-0": {
