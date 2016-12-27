@@ -125,12 +125,14 @@ class SoapClient extends \SoapClient
      * @param string $request
      * @param string $location
      * @param string $action
-     * @param int $version
-     * @param int $one_way
+     * @param int    $version
+     * @param int    $oneWay
+     *
+     * @return string
      */
-    public function __doInternalRequest($request, $location, $action, $version, $one_way = 0)
+    public function __doInternalRequest($request, $location, $action, $version, $oneWay = 0)
     {
-        parent::__doRequest($request, $location, $action, $version, $one_way);
+        return (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
     }
 
     /**
