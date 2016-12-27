@@ -185,7 +185,7 @@ class WsseMiddleware extends Middleware
             $key->generateSessionKey();
             $siteKey = new XMLSecurityKey(XMLSecurityKey::RSA_OAEP_MGF1P, ['type' => 'public']);
             $siteKey->loadKey($this->serverCertificateFile, true, true);
-            $wsse->encryptSoapDoc($siteKey, $key,  [
+            $wsse->encryptSoapDoc($siteKey, $key, [
                 'KeyInfo' => [
                     'X509SubjectKeyIdentifier' => true
                 ]
