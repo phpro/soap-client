@@ -149,7 +149,7 @@ class SoapClient extends \SoapClient
         // TODO: Make sure that last request / response is available when the trace option is set!!!
         $request = new SoapRequest($request, $location, $action, $version, $one_way);
 
-        $response = $this->handler->createRequest($request);
+        $response = $this->handler->request($request);
         return $response->getResponse();
     }
 }

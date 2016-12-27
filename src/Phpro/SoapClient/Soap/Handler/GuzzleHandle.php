@@ -65,7 +65,7 @@ class GuzzleHandle implements HandlerInterface
      *
      * @return SoapResponse
      */
-    public function createRequest(SoapRequest $request): SoapResponse
+    public function request(SoapRequest $request): SoapResponse
     {
         // TODO: Is a GuzzleException ok? Willl It convert to a SOAP exception?
         $psr7Request = $this->converter->convertSoapRequest($request);

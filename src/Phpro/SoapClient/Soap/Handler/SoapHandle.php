@@ -33,7 +33,7 @@ class SoapHandle implements HandlerInterface
      *
      * @return SoapResponse
      */
-    public function createRequest(SoapRequest $request): SoapResponse
+    public function request(SoapRequest $request): SoapResponse
     {
         return new SoapResponse(
             $this->client->__doInternalRequest(

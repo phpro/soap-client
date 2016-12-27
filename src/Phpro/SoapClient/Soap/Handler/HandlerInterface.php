@@ -18,5 +18,5 @@ interface HandlerInterface
      *
      * @return SoapResponse
      */
-    public function createRequest(SoapRequest $request): SoapResponse;
+    public function request(SoapRequest $request): SoapResponse;
 }
