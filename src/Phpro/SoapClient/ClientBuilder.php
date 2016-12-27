@@ -2,10 +2,13 @@
 
 namespace Phpro\SoapClient;
 
+use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Plugin\LogPlugin;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapInterface;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
+use Phpro\SoapClient\Soap\Handler\MiddlewareSupportingHandler;
 use Phpro\SoapClient\Soap\SoapClientFactory;
 use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
@@ -61,6 +64,11 @@ class ClientBuilder
      * @var array
      */
     private $soapOptions;
+
+    /**
+     * @var MiddlewareInterface[]
+     */
+    private $middlewares = [];
 
     /**
      * @param ClientFactoryInterface $clientFactory
@@ -138,7 +146,16 @@ class ClientBuilder
     }
 
     /**
+     * @param MiddlewareInterface $middleware
+     */
+    public function addMiddleware(MiddlewareInterface $middleware)
+    {
+        $this->middlewares[] = $middleware;
+    }
+
+    /**
      * @return ClientInterface
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
     public function build()
     {
@@ -147,6 +164,16 @@ class ClientBuilder
 
         if ($this->handler) {
             $soapClient->setHandler($this->handler);
+        }
+
+        if (count($this->middlewares)) {
+            if (!$this->handler instanceof MiddlewareSupportingHandler) {
+                throw new InvalidArgumentException('The SOAP handler you selected does not support middlewares.');
+            }
+
+            foreach ($this->middlewares as $middleware) {
+                $this->handler->addMiddleware($middleware);
+            }
         }
 
         if ($this->logger) {

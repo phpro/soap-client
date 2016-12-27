@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\MiddleWare;
+namespace Phpro\SoapClient\Middleware;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;

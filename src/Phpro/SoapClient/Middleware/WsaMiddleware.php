@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\MiddleWare;
+namespace Phpro\SoapClient\Middleware;
 
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
