@@ -43,6 +43,13 @@ class Psr7ConverterSpec extends ObjectBehavior
 
     function it_can_create_a_response()
     {
-        $this->convertSoapResponse(new Response())->shouldBeAnInstanceOf(SoapResponse::class);
+        $stream = new Stream('php://memory', 'r+');
+        $stream->write('response');
+        $stream->rewind();
+        $response = (new Response())->withBody($stream);
+
+        $result = $this->convertSoapResponse($response);
+        $result->shouldBeAnInstanceOf(SoapResponse::class);
+        $result->getResponse()->shouldBe('response');
     }
 }

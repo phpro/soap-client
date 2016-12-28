@@ -29,7 +29,7 @@ interface MiddlewareInterface
      *
      * @return PromiseInterface
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array  $options);
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options);
 
     /**
      * @param ResponseInterface $response

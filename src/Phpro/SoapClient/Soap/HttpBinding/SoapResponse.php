@@ -26,7 +26,7 @@ class SoapResponse
     }
 
     /**
-     * Get the full HTTP response with headers and body.
+     * Get the full SOAP enveloppe response
      *
      * @return string
      */

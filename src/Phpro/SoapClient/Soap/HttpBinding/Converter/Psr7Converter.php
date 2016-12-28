@@ -50,7 +50,7 @@ class Psr7Converter
     {
         $builder = new Psr7RequestBuilder($this->requestFactory, $this->streamFactory);
 
-        $request->getVersion() === 1 ? $builder->isSOAP11() : $builder->isSOAP12();
+        $request->isSOAP11() ? $builder->isSOAP11() : $builder->isSOAP12();
         $builder->setEndpoint($request->getLocation());
         $builder->setSoapAction($request->getAction());
         $builder->setSoapMessage($request->getRequest());
@@ -66,7 +66,7 @@ class Psr7Converter
     public function convertSoapResponse(ResponseInterface $response): SoapResponse
     {
         return new SoapResponse(
-            Serializer::toString($response)
+            $response->getBody()->getContents()
         );
     }
 }

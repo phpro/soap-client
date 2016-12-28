@@ -2,14 +2,15 @@
 
 namespace PhproTest\SoapClient\Integration\Soap;
 
+use Phpro\SoapClient\Soap\Handler\GuzzleHandle;
 use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
 
 /**
- * Class SoapClientTest
+ * Class GuzzleSoapClientTest
  *
  * @package PhproTest\SoapClient\Integration\Soap
  */
-class SoapClientTest extends \PHPUnit_Framework_TestCase
+class GuzzleSoapClientTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -29,22 +30,12 @@ class SoapClientTest extends \PHPUnit_Framework_TestCase
     function setUp()
     {
         $this->client = new PhproSoapClient(self::CDYNE_WSDL, ['soap_version' => SOAP_1_2]);
+        $this->client->setHandler(GuzzleHandle::createWithDefaultClient());
     }
 
     /**
      * @test
-     */
-    function it_should_know_all_WSDL_types()
-    {
-        $types = $this->client->getSoapTypes();
-
-        $this->assertTrue(array_key_exists('GetCityForecastByZIP', $types));
-        $this->assertEquals('string', $types['GetCityForecastByZIP']['ZIP']);
-    }
-
-    /**
-     * @test
-     * @vcr soap-client-vcr-enabled.yml
+     * @vcr guzzle-soap-client-vcr-enabled.yml
      *
      * Note: this method will throw Exceptions if VCR can't take over the configured SoapClient.
      */

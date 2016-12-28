@@ -11,12 +11,7 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
  */
 class SoapResponseSpec extends ObjectBehavior
 {
-    private  $response = <<<EOR
-HTTP/1.1 200 OK
-X-someheader: somevalue
-
-<soap:Envelope />
-EOR;
+    private  $response = '<soap:Envelope />';
 
     function let()
     {

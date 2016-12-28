@@ -85,6 +85,22 @@ class SoapRequest
     }
 
     /**
+     * @return bool
+     */
+    public function isSOAP11(): bool
+    {
+        return $this->getVersion() === SOAP_1_1;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSOAP12(): bool
+    {
+        return $this->getVersion() === SOAP_1_2;
+    }
+
+    /**
      * @return int
      */
     public function getOneWay(): int
