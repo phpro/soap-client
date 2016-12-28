@@ -36,7 +36,7 @@ class SoapHandle implements HandlerInterface
     public function request(SoapRequest $request): SoapResponse
     {
         return new SoapResponse(
-            $this->client->__doInternalRequest(
+            $this->client->doInternalRequest(
                 $request->getRequest(),
                 $request->getLocation(),
                 $request->getAction(),

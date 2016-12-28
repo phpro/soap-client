@@ -130,7 +130,7 @@ class SoapClient extends \SoapClient
      *
      * @return string
      */
-    public function __doInternalRequest($request, $location, $action, $version, $oneWay = 0)
+    public function doInternalRequest($request, $location, $action, $version, $oneWay = 0)
     {
         return (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
     }
@@ -148,8 +148,8 @@ class SoapClient extends \SoapClient
     {
         // TODO: Make sure that last request / response is available when the trace option is set!!!
         $request = new SoapRequest($request, $location, $action, $version, $one_way);
-
         $response = $this->handler->request($request);
+
         return $response->getResponse();
     }
 }
