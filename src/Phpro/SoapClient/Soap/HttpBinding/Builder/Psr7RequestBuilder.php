@@ -79,10 +79,12 @@ class Psr7RequestBuilder
         $this->validate();
 
         try {
-            $request = $this->requestFactory->createRequest($this->httpMethod, $this->endpoint);
-            $request->withBody($this->prepareMessage());
+            $request = $this->requestFactory
+                ->createRequest($this->httpMethod, $this->endpoint)
+                ->withBody($this->prepareMessage());
+
             foreach ($this->prepareHeaders() as $name => $value) {
-                $request->withHeader($name, $value);
+                $request = $request->withHeader($name, $value);
             }
         } catch (\InvalidArgumentException $e) {
             throw new RequestException($e->getMessage(), $e->getCode(), $e);
@@ -147,35 +149,28 @@ class Psr7RequestBuilder
      */
     private function validate()
     {
-        $isValid = true;
-
         if (!$this->endpoint) {
-            $isValid = false;
+            throw new RequestException('There is no endpoint specified.');
         }
 
         if (!$this->hasSoapMessage && $this->httpMethod === 'POST') {
-            $isValid = false;
+            throw new RequestException('There is no SOAP message specified.');
         }
 
         /**
          * SOAP 1.1 only defines HTTP binding with POST method.
          * @link https://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383527
          */
-        if ($this->soapVersion == self::SOAP11 && $this->httpMethod !== 'POST') {
-            $isValid = false;
+        if ($this->soapVersion === self::SOAP11 && $this->httpMethod !== 'POST') {
+            throw new RequestException('You cannot use the POST method with SOAP 1.1.');
         }
 
         /**
          * SOAP 1.2 only defines HTTP binding with POST and GET methods.
          * @link https://www.w3.org/TR/2007/REC-soap12-part0-20070427/#L10309
          */
-        if ($this->soapVersion == self::SOAP12 && !in_array($this->httpMethod, ['GET', 'POST'])) {
-            $isValid = false;
-        }
-
-        if (!$isValid) {
-            $this->unsetAll();
-            throw new RequestException;
+        if ($this->soapVersion === self::SOAP12 && !in_array($this->httpMethod, ['GET', 'POST'])) {
+            throw new RequestException('Invalid SOAP method specified for SOAP 1.2. Expeted: GET or POST.');
         }
     }
 
@@ -198,7 +193,7 @@ class Psr7RequestBuilder
     private function prepareSoap11Headers()
     {
         $headers = [];
-        $headers['Content-Length'] = $this->soapMessage->getSize();
+        $headers['Content-Length'] = (string) $this->soapMessage->getSize();
         $headers['SOAPAction'] = $this->soapAction;
         $headers['Content-Type'] = 'text/xml; charset="utf-8"';
 
@@ -219,7 +214,7 @@ class Psr7RequestBuilder
             return $headers;
         }
 
-        $headers['Content-Length'] = $this->soapMessage->getSize();
+        $headers['Content-Length'] = (string) $this->soapMessage->getSize();
         $headers['Content-Type'] = 'application/soap+xml; charset="utf-8"' . '; action="' . $this->soapAction . '"';
 
         return $headers;

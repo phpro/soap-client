@@ -18,7 +18,7 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
  *
  * @package Phpro\SoapClient\Soap\Handler
  */
-class GuzzleHandle implements HandlerInterface, MiddlewareSupportingHandler
+class GuzzleHandle implements MiddlewareSupportingHandlerInterface
 {
     /**
      * @var ClientInterface

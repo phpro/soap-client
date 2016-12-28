@@ -27,7 +27,7 @@
     "http-interop/http-factory-guzzle": "@dev",
     "php-vcr/php-vcr": "^1.2.8",
     "php-vcr/phpunit-testlistener-vcr": "^1.1.7",
-    "phpro/grumphp": "~0.9",
+    "phpro/grumphp": "~0.11",
     "phpspec/phpspec": "~2.5",
     "phpspec/prophecy": "~1.6",
     "phpunit/phpunit": "~4.8",

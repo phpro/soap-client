@@ -5,11 +5,11 @@ namespace Phpro\SoapClient\Soap\Handler;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 
 /**
- * Interface MiddlewareSupportingHandler
+ * Interface MiddlewareSupportingHandlerInterface
  *
  * @package Phpro\SoapClient\Soap\Handler
  */
-interface MiddlewareSupportingHandler
+interface MiddlewareSupportingHandlerInterface extends HandlerInterface
 {
     /**
      * @param MiddlewareInterface $middleware
