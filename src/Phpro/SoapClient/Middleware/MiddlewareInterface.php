@@ -37,4 +37,9 @@ interface MiddlewareInterface
      * @return ResponseInterface
      */
     public function afterResponse(ResponseInterface $response);
+
+    /**
+     * @return string
+     */
+    public function getName(): string;
 }

@@ -2,6 +2,8 @@
 
 namespace PhproTest\SoapClient\Integration\Soap;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use Phpro\SoapClient\Soap\Handler\GuzzleHandle;
 use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
 
@@ -16,7 +18,7 @@ class GuzzleSoapClientTest extends \PHPUnit_Framework_TestCase
     /**
      * Wheather API
      */
-    const CDYNE_WSDL = 'http://wsf.cdyne.com/WeatherWS/Weather.asmx?WSDL';
+    const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/wheater-ws.wsdl';
 
 
     /**
@@ -25,12 +27,18 @@ class GuzzleSoapClientTest extends \PHPUnit_Framework_TestCase
     protected $client;
 
     /**
+     * @var HandlerStack
+     */
+    protected $handlerStack;
+
+    /**
      * Configure client
      */
     function setUp()
     {
         $this->client = new PhproSoapClient(self::CDYNE_WSDL, ['soap_version' => SOAP_1_2]);
-        $this->client->setHandler(GuzzleHandle::createWithDefaultClient());
+        $this->client->setHandler(GuzzleHandle::createForClient($guzzleClient = new Client()));
+        $this->handlerStack = $guzzleClient->getConfig('handler');
     }
 
     /**

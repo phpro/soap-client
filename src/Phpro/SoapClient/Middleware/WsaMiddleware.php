@@ -31,6 +31,14 @@ class WsaMiddleware extends Middleware
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return 'wsa_middleware';
+    }
+
+    /**
      * {@inheritdoc}
      * @throws \InvalidArgumentException
      * @throws \RuntimeException

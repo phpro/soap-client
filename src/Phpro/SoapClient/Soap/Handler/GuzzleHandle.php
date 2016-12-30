@@ -8,8 +8,10 @@ use GuzzleHttp\HandlerStack;
 use Http\Factory\Guzzle\RequestFactory;
 use Http\Factory\Guzzle\StreamFactory;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Middleware\CollectLastRequestInfoMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Soap\HttpBinding\Converter\Psr7Converter;
+use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 
@@ -18,7 +20,7 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
  *
  * @package Phpro\SoapClient\Soap\Handler
  */
-class GuzzleHandle implements MiddlewareSupportingHandlerInterface
+class GuzzleHandle implements MiddlewareSupportingHandlerInterface, LastRequestInfoCollectorInterface
 {
     /**
      * @var ClientInterface
@@ -31,19 +33,36 @@ class GuzzleHandle implements MiddlewareSupportingHandlerInterface
     private $converter;
 
     /**
+     * @var LastRequestInfoCollectorInterface|MiddlewareInterface
+     */
+    private $lastRequestInfoCollector;
+
+    /**
      * GuzzleHandle constructor.
      *
-     * @param ClientInterface $client
-     * @param Psr7Converter   $converter
+     * @param ClientInterface                   $client
+     * @param Psr7Converter                     $converter
+     * @param LastRequestInfoCollectorInterface $lastRequestInfoCollector
+     *
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
-    public function __construct(ClientInterface $client, Psr7Converter $converter)
-    {
+    public function __construct(
+        ClientInterface $client,
+        Psr7Converter $converter,
+        LastRequestInfoCollectorInterface $lastRequestInfoCollector
+    ) {
         $this->client = $client;
         $this->converter = $converter;
+        $this->lastRequestInfoCollector = $lastRequestInfoCollector;
+
+        if (!$lastRequestInfoCollector instanceof MiddlewareInterface) {
+            throw new InvalidArgumentException('The lastRequestInforCollector should also be a middleware!');
+        }
     }
 
     /**
      * @return GuzzleHandle
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
     public static function createWithDefaultClient(): GuzzleHandle
     {
@@ -54,12 +73,14 @@ class GuzzleHandle implements MiddlewareSupportingHandlerInterface
      * @param ClientInterface $client
      *
      * @return GuzzleHandle
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
     public static function createForClient(ClientInterface $client): GuzzleHandle
     {
         return new self(
             $client,
-            new Psr7Converter(new RequestFactory(), new StreamFactory())
+            new Psr7Converter(new RequestFactory(), new StreamFactory()),
+            new CollectLastRequestInfoMiddleware()
         );
     }
 
@@ -69,6 +90,51 @@ class GuzzleHandle implements MiddlewareSupportingHandlerInterface
      * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
     public function addMiddleware(MiddlewareInterface $middleware)
+    {
+        $stack = $this->fetchHandlerStack();
+        $stack->push($middleware, $middleware->getName());
+    }
+
+    /**
+     * @param MiddlewareInterface $middleware
+     *
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
+     */
+    public function removeMiddleware(MiddlewareInterface $middleware)
+    {
+        $stack = $this->fetchHandlerStack();
+        $stack->remove($middleware);
+    }
+
+    /**
+    /**
+     * @param SoapRequest $request
+     *
+     * @return SoapResponse
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
+     */
+    public function request(SoapRequest $request): SoapResponse
+    {
+        $this->pushLastRequestInfoMiddleware();
+        $psr7Request = $this->converter->convertSoapRequest($request);
+        $psr7Response = $this->client->send($psr7Request);
+
+        return $this->converter->convertSoapResponse($psr7Response);
+    }
+
+    /**
+     * @return LastRequestInfo
+     */
+    public function collectLastRequestInfo(): LastRequestInfo
+    {
+        return $this->lastRequestInfoCollector->collectLastRequestInfo();
+    }
+
+    /**
+     * @return HandlerStack
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
+     */
+    private function fetchHandlerStack(): HandlerStack
     {
         $guzzleHandler = $this->client->getConfig('handler');
         if (!$guzzleHandler instanceof HandlerStack) {
@@ -80,20 +146,18 @@ class GuzzleHandle implements MiddlewareSupportingHandlerInterface
             );
         }
 
-        $guzzleHandler->push($middleware);
+        return $guzzleHandler;
     }
 
     /**
-     * @param SoapRequest $request
+     * Make sure the lastRequestInfoCollector is added as a middleware
      *
-     * @return SoapResponse
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
-    public function request(SoapRequest $request): SoapResponse
+    private function pushLastRequestInfoMiddleware()
     {
-        // TODO: Is a GuzzleException ok? Willl It convert to a SOAP exception?
-        $psr7Request = $this->converter->convertSoapRequest($request);
-        $psr7Response = $this->client->send($psr7Request);
-
-        return $this->converter->convertSoapResponse($psr7Response);
+        $handlerStack = $this->fetchHandlerStack();
+        $handlerStack->remove($this->lastRequestInfoCollector);
+        $handlerStack->push($this->lastRequestInfoCollector);
     }
 }

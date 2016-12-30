@@ -84,6 +84,14 @@ class WsseMiddleware extends Middleware
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return 'wsse_middleware';
+    }
+
+    /**
      * @param int $timestamp
      *
      * @return $this

@@ -34,6 +34,14 @@ class BasicAuthMiddleware extends Middleware
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return 'basic-auth-middleware';
+    }
+
+    /**
      * {@inheritdoc}
      * @throws \InvalidArgumentException
      */

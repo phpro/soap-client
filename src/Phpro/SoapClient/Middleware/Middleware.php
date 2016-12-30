@@ -14,6 +14,14 @@ use Psr\Http\Message\ResponseInterface;
 class Middleware implements MiddlewareInterface
 {
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return 'empty_middleware';
+    }
+
+    /**
      * @param callable $handler
      *
      * @return \Closure

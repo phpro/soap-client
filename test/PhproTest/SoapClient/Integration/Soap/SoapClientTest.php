@@ -15,7 +15,7 @@ class SoapClientTest extends \PHPUnit_Framework_TestCase
     /**
      * Wheather API
      */
-    const CDYNE_WSDL = 'http://wsf.cdyne.com/WeatherWS/Weather.asmx?WSDL';
+    const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/wheater-ws.wsdl';
 
 
     /**

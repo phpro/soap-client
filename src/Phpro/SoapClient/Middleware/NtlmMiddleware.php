@@ -34,6 +34,14 @@ class NtlmMiddleware extends Middleware
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return 'ntlm_middleware';
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function beforeRequest(callable $handler, RequestInterface $request, array $options)

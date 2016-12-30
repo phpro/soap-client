@@ -3,11 +3,18 @@
 namespace Phpro\SoapClient\Soap;
 
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
+use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
 use Phpro\SoapClient\Soap\Handler\SoapHandle;
+use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 
 /**
  * Class SoapClient
+ *
+ * @property string __last_request
+ * @property string __last_response
+ * @property string __last_request_headers
+ * @property string __last_response_headers
  *
  * @package Phpro\SoapClient\Soap
  *
@@ -140,16 +147,28 @@ class SoapClient extends \SoapClient
      * @param string $location
      * @param string $action
      * @param int    $version
-     * @param int    $one_way
+     * @param int    $oneWay
      *
-     * @return string
+     * @return string|null
      */
-    public function __doRequest($request, $location, $action, $version, $one_way = 0)
+    public function __doRequest($request, $location, $action, $version, $oneWay = 0)
     {
-        // TODO: Make sure that last request / response is available when the trace option is set!!!
-        $request = new SoapRequest($request, $location, $action, $version, $one_way);
+        $request = new SoapRequest($request, $location, $action, $version, $oneWay);
         $response = $this->handler->request($request);
 
-        return $response->getResponse();
+        // Fecth the last request information:
+        $lastRequestInfo = LastRequestInfo::createEmpty();
+        if ($this->handler instanceof LastRequestInfoCollectorInterface) {
+            $lastRequestInfo = $this->handler->collectLastRequestInfo();
+        }
+
+        // Copy the request info in the correct internal __last_* parameters:
+        $this->__last_request = (string) $lastRequestInfo->getLastRequest();
+        $this->__last_response = (string) $lastRequestInfo->getLastResponse();
+        $this->__last_request_headers = (string) $lastRequestInfo->getLastRequestHeaders();
+        $this->__last_response_headers = (string) $lastRequestInfo->getLastResponseHeaders();
+
+        // Return the response or an empty response when oneWay is enabled.
+        return $oneWay ? null : $response->getResponse();
     }
 }
