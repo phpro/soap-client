@@ -8,6 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Middleware\CollectLastRequestInfoMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
 use Phpro\SoapClient\Soap\Handler\MiddlewareSupportingHandlerInterface;
@@ -23,9 +24,9 @@ use Phpro\SoapClient\Soap\Handler\GuzzleHandle;
  */
 class GuzzleHandleSpec extends ObjectBehavior
 {
-    function let(ClientInterface $client, Psr7Converter $converter)
+    function let(ClientInterface $client, Psr7Converter $converter, CollectLastRequestInfoMiddleware $lastRequestCollector)
     {
-        $this->beConstructedWith($client, $converter);
+        $this->beConstructedWith($client, $converter, $lastRequestCollector);
     }
 
     function it_is_initializable()

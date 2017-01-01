@@ -11,11 +11,6 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 /**
  * Class SoapClient
  *
- * @property string __last_request
- * @property string __last_response
- * @property string __last_request_headers
- * @property string __last_response_headers
- *
  * @package Phpro\SoapClient\Soap
  *
  * Note: Make sure to extend the \SoapClient without alias for php-vcr implementations.
@@ -23,7 +18,12 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 class SoapClient extends \SoapClient
 {
     /**
-     * SOAP types derived from WSDL
+     * @var array
+     */
+    protected $options = [];
+
+    /**
+     * SOAP types derived from WSDLss
      *
      * @var array
      */
@@ -34,18 +34,41 @@ class SoapClient extends \SoapClient
      */
     protected $handler;
 
+    // @codingStandardsIgnoreStart
+    /**
+     * @var string
+     */
+    protected $__last_request;
+
+    /**
+     * @var string
+     */
+    protected $__last_response;
+
+    /**
+     * @var string
+     */
+    protected $__last_request_headers;
+
+    /**
+     * @var string
+     */
+    protected $__last_response_headers;
+    // @codingStandardsIgnoreEnd
+
     /**
      * SoapClient constructor.
      *
-     * @param mixed      $wsdl
-     * @param array|null $options
+     * @param mixed $wsdl
+     * @param array $options
      */
-    public function __construct($wsdl, array $options = null)
+    public function __construct($wsdl, array $options = [])
     {
         parent::__construct($wsdl, $options);
 
         // Use the SoapHandle by default.
         $this->handler = new SoapHandle($this);
+        $this->options = $options;
     }
 
     /**
@@ -163,12 +186,45 @@ class SoapClient extends \SoapClient
         }
 
         // Copy the request info in the correct internal __last_* parameters:
-        $this->__last_request = (string) $lastRequestInfo->getLastRequest();
-        $this->__last_response = (string) $lastRequestInfo->getLastResponse();
+        // We don't need the trace option: always remember the last response @ request
+        $this->__last_request = (string) $lastRequestInfo->getLastRequest() ?? $request;
+        $this->__last_response = (string) $lastRequestInfo->getLastResponse() ?? $response->getResponse();
         $this->__last_request_headers = (string) $lastRequestInfo->getLastRequestHeaders();
         $this->__last_response_headers = (string) $lastRequestInfo->getLastResponseHeaders();
 
         // Return the response or an empty response when oneWay is enabled.
         return $oneWay ? null : $response->getResponse();
+    }
+
+    /***
+     * @return string
+     */
+    public function __getLastRequest(): string
+    {
+        return $this->__last_request ?: (string) parent::__getLastRequest();
+    }
+
+    /**
+     * @return string
+     */
+    public function __getLastResponse(): string
+    {
+        return $this->__last_response ?: (string) parent::__getLastResponse();
+    }
+
+    /**
+     * @return string
+     */
+    public function __getLastRequestHeaders(): string
+    {
+        return $this->__last_request_headers ?: (string) parent::__getLastRequestHeaders();
+    }
+
+    /**
+     * @return string
+     */
+    public function __getLastResponseHeaders(): string
+    {
+        return $this->__last_response_headers ?: (string) parent::__getLastResponseHeaders();
     }
 }
