@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Response;
 use Phpro\SoapClient\Middleware\CollectLastRequestInfoMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
+use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 
 /**
  * Class CollectLastRequestInfoMiddleware
@@ -80,6 +81,7 @@ class CollectLastRequestInfoMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->client->send($request = new Request('POST', '/', ['User-Agent' => 'no'], 'request'));
 
         $result = $this->middleware->collectLastRequestInfo();
+        $this->assertInstanceOf(LastRequestInfo::class, $response);
         $this->assertEquals('request', $result->getLastRequest());
         $this->assertEquals('response', $result->getLastResponse());
         $this->assertEquals('User-Agent: no', trim($result->getLastRequestHeaders()));
