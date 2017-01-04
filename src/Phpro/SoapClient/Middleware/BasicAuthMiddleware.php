@@ -38,7 +38,7 @@ class BasicAuthMiddleware extends Middleware
      */
     public function getName(): string
     {
-        return 'basic-auth-middleware';
+        return 'basic_auth_middleware';
     }
 
     /**

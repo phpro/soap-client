@@ -8,15 +8,15 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Phpro\SoapClient\Middleware\BasicAuthMiddleware;
+use Phpro\SoapClient\Middleware\NtlmMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 
 /**
- * Class BasicAuthMiddleware
+ * Class NtlmMiddleware
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class BasicAuthMiddlewareTest extends \PHPUnit_Framework_TestCase
+class NtlmMiddlewareTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -30,7 +30,7 @@ class BasicAuthMiddlewareTest extends \PHPUnit_Framework_TestCase
     private $handler;
 
     /**
-     * @var BasicAuthMiddleware
+     * @var NtlmMiddleware
      */
     private $middleware;
 
@@ -40,7 +40,7 @@ class BasicAuthMiddlewareTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->handler = new MockHandler([]);
-        $this->middleware = new BasicAuthMiddleware('username', 'password');
+        $this->middleware = new NtlmMiddleware('username', 'password');
         $stack = new HandlerStack($this->handler);
         $stack->push($this->middleware);
         $this->client = new Client(['handler' => $stack]);
@@ -59,19 +59,18 @@ class BasicAuthMiddlewareTest extends \PHPUnit_Framework_TestCase
      */
     function it_has_a_name()
     {
-        $this->assertEquals('basic_auth_middleware', $this->middleware->getName());
+        $this->assertEquals('ntlm_middleware', $this->middleware->getName());
     }
 
     /**
      * @test
      */
-    function it_adds_basic_auth_to_the_request()
+    function it_adds_ntlm_auth_to_the_request()
     {
         $this->handler->append(new Response());
         $this->client->send(new Request('POST', '/'));
-        $sentRequest = $this->handler->getLastRequest();
-        $this->assertEquals(
-            sprintf('Basic %s', base64_encode('username:password')),
-            $sentRequest->getHeader('Authentication')[0]);
+        $sentOptions = $this->handler->getLastOptions();
+        $this->assertEquals(CURLAUTH_NTLM, $sentOptions['curl'][CURLOPT_HTTPAUTH]);
+        $this->assertEquals('username:password', $sentOptions['curl'][CURLOPT_USERPWD]);
     }
 }
