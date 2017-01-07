@@ -51,7 +51,7 @@ class WsaMiddleware extends Middleware
         $wsa->addAction($request->getHeader('SOAPAction')[0]);
         $wsa->addTo((string) $request->getUri());
         $wsa->addMessageID();
-        $wsa->addAction($this->address);
+        $wsa->addReplyTo($this->address);
 
         $request = $request->withBody($xml->toStream());
 

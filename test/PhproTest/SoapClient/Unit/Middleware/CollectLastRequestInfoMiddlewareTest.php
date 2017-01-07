@@ -81,7 +81,7 @@ class CollectLastRequestInfoMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->client->send($request = new Request('POST', '/', ['User-Agent' => 'no'], 'request'));
 
         $result = $this->middleware->collectLastRequestInfo();
-        $this->assertInstanceOf(LastRequestInfo::class, $response);
+        $this->assertInstanceOf(LastRequestInfo::class, $result);
         $this->assertEquals('request', $result->getLastRequest());
         $this->assertEquals('response', $result->getLastResponse());
         $this->assertEquals('User-Agent: no', trim($result->getLastRequestHeaders()));
