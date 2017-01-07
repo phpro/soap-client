@@ -10,6 +10,7 @@ use Http\Factory\Guzzle\StreamFactory;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Middleware\CollectLastRequestInfoMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
+use Phpro\SoapClient\Middleware\MiddlewareSupportingInterface;
 use Phpro\SoapClient\Soap\HttpBinding\Converter\Psr7Converter;
 use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
@@ -20,7 +21,7 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
  *
  * @package Phpro\SoapClient\Soap\Handler
  */
-class GuzzleHandle implements MiddlewareSupportingHandlerInterface, LastRequestInfoCollectorInterface
+class GuzzleHandle implements HandlerInterface, MiddlewareSupportingInterface, LastRequestInfoCollectorInterface
 {
     /**
      * @var ClientInterface
@@ -33,31 +34,25 @@ class GuzzleHandle implements MiddlewareSupportingHandlerInterface, LastRequestI
     private $converter;
 
     /**
-     * @var LastRequestInfoCollectorInterface|MiddlewareInterface
+     * @var CollectLastRequestInfoMiddleware
      */
     private $lastRequestInfoCollector;
 
     /**
      * GuzzleHandle constructor.
      *
-     * @param ClientInterface                   $client
-     * @param Psr7Converter                     $converter
-     * @param LastRequestInfoCollectorInterface $lastRequestInfoCollector
-     *
-     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
+     * @param ClientInterface                  $client
+     * @param Psr7Converter                    $converter
+     * @param CollectLastRequestInfoMiddleware $lastRequestInfoCollector
      */
     public function __construct(
         ClientInterface $client,
         Psr7Converter $converter,
-        LastRequestInfoCollectorInterface $lastRequestInfoCollector
+        CollectLastRequestInfoMiddleware $lastRequestInfoCollector
     ) {
         $this->client = $client;
         $this->converter = $converter;
         $this->lastRequestInfoCollector = $lastRequestInfoCollector;
-
-        if (!$lastRequestInfoCollector instanceof MiddlewareInterface) {
-            throw new InvalidArgumentException('The lastRequestInforCollector should also be a middleware!');
-        }
     }
 
     /**
