@@ -15,24 +15,24 @@
     "http-interop/http-factory": "^0.2.0",
     "psr/http-message": "^1.0",
     "psr/log": "^1.0",
-    "symfony/console": "~2.3|~3.0",
-    "symfony/event-dispatcher": "~2.3|~3.0",
-    "symfony/filesystem": "~2.3|~3.0",
-    "symfony/process": "~2.3|~3.0",
+    "symfony/console": "~2.8|~3.0",
+    "symfony/event-dispatcher": "~2.8|~3.0",
+    "symfony/filesystem": "~2.8|~3.0",
+    "symfony/process": "~2.8|~3.0",
     "zendframework/zend-code": "^3.0.4",
     "zendframework/zend-diactoros": "^1.3"
   },
   "require-dev": {
     "guzzlehttp/guzzle": "^6.2",
     "http-interop/http-factory-guzzle": "@dev",
-    "php-vcr/php-vcr": "^1.2.8",
+    "php-vcr/php-vcr": "^1.3.2",
     "php-vcr/phpunit-testlistener-vcr": "^1.1.7",
     "phpro/grumphp": "~0.11",
     "phpspec/phpspec": "~2.5",
     "phpspec/prophecy": "~1.6",
     "phpunit/phpunit": "~4.8",
     "robrichards/wse-php": "^2.0",
-    "squizlabs/php_codesniffer": "~2.6"
+    "squizlabs/php_codesniffer": "~2.7"
   },
   "suggest": {
     "doctrine/common": "For caching SOAP responses",
