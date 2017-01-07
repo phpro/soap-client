@@ -249,7 +249,7 @@ class WsseMiddlewareTest extends \PHPUnit_Framework_TestCase
         $xml = $this->fetchSoapXml($soapBody);
 
 
-        var_dump($xml);exit;
+        $this->assertTrue(false, 'TODO: Add asserts!');
     }
 
     /**
