@@ -44,7 +44,7 @@ class WsseMiddleware extends Middleware
     /**
      * @var string
      */
-    private $digitalSignType = XMLSecurityKey::RSA_SHA1;
+    private $digitalSignMethod = XMLSecurityKey::RSA_SHA1;
 
     /**
      * @var string
@@ -114,13 +114,13 @@ class WsseMiddleware extends Middleware
     }
 
     /**
-     * @param string $digitalSignType
+     * @param string $digitalSignMethod
      *
      * @return $this
      */
-    public function withDigitalSignType(string $digitalSignType)
+    public function withDigitalSignMethod(string $digitalSignMethod)
     {
-        $this->digitalSignType = $digitalSignType;
+        $this->digitalSignMethod = $digitalSignMethod;
 
         return $this;
     }
@@ -179,7 +179,7 @@ class WsseMiddleware extends Middleware
         }
 
         // Create new XMLSec Key using the dsigType and type is private key
-        $key = new XMLSecurityKey($this->digitalSignType, ['type' => 'private']);
+        $key = new XMLSecurityKey($this->digitalSignMethod, ['type' => 'private']);
         $key->loadKey($this->privateKeyFile, true);
         $wsse->signSoapDoc($key);
 

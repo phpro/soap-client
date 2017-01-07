@@ -90,7 +90,7 @@ class WsaMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $found, 'No WSA UUID could be found in the request.');
         $this->assertXmlStringEqualsXmlString(
             str_replace('{{UUID}}', $uuids[0], $expected),
-            (string)$this->handler->getLastRequest()->getBody()
+            $actualRequestBody
         );
     }
 }
