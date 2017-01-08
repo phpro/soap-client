@@ -7,7 +7,7 @@
             Host: wsf.cdyne.com
             Expect: null
             Accept-Encoding: null
-            User-Agent: 'GuzzleHttp/6.2.1 curl/7.37.1 PHP/7.1.0'
+            User-Agent: 'testing/1.0'
             Content-Type: 'application/soap+xml; charset="utf-8"; action="http://ws.cdyne.com/WeatherWS/GetCityWeatherByZIP"'
             Accept: null
         body: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<env:Envelope xmlns:env=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:ns1=\"http://ws.cdyne.com/WeatherWS/\"><env:Body><ns1:GetCityWeatherByZIP><ns1:ZIP>10013</ns1:ZIP></ns1:GetCityWeatherByZIP></env:Body></env:Envelope>\n"

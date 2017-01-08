@@ -21,6 +21,7 @@ before_install:
 install:
   - if [ "$DEPENDENCIES" != "low" ]; then travis_retry composer update --no-progress --profile --prefer-dist --no-scripts --no-interaction; fi;
   - if [ "$DEPENDENCIES" == "low" ]; then travis_retry composer update --no-progress --profile --prefer-lowest --no-scripts --no-interaction; fi;
+  - composer show
 
 script:
    - ./vendor/bin/grumphp run

@@ -36,8 +36,9 @@ class GuzzleSoapClientTest extends \PHPUnit_Framework_TestCase
      */
     function setUp()
     {
+        $guzzleClient = new Client(['headers' => ['User-Agent' => 'testing/1.0']]);
         $this->client = new PhproSoapClient(self::CDYNE_WSDL, ['soap_version' => SOAP_1_2]);
-        $this->client->setHandler(GuzzleHandle::createForClient($guzzleClient = new Client()));
+        $this->client->setHandler(GuzzleHandle::createForClient($guzzleClient));
         $this->handlerStack = $guzzleClient->getConfig('handler');
     }
 
