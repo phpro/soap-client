@@ -90,19 +90,25 @@ class LastRequestInfo
         $responseBody = '';
 
         if ($requestString) {
-            list ($requestHeaders, $requestBody) = explode(
+            $requestParts = explode(
                 "\r\n\r\n",
                 substr($requestString, strpos($requestString, "\r\n") + 1),
                 2
             );
+
+            $requestHeaders = trim($requestParts[0] ?? '');
+            $requestBody = $requestParts[1] ?? '';
         }
 
         if ($responseString) {
-            list ($responseHeaders, $responseBody) = explode(
+            $responseParts = explode(
                 "\r\n\r\n",
                 substr($responseString, strpos($responseString, "\r\n") + 1),
                 2
             );
+
+            $responseHeaders = trim($responseParts[0] ?? '');
+            $responseBody = $responseParts[1] ?? '';
         }
 
         // Reset the bodies:
