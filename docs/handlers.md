@@ -9,8 +9,8 @@ The handler system makes it possible to make changes to the request and the resp
 
 Here is a list of built-in handlers:
 
-- [SoapHandle](#SoapHandle)
-- [GuzzleHandle](#GuzzleHandle)
+- [SoapHandle](#soaphandle)
+- [GuzzleHandle](#guzzlehandle)
 
 
 ## SoapHandle

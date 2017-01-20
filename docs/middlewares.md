@@ -11,13 +11,13 @@ You can take a look to the list of handlers and check if your handler has the fe
 
 Next, you can use one of the built-in middlewares:
 
-- [BasicAuthMiddleware](#BasicAuthMiddleware)
-- [NtlmMiddleware](#NtlmMiddleware)
-- [WsaMiddleware](#WsaMiddleware)
-- [WsseMiddleware](#WsseMiddleware)
+- [BasicAuthMiddleware](#basicauthmiddleware)
+- [NtlmMiddleware](#ntlmmiddleware)
+- [WsaMiddleware](#wsamiddleware)
+- [WsseMiddleware](#wssemiddleware)
 
 Can't find the middleware you were looking for?
-[It is always possible to create your own one!](#Creating-your-own-middleware)
+[It is always possible to create your own one!](#creating-your-own-middleware)
 
 
 ## Built-in middlewares
@@ -157,7 +157,7 @@ Because this XML is heavily namespaced, we created a `SoapXml` manipulator class
 
 Example usage:
 
-```
+```php
 // Load the XML from a PSR7 request or response:
 $xml = SoapXml::fromStream($request->getBody());
 

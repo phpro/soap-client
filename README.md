@@ -89,13 +89,13 @@ $ composer require phpro/soap-client
   - [Logger plugin](docs/plugins/logger.md)
   - [Caching plugin](docs/plugins/caching.md)
 - [Specify your data transfer handler.](docs/handlers.md)
-  - [SoapHandle](docs/handlers.md#SoapHandle)
-  - [GuzzleHandle](docs/handlers.md#GuzzleHandle)
+  - [SoapHandle](docs/handlers.md#soaphandle)
+  - [GuzzleHandle](docs/handlers.md#guzzlehandle)
 - [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
-  - [BasicAuthMiddleware](docs/middlewares.md#BasicAuthMiddleware)
-  - [NtlmMiddleware](docs/middlewares.md#NtlmMiddleware)
-  - [WsaMiddleware](docs/middlewares.md#WsaMiddleware)
-  - [WsseMiddleware](docs/middlewares.md#WsseMiddleware)
+  - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
+  - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
+  - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
+  - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
 
 
 ## Customize the code generation
