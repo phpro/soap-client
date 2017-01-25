@@ -9,7 +9,7 @@ class RunTimeExceptionSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('Phpro\SoapClient\Exception\RunTimeException');
+        $this->shouldHaveType('Phpro\SoapClient\Exception\RuntimeException');
     }
 
     function it_should_be_an_exception()

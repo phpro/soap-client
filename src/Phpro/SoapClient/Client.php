@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient;
 
 use Phpro\SoapClient\Event;
+use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\MixedResult;
 use Phpro\SoapClient\Type\MultiArgumentRequestInterface;
 use Phpro\SoapClient\Type\RequestInterface;
@@ -82,7 +83,7 @@ class Client implements ClientInterface
      * @param RequestInterface  $params
      *
      * @return ResultInterface
-     * @throws SoapFault
+     * @throws SoapException
      */
     protected function call($method, RequestInterface $request)
     {
@@ -100,9 +101,10 @@ class Client implements ClientInterface
             if (!$result instanceof ResultInterface) {
                 $result = new MixedResult($result);
             }
-        } catch (SoapFault $soapFault) {
-            $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($this, $soapFault, $requestEvent));
-            throw $soapFault;
+        } catch (\Exception $exception) {
+            $soapException = SoapException::fromThrowable($exception);
+            $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($this, $soapException, $requestEvent));
+            throw $soapException;
         }
 
         $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($this, $requestEvent, $result));

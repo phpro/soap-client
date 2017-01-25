@@ -17,6 +17,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class LogPlugin implements EventSubscriberInterface
 {
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param LoggerInterface $logger
@@ -56,7 +61,7 @@ class LogPlugin implements EventSubscriberInterface
     {
         $this->logger->error(sprintf(
             '[phpro/soap-client] fault "%s" for request "%s" with params %s',
-            $event->getSoapFault()->getMessage(),
+            $event->getSoapException()->getMessage(),
             $event->getRequestEvent()->getMethod(),
             print_r($event->getRequestEvent()->getRequest(), true)
         ));

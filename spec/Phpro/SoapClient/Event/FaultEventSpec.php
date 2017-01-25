@@ -5,13 +5,14 @@ namespace spec\Phpro\SoapClient\Event;
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Event\FaultEvent;
 use Phpro\SoapClient\Event\RequestEvent;
+use Phpro\SoapClient\Exception\SoapException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\Event;
 
 class FaultEventSpec extends ObjectBehavior
 {
-    function let(Client $client,\SoapFault $soapFault, RequestEvent $requestEvent)
+    function let(Client $client,SoapException $soapFault, RequestEvent $requestEvent)
     {
         $this->beConstructedWith($client, $soapFault, $requestEvent);
     }
@@ -31,9 +32,9 @@ class FaultEventSpec extends ObjectBehavior
         $this->getRequestEvent()->shouldReturn($requestEvent);
     }
 
-    function it_should_know_the_fault(\SoapFault $soapFault)
+    function it_should_know_the_fault(SoapException $soapFault)
     {
-        $this->getSoapFault()->shouldReturn($soapFault);
+        $this->getSoapException()->shouldReturn($soapFault);
     }
 
     function it_should_know_the_client(Client $client)

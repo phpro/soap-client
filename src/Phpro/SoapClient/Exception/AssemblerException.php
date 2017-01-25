@@ -8,7 +8,7 @@ namespace Phpro\SoapClient\Exception;
  *
  * @package Phpro\SoapClient\Exception
  */
-class AssemblerException extends RunTimeException
+class AssemblerException extends RuntimeException
 {
     /**
      * @param \Exception $e
