@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\Soap\HttpBinding\Builder;
 
 use Interop\Http\Factory\RequestFactoryInterface;
 use Interop\Http\Factory\StreamFactoryInterface;
+use InvalidArgumentException;
 use Phpro\SoapClient\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -53,6 +54,7 @@ class Psr7RequestBuilder
      * @var RequestFactoryInterface
      */
     private $requestFactory;
+
     /**
      * @var StreamFactoryInterface
      */
@@ -86,7 +88,7 @@ class Psr7RequestBuilder
             foreach ($this->prepareHeaders() as $name => $value) {
                 $request = $request->withHeader($name, $value);
             }
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new RequestException($e->getMessage(), $e->getCode(), $e);
         }
 
@@ -201,9 +203,9 @@ class Psr7RequestBuilder
     }
 
     /**
-     * SOSPAction header is removed in SOAP 1.2 and now expressed as a value of
+     * SOAPAction header is removed in SOAP 1.2 and now expressed as a value of
      * an (optional) "action" parameter of the "application/soap+xml" media type.
-     * @link https://www.w3.org/TR/sodap12-part0/#L4697
+     * @link https://www.w3.org/TR/soap12-part0/#L4697
      * @return array
      */
     private function prepareSoap12Headers()

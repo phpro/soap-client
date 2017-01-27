@@ -19,12 +19,12 @@ class WsseMiddleware extends Middleware
     /**
      * @var string
      */
-    private $privateKeyFile = '';
+    private $privateKeyFile;
 
     /**
      * @var string
      */
-    private $publicKeyFile = '';
+    private $publicKeyFile;
 
     /**
      * @var string
@@ -69,7 +69,7 @@ class WsseMiddleware extends Middleware
     /**
      * @var bool
      */
-    private $userToken = false;
+    private $hasUserToken = false;
 
     /**
      * WsseMiddleware constructor.
@@ -134,7 +134,7 @@ class WsseMiddleware extends Middleware
      */
     public function withUserToken(string $username, string $password = null, $digest = false)
     {
-        $this->userToken = true;
+        $this->hasUserToken = true;
         $this->userTokenName = $username;
         $this->userTokenPassword = $password;
         $this->userTokenDigest = $digest;
@@ -174,7 +174,7 @@ class WsseMiddleware extends Middleware
         $wsse->addTimestamp($this->timestamp);
 
         // Add a user token if this is configured.
-        if ($this->userToken) {
+        if ($this->hasUserToken) {
             $wsse->addUserToken($this->userTokenName, $this->userTokenPassword, $this->userTokenDigest);
         }
 
@@ -218,15 +218,18 @@ class WsseMiddleware extends Middleware
 
         $xml = SoapXml::fromStream($response->getBody());
         $wsse = new WSSESoap($xml->getXmlDocument());
-        $wsse->decryptSoapDoc($xml->getXmlDocument(), [
-            'keys' => [
-                'private' => [
-                    'key' => $this->privateKeyFile,
-                    'isFile' => true,
-                    'isCert' => false
+        $wsse->decryptSoapDoc(
+            $xml->getXmlDocument(),
+            [
+                'keys' => [
+                    'private' => [
+                        'key'    => $this->privateKeyFile,
+                        'isFile' => true,
+                        'isCert' => false,
+                    ]
                 ]
             ]
-        ]);
+        );
 
         return $response->withBody($xml->toStream());
     }

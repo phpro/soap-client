@@ -59,13 +59,13 @@ class Client implements ClientInterface
     public function debugLastSoapRequest()
     {
         return [
-            'request' => [
+            'request'  => [
                 'headers' => $this->soapClient->__getLastRequestHeaders(),
-                'body' => $this->soapClient->__getLastRequest(),
+                'body'    => $this->soapClient->__getLastRequest(),
             ],
             'response' => [
-               'headers' => $this->soapClient->__getLastResponseHeaders(),
-                'body' => $this->soapClient->__getLastResponse(),
+                'headers' => $this->soapClient->__getLastResponseHeaders(),
+                'body'    => $this->soapClient->__getLastResponse(),
             ],
         ];
     }
@@ -80,7 +80,7 @@ class Client implements ClientInterface
 
     /**
      * @param string            $method
-     * @param RequestInterface  $params
+     * @param RequestInterface  $request
      *
      * @return ResultInterface
      * @throws SoapException

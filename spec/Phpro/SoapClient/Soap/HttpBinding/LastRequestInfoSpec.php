@@ -69,10 +69,10 @@ class LastRequestInfoSpec extends ObjectBehavior
     {
         $request = new Request('/', 'POST', 'php://temp', ['x-request-header' => 'value']);
         $request->getBody()->write('REQUESTBODY');
-        $respone = new Response('php://memory', 200, ['x-response-header' => 'value']);
-        $respone->getBody()->write('RESPONSEBODY');
+        $response = new Response('php://memory', 200, ['x-response-header' => 'value']);
+        $response->getBody()->write('RESPONSEBODY');
 
-        $result = $this->createFromPsr7RequestAndResponse($request, $respone);
+        $result = $this->createFromPsr7RequestAndResponse($request, $response);
         $result->getLastRequestHeaders()->shouldBe('X-Request-Header: value');
         $result->getLastRequest()->shouldBe('REQUESTBODY');
         $result->getLastResponseHeaders()->shouldBe('X-Response-Header: value');

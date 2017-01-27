@@ -181,5 +181,5 @@ $xml->xpath('/soap:Envelope')->item(0);
 $request->setBody($xml->toStream())
 ```
 
-As you can see, this XML manipulation class is rather small at the moment but is super powerfull.
+As you can see, this XML manipulation class is rather small at the moment but is super powerful.
 Internally it uses `DOMDocument` to make it possible to manipulate every little XML detail you want.
