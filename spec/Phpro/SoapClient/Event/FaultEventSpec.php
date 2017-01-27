@@ -12,9 +12,9 @@ use Symfony\Component\EventDispatcher\Event;
 
 class FaultEventSpec extends ObjectBehavior
 {
-    function let(Client $client,SoapException $soapFault, RequestEvent $requestEvent)
+    function let(Client $client,SoapException $soapException, RequestEvent $requestEvent)
     {
-        $this->beConstructedWith($client, $soapFault, $requestEvent);
+        $this->beConstructedWith($client, $soapException, $requestEvent);
     }
 
     function it_is_initializable()
@@ -32,9 +32,9 @@ class FaultEventSpec extends ObjectBehavior
         $this->getRequestEvent()->shouldReturn($requestEvent);
     }
 
-    function it_should_know_the_fault(SoapException $soapFault)
+    function it_should_know_the_fault(SoapException $soapException)
     {
-        $this->getSoapException()->shouldReturn($soapFault);
+        $this->getSoapException()->shouldReturn($soapException);
     }
 
     function it_should_know_the_client(Client $client)
