@@ -102,7 +102,6 @@ class GuzzleHandle implements HandlerInterface, MiddlewareSupportingInterface, L
     }
 
     /**
-    /**
      * @param SoapRequest $request
      *
      * @return SoapResponse
