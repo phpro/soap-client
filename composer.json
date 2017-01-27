@@ -56,11 +56,5 @@
   "bin": ["bin/soap-client"],
   "config": {
     "sort-packages": true
-  },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/http-interop/http-factory-guzzle"
-    }
-  ]
+  }
 }
