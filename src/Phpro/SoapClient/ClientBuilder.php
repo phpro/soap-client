@@ -9,6 +9,7 @@ use Phpro\SoapClient\Plugin\LogPlugin;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapInterface;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
+use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Soap\SoapClientFactory;
 use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
@@ -161,6 +162,14 @@ class ClientBuilder
     {
         $soapClientFactory = new SoapClientFactory($this->classMaps, $this->converters);
         $soapClient = $soapClientFactory->factory($this->wsdl, $this->soapOptions);
+
+        if ($this->handler && !$soapClient instanceof SoapClient) {
+            throw new InvalidArgumentException(sprintf(
+                'You can only add handlers if the SoapClientFactory is returning an instance of %s. Got: %s',
+                SoapClient::class,
+                get_class($soapClient)
+            ));
+        }
 
         if ($this->handler) {
             $soapClient->setHandler($this->handler);

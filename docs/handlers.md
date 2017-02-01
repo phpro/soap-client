@@ -41,7 +41,7 @@ This handler is based on middlewares which are applied to your guzzle client.
 
 **Dependencies**
 ```sh
-composer require guzzlehttp/guzzle http-interop/http-factory-guzzle
+composer require guzzlehttp/guzzle:^6.2 http-interop/http-factory-guzzle:^0.1.0
 ```
 
 **Configuration**

@@ -55,7 +55,7 @@ The middleware is a light wrapper that makes it easy to use in your application.
 
 **Dependencies**
 ```sh
-composer require robrichards/wse-php
+composer require robrichards/wse-php:^2.0
 ```
 
 **Usage**
@@ -75,7 +75,7 @@ The middleware is a light wrapper that makes it easy to use in your application.
 
 **Dependencies**
 ```sh
-composer require robrichards/wse-php
+composer require robrichards/wse-php:^2.0
 ```
 
 **Usage**
