@@ -3,7 +3,7 @@
 namespace Phpro\SoapClient\Event;
 
 use Phpro\SoapClient\Client;
-use SoapFault;
+use Phpro\SoapClient\Exception\SoapException;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -15,9 +15,9 @@ class FaultEvent extends Event
 {
 
     /**
-     * @var SoapFault
+     * @var SoapException
      */
-    protected $soapFault;
+    protected $soapException;
 
     /**
      * @var RequestEvent
@@ -30,23 +30,23 @@ class FaultEvent extends Event
     protected $client;
 
     /**
-     * @param Client $client
-     * @param SoapFault $soapFault
-     * @param RequestEvent $requestEvent
+     * @param Client        $client
+     * @param SoapException $soapException
+     * @param RequestEvent  $requestEvent
      */
-    public function __construct(Client $client, SoapFault $soapFault, RequestEvent $requestEvent)
+    public function __construct(Client $client, SoapException $soapException, RequestEvent $requestEvent)
     {
         $this->client = $client;
-        $this->soapFault = $soapFault;
+        $this->soapException = $soapException;
         $this->requestEvent = $requestEvent;
     }
 
     /**
-     * @return SoapFault
+     * @return SoapException
      */
-    public function getSoapFault()
+    public function getSoapException()
     {
-        return $this->soapFault;
+        return $this->soapException;
     }
 
     /**

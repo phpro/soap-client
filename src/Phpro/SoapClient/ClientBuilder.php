@@ -2,9 +2,14 @@
 
 namespace Phpro\SoapClient;
 
+use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Middleware\MiddlewareInterface;
+use Phpro\SoapClient\Middleware\MiddlewareSupportingInterface;
 use Phpro\SoapClient\Plugin\LogPlugin;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapInterface;
+use Phpro\SoapClient\Soap\Handler\HandlerInterface;
+use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Soap\SoapClientFactory;
 use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
@@ -47,6 +52,11 @@ class ClientBuilder
     private $logger;
 
     /**
+     * @var HandlerInterface|null
+     */
+    private $handler;
+
+    /**
      * @var string
      */
     private $wsdl;
@@ -55,6 +65,11 @@ class ClientBuilder
      * @var array
      */
     private $soapOptions;
+
+    /**
+     * @var MiddlewareInterface[]
+     */
+    private $middlewares = [];
 
     /**
      * @param ClientFactoryInterface $clientFactory
@@ -124,12 +139,51 @@ class ClientBuilder
     }
 
     /**
+     * @param HandlerInterface $handler
+     */
+    public function withHandler(HandlerInterface $handler)
+    {
+        $this->handler = $handler;
+    }
+
+    /**
+     * @param MiddlewareInterface $middleware
+     */
+    public function addMiddleware(MiddlewareInterface $middleware)
+    {
+        $this->middlewares[] = $middleware;
+    }
+
+    /**
      * @return ClientInterface
+     * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
     public function build()
     {
         $soapClientFactory = new SoapClientFactory($this->classMaps, $this->converters);
         $soapClient = $soapClientFactory->factory($this->wsdl, $this->soapOptions);
+
+        if ($this->handler && !$soapClient instanceof SoapClient) {
+            throw new InvalidArgumentException(sprintf(
+                'You can only add handlers if the SoapClientFactory is returning an instance of %s. Got: %s',
+                SoapClient::class,
+                get_class($soapClient)
+            ));
+        }
+
+        if ($this->handler) {
+            $soapClient->setHandler($this->handler);
+        }
+
+        if (count($this->middlewares)) {
+            if (!$this->handler instanceof MiddlewareSupportingInterface) {
+                throw new InvalidArgumentException('The SOAP handler you selected does not support middlewares.');
+            }
+
+            foreach ($this->middlewares as $middleware) {
+                $this->handler->addMiddleware($middleware);
+            }
+        }
 
         if ($this->logger) {
             $this->dispatcher->addSubscriber(new LogPlugin($this->logger));

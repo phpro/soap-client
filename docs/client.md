@@ -11,7 +11,7 @@ class YourClient extends Client
      * @param RequestInterface $request
      *
      * @return ResultInterface
-     * @throws \SoapFault
+     * @throws \Phpro\SoapClient\Exception\SoapException
      */
     public function helloWorld(RequestInterface $request)
     {
@@ -30,6 +30,9 @@ The methods of the class are explicitly defined and have explicit parameters and
  SOAP responses can have 2 types: `ResultProviderInterface` or `ResultInterface`.
  The `ResultProviderInterface` can be used if the response type is wrapping a `ResultInterface`.
  The `call` method will initailize the SOAP call and trigger the subscribed event listeners.
+
+As you can see, we've normalized the exception. Our SOAP client will always throw a custom `SoapException`.
+ This is to make it possible to use multiple different handlers which don't always throw a `SoapFault`.
 
 
 ## My SOAP service does not work with Request / Response objects.

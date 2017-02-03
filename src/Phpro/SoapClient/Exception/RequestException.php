@@ -3,10 +3,11 @@
 namespace Phpro\SoapClient\Exception;
 
 /**
- * Class PatchException
+ * Class RequestException
  *
  * @package Phpro\SoapClient\Exception
  */
-class PatchException extends \RuntimeException
+class RequestException extends RuntimeException
 {
+
 }

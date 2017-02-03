@@ -47,6 +47,14 @@ It is important keep your code clean. This is why we added an event-listener to 
  You can hook in at every important step of the SOAP flow.
  This way it is possible to add logging, caching and error handling with event subscribers. 
  Pretty cool right?!
+
+Implementing SOAP extensions is a real pain in the ass.
+ It forces you to overwrite core methods of the built-in SOAP client.
+ If you ever had to implement WSA or WSSE in SOAP, you know that there is something wrong in the core.
+ Therefore we made it easy for you to extend our SOAP client. 
+ You can specify which data transfer handler like e.g. Guzzle you want to use.
+ Depending on the selected handler, 
+ you can easily add support for SOAP extensions or advanced authentication through HTTP middlewares.
  
 Testing webservices is hard! 
  That is Why this package is fully compatible with [php-vcr](http://php-vcr.github.io/).
@@ -70,15 +78,27 @@ $ composer require phpro/soap-client
 1. [Create your own SOAP client.](docs/client.md)
 2. [Generate PHP classes based on SOAP types.](docs/cli/generate-types.md)
 3. [Generate a class map](docs/cli/generate-classmap.md)
-4. [Add type converters](docs/type-converter.md)
-5. [Listen to events](docs/events.md)
+4. [Use your SOAP client.](docs/usage.md)
+5. [Test your SOAP client.](docs/testing.md)
+
+
+## Advanced configuration
+
+- [Add type converters.](docs/type-converter.md)
+- [Listen to events.](docs/events.md)
   - [Logger plugin](docs/plugins/logger.md)
   - [Caching plugin](docs/plugins/caching.md)
-6. [Use your SOAP client.](docs/usage.md)
-7. [Test your SOAP client.](docs/testing.md)
+- [Specify your data transfer handler.](docs/handlers.md)
+  - [SoapHandle](docs/handlers.md#soaphandle)
+  - [GuzzleHandle](docs/handlers.md#guzzlehandle)
+- [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
+  - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
+  - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
+  - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
+  - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
 
 
-## Customize the code generators
+## Customize the code generation
 
 - [Configuration](docs/code-generation/configuration.md)
 - [Specify generation `Rules`](docs/code-generation/rules.md)

@@ -2,6 +2,6 @@
 
 namespace Phpro\SoapClient\Exception;
 
-class RunTimeException extends \RuntimeException
+class RuntimeException extends \RuntimeException
 {
 }

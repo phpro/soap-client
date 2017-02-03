@@ -15,7 +15,7 @@ class SoapClientTest extends \PHPUnit_Framework_TestCase
     /**
      * Wheather API
      */
-    const CDYNE_WSDL = 'http://wsf.cdyne.com/WeatherWS/Weather.asmx?WSDL';
+    const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/wheater-ws.wsdl';
 
 
     /**
@@ -44,7 +44,7 @@ class SoapClientTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @vcr vcr-enabled.yml
+     * @vcr soap-get-city-weather-by-zip-10013.yml
      *
      * Note: this method will throw Exceptions if VCR can't take over the configured SoapClient.
      */
@@ -52,5 +52,20 @@ class SoapClientTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->client->GetCityWeatherByZIP(['ZIP' => '10013']);
         $this->assertTrue($result->GetCityWeatherByZIPResult->Success);
+    }
+
+    /**
+     * @test
+     * @vcr soap-get-city-weather-by-zip-10013.yml
+     *
+     *  Note: The headers are not remembered by the internally used php-vcr soapclient.
+     */
+    function it_should_know_the_last_request_and_response()
+    {
+        $this->assertEquals(0, strlen($this->client->__getLastRequest()));
+        $this->assertEquals(0, strlen($this->client->__getLastResponse()));
+        $this->client->GetCityWeatherByZIP(['ZIP' => '10013']);
+        $this->assertGreaterThan(0, strlen($this->client->__getLastRequest()));
+        $this->assertGreaterThan(0, strlen($this->client->__getLastResponse()));
     }
 }
