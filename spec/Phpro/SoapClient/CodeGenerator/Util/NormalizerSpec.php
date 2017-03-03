@@ -49,6 +49,7 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeDataType('dateTime')->shouldReturn('\\DateTime');
         $this->normalizeDataType('date')->shouldReturn('\\DateTime');
         $this->normalizeDataType('boolean')->shouldReturn('bool');
+        $this->normalizeDataType('decimal')->shouldReturn('float');
     }
 
     function it_generates_property_methods()
