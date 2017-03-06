@@ -2,28 +2,28 @@
 
 namespace PhproTest\SoapClient\Unit\TypeConverter;
 
-use Phpro\SoapClient\Soap\TypeConverter\DecimalTypeConverter;
+use Phpro\SoapClient\Soap\TypeConverter\DoubleTypeConverter;
 
 /**
- * Test Decimal TypeConverter.
+ * Test Double TypeConverter.
  *
  * @package PhproTest\SoapClient\Unit\TypeConverter
  */
-class DecimalTypeConverterTest extends \PHPUnit_Framework_TestCase
+class DoubleTypeConverterTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var DecimalTypeConverter
+     * @var DoubleTypeConverter
      */
     protected $converter;
 
     protected function setUp()
     {
-        $this->converter = new DecimalTypeConverter();
+        $this->converter = new DoubleTypeConverter();
     }
 
     /**
-     * @group  decimaltypeconverter
-     * @covers DecimalTypeConverter::getTypeNamespace
+     * @group  doubletypeconverter
+     * @covers DoubleTypeConverter::getTypeNamespace
      */
     public function testNamespaceIsSpecificValue()
     {
@@ -31,21 +31,21 @@ class DecimalTypeConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group  decimaltypeconverter
-     * @covers DecimalTypeConverter::getTypeName
+     * @group  doubletypeconverter
+     * @covers DoubleTypeConverter::getTypeName
      */
     public function testNameIsSpecificValue()
     {
-        $this->assertSame('decimal', $this->converter->getTypeName());
+        $this->assertSame('double', $this->converter->getTypeName());
     }
 
     /**
-     * @group  decimaltypeconverter
-     * @covers DecimalTypeConverter::convertXmlToPhp
+     * @group  doubletypeconverter
+     * @covers DoubleTypeConverter::convertXmlToPhp
      */
     public function testConvertXmlToPhp()
     {
-        $xml = '<decimal>24.700</decimal>';
+        $xml = '<double>24.700</double>';
 
         $php = $this->converter->convertXmlToPhp($xml);
 
@@ -53,12 +53,12 @@ class DecimalTypeConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group  decimaltypeconverter
-     * @covers DecimalTypeConverter::convertXmlToPhp
+     * @group  doubletypeconverter
+     * @covers DoubleTypeConverter::convertXmlToPhp
      */
     public function testConvertXmlToPhpWhenNoTextContent()
     {
-        $xml = '<decimal/>';
+        $xml = '<double/>';
 
         $php = $this->converter->convertXmlToPhp($xml);
 
@@ -66,13 +66,13 @@ class DecimalTypeConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group  decimaltypeconverter
-     * @uses   DecimalTypeConverter::getTypeName
-     * @covers DecimalTypeConverter::convertPhpToXml
+     * @group  doubletypeconverter
+     * @uses   DoubleTypeConverter::getTypeName
+     * @covers DoubleTypeConverter::convertPhpToXml
      */
     public function testConvertPhpToXml()
     {
-        $xml = '<decimal>24.7</decimal>';
+        $xml = '<double>24.7</double>';
 
         $output = $this->converter->convertPhpToXml((float) 24.700);
 

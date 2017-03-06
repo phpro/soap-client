@@ -54,6 +54,7 @@ class Normalizer
             'date' => '\\DateTime',
             'boolean' => 'bool',
             'decimal' => 'float',
+            'double' => 'float',
         ]);
     }
 
