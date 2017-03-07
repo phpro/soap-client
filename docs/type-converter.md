@@ -8,6 +8,8 @@ These TypeConverters are added by default:
 
 - DateTimeTypeConverter 
 - DateTypeConverter
+- DoubleTypeConverter
+- DecimalTypeConverter
 
 You can also create your own converter by implementing the `TypeConverterInterface`. For example:
 
