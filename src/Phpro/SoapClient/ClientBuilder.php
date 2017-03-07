@@ -88,6 +88,8 @@ class ClientBuilder
         // Add default converters:
         $this->addTypeConverter(new TypeConverter\DateTimeTypeConverter());
         $this->addTypeConverter(new TypeConverter\DateTypeConverter());
+        $this->addTypeConverter(new TypeConverter\DecimalTypeConverter());
+        $this->addTypeConverter(new TypeConverter\DoubleTypeConverter());
     }
 
     /**

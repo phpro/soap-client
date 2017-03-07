@@ -53,6 +53,8 @@ class Normalizer
             'dateTime' => '\\DateTime',
             'date' => '\\DateTime',
             'boolean' => 'bool',
+            'decimal' => 'float',
+            'double' => 'float',
         ]);
     }
 

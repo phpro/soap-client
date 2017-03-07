@@ -1,0 +1,81 @@
+<?php
+
+namespace PhproTest\SoapClient\Unit\TypeConverter;
+
+use Phpro\SoapClient\Soap\TypeConverter\DoubleTypeConverter;
+
+/**
+ * Test Double TypeConverter.
+ *
+ * @package PhproTest\SoapClient\Unit\TypeConverter
+ */
+class DoubleTypeConverterTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @var DoubleTypeConverter
+     */
+    protected $converter;
+
+    protected function setUp()
+    {
+        $this->converter = new DoubleTypeConverter();
+    }
+
+    /**
+     * @group  doubletypeconverter
+     * @covers DoubleTypeConverter::getTypeNamespace
+     */
+    public function testNamespaceIsSpecificValue()
+    {
+        $this->assertSame('http://www.w3.org/2001/XMLSchema', $this->converter->getTypeNamespace());
+    }
+
+    /**
+     * @group  doubletypeconverter
+     * @covers DoubleTypeConverter::getTypeName
+     */
+    public function testNameIsSpecificValue()
+    {
+        $this->assertSame('double', $this->converter->getTypeName());
+    }
+
+    /**
+     * @group  doubletypeconverter
+     * @covers DoubleTypeConverter::convertXmlToPhp
+     */
+    public function testConvertXmlToPhp()
+    {
+        $xml = '<double>24.700</double>';
+
+        $php = $this->converter->convertXmlToPhp($xml);
+
+        $this->assertInternalType('float', $php);
+    }
+
+    /**
+     * @group  doubletypeconverter
+     * @covers DoubleTypeConverter::convertXmlToPhp
+     */
+    public function testConvertXmlToPhpWhenNoTextContent()
+    {
+        $xml = '<double/>';
+
+        $php = $this->converter->convertXmlToPhp($xml);
+
+        $this->assertInternalType('null', $php);
+    }
+
+    /**
+     * @group  doubletypeconverter
+     * @uses   DoubleTypeConverter::getTypeName
+     * @covers DoubleTypeConverter::convertPhpToXml
+     */
+    public function testConvertPhpToXml()
+    {
+        $xml = '<double>24.7</double>';
+
+        $output = $this->converter->convertPhpToXml((float) 24.700);
+
+        $this->assertSame($xml, $output);
+    }
+}
