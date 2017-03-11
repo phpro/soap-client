@@ -111,8 +111,8 @@ $clientBuilder->addMiddleware($wsse);
 
 ### RemoveEmptyNodesMiddleware
 
-In teh request xml, unset properties are converted into empty nodes.
-If you need to remove all nodes from the request xml, you can add the remove empty nodes middleware.
+Unset properties are converted into empty nodes in the request xml.
+If you need to remove all empty nodes from the request xml, you can simply add the remove empty nodes middleware.
 
 **Usage**
 ```php
