@@ -95,12 +95,6 @@ class RemoveEmptyNodesMiddlewareTest extends \PHPUnit_Framework_TestCase
         $xml = new \DOMDocument();
         $xml->loadXML($soapBody);
 
-        $soapXml = new SoapXml($xml);
-        $soapXml->registerNamespace('wsse', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd');
-        $soapXml->registerNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
-        $soapXml->registerNamespace('wsu', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd');
-        $soapXml->registerNamespace('wsa', 'http://schemas.xmlsoap.org/ws/2004/08/addressing');
-
-        return $soapXml;
+        return new SoapXml($xml);
     }
 }

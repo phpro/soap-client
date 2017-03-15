@@ -5,11 +5,17 @@ namespace Phpro\SoapClient\Middleware;
 use GuzzleHttp\Promise\PromiseInterface;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class RemoveEmptyNodesMiddleware
+ *
+ * @package Phpro\SoapClient\Middleware
+ */
 class RemoveEmptyNodesMiddleware extends MiddleWare
 {
-
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return 'remove_empty_nodes_middleware';
@@ -36,15 +42,5 @@ class RemoveEmptyNodesMiddleware extends MiddleWare
         $request = $request->withBody($xml->toStream());
 
         return $handler($request, $options);
-    }
-
-    /**
-     * @param ResponseInterface $response
-     *
-     * @return ResponseInterface
-     */
-    public function afterResponse(ResponseInterface $response)
-    {
-        return $response;
     }
 }
