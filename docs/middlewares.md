@@ -15,6 +15,7 @@ Next, you can use one of the built-in middlewares:
 - [NtlmMiddleware](#ntlmmiddleware)
 - [WsaMiddleware](#wsamiddleware)
 - [WsseMiddleware](#wssemiddleware)
+- [RemoveEmptyNodesMiddleware](#removeemptynodesmiddleware)
 
 Can't find the middleware you were looking for?
 [It is always possible to create your own one!](#creating-your-own-middleware)
@@ -105,6 +106,17 @@ $wsse->withEncryption('client-x509.pem');
 
 // Add it to the clientbuilder
 $clientBuilder->addMiddleware($wsse);
+```
+
+
+### RemoveEmptyNodesMiddleware
+
+Unset properties are converted into empty nodes in the request xml.
+If you need to remove all empty nodes from the request xml, you can simply add the remove empty nodes middleware.
+
+**Usage**
+```php
+$clientBuilder->addMiddleware(new RemoveEmptyNodesMiddleware());
 ```
 
 

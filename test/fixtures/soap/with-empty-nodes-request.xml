@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:ns1="http://www.ad-point.com/"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:enc="http://www.w3.org/2003/05/soap-encoding">
+    <env:Body>
+        <ns1:UpdateCustomers>
+            <ns1:UserID>35</ns1:UserID>
+            <ns1:CustomerID xsi:nil="true"/>
+            <ns1:CustomerName>Peter Pane</ns1:CustomerName>
+            <ns1:CustomerOwnerID xsi:nil="true"/>
+            <ns1:Active xsi:nil="true"/>
+            <ns1:DueTerm xsi:nil="true"/>
+            <ns1:IntlAgencyID xsi:nil="true"/>
+            <ns1:CustomerTaxType xsi:nil="true"/>
+            <ns1:AgentID xsi:nil="true"/>
+            <ns1:MediaAgencyID xsi:nil="true"/>
+            <ns1:CreativeAgencyID xsi:nil="true"/>
+            <ns1:InvoiceToLocked xsi:nil="true"/>
+            <ns1:CreditLimit xsi:nil="true"/>
+            <ns1:AutoCalcOrderPrepayment xsi:nil="true"/>
+            <ns1:OverdueCreditLimit xsi:nil="true"/>
+            <ns1:Customer>
+                <ns1:MailAddress enc:id="ref1">
+                    <ns1:AddressID xsi:nil="true"/>
+                    <ns1:Street>Buceriusstraße Eingang Speersort</ns1:Street>
+                    <ns1:City>Hamburg</ns1:City>
+                    <ns1:Country>DE</ns1:Country>
+                </ns1:MailAddress>
+            </ns1:Customer>
+        </ns1:UpdateCustomers>
+    </env:Body>
+</env:Envelope>
