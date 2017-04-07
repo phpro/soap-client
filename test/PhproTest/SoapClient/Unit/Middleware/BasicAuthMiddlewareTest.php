@@ -72,6 +72,6 @@ class BasicAuthMiddlewareTest extends \PHPUnit_Framework_TestCase
         $sentRequest = $this->handler->getLastRequest();
         $this->assertEquals(
             sprintf('Basic %s', base64_encode('username:password')),
-            $sentRequest->getHeader('Authentication')[0]);
+            $sentRequest->getHeader('Authorization')[0]);
     }
 }
