@@ -48,7 +48,7 @@ class BasicAuthMiddleware extends Middleware
     public function beforeRequest(callable $handler, RequestInterface $request, array $options)
     {
         $request = $request->withHeader(
-            'Authentication',
+            'Authorization',
             sprintf('Basic %s', base64_encode(
                 sprintf('%s:%s', $this->username, $this->password)
             ))
