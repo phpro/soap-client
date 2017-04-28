@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl">
+    <wsdl:binding name="ExentionsSOAP11Binding">
+        <wsaw:UsingAddressing wsdl:required="true"/>
+    </wsdl:binding>
+</wsdl:definitions>

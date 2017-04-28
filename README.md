@@ -96,6 +96,7 @@ $ composer require phpro/soap-client
   - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
   - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
   - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
+- [Select a WSDL Provider](docs/wsdl-providers.md)
 
 
 ## Customize the code generation
