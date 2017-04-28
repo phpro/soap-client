@@ -1,6 +1,11 @@
 # Generating Value-objects
 
-Basic value-objects can be generated automatically (**Make sure you have the development dependencies installed**).
+Before you can generate code, you'll need to add some additional dev dependencies to your project:
+```sh
+composer require --dev zendframework/zend-code:^3.0.4
+```
+
+Basic value-objects can be generated automatically.
 
 ```sh
 $ soap-client generate:types
