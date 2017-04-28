@@ -19,14 +19,13 @@
     "symfony/event-dispatcher": "~2.8|~3.0",
     "symfony/filesystem": "~2.8|~3.0",
     "symfony/process": "~2.8|~3.0",
-    "zendframework/zend-code": "^3.0.4",
     "zendframework/zend-diactoros": "^1.3"
   },
   "require-dev": {
     "guzzlehttp/guzzle": "^6.2",
     "http-interop/http-factory-guzzle": "0.1.0",
-    "ocramius/proxy-manager": "^2.0.2",
     "ocramius/package-versions": "^1.1.2",
+    "ocramius/proxy-manager": "^2.0.2",
     "php-vcr/php-vcr": "^1.3.2",
     "php-vcr/phpunit-testlistener-vcr": "^2.0",
     "phpro/grumphp": "~0.11",
@@ -34,7 +33,8 @@
     "phpspec/prophecy": "~1.6",
     "phpunit/phpunit": "~5.0",
     "robrichards/wse-php": "^2.0",
-    "squizlabs/php_codesniffer": "~2.7"
+    "squizlabs/php_codesniffer": "~2.7",
+    "zendframework/zend-code": "^3.0.4"
   },
   "suggest": {
     "doctrine/common": "For caching SOAP responses",
