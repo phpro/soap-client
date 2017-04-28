@@ -1,6 +1,6 @@
 # Generating Value-objects
 
-Basic value-objects can be generated automatically.
+Basic value-objects can be generated automatically (**Make sure you have the development dependencies installed**).
 
 ```sh
 $ soap-client generate:types
