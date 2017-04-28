@@ -1,5 +1,10 @@
 # Generating class maps
 
+Before you can generate code, you'll need to add some additional dev dependencies to your project:
+```sh
+composer require --dev zendframework/zend-code:^3.0.4
+```
+
 When the value-objects are generated, we need to tell SOAP about how the PHP classes are mapped to the XSD types.
  This is done by a class map, which can be a really boring manual task.
  Luckily a class map generator is added, which you can use to parse the classmap from the WSDL.
