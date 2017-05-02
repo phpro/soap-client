@@ -3,6 +3,7 @@
 namespace PhproTest\SoapClient\Unit\Xml;
 
 use Phpro\SoapClient\Xml\SoapXml;
+use Phpro\SoapClient\Xml\Xml;
 use Zend\Diactoros\Stream;
 
 /**
@@ -25,6 +26,14 @@ class SoapXmlTest extends \PHPUnit_Framework_TestCase
     {
         $this->xml = new \DOMDocument();
         $this->xml->load(FIXTURE_DIR . '/soap/empty-request-with-head-and-body.xml');
+    }
+
+    /**
+     * @test
+     */
+    function it_extends_the_base_xml_class()
+    {
+        $this->assertInstanceOf(Xml::class, new SoapXml($this->xml));
     }
 
     /**

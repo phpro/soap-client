@@ -13,19 +13,9 @@ use Zend\Diactoros\Stream;
  *
  * @package Phpro\SoapClient\Xml
  */
-class SoapXml
+class SoapXml extends Xml
 {
     const XMLNS_XMLNS = 'http://www.w3.org/2000/xmlns/';
-
-    /**
-     * @var DOMDocument
-     */
-    private $xml;
-
-    /**
-     * @var DOMXPath
-     */
-    private $xpath;
 
     /**
      * SoapXml constructor.
@@ -34,8 +24,7 @@ class SoapXml
      */
     public function __construct(DOMDocument $xml)
     {
-        $this->xml = $xml;
-        $this->xpath = new DOMXPath($xml);
+        parent::__construct($xml);
 
         // Register some default namespaces for easy access:
         $this->registerNamespace('soap', $this->getSoapNamespaceUri());
@@ -53,15 +42,6 @@ class SoapXml
      * @param string $prefix
      * @param string $namespaceUri
      */
-    public function registerNamespace(string $prefix, string $namespaceUri)
-    {
-        $this->xpath->registerNamespace($prefix, $namespaceUri);
-    }
-
-    /**
-     * @param string $prefix
-     * @param string $namespaceUri
-     */
     public function addEnvelopeNamespace(string $prefix, string $namespaceUri)
     {
         $this->getEnvelope()->setAttributeNS(self::XMLNS_XMLNS, sprintf('xmlns:%s', $prefix), $namespaceUri);
@@ -69,19 +49,11 @@ class SoapXml
     }
 
     /**
-     * @return DOMDocument
-     */
-    public function getXmlDocument()
-    {
-        return $this->xml;
-    }
-
-    /**
      * @return DOMElement
      */
     public function getEnvelope()
     {
-        return $this->xml->documentElement;
+        return $this->getRootElement();
     }
 
     /**
@@ -97,7 +69,7 @@ class SoapXml
      */
     public function createSoapHeader(): DOMElement
     {
-        return $this->xml->createElementNS($this->getSoapNamespaceUri(), 'soap:Header');
+        return $this->getXmlDocument()->createElementNS($this->getSoapNamespaceUri(), 'soap:Header');
     }
 
     /**
@@ -117,43 +89,5 @@ class SoapXml
         $list = $this->xpath('//soap:Envelope/soap:Body');
 
         return $list->length ? $list->item(0) : null;
-    }
-
-    /**
-     * @param $expression
-     *
-     * @return \DOMNodeList
-     */
-    public function xpath($expression)
-    {
-        return $this->xpath->query($expression);
-    }
-    
-    /**
-     * @param StreamInterface $stream
-     *
-     * @return SoapXml
-     * @throws \RuntimeException
-     */
-    public static function fromStream(StreamInterface $stream): SoapXml
-    {
-        $xml = new DOMDocument();
-        $xml->loadXML($stream->getContents());
-
-        return new self($xml);
-    }
-
-    /**
-     * @return StreamInterface
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
-     */
-    public function toStream(): StreamInterface
-    {
-        $stream = new Stream('php://memory', 'r+');
-        $stream->write($this->xml->saveXML());
-        $stream->rewind();
-
-        return $stream;
     }
 }

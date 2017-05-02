@@ -14,6 +14,8 @@ use Phpro\SoapClient\Soap\SoapClientFactory;
 use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterInterface;
+use Phpro\SoapClient\Wsdl\Provider\MixedWsdlProvider;
+use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -25,7 +27,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class ClientBuilder
 {
-
     /**
      * @var ClientFactoryInterface
      */
@@ -45,6 +46,11 @@ class ClientBuilder
      * @var EventDispatcherInterface
      */
     private $dispatcher;
+
+    /**
+     * @var WsdlProviderInterface
+     */
+    private $wsdlProvider;
 
     /**
      * @var LoggerInterface|null
@@ -81,6 +87,7 @@ class ClientBuilder
         $this->classMaps = new ClassMapCollection();
         $this->converters = new TypeConverterCollection();
         $this->dispatcher = new EventDispatcher();
+        $this->wsdlProvider = new MixedWsdlProvider();
         $this->clientFactory = $clientFactory;
         $this->wsdl = $wsdl;
         $this->soapOptions = $soapOptions;
@@ -106,6 +113,14 @@ class ClientBuilder
     public function withEventDispatcher(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * @param WsdlProviderInterface $wsdlProvider
+     */
+    public function withWsdlProvider(WsdlProviderInterface $wsdlProvider)
+    {
+        $this->wsdlProvider = $wsdlProvider;
     }
 
     /**
@@ -163,7 +178,7 @@ class ClientBuilder
     public function build()
     {
         $soapClientFactory = new SoapClientFactory($this->classMaps, $this->converters);
-        $soapClient = $soapClientFactory->factory($this->wsdl, $this->soapOptions);
+        $soapClient = $soapClientFactory->factory($this->wsdlProvider->provide($this->wsdl), $this->soapOptions);
 
         if ($this->handler && !$soapClient instanceof SoapClient) {
             throw new InvalidArgumentException(sprintf(

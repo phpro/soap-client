@@ -16,6 +16,7 @@ Next, you can use one of the built-in middlewares:
 - [WsaMiddleware](#wsamiddleware)
 - [WsseMiddleware](#wssemiddleware)
 - [RemoveEmptyNodesMiddleware](#removeemptynodesmiddleware)
+- [Wsdl/DisableExtensionsMiddleware](#wsdldisableextensionsmiddleware)
 
 Can't find the middleware you were looking for?
 [It is always possible to create your own one!](#creating-your-own-middleware)
@@ -120,9 +121,26 @@ $clientBuilder->addMiddleware(new RemoveEmptyNodesMiddleware());
 ```
 
 
+### Wsdl/DisableExtensionsMiddleware
+
+The default SOAP client does not support `wsdl:required` attributes since there is no SOAP extension mechanism in PHP.
+You will retrieve this exception: "[SoapFault] SOAP-ERROR: Parsing WSDL: Unknown required WSDL extension" 
+when the WSDL does contain required SOAP extensions.
+ 
+This middleware can be used to set the "wsdl:required" 
+property to false on the fly so that you don't have to change the WSDL on the server.
+
+**Usage**
+```php
+$wsdlProvier = GuzzleWsdlProvider::create($client);
+$wsdlProvider->addMiddleware(new DisableExtensionsMiddleware());
+$clientBuilder->withWsdlProvider($wsdlProvider);
+```
+
+
 ## Creating your own middleware
 
-Didn't found the middleware you needed? No worries! It is very easy to create your own middleware.
+Didn't find the middleware you needed? No worries! It is very easy to create your own middleware.
 We currently added a thin layer above [Guzzle middlewares](http://docs.guzzlephp.org/en/latest/handlers-and-middleware.html#middleware) 
 to make it easy to modify PSR-7 request and responses.
 
