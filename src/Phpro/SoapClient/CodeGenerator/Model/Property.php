@@ -22,6 +22,11 @@ class Property
     private $type;
 
     /**
+     * @var string
+     */
+    private $originalType;
+
+    /**
      * Property constructor.
      *
      * @param string $name
@@ -31,6 +36,7 @@ class Property
     {
         $this->name = Normalizer::normalizeProperty($name);
         $this->type = Normalizer::normalizeDataType($type);
+        $this->originalType = $type;
     }
 
     /**
@@ -47,6 +53,14 @@ class Property
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalType()
+    {
+        return $this->originalType;
     }
 
     /**
