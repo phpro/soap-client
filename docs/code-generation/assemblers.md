@@ -13,6 +13,7 @@ to generate the code you want to add to the generated SOAP types.
 - [GetterAssembler](#getterassembler)
 - [InterfaceAssembler](#interfaceassembler)
 - [IteratorAssembler](#iteratorassembler)
+- [JsonSerializableAssembler](#jsonserializableassembler)
 - [PropertyAssembler](#propertyassembler)
 - [RequestAssembler](#requestassembler)
 - [ResultAssembler](#resultassembler)
@@ -129,7 +130,6 @@ class MyType implements Iterator
 }
 ```
 
-
 ## IteratorAssembler
 
 The `IteratorAssembler` can be used for SOAP types that contain a list of another SOAP type.
@@ -155,6 +155,31 @@ class MyType implements IteratorAggregate
 }
 ```
 
+## JsonSerializableAssembler
+
+The `JsonSerializableAssembler` can be used if you want to JSON serialize your SOAP objects. 
+This could be handy for logging JSON serialized request / response data which makes your logs smaller.
+
+Example output:
+
+```php
+use JsonSerializable;
+
+class MyType implements JsonSerializable
+{
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'prop1' => \$this->prop1,
+            'prop2' => \$this->prop2,
+        ];
+    }
+}
+```
 
 ## PropertyAssembler
 
