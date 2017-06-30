@@ -110,7 +110,7 @@ new Rules\TypenameMatchesRule(
 ```
 
 The `TypenameMatchesRule` can be used in the types generation command and contains a subRule and a regular expression.
-The subRule is mostly a regular AssmbleRule, but can be any class that implements the RuleInterface.
+The subRule is mostly a regular AssembleRule, but can be any class that implements the RuleInterface.
 The regular expression will be matched against the normalized SOAP type name. 
 If the regular expression matches and the subRule is accepted, the defined assembler will run.
  
