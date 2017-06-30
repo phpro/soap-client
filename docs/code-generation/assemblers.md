@@ -21,6 +21,7 @@ to generate the code you want to add to the generated SOAP types.
 - [SetterAssembler](#setterassembler)
 - [TraitAssembler](#traitassembler)
 - [UseAssembler](#useassembler)
+- [ImmutableSetterAssembler](#immutablesetterassembler)
 
 
 ## ClassMapAssembler

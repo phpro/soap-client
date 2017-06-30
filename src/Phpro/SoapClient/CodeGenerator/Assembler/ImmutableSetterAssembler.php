@@ -49,19 +49,19 @@ class ImmutableSetterAssembler implements AssemblerInterface
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [
-                        'name'       => $methodName,
+                        'name' => $methodName,
                         'parameters' => [$property->getName()],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                        'body'       => implode(PHP_EOL, $lines),
-                        'docblock'   => DocBlockGenerator::fromArray(
+                        'body' => implode($class::LINE_FEED, $lines),
+                        'docblock' => DocBlockGenerator::fromArray(
                             [
                                 'tags' => [
                                     [
-                                        'name'        => 'param',
+                                        'name' => 'param',
                                         'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
                                     ],
                                     [
-                                        'name'        => 'return',
+                                        'name' => 'return',
                                         'description' => $class->getName(),
                                     ],
                                 ],
