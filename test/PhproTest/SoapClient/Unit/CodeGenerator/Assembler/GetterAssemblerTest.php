@@ -101,10 +101,10 @@ CODE;
     }
 
     /**
-     * @param string $propetyName
+     * @param string $propertyName
      * @return PropertyContext
      */
-    private function createContext($propetyName = 'prop1')
+    private function createContext($propertyName = 'prop1')
     {
         $properties = [
             'prop1' => 'string',
@@ -114,7 +114,7 @@ CODE;
 
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', $properties);
-        $property = new Property($propetyName, $properties[$propetyName]);
+        $property = new Property($propertyName, $properties[$propertyName]);
 
         return new PropertyContext($class, $type, $property);
     }
