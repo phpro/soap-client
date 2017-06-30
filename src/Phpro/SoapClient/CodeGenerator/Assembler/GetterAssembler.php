@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -17,6 +18,20 @@ use Zend\Code\Generator\MethodGenerator;
  */
 class GetterAssembler implements AssemblerInterface
 {
+    /**
+     * @var bool
+     */
+    private $boolGetters;
+
+    /**
+     * GetterAssembler constructor.
+     * @param bool $boolGetters
+     */
+    public function __construct($boolGetters = false)
+    {
+        $this->boolGetters = $boolGetters;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -35,7 +50,8 @@ class GetterAssembler implements AssemblerInterface
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
-            $methodName = Normalizer::generatePropertyMethod('get', $property->getName());
+            $prefix = $this->getPrefix($property);
+            $methodName = Normalizer::generatePropertyMethod($prefix, $property->getName());
             $class->removeMethod($methodName);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
@@ -56,5 +72,17 @@ class GetterAssembler implements AssemblerInterface
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
+    }
+
+    /**
+     * @param Property $property
+     * @return string
+     */
+    public function getPrefix(Property $property)
+    {
+        if (!$this->boolGetters) {
+            return 'get';
+        }
+        return $property->getType() === 'bool' ? 'is' : 'get';
     }
 }

@@ -101,6 +101,7 @@ final class MyType
 ## GetterAssembler
 
 The `GetterAssembler` will add a getter method to the generated class.
+For boolean types you can opt to use the 'is' function prefix instead of 'get' by enabling this in the constructor.
 
 Example output:
 
