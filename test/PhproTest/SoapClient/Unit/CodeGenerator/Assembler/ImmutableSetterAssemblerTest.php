@@ -5,7 +5,6 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ImmutableSetterAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Zend\Code\Generator\ClassGenerator;
