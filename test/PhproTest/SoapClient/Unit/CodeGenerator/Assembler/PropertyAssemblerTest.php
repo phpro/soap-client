@@ -9,6 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\PropertyGenerator;
 
 /**
  * Class PropertyAssemblerTest
@@ -56,7 +57,37 @@ class MyType
     /**
      * @var string
      */
-    protected \$prop1 = null;
+    private \$prop1 = null;
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+
+    /**
+     * @test
+     */
+    function it_assembles_with_visibility()
+    {
+        $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @var string
+     */
+    public \$prop1 = null;
 
 
 }

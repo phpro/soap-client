@@ -2,7 +2,6 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
-use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\Exception\AssemblerException;
@@ -16,6 +15,19 @@ use Zend\Code\Generator\DocBlockGenerator;
  */
 class PropertyAssembler implements AssemblerInterface
 {
+    /**
+     * @var string
+     */
+    private $visibility;
+
+    /**
+     * PropertyAssembler constructor.
+     * @param string $visibility
+     */
+    public function __construct($visibility = PropertyGenerator::VISIBILITY_PRIVATE)
+    {
+        $this->visibility = $visibility;
+    }
 
     /**
      * {@inheritdoc}
@@ -43,7 +55,7 @@ class PropertyAssembler implements AssemblerInterface
             $class->addPropertyFromGenerator(
                 PropertyGenerator::fromArray([
                     'name' => $property->getName(),
-                    'visibility' => PropertyGenerator::VISIBILITY_PROTECTED,
+                    'visibility' => $this->visibility,
                     'docblock' => DocBlockGenerator::fromArray([
                         'tags' => [
                             [
