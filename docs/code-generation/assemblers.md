@@ -191,7 +191,13 @@ Example output:
     /**
      * @var string
      */
-    protected $prop1 = null;
+    private $prop1 = null;
+```
+
+You can adjust the visibility of the property by injecting the visibility in the constructor.
+
+```php
+new PropertyAssembler(PropertyGenerator::VISIBILITY_PROTECTED)
 ```
 
 
