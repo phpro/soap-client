@@ -11,6 +11,7 @@ to generate the code you want to add to the generated SOAP types.
 - [FinalClassAssembler](#finalclassassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
+- [ImmutableSetterAssembler](#immutablesetterassembler)
 - [InterfaceAssembler](#interfaceassembler)
 - [IteratorAssembler](#iteratorassembler)
 - [JsonSerializableAssembler](#jsonserializableassembler)
@@ -21,7 +22,6 @@ to generate the code you want to add to the generated SOAP types.
 - [SetterAssembler](#setterassembler)
 - [TraitAssembler](#traitassembler)
 - [UseAssembler](#useassembler)
-- [ImmutableSetterAssembler](#immutablesetterassembler)
 
 
 ## ClassMapAssembler
