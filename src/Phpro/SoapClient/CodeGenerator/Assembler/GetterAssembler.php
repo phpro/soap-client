@@ -80,7 +80,7 @@ class GetterAssembler implements AssemblerInterface
      */
     public function getPrefix(Property $property)
     {
-        if (!$this->boolGetters){
+        if (!$this->boolGetters) {
             return 'get';
         }
         return $property->getType() === 'bool' ? 'is' : 'get';
