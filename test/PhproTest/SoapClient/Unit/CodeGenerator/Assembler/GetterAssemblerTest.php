@@ -5,7 +5,6 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\GetterAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Zend\Code\Generator\ClassGenerator;
@@ -69,16 +68,53 @@ CODE;
     }
 
     /**
-     * @return TypeContext
+     * @test
      */
-    private function createContext()
+    function it_assembles_property_methodnames_correctly()
     {
-        $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', [
+        $assembler = new GetterAssembler(true);
+
+        $context = $this->createContext('prop3');
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @return bool
+     */
+    public function isProp3()
+    {
+        return \$this->prop3;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @param string $propetyName
+     * @return PropertyContext
+     */
+    private function createContext($propetyName = 'prop1')
+    {
+        $properties = [
             'prop1' => 'string',
-            'prop2' => 'int'
-        ]);
-        $property = new Property('prop1', 'string');
+            'prop2' => 'int',
+            'prop3' => 'boolean'
+        ];
+
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $type = new Type('MyNamespace', 'MyType', $properties);
+        $property = new Property($propetyName, $properties[$propetyName]);
 
         return new PropertyContext($class, $type, $property);
     }
