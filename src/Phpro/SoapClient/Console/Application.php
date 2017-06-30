@@ -34,6 +34,7 @@ class Application extends SymfonyApplication
         $commands = parent::getDefaultCommands();
         $commands[] = new Command\GenerateTypesCommand($filesystem);
         $commands[] = new Command\GenerateClassmapCommand($filesystem);
+        $commands[] = new Command\GenerateClientCommand($filesystem);
 
         return $commands;
     }
