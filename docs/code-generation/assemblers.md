@@ -329,6 +329,27 @@ class MyType
 }
 ```
 
+## ImmutableSetterAssembler
+
+The `ImmutableSetterAssembler` generates immutable setters that return a new instance with the new value set.
+Used to create variations of the same base instance, without modifying the original values.
+
+Example output:
+
+```php
+    /**
+     * @param string $prop1
+     * @return MyType
+     */
+    public function withProp1($prop1)
+    {
+        $new = clone $this;
+        $new->prop1 = $prop1;
+
+        return $new;
+    }
+```
+
 
 # Creating your own Assembler
 
