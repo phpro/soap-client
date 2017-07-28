@@ -2,15 +2,15 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
-use Phpro\SoapClient\CodeGenerator\Model\Method;
+use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Zend\Code\Generator\ClassGenerator;
 
 /**
- * Class MethodContext
+ * Class ClientMethodContext
  *
  * @package Phpro\SoapClient\CodeGenerator\Context
  */
-class MethodContext implements ContextInterface
+class ClientMethodContext implements ContextInterface
 {
     /**
      * @var ClassGenerator
@@ -18,7 +18,7 @@ class MethodContext implements ContextInterface
     private $class;
 
     /**
-     * @var Method
+     * @var ClientMethod
      */
     private $method;
 
@@ -26,9 +26,9 @@ class MethodContext implements ContextInterface
      * PropertyContext constructor.
      *
      * @param ClassGenerator $class
-     * @param Method $method
+     * @param ClientMethod $method
      */
-    public function __construct(ClassGenerator $class, Method $method)
+    public function __construct(ClassGenerator $class, ClientMethod $method)
     {
         $this->class = $class;
         $this->method = $method;
@@ -43,7 +43,7 @@ class MethodContext implements ContextInterface
     }
 
     /**
-     * @return Method
+     * @return ClientMethod
      */
     public function getMethod()
     {

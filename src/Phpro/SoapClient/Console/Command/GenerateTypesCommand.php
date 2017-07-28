@@ -87,11 +87,11 @@ class GenerateTypesCommand extends Command
         }
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $typeMap = TypeMap::fromSoapClient($config->getNamespace(), $soapClient);
+        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
         $generator = new TypeGenerator($config->getRuleSet());
         
         foreach ($typeMap->getTypes() as $type) {
-            $path = $type->getPathname($config->getDestination());
+            $path = $type->getPathname($config->getTypeDestination());
             if ($this->handleType($generator, $type, $path)) {
                 $this->output->writeln(sprintf('Generated class %s to %s', $type->getFullName(), $path));
             }

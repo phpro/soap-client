@@ -2,7 +2,6 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\SoapClient;
 
 /**
@@ -14,7 +13,7 @@ class MethodMap
 {
 
     /**
-     * @var array|
+     * @var ClientMethod[]
      */
     private $methods = [];
 
@@ -22,21 +21,23 @@ class MethodMap
      * TypeMap constructor.
      *
      * @param array $methods
+     * @param string $parameterNamespace
      */
-    public function __construct(array $methods)
+    public function __construct(array $methods, $parameterNamespace = null)
     {
         foreach ($methods as $method) {
-            $this->methods[] = new Method($method);
+            $this->methods[] = new ClientMethod($method, $parameterNamespace);
         }
     }
 
     /**
      * @param SoapClient $client
+     * @param string $parameterNamespace
      * @return MethodMap
      */
-    public static function fromSoapClient(SoapClient $client)
+    public static function fromSoapClient(SoapClient $client, $parameterNamespace = null)
     {
-        return new self($client->__getFunctions());
+        return new self($client->__getFunctions(), $parameterNamespace);
     }
 
     /**

@@ -3,34 +3,29 @@
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\Client;
-use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
-use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
-use Phpro\SoapClient\CodeGenerator\Context\MethodContext;
-use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
+use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
- * Class MethodAssembler
+ * Class ClientMethodAssembler
  *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
-class MethodAssembler implements AssemblerInterface
+class ClientMethodAssembler implements AssemblerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function canAssemble(ContextInterface $context)
     {
-        return $context instanceof MethodContext;
+        return $context instanceof ClientMethodContext;
     }
 
     /**
-     * @param ContextInterface|MethodContext $context
+     * @param ContextInterface|ClientMethodContext $context
      *
      * @throws AssemblerException
      */
@@ -51,20 +46,10 @@ class MethodAssembler implements AssemblerInterface
                         'parameters' => $method->getParameters(),
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                         'body'       => sprintf(
-                            'return $this->call(\'%1$s\', $%2$s);',
-                            $param->getOriginalType(),
+                            'return $this->call(\'%1$s\', $%1$s);',
                             $param->getName()
                         ),
-                        'docblock'   => DocBlockGenerator::fromArray(
-                            [
-                                'tags' => [
-                                    [
-                                        'name'        => 'return',
-                                        'description' => $method->getReturnType(),
-                                    ],
-                                ],
-                            ]
-                        ),
+                        'returntype'    => '\\'.$method->getParameterNamespace().'\\'.$method->getReturnType(),
                     ]
                 )
             );

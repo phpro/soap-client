@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator;
 
-use Phpro\SoapClient\CodeGenerator\Context\MethodContext;
+use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
@@ -46,9 +46,8 @@ class ClientGenerator implements GeneratorInterface
         $class->setName($client->getName());
         $methods = $client->getMethodMap();
 
-        var_export($this->ruleSet);
         foreach ($methods->getMethods() as $method) {
-            $this->ruleSet->applyRules(new MethodContext($class, $method));
+            $this->ruleSet->applyRules(new ClientMethodContext($class, $method));
         }
 
         $file->setClass($class);

@@ -74,7 +74,7 @@ class GenerateClassmapCommand extends Command
         }
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $typeMap = TypeMap::fromSoapClient($config->getNamespace(), $soapClient);
+        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
 
         $file = new FileGenerator();
         $generator = new ClassMapGenerator($config->getRuleSet());

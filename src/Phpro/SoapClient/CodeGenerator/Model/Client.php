@@ -11,6 +11,10 @@ use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
  */
 class Client
 {
+    /**
+     * @var MethodMap
+     */
+    private $methodMap;
 
     /**
      * @var string

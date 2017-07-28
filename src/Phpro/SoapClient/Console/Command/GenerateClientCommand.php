@@ -3,11 +3,10 @@
 namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ClientGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\MethodMap;
-use Phpro\SoapClient\CodeGenerator\Model\Type;
-use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
@@ -49,7 +48,7 @@ class GenerateClientCommand extends Command
      */
     public function __construct(Filesystem $filesystem)
     {
-        parent::__construct(null);
+        parent::__construct();
         $this->filesystem = $filesystem;
     }
 
@@ -87,24 +86,36 @@ class GenerateClientCommand extends Command
         if (!$config instanceof ConfigInterface) {
             throw InvalidArgumentException::invalidConfigFile();
         }
+        if (!$config instanceof Config) {
+            throw InvalidArgumentException::invalidConfigFile();
+        }
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $methodMap = MethodMap::fromSoapClient($soapClient);
-        $client = new Client('MySoapClient', $config->getNamespace(), $methodMap);
+        $methodMap = MethodMap::fromSoapClient($soapClient, $config->getTypesNamespace());
+        $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
         $generator = new ClientGenerator($config->getRuleSet());
         $fileGenerator = new FileGenerator();
-        $this->generateClient($fileGenerator, $generator, $client, $config->getDestination().'/MySoapClient.php');
-
-        //var_export($soapClient);
-//
-//        foreach ($typeMap->getTypes() as $type) {
-//            $path = $type->getPathname($config->getDestination());
-//            if ($this->handleType($generator, $type, $path)) {
-//                $this->output->writeln(sprintf('Generated client %s to %s', $type->getFullName(), $path));
-//            }
-//        }
-
+        $this->generateClient(
+            $fileGenerator,
+            $generator,
+            $client,
+            $config->getClientDestination().'/'.$config->getClientName().'.php'
+        );
         $this->output->writeln('Done');
+    }
+
+    /**
+     * Generates one type class
+     *
+     * @param FileGenerator $file
+     * @param ClientGenerator|TypeGenerator $generator
+     * @param Client $client
+     * @param string $path
+     */
+    protected function generateClient(FileGenerator $file, ClientGenerator $generator, Client $client, $path)
+    {
+        $code = $generator->generate($file, $client);
+        $this->filesystem->putFileContents($path, $code);
     }
 
     /**
@@ -113,10 +124,9 @@ class GenerateClientCommand extends Command
      * If patching the old class does not wor: ask for an overwrite
      * Create a class from an empty file
      *
-     * @param TypeGenerator $generator
-     * @param Type $type
-     * @param                 $path
-     *
+     * @param ClientGenerator|TypeGenerator $generator
+     * @param Client $client
+     * @param $path
      * @return bool
      */
     protected function handleClient(ClientGenerator $generator, Client $client, $path)
@@ -129,7 +139,7 @@ class GenerateClientCommand extends Command
 
             // Ask if a class can be overwritten if it contains errors
             if (!$this->askForOverwrite()) {
-                $this->output->writeln(sprintf('Skipping %s', $type->getName()));
+                $this->output->writeln(sprintf('Skipping %s', $client->getName()));
 
                 return false;
             }
@@ -138,7 +148,7 @@ class GenerateClientCommand extends Command
         // Try to create a blanco class:
         try {
             $file = new FileGenerator();
-            $this->generateType($file, $generator, $type, $path);
+            $this->generateClient($file, $generator, $client, $path);
         } catch (\Exception $e) {
             $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
 
@@ -152,15 +162,14 @@ class GenerateClientCommand extends Command
      * An existing file was found. Try to patch or ask if it can be overwritten.
      *
      * @param TypeGenerator $generator
-     * @param Type $type
+     * @param Client $client
      * @param string $path
-     *
      * @return bool
      */
-    protected function handleExistingFile(TypeGenerator $generator, Type $type, $path)
+    protected function handleExistingFile(TypeGenerator $generator, Client $client, $path)
     {
-        $this->output->write(sprintf('Type %s exists. Trying to patch ...', $type->getName()));
-        $patched = $this->patchExistingFile($generator, $type, $path);
+        $this->output->write(sprintf('Type %s exists. Trying to patch ...', $client->getName()));
+        $patched = $this->patchExistingFile($generator, $client, $path);
 
         if ($patched) {
             $this->output->writeln('Patched!');
@@ -196,21 +205,6 @@ class GenerateClientCommand extends Command
         }
 
         return true;
-    }
-
-    /**
-     * Generates one type class
-     *
-     * @param FileGenerator $file
-     * @param ClientGenerator|TypeGenerator $generator
-     * @param Client $client
-     * @param string $path
-     * @internal param Type $type
-     */
-    protected function generateClient(FileGenerator $file, ClientGenerator $generator, Client $client, $path)
-    {
-        $code = $generator->generate($file, $client);
-        $this->filesystem->putFileContents($path, $code);
     }
 
     /**

@@ -7,7 +7,6 @@ use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 /**
  * Class ConfigSpec
@@ -21,7 +20,7 @@ class ConfigSpec extends ObjectBehavior
     {
         $this->shouldHaveType(Config::class);
     }
-    
+
     function it_is_a_config_class()
     {
         $this->shouldImplement(ConfigInterface::class);
@@ -63,17 +62,43 @@ class ConfigSpec extends ObjectBehavior
 
     function it_had_soap_options()
     {
-        $this->getSoapOptions()->shouldBe([
-            'trace' => false,
-            'exceptions' => true,
-            'keep_alive' => true,
-            'cache_wsdl' => WSDL_CACHE_NONE,
-        ]);
+        $this->getSoapOptions()->shouldBe(
+            [
+                'trace'      => false,
+                'exceptions' => true,
+                'keep_alive' => true,
+                'cache_wsdl' => WSDL_CACHE_NONE,
+            ]
+        );
 
         $this->setSoapOptions($value = []);
         $this->getSoapOptions()->shouldBe($value);
 
         $this->addSoapOption('key', 'value');
         $this->getSoapOptions()->shouldBe(['key' => 'value']);
+    }
+
+    public function it_has_a_type_destination()
+    {
+        $this->setTypeDestination($value = 'src/type');
+        $this->getTypeDestination()->shouldBe($value);
+    }
+
+    public function it_has_a_client_destination()
+    {
+        $this->setClientDestination($value = 'src/client');
+        $this->getClientDestination()->shouldBe($value);
+    }
+
+    public function it_has_a_type_namespace()
+    {
+        $this->setTypeNamespace($value = 'TypeNamespace');
+        $this->getTypesNamespace()->shouldBe($value);
+    }
+
+    public function it_has_a_client_namespace()
+    {
+        $this->setClientNamespace($value = 'ClientNamespace');
+        $this->getClientNamespace()->shouldBe($value);
     }
 }

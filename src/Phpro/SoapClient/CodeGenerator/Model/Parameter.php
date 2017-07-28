@@ -10,48 +10,20 @@ use Zend\Code\Generator\ParameterGenerator;
  */
 class Parameter extends ParameterGenerator
 {
-
     /**
      * @var string
      */
     private $originalType;
 
     /**
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
      * Parameter constructor.
+     * @param string $name
      * @param string $type
      */
-    public function __construct($type)
+    public function __construct($name, $type)
     {
-        $this->type = $type;
-        $this->name = lcfirst($type);
+        parent::__construct($name, $type);
         $this->originalType = $type;
-        parent::__construct($this->name, 'Types\\'.$this->type);
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**

@@ -3,14 +3,14 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 /**
- * Class Type
+ * Class ClientMethod
  *
  * @package Phpro\SoapClient\CodeGenerator\Model
  */
-class Method
+class ClientMethod
 {
     /**
-     * @var array|Method[]
+     * @var Method[]
      */
     private $parameters;
 
@@ -25,14 +25,21 @@ class Method
     private $returnType;
 
     /**
+     * @var string
+     */
+    private $parameterNamespace;
+
+    /**
      * TypeModel constructor.
      *
      * @param $functionString
+     * @param $parameterNamespace
      * @internal param string $xsdName
      * @internal param Property[] $properties
      */
-    public function __construct($functionString)
+    public function __construct($functionString, $parameterNamespace = null)
     {
+        $this->parameterNamespace = $parameterNamespace ?: '';
         $this->parameters = $this->parseParameters($functionString);
         $this->methodName = $this->parseName($functionString);
         $this->returnType = $this->parseReturnType($functionString);
@@ -54,7 +61,7 @@ class Method
         $properties = explode(',', $properties[1]);
         foreach ($properties as $property) {
             list($type) = explode(' ', $property);
-            $parameters[] = new Parameter($type);
+            $parameters[] = new Parameter($type, $this->parameterNamespace.'\\'.$type);
         }
 
         return $parameters;
@@ -104,5 +111,13 @@ class Method
     public function getReturnType()
     {
         return $this->returnType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParameterNamespace()
+    {
+        return $this->parameterNamespace;
     }
 }
