@@ -45,7 +45,7 @@ Creating a great OO SOAP client means that you'll have to create a lot of code.
 
 It is important keep your code clean. This is why we added an event-listener to your Soap client.
  You can hook in at every important step of the SOAP flow.
- This way it is possible to add logging, caching and error handling with event subscribers. 
+ This way it is possible to add logging, validation, caching and error handling with event subscribers. 
  Pretty cool right?!
 
 Implementing SOAP extensions is a real pain in the ass.
@@ -87,6 +87,7 @@ $ composer require phpro/soap-client
 - [Add type converters.](docs/type-converter.md)
 - [Listen to events.](docs/events.md)
   - [Logger plugin](docs/plugins/logger.md)
+  - [Validator plugin](docs/plugins/validator.md)
   - [Caching plugin](docs/plugins/caching.md)
 - [Specify your data transfer handler.](docs/handlers.md)
   - [SoapHandle](docs/handlers.md#soaphandle)

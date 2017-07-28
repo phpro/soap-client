@@ -6,6 +6,7 @@ use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Middleware\MiddlewareSupportingInterface;
 use Phpro\SoapClient\Plugin\LogPlugin;
+use Phpro\SoapClient\Plugin\ValidatorPlugin;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapInterface;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
@@ -19,6 +20,7 @@ use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class ClientBuilder
@@ -56,6 +58,11 @@ class ClientBuilder
      * @var LoggerInterface|null
      */
     private $logger;
+
+    /**
+     * @var ValidatorInterface|null
+     */
+    private $validator;
 
     /**
      * @var HandlerInterface|null
@@ -105,6 +112,14 @@ class ClientBuilder
     public function withLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param ValidatorInterface $validator
+     */
+    public function withValidator(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
     }
 
     /**
@@ -204,6 +219,10 @@ class ClientBuilder
 
         if ($this->logger) {
             $this->dispatcher->addSubscriber(new LogPlugin($this->logger));
+        }
+
+        if ($this->validator) {
+            $this->dispatcher->addSubscriber(new ValidatorPlugin($this->validator));
         }
 
         return $this->clientFactory->factory($soapClient, $this->dispatcher);
