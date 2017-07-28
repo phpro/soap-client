@@ -5,11 +5,11 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 use Phpro\SoapClient\Soap\SoapClient;
 
 /**
- * Class MethodMap
+ * Class ClientMethodMap
  *
  * @package Phpro\SoapClient\CodeGenerator\Model
  */
-class MethodMap
+class ClientMethodMap
 {
 
     /**
@@ -33,7 +33,7 @@ class MethodMap
     /**
      * @param SoapClient $client
      * @param string $parameterNamespace
-     * @return MethodMap
+     * @return ClientMethodMap
      */
     public static function fromSoapClient(SoapClient $client, $parameterNamespace = null)
     {

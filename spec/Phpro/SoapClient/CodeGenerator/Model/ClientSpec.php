@@ -3,7 +3,7 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Model\Client;
-use Phpro\SoapClient\CodeGenerator\Model\MethodMap;
+use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use PhpSpec\ObjectBehavior;
 
@@ -15,7 +15,7 @@ use PhpSpec\ObjectBehavior;
  */
 class ClientSpec extends ObjectBehavior
 {
-    function let(MethodMap $methods)
+    function let(ClientMethodMap $methods)
     {
         $this->beConstructedWith('MyClient', 'MyNamespace', $methods);
     }

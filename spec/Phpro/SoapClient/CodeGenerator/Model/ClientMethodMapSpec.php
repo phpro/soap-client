@@ -2,7 +2,7 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Model\MethodMap;
+use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -10,7 +10,7 @@ use PhpSpec\ObjectBehavior;
  *
  * @package spec\Phpro\SoapClient\CodeGenerator\Model
  */
-class MethodMapSpec extends ObjectBehavior
+class ClientMethodMapSpec extends ObjectBehavior
 {
     function let()
     {
@@ -19,7 +19,7 @@ class MethodMapSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(MethodMap::class);
+        $this->shouldHaveType(ClientMethodMap::class);
     }
 
     function it_has_methods()

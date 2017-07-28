@@ -12,7 +12,7 @@ use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 class Client
 {
     /**
-     * @var MethodMap
+     * @var ClientMethodMap
      */
     private $methodMap;
 
@@ -31,11 +31,11 @@ class Client
      *
      * @param string $name
      * @param string $namespace
-     * @param MethodMap $methods
+     * @param ClientMethodMap $methods
      * @internal param string $xsdName
      * @internal param Property[] $properties
      */
-    public function __construct($name, $namespace, MethodMap $methods)
+    public function __construct($name, $namespace, ClientMethodMap $methods)
     {
         $this->name = $name;
         $this->namespace = Normalizer::normalizeNamespace($namespace);
@@ -59,7 +59,7 @@ class Client
     }
 
     /**
-     * @return MethodMap
+     * @return ClientMethodMap
      */
     public function getMethodMap()
     {

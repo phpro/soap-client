@@ -6,7 +6,7 @@ use Phpro\SoapClient\CodeGenerator\ClientGenerator;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
-use Phpro\SoapClient\CodeGenerator\Model\MethodMap;
+use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
@@ -91,7 +91,7 @@ class GenerateClientCommand extends Command
         }
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $methodMap = MethodMap::fromSoapClient($soapClient, $config->getTypesNamespace());
+        $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypesNamespace());
         $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
         $generator = new ClientGenerator($config->getRuleSet());
         $fileGenerator = new FileGenerator();
