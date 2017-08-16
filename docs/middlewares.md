@@ -208,7 +208,7 @@ $xml->registerNamespace('alias', 'http://alias');
 $xml->xpath('/soap:Envelope')->item(0);
 
 // Use the manipulated XML in your PSR7 request or response:
-$request->setBody($xml->toStream())
+$request = $request->withBody($xml->toStream())
 ```
 
 As you can see, this XML manipulation class is rather small at the moment but is super powerful.
