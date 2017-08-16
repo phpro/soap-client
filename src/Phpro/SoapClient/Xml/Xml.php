@@ -90,7 +90,7 @@ class Xml
         $xml = new DOMDocument();
         $xml->loadXML($stream->getContents());
 
-        return new self($xml);
+        return new static($xml);
     }
 
     /**
@@ -103,7 +103,7 @@ class Xml
         $xml = new DOMDocument();
         $xml->loadXML($content);
 
-        return new self($xml);
+        return new static($xml);
     }
 
     /**
