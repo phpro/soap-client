@@ -5,7 +5,9 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\CodeGenerator\Util\TypeChecker;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
@@ -17,6 +19,21 @@ use Zend\Code\Generator\MethodGenerator;
  */
 class FluentSetterAssembler implements AssemblerInterface
 {
+    /**
+     * @var FluentSetterAssemblerOptions
+     */
+    private $options;
+
+    /**
+     * FluentSetterAssembler constructor.
+     *
+     * @param FluentSetterAssemblerOptions $options
+     */
+    public function __construct(FluentSetterAssemblerOptions $options)
+    {
+        $this->options = $options;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -39,7 +56,7 @@ class FluentSetterAssembler implements AssemblerInterface
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
                     'name' => $methodName,
-                    'parameters' => [$property->getName()],
+                    'parameters' => $this->getParameter($property),
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                     'body' => sprintf('$this->%1$s = $%1$s;%2$sreturn $this;', $property->getName(), $class::LINE_FEED),
                     'docblock' => DocBlockGenerator::fromArray([
@@ -59,5 +76,20 @@ class FluentSetterAssembler implements AssemblerInterface
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
+    }
+
+    /**
+     * @param Property $property
+     *
+     * @return array
+     */
+    private function getParameter(Property $property): array
+    {
+        $type = $property->getType();
+        if ($this->options->useReturnType() && TypeChecker::hasValidType($type)) {
+            return [['name' => $property->getName(), 'type' => $type]];
+        };
+
+        return [$property->getName()];
     }
 }

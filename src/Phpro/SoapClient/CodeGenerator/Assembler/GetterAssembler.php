@@ -19,17 +19,18 @@ use Zend\Code\Generator\MethodGenerator;
 class GetterAssembler implements AssemblerInterface
 {
     /**
-     * @var bool
+     * @var GetterAssemblerOptions
      */
-    private $boolGetters;
+    private $options;
 
     /**
      * GetterAssembler constructor.
-     * @param bool $boolGetters
+     *
+     * @param GetterAssemblerOptions $options
      */
-    public function __construct($boolGetters = false)
+    public function __construct(GetterAssemblerOptions $options)
     {
-        $this->boolGetters = $boolGetters;
+        $this->options = $options;
     }
 
     /**
@@ -80,7 +81,7 @@ class GetterAssembler implements AssemblerInterface
      */
     public function getPrefix(Property $property)
     {
-        if (!$this->boolGetters) {
+        if (!$this->options->useBoolGetters()) {
             return 'get';
         }
         return $property->getType() === 'bool' ? 'is' : 'get';
