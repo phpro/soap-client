@@ -72,6 +72,11 @@ class WsseMiddleware extends Middleware
     private $hasUserToken = false;
 
     /**
+     * @var bool
+     */
+    private $serverCertificateHasSubjectKeyIdentifier = true;
+
+    /**
      * WsseMiddleware constructor.
      *
      * @param string $privateKeyFile
@@ -156,6 +161,18 @@ class WsseMiddleware extends Middleware
     }
 
     /**
+     * @param bool $hasSubjectKeyIdentifier
+     *
+     * @return $this
+     */
+    public function withServerCertificateHasSubjectKeyIdentifier(bool $hasSubjectKeyIdentifier)
+    {
+        $this->serverCertificateHasSubjectKeyIdentifier = $hasSubjectKeyIdentifier;
+
+        return $this;
+    }
+
+    /**
      * @param callable         $handler
      * @param RequestInterface $request
      * @param array            $options
@@ -195,7 +212,7 @@ class WsseMiddleware extends Middleware
             $siteKey->loadKey($this->serverCertificateFile, true, true);
             $wsse->encryptSoapDoc($siteKey, $key, [
                 'KeyInfo' => [
-                    'X509SubjectKeyIdentifier' => true
+                    'X509SubjectKeyIdentifier' => $this->serverCertificateHasSubjectKeyIdentifier,
                 ]
             ]);
         }
