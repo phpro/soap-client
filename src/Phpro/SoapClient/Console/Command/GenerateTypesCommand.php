@@ -29,7 +29,7 @@ class GenerateTypesCommand extends Command
     /**
      * @var Filesystem
      */
-    private $filesystem;
+    protected $filesystem;
 
     /**
      * @var InputInterface
@@ -86,9 +86,17 @@ class GenerateTypesCommand extends Command
             throw InvalidArgumentException::invalidConfigFile();
         }
 
-        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
+        if ($config->getGenerateTypesCommandClassName() !== static::class) {
+            $commandClassName = $config->getGenerateTypesCommandClassName();
+            $command = new $commandClassName($this->filesystem);
+            $command->execute($input, $output);
+
+            return;
+        }
+
+        $soapClient = $this->getSoapClient($config);
         $typeMap = TypeMap::fromSoapClient($config->getNamespace(), $soapClient);
-        $generator = new TypeGenerator($config->getRuleSet());
+        $generator = $this->getTypeGenerator($config);
         
         foreach ($typeMap->getTypes() as $type) {
             $path = $type->getPathname($config->getDestination());
@@ -210,5 +218,23 @@ class GenerateTypesCommand extends Command
         $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
 
         return $this->getHelper('question')->ask($this->input, $this->output, $question);
+    }
+
+    /**
+     * @param ConfigInterface $config
+     * @return SoapClient
+     */
+    protected function getSoapClient(ConfigInterface $config)
+    {
+        return new SoapClient($config->getWsdl(), $config->getSoapOptions());
+    }
+
+    /**
+     * @param ConfigInterface $config
+     * @return TypeGenerator
+     */
+    protected function getTypeGenerator(ConfigInterface $config)
+    {
+        return new TypeGenerator($config->getRuleSet());
     }
 }
