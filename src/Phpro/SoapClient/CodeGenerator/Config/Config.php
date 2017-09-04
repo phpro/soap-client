@@ -108,11 +108,16 @@ class Config implements ConfigInterface
     public function getWsdl()
     {
         try {
-
-            return $this->wsdlProvider->provide($this->wsdl);
+            $wsdl = $this->wsdlProvider->provide($this->wsdl);
         } catch (WsdlException $e) {
             throw InvalidArgumentException::wsdlConfigurationIsMissing($e);
         }
+
+        if (!$wsdl) {
+            throw InvalidArgumentException::wsdlConfigurationIsMissing();
+        }
+
+        return $wsdl;
     }
 
     /**
