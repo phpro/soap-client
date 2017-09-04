@@ -35,14 +35,4 @@ interface ConfigInterface
      * @return RuleSetInterface
      */
     public function getRuleSet();
-
-    /**
-     * @return string
-     */
-    public function getGenerateTypesCommandClassName();
-
-    /**
-     * @return string
-     */
-    public function getGenerateClassmapCommandClassName();
 }

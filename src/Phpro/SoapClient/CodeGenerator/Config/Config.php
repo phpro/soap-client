@@ -8,8 +8,6 @@ use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Console\Command\GenerateClassmapCommand;
-use Phpro\SoapClient\Console\Command\GenerateTypesCommand;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 
 /**
@@ -49,16 +47,6 @@ class Config implements ConfigInterface
      * @var RuleSetInterface
      */
     protected $ruleSet;
-
-    /**
-     * @var string
-     */
-    protected $generateTypesCommandClassName = GenerateTypesCommand::class;
-
-    /**
-     * @var string
-     */
-    protected $GenerateClassmapCommandClassName = GenerateClassmapCommand::class;
 
     /**
      * Config constructor.
@@ -212,44 +200,6 @@ class Config implements ConfigInterface
     public function setRuleSet(RuleSetInterface $ruleSet)
     {
         $this->ruleSet = $ruleSet;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGenerateTypesCommandClassName()
-    {
-        return $this->generateTypesCommandClassName;
-    }
-
-    /**
-     * @param string $generateTypesCommandClassName
-     * @return Config
-     */
-    public function setGenerateTypesCommandClassName($generateTypesCommandClassName)
-    {
-        $this->generateTypesCommandClassName = $generateTypesCommandClassName;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGenerateClassmapCommandClassName()
-    {
-        return $this->GenerateClassmapCommandClassName;
-    }
-
-    /**
-     * @param string $GenerateClassmapCommandClassName
-     * @return Config
-     */
-    public function setGenerateClassmapCommandClassName($GenerateClassmapCommandClassName)
-    {
-        $this->GenerateClassmapCommandClassName = $GenerateClassmapCommandClassName;
-
         return $this;
     }
 }

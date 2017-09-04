@@ -27,7 +27,7 @@ class GenerateClassmapCommand extends Command
     /**
      * @var Filesystem
      */
-    protected $filesystem;
+    private $filesystem;
 
     /**
      * GenerateClassmapCommand constructor.
@@ -73,47 +73,11 @@ class GenerateClassmapCommand extends Command
             throw InvalidArgumentException::invalidConfigFile();
         }
 
-        if ($config->getGenerateClassmapCommandClassName() !== static::class) {
-            $commandClassName = $config->getGenerateClassmapCommandClassName();
-            $command = new $commandClassName($this->filesystem);
-            $command->execute($input, $output);
-
-            return;
-        }
-
-        $soapClient = $this->getSoapClient($config);
+        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getNamespace(), $soapClient);
 
-        $file = $this->getFileGenerator($config);
-        $generator = $this->getClassMapGenerator($config);
+        $file = new FileGenerator();
+        $generator = new ClassMapGenerator($config->getRuleSet());
         $output->write($generator->generate($file, $typeMap));
-    }
-
-
-    /**
-     * @param ConfigInterface $config
-     * @return SoapClient
-     */
-    protected function getSoapClient(ConfigInterface $config)
-    {
-        return new SoapClient($config->getWsdl(), $config->getSoapOptions());
-    }
-
-    /**
-     * @param ConfigInterface $config
-     * @return FileGenerator
-     */
-    protected function getFileGenerator(ConfigInterface $config)
-    {
-        return new FileGenerator();
-    }
-
-    /**
-     * @param ConfigInterface $config
-     * @return ClassMapGenerator
-     */
-    protected function getClassMapGenerator(ConfigInterface $config)
-    {
-        return new ClassMapGenerator($config->getRuleSet());
     }
 }
