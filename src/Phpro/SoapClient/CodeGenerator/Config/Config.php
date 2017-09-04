@@ -9,6 +9,9 @@ use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Exception\WsdlException;
+use Phpro\SoapClient\Wsdl\Provider\MixedWsdlProvider;
+use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
 
 /**
  * Class Config
@@ -49,6 +52,11 @@ class Config implements ConfigInterface
     protected $ruleSet;
 
     /**
+     * @var WsdlProviderInterface
+     */
+    protected $wsdlProvider;
+
+    /**
      * Config constructor.
      *
      * @param string $wsdl
@@ -62,6 +70,7 @@ class Config implements ConfigInterface
             new Rules\AssembleRule(new Assembler\PropertyAssembler()),
             new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
         ]);
+        $this->wsdlProvider = new MixedWsdlProvider();
     }
 
     /**
@@ -98,11 +107,12 @@ class Config implements ConfigInterface
      */
     public function getWsdl()
     {
-        if (!$this->wsdl) {
-            throw InvalidArgumentException::wsdlConfigurationIsMissing();
-        }
+        try {
 
-        return $this->wsdl;
+            return $this->wsdlProvider->provide($this->wsdl);
+        } catch (WsdlException $e) {
+            throw InvalidArgumentException::wsdlConfigurationIsMissing($e);
+        }
     }
 
     /**
@@ -200,6 +210,25 @@ class Config implements ConfigInterface
     public function setRuleSet(RuleSetInterface $ruleSet)
     {
         $this->ruleSet = $ruleSet;
+        return $this;
+    }
+
+    /**
+     * @return WsdlProviderInterface
+     */
+    public function getWsdlProvider()
+    {
+        return $this->wsdlProvider;
+    }
+
+    /**
+     * @param WsdlProviderInterface $wsdlProvider
+     * @return Config
+     */
+    public function setWsdlProvider($wsdlProvider)
+    {
+        $this->wsdlProvider = $wsdlProvider;
+
         return $this;
     }
 }
