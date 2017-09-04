@@ -75,6 +75,9 @@ class GenerateClassmapCommand extends Command
 
         if ($config->getGenerateClassmapCommandClassName() !== static::class) {
             $commandClassName = $config->getGenerateClassmapCommandClassName();
+            if (!is_subclass_of($commandClassName, Command::class)) {
+                throw InvalidArgumentException::invalidGenerateClassmapCommand();
+            }
             $command = new $commandClassName($this->filesystem);
             $command->execute($input, $output);
 
