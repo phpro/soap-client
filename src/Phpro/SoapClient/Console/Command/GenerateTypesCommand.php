@@ -88,9 +88,6 @@ class GenerateTypesCommand extends Command
 
         if ($config->getGenerateTypesCommandClassName() !== static::class) {
             $commandClassName = $config->getGenerateTypesCommandClassName();
-            if (!is_subclass_of($commandClassName, Command::class)) {
-                throw InvalidArgumentException::invalidGenerateTypesCommand();
-            }
             $command = new $commandClassName($this->filesystem);
             $command->execute($input, $output);
 

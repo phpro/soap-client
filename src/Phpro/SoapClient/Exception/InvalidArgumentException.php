@@ -32,20 +32,4 @@ class InvalidArgumentException extends \InvalidArgumentException
     {
         return new static('You have to provide a code-generator config file which returns a ConfigInterface.');
     }
-
-    /**
-     * @return InvalidArgumentException
-     */
-    public static function invalidGenerateClassmapCommand()
-    {
-        return new static('You did not configure a valid Generate Classmap Command.');
-    }
-
-    /**
-     * @return InvalidArgumentException
-     */
-    public static function invalidGenerateTypesCommand()
-    {
-        return new static('You did not configure a valid Generate Types Command.');
-    }
 }
