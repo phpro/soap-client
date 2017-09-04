@@ -76,4 +76,16 @@ class ConfigSpec extends ObjectBehavior
         $this->addSoapOption('key', 'value');
         $this->getSoapOptions()->shouldBe(['key' => 'value']);
     }
+
+    function it_has_a_generate_types_command_class_name()
+    {
+        $this->setGenerateTypesCommandClassName($value = '\Vendor\Package\Console\Command\GenerateTypesCommand');
+        $this->getGenerateTypesCommandClassName()->shouldReturn($value);
+    }
+
+    function it_has_a_generate_classmap_command_class_name()
+    {
+        $this->setGenerateClassmapCommandClassName($value = '\Vendor\Package\Console\Command\GenerateClassmapCommand');
+        $this->getGenerateClassmapCommandClassName()->shouldReturn($value);
+    }
 }
