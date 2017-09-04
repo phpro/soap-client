@@ -221,7 +221,7 @@ class Config implements ConfigInterface
     /**
      * @return WsdlProviderInterface
      */
-    public function getWsdlProvider()
+    public function getWsdlProvider() :WsdlProviderInterface
     {
         return $this->wsdlProvider;
     }
@@ -230,7 +230,7 @@ class Config implements ConfigInterface
      * @param WsdlProviderInterface $wsdlProvider
      * @return Config
      */
-    public function setWsdlProvider($wsdlProvider)
+    public function setWsdlProvider(WsdlProviderInterface $wsdlProvider)
     {
         $this->wsdlProvider = $wsdlProvider;
 
