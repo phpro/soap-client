@@ -10,7 +10,7 @@ When the value-objects are generated, we need to tell SOAP about how the PHP cla
  Luckily a class map generator is added, which you can use to parse the classmap from the WSDL.
 
 ```sh
-$ soap-client generate:classmap                                                                                                                                    [16:13:31]
+$ ./vendor/bin/soap-client generate:classmap                                                                                                                                    [16:13:31]
 Usage:
   generate:classmap [options]
 
