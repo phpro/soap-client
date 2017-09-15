@@ -7,6 +7,7 @@ use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
+use Zend\Code\Generator\ClassGenerator;
 
 /**
  * Class UseAssembler
@@ -51,6 +52,10 @@ class UseAssembler implements AssemblerInterface
     {
         $class = $context->getClass();
 
+        if ($this->usesTheSameNamespace($class)) {
+            return;
+        }
+
         try {
             $uses = $class->getUses();
 
@@ -62,5 +67,14 @@ class UseAssembler implements AssemblerInterface
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
+    }
+
+    /**
+     * @param ClassGenerator $class
+     * @return bool
+     */
+    private function usesTheSameNamespace(ClassGenerator $class)
+    {
+        return $this->useName === $class->getNamespaceName();
     }
 }

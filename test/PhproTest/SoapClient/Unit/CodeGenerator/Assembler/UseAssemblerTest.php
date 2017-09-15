@@ -130,6 +130,30 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_does_not_assemble_use_for_the_same_namespace()
+    {
+        $assembler = new UseAssembler('MyNamespace');
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @return TypeContext
      */
     private function createContext()
