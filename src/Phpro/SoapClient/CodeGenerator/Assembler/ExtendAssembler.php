@@ -58,7 +58,6 @@ class ExtendAssembler implements AssemblerInterface
             }
 
             $class->setExtendedClass($extendedClassName);
-
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
