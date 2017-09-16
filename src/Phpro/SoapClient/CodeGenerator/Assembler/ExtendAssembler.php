@@ -22,9 +22,9 @@ class ExtendAssembler implements AssemblerInterface
     /**
      * ExtendedAssembler constructor.
      *
-     * @param $extendedClassName
+     * @param string $extendedClassName
      */
-    public function __construct($extendedClassName)
+    public function __construct(string $extendedClassName)
     {
         $this->extendedClassName = $extendedClassName;
     }
@@ -67,7 +67,7 @@ class ExtendAssembler implements AssemblerInterface
      * @param ClassGenerator $class
      * @return bool
      */
-    private function isExtendingItself(ClassGenerator $class)
+    private function isExtendingItself(ClassGenerator $class): bool
     {
         $fullClassName = $class->getNamespaceName() . '\\' . $class->getName();
 
