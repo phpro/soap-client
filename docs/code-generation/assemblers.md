@@ -8,6 +8,7 @@ to generate the code you want to add to the generated SOAP types.
 
 - [ClassMapAssembler](#classmapassembler)
 - [ConstructorAssembler](#constructorassembler)
+- [ExtendAssembler](#extendassembler)
 - [FinalClassAssembler](#finalclassassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
@@ -92,6 +93,21 @@ Example output:
 ```php
 
 final class MyType
+{
+
+
+}
+
+```
+## ExtendAssembler
+
+The `ExtendAssembler` will add a parent class to the generated class.
+
+Example output:
+
+```php
+
+class MyType extends DType
 {
 
 
