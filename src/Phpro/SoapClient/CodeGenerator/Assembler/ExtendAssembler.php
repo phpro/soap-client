@@ -20,7 +20,7 @@ class ExtendAssembler implements AssemblerInterface
     private $extendedClassName;
 
     /**
-     * ExtendedAssembler constructor.
+     * ExtendAssembler constructor.
      *
      * @param string $extendedClassName
      */

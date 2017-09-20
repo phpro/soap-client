@@ -25,7 +25,7 @@ class UseAssembler implements AssemblerInterface
     private $useAlias;
 
     /**
-     * TraitAssembler constructor.
+     * UseAssembler constructor.
      * @param $useName
      * @param $useAlias
      */
