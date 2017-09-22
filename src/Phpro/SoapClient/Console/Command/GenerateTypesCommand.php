@@ -114,11 +114,8 @@ class GenerateTypesCommand extends Command
      */
     protected function handleType(TypeGenerator $generator, Type $type, $path)
     {
-        // Generate type folders if needed
-        $dir = dirname($path);
-        if (!$this->filesystem->directoryExists($dir)) {
-            mkdir($dir, 0777, true);
-        }
+        // Generate type sub folders if needed
+        $this->filesystem->ensureDirectoryExists(dirname($path));
         // Handle existing class:
         if ($this->filesystem->fileExists($path)) {
             if ($this->handleExistingFile($generator, $type, $path)) {
