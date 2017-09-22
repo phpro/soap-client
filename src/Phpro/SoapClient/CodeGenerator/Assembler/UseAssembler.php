@@ -75,6 +75,22 @@ class UseAssembler implements AssemblerInterface
      */
     private function usesTheSameNamespace(ClassGenerator $class)
     {
-        return $this->useName === $class->getNamespaceName();
+        $namespaceName = (string) $class->getNamespaceName();
+
+        if ($this->usesGlobalNamespace($namespaceName)) {
+            return true;
+        }
+
+        return in_array($namespaceName, [$this->useName, $this->getClassUseNamespaceName()]);
+    }
+
+    private function usesGlobalNamespace(string $namespaceName): bool
+    {
+        return '' === $namespaceName && false === strpos($this->useName, '\\');
+    }
+
+    private function getClassUseNamespaceName(): string
+    {
+        return substr($this->useName, 0, strrpos($this->useName, '\\'));
     }
 }

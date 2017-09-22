@@ -154,6 +154,82 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_does_not_assemble_use_for_the_same_namespace_but_different_class()
+    {
+        $assembler = new UseAssembler('MyNamespace\\SomeOtherClass');
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_does_not_assemble_use_for_the_global_namespace()
+    {
+        $assembler = new UseAssembler('SomeOtherClass');
+        $class = new ClassGenerator('MyType');
+        $type = new Type('', 'MyType', []);
+        $context = new TypeContext($class, $type);
+
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+class MyType
+{
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+
+    /**
+     * @test
+     */
+    function it_assembles_use_for_the_different_namespace()
+    {
+        $assembler = new UseAssembler('DifferentNamespace\\SomeOtherClass');
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+use DifferentNamespace\SomeOtherClass;
+
+class MyType
+{
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @return TypeContext
      */
     private function createContext()
