@@ -82,7 +82,8 @@ class Type
      */
     public function getPathname($destination)
     {
-        return rtrim($destination, '/\\') . DIRECTORY_SEPARATOR . $this->getName() . '.php';
+        $path = rtrim($destination, '/\\') . DIRECTORY_SEPARATOR . $this->getName() . '.php';
+        return str_replace('_', DIRECTORY_SEPARATOR, $path);
     }
 
     /**
