@@ -18,7 +18,7 @@ class Filesystem
      *
      * @return bool
      */
-    public function dirextoryExists($directory)
+    public function directoryExists($directory)
     {
         return is_dir($directory) && is_writable($directory);
     }
