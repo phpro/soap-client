@@ -18,7 +18,7 @@ Options:
 ```
 
 This command will generate a client based on the client setings in the configuration.
-This client will contain all methods used to initiate calls and using type hinted parameters and return types.
+This client will contain all methods used to initiate calls and uses type hinted parameters and return types.
 
 Options:
 
