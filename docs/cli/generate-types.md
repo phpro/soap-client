@@ -8,7 +8,7 @@ composer require --dev zendframework/zend-code:^3.0.4
 Basic value-objects can be generated automatically.
 
 ```sh
-$ soap-client generate:types
+$ ./vendor/bin/soap-client generate:types
                                                                                                                                        [16:13:38]
 Usage:
   generate:types [options]
