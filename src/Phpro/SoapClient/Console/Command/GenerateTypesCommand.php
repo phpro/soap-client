@@ -120,7 +120,7 @@ class GenerateTypesCommand extends Command
         $this->filesystem->ensureDirectoryExists($fileInfo->getPath());
         // Handle existing class:
         if ($fileInfo->isFile()) {
-            if ($this->handleExistingFile($generator, $type, $fileInfo->getPathname())) {
+            if ($this->handleExistingFile($generator, $type, $fileInfo)) {
                 return true;
             }
 
@@ -134,7 +134,7 @@ class GenerateTypesCommand extends Command
         // Try to create a blanco class:
         try {
             $file = new FileGenerator();
-            $this->generateType($file, $generator, $type, $fileInfo->getPathname());
+            $this->generateType($file, $generator, $type, $fileInfo);
         } catch (\Exception $e) {
             $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
 
@@ -147,16 +147,16 @@ class GenerateTypesCommand extends Command
     /**
      * An existing file was found. Try to patch or ask if it can be overwritten.
      *
-     * @param TypeGenerator   $generator
-     * @param Type            $type
-     * @param string          $path
-     *
+     * @param TypeGenerator $generator
+     * @param Type          $type
+     * @param SplFileInfo   $fileInfo
      * @return bool
+     *
      */
-    protected function handleExistingFile(TypeGenerator $generator, Type $type, $path)
+    protected function handleExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
     {
         $this->output->write(sprintf('Type %s exists. Trying to patch ...', $type->getName()));
-        $patched = $this->patchExistingFile($generator, $type, $path);
+        $patched = $this->patchExistingFile($generator, $type, $fileInfo);
 
         if ($patched) {
             $this->output->writeln('Patched!');
@@ -171,21 +171,20 @@ class GenerateTypesCommand extends Command
     /**
      * This method tries to patch an existing type class.
      *
-     * @param TypeGenerator   $generator
-     * @param Type            $type
-     * @param string          $path
-     *
+     * @param TypeGenerator $generator
+     * @param Type          $type
+     * @param SplFileInfo   $fileInfo
      * @return bool
      */
-    protected function patchExistingFile(TypeGenerator $generator, Type $type, $path)
+    protected function patchExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
     {
         try {
-            $this->filesystem->createBackup($path);
-            $file = FileGenerator::fromReflectedFileName($path);
-            $this->generateType($file, $generator, $type, $path);
+            $this->filesystem->createBackup($fileInfo->getPathname());
+            $file = FileGenerator::fromReflectedFileName($fileInfo->getPathname());
+            $this->generateType($file, $generator, $type, $fileInfo);
         } catch (\Exception $e) {
             $this->output->writeln('<fg=red>' . $e->getMessage() . '</fg=red>');
-            $this->filesystem->removeBackup($path);
+            $this->filesystem->removeBackup($fileInfo->getPathname());
             return false;
         }
 
@@ -198,12 +197,12 @@ class GenerateTypesCommand extends Command
      * @param FileGenerator $file
      * @param TypeGenerator $generator
      * @param Type          $type
-     * @param string        $path
+     * @param SplFileInfo   $fileInfo
      */
-    protected function generateType(FileGenerator $file, TypeGenerator $generator, Type $type, $path)
+    protected function generateType(FileGenerator $file, TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
     {
         $code = $generator->generate($file, $type);
-        $this->filesystem->putFileContents($path, $code);
+        $this->filesystem->putFileContents($fileInfo->getPathname(), $code);
     }
 
     /**

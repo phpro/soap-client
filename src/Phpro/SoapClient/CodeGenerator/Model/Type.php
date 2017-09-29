@@ -76,12 +76,12 @@ class Type
         return $this->xsdName;
     }
 
-    public function getFileInfo(string $destination) : splFileInfo
+    public function getFileInfo(string $destination) : SplFileInfo
     {
         $path = rtrim($destination, '/\\').DIRECTORY_SEPARATOR.$this->getName().'.php';
         $path = str_replace('_', DIRECTORY_SEPARATOR, $path);
 
-        return new splFileInfo($path);
+        return new SplFileInfo($path);
     }
 
     /**
