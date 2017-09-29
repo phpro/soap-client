@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Exception\WsdlException;
 use Phpro\SoapClient\Util\Filesystem;
 use Phpro\SoapClient\Wsdl\Provider\LocalWsdlProvider;
 use Phpro\SoapClient\Wsdl\Provider\MixedWsdlProvider;
@@ -56,6 +57,14 @@ class ConfigSpec extends ObjectBehavior
 
     function it_requires_a_wsdl()
     {
+        $this->shouldThrow(InvalidArgumentException::class)->duringGetWsdl();
+    }
+
+    function it_requires_a_valid_wsdl_provider(WsdlProviderInterface $wsdlProvider)
+    {
+        $this->setWsdl($wsdl = 'some.wsdl');
+        $wsdlProvider->provide($wsdl)->willThrow(WsdlException::class);
+        $this->setWsdlProvider($wsdlProvider);
         $this->shouldThrow(InvalidArgumentException::class)->duringGetWsdl();
     }
 

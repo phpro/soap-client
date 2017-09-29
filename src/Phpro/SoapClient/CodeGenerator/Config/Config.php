@@ -114,7 +114,7 @@ class Config implements ConfigInterface
         try {
             $wsdl = $this->wsdlProvider->provide($this->wsdl);
         } catch (WsdlException $e) {
-            throw InvalidArgumentException::wsdlConfigurationIsMissing($e);
+            throw InvalidArgumentException::wsdlCouldNotBeProvided($e);
         }
 
         return $wsdl;
@@ -221,7 +221,7 @@ class Config implements ConfigInterface
     /**
      * @return WsdlProviderInterface
      */
-    public function getWsdlProvider() :WsdlProviderInterface
+    public function getWsdlProvider(): WsdlProviderInterface
     {
         return $this->wsdlProvider;
     }
@@ -233,7 +233,6 @@ class Config implements ConfigInterface
     public function setWsdlProvider(WsdlProviderInterface $wsdlProvider)
     {
         $this->wsdlProvider = $wsdlProvider;
-
         return $this;
     }
 }
