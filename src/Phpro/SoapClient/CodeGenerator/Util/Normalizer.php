@@ -47,7 +47,7 @@ class Normalizer
      */
     public static function normalizeDataType($type)
     {
-        return strtr($type, [
+        $normalizations = [
             'long' => 'int',
             'short' => 'int',
             'dateTime' => '\\DateTime',
@@ -55,7 +55,18 @@ class Normalizer
             'boolean' => 'bool',
             'decimal' => 'float',
             'double' => 'float',
-        ]);
+        ];
+
+        return preg_replace(
+            array_map(
+                function ($search) {
+                    return '/^' . $search. '$/i';
+                },
+                array_keys($normalizations)
+            ),
+            array_values($normalizations),
+            $type
+        );
     }
 
     /**
