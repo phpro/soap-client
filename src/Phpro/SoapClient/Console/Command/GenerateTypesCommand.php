@@ -117,7 +117,7 @@ class GenerateTypesCommand extends Command
     protected function handleType(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
     {
         // Generate type sub folders if needed
-        $this->filesystem->ensureDirectoryExists($fileInfo);
+        $this->filesystem->ensureDirectoryExists($fileInfo->getPath());
         // Handle existing class:
         if ($fileInfo->isFile()) {
             if ($this->handleExistingFile($generator, $type, $fileInfo->getPathname())) {

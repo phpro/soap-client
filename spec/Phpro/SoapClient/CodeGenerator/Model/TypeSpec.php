@@ -17,7 +17,7 @@ class TypeSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('MyNamespace', 'myType_3_2', ['prop1' => 'string']);
+        $this->beConstructedWith('MyNamespace', 'myType', ['prop1' => 'string']);
     }
 
     function it_is_initializable()
@@ -32,21 +32,27 @@ class TypeSpec extends ObjectBehavior
 
     function it_has_a_name()
     {
-        $this->getName()->shouldReturn('MyType_3_2');
+        $this->getName()->shouldReturn('MyType');
     }
 
     function it_has_a_xsd_type()
     {
-        $this->getXsdName()->shouldReturn('myType_3_2');
+        $this->getXsdName()->shouldReturn('myType');
     }
 
     function it_has_a_full_name()
     {
-        $this->getFullName()->shouldReturn('MyNamespace\\MyType_3_2');
+        $this->getFullName()->shouldReturn('MyNamespace\\MyType');
     }
 
     function it_has_a_path_name()
     {
+        $this->getPathname('my/dir')->shouldReturn('my/dir/MyType.php');
+    }
+
+    function it_should_replace_underscores_in_paths()
+    {
+        $this->beConstructedWith('MyNamespace', 'myType_3_2', ['prop1' => 'string']);
         $this->getFileInfo('my/dir')->getPathname()->shouldReturn('my/dir/MyType/3/2.php');
     }
 

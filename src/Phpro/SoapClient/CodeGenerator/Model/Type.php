@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use SplFileInfo;
 
 /**
  * Class Type
@@ -75,16 +76,12 @@ class Type
         return $this->xsdName;
     }
 
-    /**
-     * @param string $destination
-     * @return \SplFileInfo
-     */
-    public function getFileInfo($destination)
+    public function getFileInfo(string $destination) : splFileInfo
     {
         $path = rtrim($destination, '/\\').DIRECTORY_SEPARATOR.$this->getName().'.php';
         $path = str_replace('_', DIRECTORY_SEPARATOR, $path);
 
-        return new \SplFileInfo($path);
+        return new splFileInfo($path);
     }
 
     /**
@@ -94,7 +91,7 @@ class Type
      */
     public function getPathname($destination)
     {
-        return $this->getFileInfo($destination)->getPath();
+        return $this->getFileInfo($destination)->getPathname();
     }
 
     /**

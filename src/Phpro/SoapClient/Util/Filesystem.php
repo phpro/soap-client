@@ -15,11 +15,10 @@ class Filesystem
 {
 
     /**
-     * @param SplFileInfo $fileInfo
+     * @param string $directory
      */
-    public function ensureDirectoryExists(SplFileInfo $fileInfo)
+    public function ensureDirectoryExists($directory)
     {
-        $directory = $fileInfo->getPath();
         if (is_dir($directory)) {
             return;
         }
