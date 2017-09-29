@@ -49,6 +49,7 @@ class ClientMethodAssembler implements AssemblerInterface
                             'return $this->call(\'%1$s\', $%1$s);',
                             $param->getName()
                         ),
+                        // TODO: Use normalizer once https://github.com/phpro/soap-client/pull/61 is merged
                         'returntype'    => '\\'.$method->getParameterNamespace().'\\'.$method->getReturnType(),
                     ]
                 )
