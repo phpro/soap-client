@@ -39,11 +39,6 @@ class Config implements ConfigInterface
     /**
      * @var string
      */
-    protected $namespace = '';
-
-    /**
-     * @var string
-     */
     protected $wsdl = '';
 
     /**
@@ -55,11 +50,6 @@ class Config implements ConfigInterface
         'keep_alive' => true,
         'cache_wsdl' => WSDL_CACHE_NONE,
     ];
-
-    /**
-     * @var string
-     */
-    protected $destination = '';
 
     /**
      * @var string
@@ -114,7 +104,7 @@ class Config implements ConfigInterface
      */
     public function getNamespace()
     {
-        return $this->namespace;
+        return $this->typesNamespace;
     }
 
     /**
@@ -125,7 +115,7 @@ class Config implements ConfigInterface
      */
     public function setNamespace($namespace)
     {
-        $this->namespace = Normalizer::normalizeNamespace($namespace);
+        $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
 
         return $this;
     }
@@ -221,11 +211,11 @@ class Config implements ConfigInterface
      */
     public function getDestination()
     {
-        if (!$this->destination) {
+        if (!$this->typeDestination) {
             throw InvalidArgumentException::destinationConfigurationIsMissing();
         }
 
-        return $this->destination;
+        return $this->typeDestination;
     }
 
     /**
@@ -236,7 +226,7 @@ class Config implements ConfigInterface
      */
     public function setDestination($destination)
     {
-        $this->destination = rtrim($destination, '/\\');
+        $this->typeDestination = rtrim($destination, '/\\');
 
         return $this;
     }
