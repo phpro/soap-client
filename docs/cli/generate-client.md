@@ -10,16 +10,15 @@ A client with type and return type hints can be generated.
 ```sh
 $ ./vendor/bin/soap-client generate:client                                                                                                                                    [16:13:31]
 Usage:
-  generate:classmap [options]
+  generate:client [options]
 
 Options:
       --config=CONFIG   The location of the soap code-generator config file
 
 ```
 
-This command will generate a class map and display it on the screen.
- You will just need to copy it and next paste it in the `ClientBuilder`.
-
+This command will generate a client based on the client setings in the configuration.
+This client will contain all methods used to initiate calls and using type hinted parameters and return types.
 
 Options:
 
