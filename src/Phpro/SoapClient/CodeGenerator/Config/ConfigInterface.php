@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Config;
 
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
+use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
 
 /**
  * Interface ConfigInterface
@@ -57,4 +58,9 @@ interface ConfigInterface
      * @return string
      */
     public function getTypeNamespace();
+
+    /**
+     * @return WsdlProviderInterface
+     */
+    public function getWsdlProvider();
 }
