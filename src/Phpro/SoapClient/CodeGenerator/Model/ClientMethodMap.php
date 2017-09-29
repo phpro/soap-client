@@ -11,39 +11,27 @@ use Phpro\SoapClient\Soap\SoapClient;
  */
 class ClientMethodMap
 {
-
     /**
      * @var ClientMethod[]
      */
-    private $methods = [];
+    private $methods;
 
-    /**
-     * TypeMap constructor.
-     *
-     * @param array $methods
-     * @param string $parameterNamespace
-     */
-    public function __construct(array $methods, $parameterNamespace = null)
+    public function __construct(array $methods)
     {
-        foreach ($methods as $method) {
-            $this->methods[] = new ClientMethod($method, $parameterNamespace);
+        $this->methods = $methods;
+    }
+
+    public static function fromSoapClient(SoapClient $client, $parameterNamespace = '') : ClientMethodMap
+    {
+        $clientMethods = [];
+        foreach ($client->__getFunctions() as $method) {
+            $clientMethods[] = ClientMethod::createFromExtSoapFunctionString($method, $parameterNamespace);
         }
+
+        return new self($clientMethods);
     }
 
-    /**
-     * @param SoapClient $client
-     * @param string $parameterNamespace
-     * @return ClientMethodMap
-     */
-    public static function fromSoapClient(SoapClient $client, $parameterNamespace = null)
-    {
-        return new self($client->__getFunctions(), $parameterNamespace);
-    }
-
-    /**
-     * @return array
-     */
-    public function getMethods()
+    public function getMethods() : array
     {
         return $this->methods;
     }

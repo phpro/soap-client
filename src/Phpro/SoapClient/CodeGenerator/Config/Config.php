@@ -20,7 +20,7 @@ class Config implements ConfigInterface
     /**
      * @var string
      */
-    protected $clientName = '';
+    protected $clientName = 'Client';
 
     /**
      * @var string
@@ -46,7 +46,7 @@ class Config implements ConfigInterface
      * @var array
      */
     protected $soapOptions = [
-        'trace'      => false,
+        'trace' => false,
         'exceptions' => true,
         'keep_alive' => true,
         'cache_wsdl' => WSDL_CACHE_NONE,

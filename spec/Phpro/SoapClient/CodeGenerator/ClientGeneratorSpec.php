@@ -40,7 +40,7 @@ class ClientGeneratorSpec extends ObjectBehavior
 
     function it_generates_clients(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
     {
-        $method = new ClientMethod('TestResponse Test(Test $parameters)', 'MyParameterNamespace');
+        $method = ClientMethod::createFromExtSoapFunctionString('TestResponse Test(Test $parameters)', 'MyParameterNamespace');
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
         $file->getClass()->willReturn($class);

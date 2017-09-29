@@ -2,6 +2,8 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
+
 /**
  * Class ClientMethod
  *
@@ -10,7 +12,7 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 class ClientMethod
 {
     /**
-     * @var Method[]
+     * @var Parameter[]
      */
     private $parameters;
 
@@ -28,66 +30,45 @@ class ClientMethod
      * @var string
      */
     private $parameterNamespace;
+    /**
+     * @var string
+     */
+    private $name;
+    /**
+     * @var string
+     */
+    private $params;
 
     /**
      * TypeModel constructor.
      *
-     * @param $functionString
-     * @param $parameterNamespace
-     * @internal param string $xsdName
-     * @internal param Property[] $properties
+     * @param string $name
+     * @param array  $params
+     * @param string $returnType
+     * @param string $parameterNamespace
      */
-    public function __construct($functionString, $parameterNamespace = null)
+    public function __construct(string $name, array $params, string $returnType, string $parameterNamespace = '')
     {
         $this->parameterNamespace = $parameterNamespace ?: '';
-        $this->parameters = $this->parseParameters($functionString);
-        $this->methodName = $this->parseName($functionString);
-        $this->returnType = $this->parseReturnType($functionString);
+        $this->methodName = $name;
+        $this->parameters = $params;
+        $this->returnType = $returnType;
     }
 
-    /**
-     * @param $str
-     * @return array
-     */
-    private function parseParameters($str)
-    {
-        preg_match(
-            '/\((.*)\)/',
-            $str,
-            $properties
+    public static function createFromExtSoapFunctionString(
+        string $functionString,
+        string $parameterNamespace
+    ): ClientMethod {
+        $parser = new FunctionStringParser($functionString, $parameterNamespace);
+
+        return new self(
+            $parser->parseName(),
+            $parser->parseParameters(),
+            $parser->parseReturnType(),
+            $parameterNamespace
         );
-
-        $parameters = [];
-        $properties = explode(',', $properties[1]);
-        foreach ($properties as $property) {
-            list($type) = explode(' ', $property);
-            $parameters[] = new Parameter($type, $this->parameterNamespace.'\\'.$type);
-        }
-
-        return $parameters;
     }
 
-    /**
-     * @param $functionString
-     * @return string
-     */
-    private function parseName($functionString)
-    {
-        preg_match('/^\w+ (\w+)/', $functionString, $matches);
-
-        return $matches[1];
-    }
-
-    /**
-     * @param $functionString
-     * @return mixed
-     */
-    private function parseReturnType($functionString)
-    {
-        preg_match('/^(\w+)/', $functionString, $matches);
-
-        return $matches[1];
-    }
 
     /**
      * @return array|Parameter[]

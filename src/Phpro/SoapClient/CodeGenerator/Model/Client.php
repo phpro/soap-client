@@ -35,7 +35,7 @@ class Client
      * @internal param string $xsdName
      * @internal param Property[] $properties
      */
-    public function __construct($name, $namespace, ClientMethodMap $methods)
+    public function __construct(string $name, string $namespace, ClientMethodMap $methods)
     {
         $this->name = $name;
         $this->namespace = Normalizer::normalizeNamespace($namespace);

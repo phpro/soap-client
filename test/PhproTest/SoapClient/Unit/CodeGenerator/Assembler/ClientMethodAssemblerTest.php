@@ -41,7 +41,10 @@ class ClientMethodAssemblerTest extends \PHPUnit_Framework_TestCase
         // ClassGenerator $class, ClientMethod $method
         $class = new ClassGenerator();
         $class->setNamespaceName('MyNamespace');
-        $method = new ClientMethod('ReturnType functionName(ParamType $param)', 'MyTypeNamespace');
+        $method = ClientMethod::createFromExtSoapFunctionString(
+            'ReturnType functionName(ParamType $param)',
+            'MyTypeNamespace'
+        );
 
         return new ClientMethodContext($class, $method);
     }
