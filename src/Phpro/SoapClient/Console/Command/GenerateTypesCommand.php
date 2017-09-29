@@ -9,6 +9,7 @@ use Phpro\SoapClient\CodeGenerator\TypeGenerator;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
+use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -89,11 +90,13 @@ class GenerateTypesCommand extends Command
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getNamespace(), $soapClient);
         $generator = new TypeGenerator($config->getRuleSet());
-        
+
         foreach ($typeMap->getTypes() as $type) {
-            $path = $type->getPathname($config->getDestination());
-            if ($this->handleType($generator, $type, $path)) {
-                $this->output->writeln(sprintf('Generated class %s to %s', $type->getFullName(), $path));
+            $fileInfo = $type->getFileInfo($config->getDestination());
+            if ($this->handleType($generator, $type, $fileInfo)) {
+                $this->output->writeln(
+                    sprintf('Generated class %s to %s', $type->getFullName(), $fileInfo->getPathname())
+                );
             }
         }
 
@@ -106,19 +109,18 @@ class GenerateTypesCommand extends Command
      * If patching the old class does not wor: ask for an overwrite
      * Create a class from an empty file
      *
-     * @param TypeGenerator   $generator
-     * @param Type            $type
-     * @param                 $path
-     *
+     * @param TypeGenerator $generator
+     * @param Type          $type
+     * @param SplFileInfo   $fileInfo
      * @return bool
      */
-    protected function handleType(TypeGenerator $generator, Type $type, $path)
+    protected function handleType(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
     {
         // Generate type sub folders if needed
-        $this->filesystem->ensureDirectoryExists(dirname($path));
+        $this->filesystem->ensureDirectoryExists($fileInfo);
         // Handle existing class:
-        if ($this->filesystem->fileExists($path)) {
-            if ($this->handleExistingFile($generator, $type, $path)) {
+        if ($fileInfo->isFile()) {
+            if ($this->handleExistingFile($generator, $type, $fileInfo->getPathname())) {
                 return true;
             }
 
@@ -132,9 +134,10 @@ class GenerateTypesCommand extends Command
         // Try to create a blanco class:
         try {
             $file = new FileGenerator();
-            $this->generateType($file, $generator, $type, $path);
+            $this->generateType($file, $generator, $type, $fileInfo->getPathname());
         } catch (\Exception $e) {
-            $this->output->writeln('<fg=red>' . $e->getMessage() . '</fg=red>');
+            $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
+
             return false;
         }
 

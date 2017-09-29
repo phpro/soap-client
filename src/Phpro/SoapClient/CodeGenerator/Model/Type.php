@@ -76,14 +76,25 @@ class Type
     }
 
     /**
-     * @param $destination
-     *
+     * @param string $destination
+     * @return \SplFileInfo
+     */
+    public function getFileInfo($destination)
+    {
+        $path = rtrim($destination, '/\\').DIRECTORY_SEPARATOR.$this->getName().'.php';
+        $path = str_replace('_', DIRECTORY_SEPARATOR, $path);
+
+        return new \SplFileInfo($path);
+    }
+
+    /**
+     * @param string $destination
+     * @deprecated please use getFileInfo instead
      * @return string
      */
     public function getPathname($destination)
     {
-        $path = rtrim($destination, '/\\') . DIRECTORY_SEPARATOR . $this->getName() . '.php';
-        return str_replace('_', DIRECTORY_SEPARATOR, $path);
+        return $this->getFileInfo($destination)->getPath();
     }
 
     /**
