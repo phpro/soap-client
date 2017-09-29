@@ -53,7 +53,7 @@ class TypeSpec extends ObjectBehavior
     function it_should_replace_underscores_in_paths()
     {
         $this->beConstructedWith('MyNamespace', 'myType_3_2', ['prop1' => 'string']);
-        $this->getFileInfo('my/dir')->getPathname()->shouldReturn('my/dir/MyType/3/2.php');
+        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/MyType/3/2.php');
     }
 
     function it_has_properties()
