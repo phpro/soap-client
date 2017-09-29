@@ -4,9 +4,6 @@ namespace Phpro\SoapClient\Xml;
 
 use DOMDocument;
 use DOMElement;
-use DOMXPath;
-use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\Stream;
 
 /**
  * Class SoapXml

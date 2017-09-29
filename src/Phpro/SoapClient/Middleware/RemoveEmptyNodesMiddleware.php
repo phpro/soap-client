@@ -2,7 +2,6 @@
 
 namespace Phpro\SoapClient\Middleware;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
 
@@ -25,8 +24,6 @@ class RemoveEmptyNodesMiddleware extends MiddleWare
      * @param callable         $handler
      * @param RequestInterface $request
      * @param array            $options
-     *
-     * @return PromiseInterface
      */
     public function beforeRequest(callable $handler, RequestInterface $request, array $options)
     {

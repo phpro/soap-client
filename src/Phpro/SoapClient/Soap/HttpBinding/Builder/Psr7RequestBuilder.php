@@ -2,8 +2,8 @@
 
 namespace Phpro\SoapClient\Soap\HttpBinding\Builder;
 
-use Interop\Http\Factory\RequestFactoryInterface;
-use Interop\Http\Factory\StreamFactoryInterface;
+use Http\Message\MessageFactory;
+use Http\Message\StreamFactory;
 use InvalidArgumentException;
 use Phpro\SoapClient\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
@@ -51,24 +51,18 @@ class Psr7RequestBuilder
     private $httpMethod = 'POST';
 
     /**
-     * @var RequestFactoryInterface
+     * @var MessageFactory
      */
-    private $requestFactory;
+    private $messageFactory;
 
     /**
-     * @var StreamFactoryInterface
+     * @var StreamFactory
      */
     private $streamFactory;
 
-    /**
-     * Psr7RequestBuilder constructor.
-     *
-     * @param RequestFactoryInterface $requestFactory
-     * @param StreamFactoryInterface  $streamFactory
-     */
-    public function __construct(RequestFactoryInterface $requestFactory, StreamFactoryInterface $streamFactory)
+    public function __construct(MessageFactory $messageFactory, StreamFactory $streamFactory)
     {
-        $this->requestFactory = $requestFactory;
+        $this->messageFactory = $messageFactory;
         $this->streamFactory = $streamFactory;
     }
 
@@ -81,7 +75,7 @@ class Psr7RequestBuilder
         $this->validate();
 
         try {
-            $request = $this->requestFactory
+            $request = $this->messageFactory
                 ->createRequest($this->httpMethod, $this->endpoint)
                 ->withBody($this->prepareMessage());
 

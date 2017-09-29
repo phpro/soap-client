@@ -2,10 +2,9 @@
 
 namespace Phpro\SoapClient\Soap\HttpBinding;
 
+use Http\Message\Formatter\FullHttpMessageFormatter;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Request;
-use Zend\Diactoros\Response;
 
 /**
  * Class LastRequestInfo
@@ -81,8 +80,9 @@ class LastRequestInfo
         $request->getBody()->rewind();
         $response->getBody()->rewind();
 
-        $requestString = Request\Serializer::toString($request);
-        $responseString = Response\Serializer::toString($response);
+        $formatter = new FullHttpMessageFormatter(null);
+        $requestString = $formatter->formatRequest($request);
+        $responseString = $formatter->formatResponse($response);
 
         $requestHeaders = '';
         $requestBody = '';
