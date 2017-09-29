@@ -73,3 +73,17 @@ RuleInterface - OPTIONAL
 You can specify how you want to generate your code.
 More information about the topic is available in the [rules](rules.md) and [assemblers](assemblers.md) section.
 
+The pre-defined rules are override-able by calling `setRuleSet` on the constucted object.
+
+For example, to make all your properties protected:
+```php
+Config::create()
+    ->setRuleSet(
+        new Rules\RuleSet(
+            [
+                new Rules\AssembleRule(new Assembler\PropertyAssembler(PropertyGenerator::VISIBILITY_PROTECTED)),
+                new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
+            ]
+        )
+    )
+```

@@ -8,9 +8,11 @@ to generate the code you want to add to the generated SOAP types.
 
 - [ClassMapAssembler](#classmapassembler)
 - [ConstructorAssembler](#constructorassembler)
+- [ExtendAssembler](#extendassembler)
 - [FinalClassAssembler](#finalclassassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
+- [ImmutableSetterAssembler](#immutablesetterassembler)
 - [InterfaceAssembler](#interfaceassembler)
 - [IteratorAssembler](#iteratorassembler)
 - [JsonSerializableAssembler](#jsonserializableassembler)
@@ -95,11 +97,27 @@ final class MyType
 
 
 }
+
+```
+## ExtendAssembler
+
+The `ExtendAssembler` will add a parent class to the generated class.
+
+Example output:
+
+```php
+
+class MyType extends DType
+{
+
+
+}
 ```
 
 ## GetterAssembler
 
 The `GetterAssembler` will add a getter method to the generated class.
+For boolean types you can opt to use the 'is' function prefix instead of 'get' by enabling this in the constructor.
 
 Example output:
 
@@ -191,7 +209,13 @@ Example output:
     /**
      * @var string
      */
-    protected $prop1 = null;
+    private $prop1 = null;
+```
+
+You can adjust the visibility of the property by injecting the visibility in the constructor.
+
+```php
+new PropertyAssembler(PropertyGenerator::VISIBILITY_PROTECTED)
 ```
 
 
@@ -327,6 +351,27 @@ class MyType
 
 
 }
+```
+
+## ImmutableSetterAssembler
+
+The `ImmutableSetterAssembler` generates immutable setters that return a new instance with the new value set.
+Used to create variations of the same base instance, without modifying the original values.
+
+Example output:
+
+```php
+    /**
+     * @param string $prop1
+     * @return MyType
+     */
+    public function withProp1($prop1)
+    {
+        $new = clone $this;
+        $new->prop1 = $prop1;
+
+        return $new;
+    }
 ```
 
 

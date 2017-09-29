@@ -3,20 +3,18 @@
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
-use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssembler;
+use Phpro\SoapClient\CodeGenerator\Assembler\ImmutableSetterAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\PropertyGenerator;
 
 /**
- * Class PropertyAssemblerTest
+ * Class ImmutableSetterAssemblerTest
  *
  * @package PhproTest\SoapClient\Unit\CodeGenerator\Assembler
  */
-class PropertyAssemblerTest extends \PHPUnit_Framework_TestCase
+class ImmutableSetterAssemblerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -24,7 +22,7 @@ class PropertyAssemblerTest extends \PHPUnit_Framework_TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new PropertyAssembler();
+        $assembler = new ImmutableSetterAssembler();
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
 
@@ -33,7 +31,7 @@ class PropertyAssemblerTest extends \PHPUnit_Framework_TestCase
      */
     function it_can_assemble_property_context()
     {
-        $assembler = new PropertyAssembler();
+        $assembler = new ImmutableSetterAssembler();
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }
@@ -43,7 +41,7 @@ class PropertyAssemblerTest extends \PHPUnit_Framework_TestCase
      */
     function it_assembles_a_property()
     {
-        $assembler = new PropertyAssembler();
+        $assembler = new ImmutableSetterAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
 
@@ -55,39 +53,16 @@ class MyType
 {
 
     /**
-     * @var string
+     * @param string \$prop1
+     * @return MyType
      */
-    private \$prop1 = null;
-
-
-}
-
-CODE;
-
-        $this->assertEquals($expected, $code);
-    }
-
-
-    /**
-     * @test
-     */
-    function it_assembles_with_visibility()
+    public function withProp1(\$prop1)
     {
-        $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
-        $context = $this->createContext();
-        $assembler->assemble($context);
+        \$new = clone \$this;
+        \$new->prop1 = \$prop1;
 
-        $code = $context->getClass()->generate();
-        $expected = <<<CODE
-namespace MyNamespace;
-
-class MyType
-{
-
-    /**
-     * @var string
-     */
-    public \$prop1 = null;
+        return \$new;
+    }
 
 
 }
@@ -98,14 +73,13 @@ CODE;
     }
 
     /**
-     * @return TypeContext
+     * @return PropertyContext
      */
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'string',
-            'prop2' => 'int'
+            'prop1' => 'string'
         ]);
         $property = new Property('prop1', 'string');
 
