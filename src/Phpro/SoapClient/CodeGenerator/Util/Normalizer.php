@@ -48,13 +48,13 @@ class Normalizer
     public static function normalizeDataType(string $type): string
     {
         return strtr($type, [
-            'long' => 'int',
-            'short' => 'int',
+            'long'     => 'int',
+            'short'    => 'int',
             'dateTime' => '\\DateTime',
-            'date' => '\\DateTime',
-            'boolean' => 'bool',
-            'decimal' => 'float',
-            'double' => 'float',
+            'date'     => '\\DateTime',
+            'boolean'  => 'bool',
+            'decimal'  => 'float',
+            'double'   => 'float',
         ]);
     }
 
@@ -71,25 +71,29 @@ class Normalizer
 
     /**
      * @param string $name
+     *
      * @return string
      */
     public static function getClassNameFromFQN(string $name): string
     {
         $arr = explode('\\', $name);
+
         return (string)array_pop($arr);
     }
 
     /**
-     * @param string $useName
-     * @param string $useAlias
+     * @param string      $useName
+     * @param string|null $useAlias
+     *
      * @return string
      */
-    public static function getCompleteUseStatement(string $useName, string $useAlias): string
+    public static function getCompleteUseStatement(string $useName, $useAlias): string
     {
         $use = $useName;
         if (!empty($useAlias)) {
             $use .= ' as ' . $useAlias;
         }
+
         return $use;
     }
 }

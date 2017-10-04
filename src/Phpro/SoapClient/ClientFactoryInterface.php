@@ -14,10 +14,10 @@ interface ClientFactoryInterface
 {
 
     /**
-     * @param SoapClient      $soapClient
+     * @param SoapClient               $soapClient
      * @param EventDispatcherInterface $dispatcher
      *
      * @return ClientInterface
      */
-    public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher): ClientInterface;
+    public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher);
 }
