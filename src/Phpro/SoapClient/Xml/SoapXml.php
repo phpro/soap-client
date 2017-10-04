@@ -5,7 +5,6 @@ namespace Phpro\SoapClient\Xml;
 use DOMDocument;
 use DOMElement;
 
-
 /**
  * Class SoapXml
  *
