@@ -49,6 +49,7 @@ class ClassMapCollection
     public function set(ClassMapInterface $classMap): self
     {
         $this->classMaps[$classMap->getWsdlType()] = $classMap;
+
         return $this;
     }
 
@@ -71,6 +72,7 @@ class ClassMapCollection
         foreach ($this->classMaps as $classMap) {
             $map[$classMap->getWsdlType()] = $classMap->getPhpClassName();
         }
+
         return $map;
     }
 }

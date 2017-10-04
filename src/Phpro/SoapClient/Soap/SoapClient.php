@@ -160,7 +160,7 @@ class SoapClient extends \SoapClient
         int $version,
         int $oneWay = 0
     ): string {
-        return (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
+        return (string)parent::__doRequest($request, $location, $action, $version, $oneWay);
     }
 
     /**
@@ -172,7 +172,7 @@ class SoapClient extends \SoapClient
      *
      * @return string|null
      */
-    public function __doRequest($request, $location, $action, $version, $oneWay = 0)
+    public function __doRequest(string $request, string $location, string $action, int $version, int $oneWay = 0)
     {
         $request = new SoapRequest($request, $location, $action, $version, $oneWay);
         $response = $this->handler->request($request);
@@ -185,10 +185,10 @@ class SoapClient extends \SoapClient
 
         // Copy the request info in the correct internal __last_* parameters:
         // We don't need the trace option: always remember the last response @ request
-        $this->__last_request = (string) $lastRequestInfo->getLastRequest() ?? $request;
-        $this->__last_response = (string) $lastRequestInfo->getLastResponse() ?? $response->getResponse();
-        $this->__last_request_headers = (string) $lastRequestInfo->getLastRequestHeaders();
-        $this->__last_response_headers = (string) $lastRequestInfo->getLastResponseHeaders();
+        $this->__last_request = (string)$lastRequestInfo->getLastRequest() ?? $request;
+        $this->__last_response = (string)$lastRequestInfo->getLastResponse() ?? $response->getResponse();
+        $this->__last_request_headers = (string)$lastRequestInfo->getLastRequestHeaders();
+        $this->__last_response_headers = (string)$lastRequestInfo->getLastResponseHeaders();
 
         // Return the response or an empty response when oneWay is enabled.
         return $oneWay ? null : $response->getResponse();

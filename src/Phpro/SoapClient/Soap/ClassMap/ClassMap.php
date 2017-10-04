@@ -39,9 +39,9 @@ class ClassMap implements ClassMapInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getWsdlType(): string
+    public function getWsdlType()
     {
         return $this->wsdlType;
     }

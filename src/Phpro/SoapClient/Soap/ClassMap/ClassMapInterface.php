@@ -11,9 +11,9 @@ interface ClassMapInterface
 {
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getWsdlType(): string;
+    public function getWsdlType();
 
     /**
      * @return string
