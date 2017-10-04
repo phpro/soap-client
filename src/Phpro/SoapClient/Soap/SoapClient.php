@@ -172,7 +172,7 @@ class SoapClient extends \SoapClient
      *
      * @return string|null
      */
-    public function __doRequest(string $request, string $location, string $action, int $version, int $oneWay = 0)
+    public function __doRequest($request, $location, $action, $version, $oneWay = 0)
     {
         $request = new SoapRequest($request, $location, $action, $version, $oneWay);
         $response = $this->handler->request($request);
