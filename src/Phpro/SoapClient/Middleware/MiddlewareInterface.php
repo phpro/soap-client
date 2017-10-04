@@ -20,7 +20,7 @@ interface MiddlewareInterface
      *
      * @return \Closure
      */
-    public function __invoke(callable $handler);
+    public function __invoke(callable $handler): \Closure;
 
     /**
      * @param callable         $handler
@@ -29,14 +29,14 @@ interface MiddlewareInterface
      *
      * @return PromiseInterface
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options);
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options): PromiseInterface;
 
     /**
      * @param ResponseInterface $response
      *
      * @return ResponseInterface
      */
-    public function afterResponse(ResponseInterface $response);
+    public function afterResponse(ResponseInterface $response): ResponseInterface;
 
     /**
      * @return string

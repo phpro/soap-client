@@ -24,7 +24,7 @@ class PropertyAssembler implements AssemblerInterface
      * PropertyAssembler constructor.
      * @param string $visibility
      */
-    public function __construct($visibility = PropertyGenerator::VISIBILITY_PRIVATE)
+    public function __construct(string $visibility = PropertyGenerator::VISIBILITY_PRIVATE)
     {
         $this->visibility = $visibility;
     }
@@ -32,7 +32,7 @@ class PropertyAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof PropertyContext;
     }

@@ -14,7 +14,7 @@ class InvalidArgumentException extends \InvalidArgumentException
     /**
      * @return InvalidArgumentException
      */
-    public static function wsdlConfigurationIsMissing()
+    public static function wsdlConfigurationIsMissing(): self
     {
         return new static('You did not configure a WSDL file.');
     }
@@ -31,7 +31,7 @@ class InvalidArgumentException extends \InvalidArgumentException
     /**
      * @return InvalidArgumentException
      */
-    public static function destinationConfigurationIsMissing()
+    public static function destinationConfigurationIsMissing(): self
     {
         return new static('You did not configure a destination.');
     }
@@ -39,7 +39,7 @@ class InvalidArgumentException extends \InvalidArgumentException
     /**
      * @return InvalidArgumentException
      */
-    public static function invalidConfigFile()
+    public static function invalidConfigFile(): self
     {
         return new static('You have to provide a code-generator config file which returns a ConfigInterface.');
     }

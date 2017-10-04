@@ -28,7 +28,7 @@ class Application extends SymfonyApplication
     /**
      * {@inheritdoc}
      */
-    protected function getDefaultCommands()
+    protected function getDefaultCommands(): array
     {
         $filesystem = new Filesystem();
         $commands = parent::getDefaultCommands();

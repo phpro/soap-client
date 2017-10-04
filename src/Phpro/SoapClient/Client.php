@@ -10,7 +10,7 @@ use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
 use SoapClient;
-use SoapFault;
+
 use SoapHeader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -45,7 +45,7 @@ class Client implements ClientInterface
      * @param SoapHeader|SoapHeader[] $soapHeaders
      * @return $this
      */
-    public function applySoapHeaders($soapHeaders)
+    public function applySoapHeaders($soapHeaders): self
     {
         $this->soapClient->__setSoapHeaders($soapHeaders);
         return $this;
@@ -56,7 +56,7 @@ class Client implements ClientInterface
      *
      * @return array
      */
-    public function debugLastSoapRequest()
+    public function debugLastSoapRequest(): array
     {
         return [
             'request'  => [
@@ -73,7 +73,7 @@ class Client implements ClientInterface
     /**
      * @param string $location
      */
-    public function changeSoapLocation($location)
+    public function changeSoapLocation(string $location)
     {
         $this->soapClient->__setLocation($location);
     }
@@ -85,7 +85,7 @@ class Client implements ClientInterface
      * @return ResultInterface
      * @throws SoapException
      */
-    protected function call($method, RequestInterface $request)
+    protected function call(string $method, RequestInterface $request): ResultInterface
     {
         $requestEvent = new Event\RequestEvent($this, $method, $request);
         $this->dispatcher->dispatch(Events::REQUEST, $requestEvent);

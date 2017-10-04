@@ -6,7 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 
 /**
- * Class TypenameMatchingAssembleRule
+ * Class PropertynameMatchesRule
  *
  * @package Phpro\SoapClient\CodeGenerator\Rules
  */
@@ -28,7 +28,7 @@ class PropertynameMatchesRule implements RuleInterface
      * @param RuleInterface $subRule
      * @param string        $regex
      */
-    public function __construct(RuleInterface $subRule, $regex)
+    public function __construct(RuleInterface $subRule, string $regex)
     {
         $this->subRule = $subRule;
         $this->regex = $regex;
@@ -39,7 +39,7 @@ class PropertynameMatchesRule implements RuleInterface
      *
      * @return bool
      */
-    public function appliesToContext(ContextInterface $context)
+    public function appliesToContext(ContextInterface $context): bool
     {
         if (!$context instanceof PropertyContext) {
             return false;

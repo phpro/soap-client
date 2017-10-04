@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Middleware;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -44,7 +45,7 @@ class NtlmMiddleware extends Middleware
     /**
      * {@inheritdoc}
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options): PromiseInterface
     {
         $options['curl'] = $options['curl'] ?? [];
         $options['curl'][CURLOPT_HTTPAUTH] = CURLAUTH_NTLM;

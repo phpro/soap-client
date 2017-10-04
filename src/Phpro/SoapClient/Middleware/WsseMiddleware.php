@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Middleware;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -101,7 +102,7 @@ class WsseMiddleware extends Middleware
      *
      * @return $this
      */
-    public function withTimestamp(int $timestamp = 3600)
+    public function withTimestamp(int $timestamp = 3600): self
     {
         $this->timestamp = $timestamp;
 
@@ -111,7 +112,7 @@ class WsseMiddleware extends Middleware
     /**
      * @return $this
      */
-    public function withAllHeadersSigned()
+    public function withAllHeadersSigned(): self
     {
         $this->signAllHeaders = true;
 
@@ -123,7 +124,7 @@ class WsseMiddleware extends Middleware
      *
      * @return $this
      */
-    public function withDigitalSignMethod(string $digitalSignMethod)
+    public function withDigitalSignMethod(string $digitalSignMethod): self
     {
         $this->digitalSignMethod = $digitalSignMethod;
 
@@ -137,7 +138,7 @@ class WsseMiddleware extends Middleware
      *
      * @return $this
      */
-    public function withUserToken(string $username, string $password = null, $digest = false)
+    public function withUserToken(string $username, string $password = null, $digest = false): self
     {
         $this->hasUserToken = true;
         $this->userTokenName = $username;
@@ -148,11 +149,11 @@ class WsseMiddleware extends Middleware
     }
 
     /**
-     * @param $serverCertificateFile
+     * @param string $serverCertificateFile
      *
      * @return $this
      */
-    public function withEncryption($serverCertificateFile)
+    public function withEncryption(string $serverCertificateFile): self
     {
         $this->encrypt = true;
         $this->serverCertificateFile = $serverCertificateFile;
@@ -165,7 +166,7 @@ class WsseMiddleware extends Middleware
      *
      * @return $this
      */
-    public function withServerCertificateHasSubjectKeyIdentifier(bool $hasSubjectKeyIdentifier)
+    public function withServerCertificateHasSubjectKeyIdentifier(bool $hasSubjectKeyIdentifier): self
     {
         $this->serverCertificateHasSubjectKeyIdentifier = $hasSubjectKeyIdentifier;
 
@@ -177,9 +178,9 @@ class WsseMiddleware extends Middleware
      * @param RequestInterface $request
      * @param array            $options
      *
-     * @return mixed
+     * @return PromiseInterface
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options): PromiseInterface
     {
 
         $xml = SoapXml::fromStream($request->getBody());
@@ -227,7 +228,7 @@ class WsseMiddleware extends Middleware
      *
      * @return ResponseInterface
      */
-    public function afterResponse(ResponseInterface $response)
+    public function afterResponse(ResponseInterface $response): ResponseInterface
     {
         if (!$this->encrypt) {
             return $response;

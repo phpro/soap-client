@@ -26,7 +26,7 @@ class DisableExtensionsMiddleware extends Middleware
      *
      * @return ResponseInterface
      */
-    public function afterResponse(ResponseInterface $response)
+    public function afterResponse(ResponseInterface $response): ResponseInterface
     {
         $xml = WsdlXml::fromStream($response->getBody());
 

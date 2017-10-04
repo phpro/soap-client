@@ -37,7 +37,7 @@ class ClassMapContext implements ContextInterface
     /**
      * @return FileGenerator
      */
-    public function getFile()
+    public function getFile(): FileGenerator
     {
         return $this->file;
     }
@@ -45,7 +45,7 @@ class ClassMapContext implements ContextInterface
     /**
      * @return TypeMap
      */
-    public function getTypeMap()
+    public function getTypeMap(): TypeMap
     {
         return $this->typeMap;
     }

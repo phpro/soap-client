@@ -39,7 +39,7 @@ class Xml
     /**
      * @return string
      */
-    public function getRootNamespace()
+    public function getRootNamespace(): string
     {
         return $this->getRootElement()->namespaceURI;
     }
@@ -56,7 +56,7 @@ class Xml
     /**
      * @return DOMDocument
      */
-    public function getXmlDocument()
+    public function getXmlDocument(): DOMDocument
     {
         return $this->xml;
     }
@@ -64,17 +64,17 @@ class Xml
     /**
      * @return DOMElement
      */
-    public function getRootElement()
+    public function getRootElement(): DOMElement
     {
         return $this->xml->documentElement;
     }
 
     /**
-     * @param $expression
+     * @param string $expression
      *
      * @return \DOMNodeList
      */
-    public function xpath($expression)
+    public function xpath(string $expression): \DOMNodeList
     {
         return $this->xpath->query($expression);
     }

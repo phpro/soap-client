@@ -12,5 +12,5 @@ interface MultiArgumentRequestInterface extends RequestInterface
     /**
      * @return array
      */
-    public function getArguments();
+    public function getArguments(): array;
 }

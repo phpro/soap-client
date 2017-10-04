@@ -30,7 +30,7 @@ class UseAssembler implements AssemblerInterface
      * @param $useName
      * @param $useAlias
      */
-    public function __construct($useName, $useAlias = null)
+    public function __construct(string $useName, $useAlias = null)
     {
         $this->useName = $useName;
         $this->useAlias = $useAlias;
@@ -40,7 +40,7 @@ class UseAssembler implements AssemblerInterface
      * @param ContextInterface $context
      * @return bool
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof TypeContext || $context instanceof PropertyContext;
     }
@@ -73,7 +73,7 @@ class UseAssembler implements AssemblerInterface
      * @param ClassGenerator $class
      * @return bool
      */
-    private function usesTheSameNamespace(ClassGenerator $class)
+    private function usesTheSameNamespace(ClassGenerator $class): bool
     {
         $namespaceName = (string) $class->getNamespaceName();
 
@@ -84,11 +84,19 @@ class UseAssembler implements AssemblerInterface
         return in_array($namespaceName, [$this->useName, $this->getClassUseNamespaceName()]);
     }
 
+    /**
+     * @param string $namespaceName
+     *
+     * @return bool
+     */
     private function usesGlobalNamespace(string $namespaceName): bool
     {
         return '' === $namespaceName && false === strpos($this->useName, '\\');
     }
 
+    /**
+     * @return string
+     */
     private function getClassUseNamespaceName(): string
     {
         return substr($this->useName, 0, strrpos($this->useName, '\\'));

@@ -16,7 +16,7 @@ interface RuleInterface
      *
      * @return bool
      */
-    public function appliesToContext(ContextInterface $context);
+    public function appliesToContext(ContextInterface $context): bool;
 
     /**
      * @param ContextInterface $context

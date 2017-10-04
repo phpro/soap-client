@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Middleware;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -45,7 +46,7 @@ class BasicAuthMiddleware extends Middleware
      * {@inheritdoc}
      * @throws \InvalidArgumentException
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options): PromiseInterface
     {
         $request = $request->withHeader(
             'Authorization',

@@ -62,7 +62,7 @@ class Config implements ConfigInterface
      * @param string $wsdl
      * @param string $destination
      */
-    public function __construct($wsdl = '', $destination = '')
+    public function __construct(string $wsdl = '', string $destination = '')
     {
         $this->setWsdl($wsdl);
         $this->setDestination($destination);
@@ -76,7 +76,7 @@ class Config implements ConfigInterface
     /**
      * @return Config
      */
-    public static function create()
+    public static function create(): self
     {
         return new static();
     }
@@ -85,7 +85,7 @@ class Config implements ConfigInterface
      * @return string
      * @throws InvalidArgumentException
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
@@ -95,7 +95,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace): self
     {
         $this->namespace = Normalizer::normalizeNamespace($namespace);
         return $this;
@@ -105,7 +105,7 @@ class Config implements ConfigInterface
      * @return string
      * @throws InvalidArgumentException
      */
-    public function getWsdl()
+    public function getWsdl(): string
     {
         if (!$this->wsdl) {
             throw InvalidArgumentException::wsdlConfigurationIsMissing();
@@ -125,7 +125,7 @@ class Config implements ConfigInterface
      *
      * @return $this
      */
-    public function setSoapOptions(array $soapOptions)
+    public function setSoapOptions(array $soapOptions): self
     {
         $this->soapOptions = $soapOptions;
 
@@ -138,7 +138,7 @@ class Config implements ConfigInterface
      *
      * @return $this
      */
-    public function addSoapOption($key, $value)
+    public function addSoapOption(string $key, $value): self
     {
         $this->soapOptions[$key] = $value;
 
@@ -148,7 +148,7 @@ class Config implements ConfigInterface
     /**
      * @return array
      */
-    public function getSoapOptions()
+    public function getSoapOptions(): array
     {
         return $this->soapOptions;
     }
@@ -158,7 +158,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function setWsdl($wsdl)
+    public function setWsdl(string $wsdl): self
     {
         $this->wsdl = $wsdl;
         return $this;
@@ -168,7 +168,7 @@ class Config implements ConfigInterface
      * @return string
      * @throws InvalidArgumentException
      */
-    public function getDestination()
+    public function getDestination(): string
     {
         if (!$this->destination) {
             throw InvalidArgumentException::destinationConfigurationIsMissing();
@@ -182,7 +182,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function setDestination($destination)
+    public function setDestination(string $destination): self
     {
         $this->destination = rtrim($destination, '/\\');
         return $this;
@@ -191,7 +191,7 @@ class Config implements ConfigInterface
     /**
      * @return RuleSetInterface
      */
-    public function getRuleSet()
+    public function getRuleSet(): RuleSetInterface
     {
         return $this->ruleSet;
     }
@@ -201,7 +201,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function addRule(RuleInterface $rule)
+    public function addRule(RuleInterface $rule): self
     {
         $this->ruleSet->addRule($rule);
         return $this;
@@ -212,7 +212,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function setRuleSet(RuleSetInterface $ruleSet)
+    public function setRuleSet(RuleSetInterface $ruleSet): self
     {
         $this->ruleSet = $ruleSet;
         return $this;
@@ -230,7 +230,7 @@ class Config implements ConfigInterface
      * @param WsdlProviderInterface $wsdlProvider
      * @return Config
      */
-    public function setWsdlProvider(WsdlProviderInterface $wsdlProvider)
+    public function setWsdlProvider(WsdlProviderInterface $wsdlProvider): self
     {
         $this->wsdlProvider = $wsdlProvider;
         return $this;

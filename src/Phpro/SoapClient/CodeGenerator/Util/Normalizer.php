@@ -15,7 +15,7 @@ class Normalizer
      *
      * @return string
      */
-    public static function normalizeNamespace($namespace)
+    public static function normalizeNamespace(string $namespace): string
     {
         return trim(str_replace('/', '\\', $namespace), '\\');
     }
@@ -25,7 +25,7 @@ class Normalizer
      *
      * @return string
      */
-    public static function normalizeClassname($name)
+    public static function normalizeClassname($name): string
     {
         return ucfirst(preg_replace('{[^a-z0-9_]}i', '', $name));
     }
@@ -45,7 +45,7 @@ class Normalizer
      *
      * @return string
      */
-    public static function normalizeDataType($type)
+    public static function normalizeDataType(string $type): string
     {
         return strtr($type, [
             'long' => 'int',
@@ -59,12 +59,12 @@ class Normalizer
     }
 
     /**
-     * @param $prefix
-     * @param $property
+     * @param string $prefix
+     * @param string $property
      *
      * @return string
      */
-    public static function generatePropertyMethod($prefix, $property)
+    public static function generatePropertyMethod(string $prefix, string $property): string
     {
         return strtolower($prefix) . ucfirst(self::normalizeProperty($property));
     }
@@ -73,10 +73,10 @@ class Normalizer
      * @param string $name
      * @return string
      */
-    public static function getClassNameFromFQN($name)
+    public static function getClassNameFromFQN(string $name): string
     {
         $arr = explode('\\', $name);
-        return array_pop($arr);
+        return (string)array_pop($arr);
     }
 
     /**
@@ -84,7 +84,7 @@ class Normalizer
      * @param string $useAlias
      * @return string
      */
-    public static function getCompleteUseStatement($useName, $useAlias)
+    public static function getCompleteUseStatement(string $useName, string $useAlias): string
     {
         $use = $useName;
         if (!empty($useAlias)) {

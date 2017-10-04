@@ -15,30 +15,30 @@ interface ConfigInterface
     /**
      * @return string
      */
-    public function getNamespace();
+    public function getNamespace(): string;
 
     /**
      * @return string
      */
-    public function getWsdl();
+    public function getWsdl(): string;
 
     /**
      * array
      */
-    public function getSoapOptions();
+    public function getSoapOptions(): array;
 
     /**
      * @return string
      */
-    public function getDestination();
+    public function getDestination(): string;
 
     /**
      * @return RuleSetInterface
      */
-    public function getRuleSet();
+    public function getRuleSet(): RuleSetInterface;
 
     /**
      * @return WsdlProviderInterface
      */
-    public function getWsdlProvider();
+    public function getWsdlProvider(): WsdlProviderInterface;
 }

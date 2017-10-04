@@ -15,7 +15,7 @@ class AssemblerException extends RuntimeException
      *
      * @return AssemblerException
      */
-    public static function fromException(\Exception $e)
+    public static function fromException(\Exception $e): self
     {
         return new self($e->getMessage(), $e->getCode(), $e);
     }

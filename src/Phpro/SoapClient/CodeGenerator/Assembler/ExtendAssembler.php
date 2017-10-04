@@ -34,7 +34,7 @@ class ExtendAssembler implements AssemblerInterface
      *
      * @return bool
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof TypeContext;
     }

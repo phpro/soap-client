@@ -89,7 +89,7 @@ class ClientBuilder
      * @param string                 $wsdl
      * @param array                  $soapOptions
      */
-    public function __construct(ClientFactoryInterface $clientFactory, $wsdl, array $soapOptions = [])
+    public function __construct(ClientFactoryInterface $clientFactory, string $wsdl, array $soapOptions = [])
     {
         $this->classMaps = new ClassMapCollection();
         $this->converters = new TypeConverterCollection();
@@ -190,7 +190,7 @@ class ClientBuilder
      * @return ClientInterface
      * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
-    public function build()
+    public function build(): ClientInterface
     {
         $soapClientFactory = new SoapClientFactory($this->classMaps, $this->converters);
         $soapClient = $soapClientFactory->factory($this->wsdlProvider->provide($this->wsdl), $this->soapOptions);

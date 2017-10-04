@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Middleware;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
 use RobRichards\WsePhp\WSASoap;
@@ -43,7 +44,7 @@ class WsaMiddleware extends Middleware
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options): PromiseInterface
     {
         $xml = SoapXml::fromStream($request->getBody());
 

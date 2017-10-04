@@ -17,7 +17,7 @@ class ResultAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof TypeContext;
     }

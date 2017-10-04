@@ -19,5 +19,5 @@ interface ClientFactoryInterface
      *
      * @return ClientInterface
      */
-    public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher);
+    public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher): ClientInterface;
 }

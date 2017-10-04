@@ -11,7 +11,7 @@ use Psr\Http\Message\RequestInterface;
  *
  * @package Phpro\SoapClient\Middleware
  */
-class RemoveEmptyNodesMiddleware extends MiddleWare
+class RemoveEmptyNodesMiddleware extends Middleware
 {
     /**
      * @return string
@@ -28,7 +28,7 @@ class RemoveEmptyNodesMiddleware extends MiddleWare
      *
      * @return PromiseInterface
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options): PromiseInterface
     {
         $xml = SoapXml::fromStream($request->getBody());
 

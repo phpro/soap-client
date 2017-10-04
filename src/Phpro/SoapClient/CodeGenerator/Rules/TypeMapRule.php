@@ -29,7 +29,7 @@ class TypeMapRule implements RuleInterface
      * @param RuleInterface[] $typeMap
      * @param RuleInterface $defaultRule
      */
-    public function __construct(array $typeMap, $defaultRule)
+    public function __construct(array $typeMap, RuleInterface $defaultRule)
     {
         $this->typeMap = $typeMap;
         $this->defaultRule = $defaultRule;
@@ -40,7 +40,7 @@ class TypeMapRule implements RuleInterface
      *
      * @return bool
      */
-    public function appliesToContext(ContextInterface $context)
+    public function appliesToContext(ContextInterface $context): bool
     {
         if (!$context instanceof TypeContext && !$context instanceof PropertyContext) {
             return false;

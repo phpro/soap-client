@@ -29,7 +29,7 @@ class TypenameMatchesRule implements RuleInterface
      * @param RuleInterface $subRule
      * @param string        $regex
      */
-    public function __construct(RuleInterface $subRule, $regex)
+    public function __construct(RuleInterface $subRule, string $regex)
     {
         $this->subRule = $subRule;
         $this->regex = $regex;
@@ -40,7 +40,7 @@ class TypenameMatchesRule implements RuleInterface
      *
      * @return bool
      */
-    public function appliesToContext(ContextInterface $context)
+    public function appliesToContext(ContextInterface $context): bool
     {
         if (!$context instanceof TypeContext && !$context instanceof PropertyContext) {
             return false;

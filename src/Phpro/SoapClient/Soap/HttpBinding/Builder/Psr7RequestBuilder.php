@@ -76,7 +76,7 @@ class Psr7RequestBuilder
      * @return RequestInterface
      * @throws RequestException
      */
-    public function getHttpRequest()
+    public function getHttpRequest(): RequestInterface
     {
         $this->validate();
 
@@ -98,7 +98,7 @@ class Psr7RequestBuilder
     /**
      * @param string $endpoint
      */
-    public function setEndpoint($endpoint)
+    public function setEndpoint(string $endpoint)
     {
         $this->endpoint = $endpoint;
     }
@@ -123,7 +123,7 @@ class Psr7RequestBuilder
     /**
      * @param string $soapAction
      */
-    public function setSoapAction($soapAction)
+    public function setSoapAction(string $soapAction)
     {
         $this->soapAction = $soapAction;
     }
@@ -131,7 +131,7 @@ class Psr7RequestBuilder
     /**
      * @param string $content
      */
-    public function setSoapMessage($content)
+    public function setSoapMessage(string $content)
     {
         $this->soapMessage = $this->streamFactory->createStream($content);
         $this->hasSoapMessage = true;
@@ -140,7 +140,7 @@ class Psr7RequestBuilder
     /**
      * @param string $method
      */
-    public function setHttpMethod($method)
+    public function setHttpMethod(string $method)
     {
         $this->httpMethod = $method;
     }
@@ -179,7 +179,7 @@ class Psr7RequestBuilder
     /**
      * @return array
      */
-    private function prepareHeaders()
+    private function prepareHeaders(): array
     {
         if ($this->soapVersion === self::SOAP11) {
             return $this->prepareSoap11Headers();
@@ -192,7 +192,7 @@ class Psr7RequestBuilder
      * @link https://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383526
      * @return array
      */
-    private function prepareSoap11Headers()
+    private function prepareSoap11Headers(): array
     {
         $headers = [];
         $headers['Content-Length'] = (string) $this->soapMessage->getSize();
@@ -208,7 +208,7 @@ class Psr7RequestBuilder
      * @link https://www.w3.org/TR/soap12-part0/#L4697
      * @return array
      */
-    private function prepareSoap12Headers()
+    private function prepareSoap12Headers(): array
     {
         $headers = [];
         if ($this->httpMethod !== 'POST') {
@@ -225,7 +225,7 @@ class Psr7RequestBuilder
     /**
      * @return StreamInterface
      */
-    private function prepareMessage()
+    private function prepareMessage(): StreamInterface
     {
         if ($this->httpMethod === 'POST') {
             return $this->soapMessage;

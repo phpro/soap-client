@@ -33,7 +33,7 @@ class RequestEvent extends Event
      * @param string $method
      * @param RequestInterface $request
      */
-    public function __construct(Client $client, $method, RequestInterface $request)
+    public function __construct(Client $client, string $method, RequestInterface $request)
     {
         $this->client = $client;
         $this->method = $method;
@@ -43,7 +43,7 @@ class RequestEvent extends Event
     /**
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -51,7 +51,7 @@ class RequestEvent extends Event
     /**
      * @return RequestInterface
      */
-    public function getRequest()
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }
@@ -59,7 +59,7 @@ class RequestEvent extends Event
     /**
      * @return Client
      */
-    public function getClient()
+    public function getClient(): Client
     {
         return $this->client;
     }

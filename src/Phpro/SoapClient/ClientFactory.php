@@ -22,7 +22,7 @@ class ClientFactory implements ClientFactoryInterface
     /**
      * @param string $className
      */
-    public function __construct($className)
+    public function __construct(string $className)
     {
         $this->className = $className;
     }
@@ -31,11 +31,11 @@ class ClientFactory implements ClientFactoryInterface
      * @param SoapClient      $soapClient
      * @param EventDispatcherInterface $dispatcher
      *
-     * @return object
+     * @return ClientInterface
      */
-    public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher)
+    public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher): ClientInterface
     {
         $rc = new ReflectionClass($this->className);
-        return $rc->newInstance($soapClient, $dispatcher);
+        $obj = $rc->newInstance($soapClient, $dispatcher);
     }
 }

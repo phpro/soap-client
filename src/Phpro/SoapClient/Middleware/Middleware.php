@@ -26,7 +26,7 @@ class Middleware implements MiddlewareInterface
      *
      * @return \Closure
      */
-    public function __invoke(callable $handler)
+    public function __invoke(callable $handler): \Closure
     {
         return (function (RequestInterface $request, array $options) use ($handler) {
             return $this->beforeRequest($handler, $request, $options)
@@ -45,7 +45,7 @@ class Middleware implements MiddlewareInterface
      *
      * @return PromiseInterface
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request, array $options): PromiseInterface
     {
         return $handler($request, $options);
     }
@@ -55,7 +55,7 @@ class Middleware implements MiddlewareInterface
      *
      * @return ResponseInterface
      */
-    public function afterResponse(ResponseInterface $response)
+    public function afterResponse(ResponseInterface $response): ResponseInterface
     {
         return $response;
     }

@@ -27,7 +27,7 @@ class GetterAssembler implements AssemblerInterface
      * GetterAssembler constructor.
      * @param bool $boolGetters
      */
-    public function __construct($boolGetters = false)
+    public function __construct(bool $boolGetters = false)
     {
         $this->boolGetters = $boolGetters;
     }
@@ -35,7 +35,7 @@ class GetterAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof PropertyContext;
     }
@@ -78,7 +78,7 @@ class GetterAssembler implements AssemblerInterface
      * @param Property $property
      * @return string
      */
-    public function getPrefix(Property $property)
+    public function getPrefix(Property $property): string
     {
         if (!$this->boolGetters) {
             return 'get';

@@ -54,7 +54,7 @@ class GuzzleWsdlProvider implements WsdlProviderInterface, MiddlewareSupportingI
      *
      * @return GuzzleWsdlProvider
      */
-    public static function createForClient(ClientInterface $client)
+    public static function createForClient(ClientInterface $client): self
     {
         return new self($client, new Filesystem());
     }

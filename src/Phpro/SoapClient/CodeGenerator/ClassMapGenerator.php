@@ -35,7 +35,7 @@ class ClassMapGenerator implements GeneratorInterface
      *
      * @return string
      */
-    public function generate(FileGenerator $file, $typeMap)
+    public function generate(FileGenerator $file, $typeMap): string
     {
         $this->ruleSet->applyRules(new ClassMapContext($file, $typeMap));
         

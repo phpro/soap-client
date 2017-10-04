@@ -32,7 +32,7 @@ class AssembleRule implements RuleInterface
      *
      * @return bool
      */
-    public function appliesToContext(ContextInterface $context)
+    public function appliesToContext(ContextInterface $context): bool
     {
         return $this->assembler->canAssemble($context);
     }
