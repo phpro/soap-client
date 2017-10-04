@@ -36,6 +36,7 @@ class ClientFactory implements ClientFactoryInterface
     public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher)
     {
         $rc = new ReflectionClass($this->className);
-        $obj = $rc->newInstance($soapClient, $dispatcher);
+
+        return $rc->newInstance($soapClient, $dispatcher);
     }
 }
