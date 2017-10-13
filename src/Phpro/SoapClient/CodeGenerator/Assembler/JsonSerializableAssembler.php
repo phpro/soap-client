@@ -19,6 +19,20 @@ use Zend\Code\Generator\MethodGenerator;
 class JsonSerializableAssembler implements AssemblerInterface
 {
     /**
+     * @var boolean
+     */
+    private $recursive;
+
+    /**
+     * JsonSerializableAssembler constructor.
+     * @param $recursive True if all underlaying objects shall be serialized, too
+     */
+    public function __construct($recursive = false)
+    {
+        $this->recursive = $recursive;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function canAssemble(ContextInterface $context)
@@ -85,7 +99,11 @@ class JsonSerializableAssembler implements AssemblerInterface
         $lines[] = 'return [';
 
         foreach ($type->getProperties() as $property) {
-            $lines[] = sprintf('%1$s\'%2$s\' => $this->%2$s,', $class->getIndentation(), $property->getName());
+            if ($this->recursive) {
+                $lines[] = sprintf('%1$s\'%2$s\' => (is_object($this->%2$s) && method_exists($this->%2$s, \'jsonSerialize\') ? $this->%2$s->jsonSerialize() : $this->%2$s),', $class->getIndentation(), $property->getName());
+            } else {
+                $lines[] = sprintf('%1$s\'%2$s\' => $this->%2$s,', $class->getIndentation(), $property->getName());
+            }
         }
 
         $lines[] = '];';
