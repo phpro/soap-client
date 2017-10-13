@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\Util;
 
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Exception\RuntimeException;
+use SplFileInfo;
 
 /**
  * Class Filesystem
@@ -14,13 +15,19 @@ class Filesystem
 {
 
     /**
-     * @param $directory
-     *
-     * @return bool
+     * @param string $directory
      */
-    public function dirextoryExists($directory)
+    public function ensureDirectoryExists($directory)
     {
-        return is_dir($directory) && is_writable($directory);
+        if (is_dir($directory)) {
+            return;
+        }
+        if (file_exists($directory)) {
+            throw new RuntimeException($directory.' exists and is not a directory.');
+        }
+        if (!@mkdir($directory, 0777, true)) {
+            throw new RuntimeException($directory.' does not exist and could not be created.');
+        }
     }
 
     /**

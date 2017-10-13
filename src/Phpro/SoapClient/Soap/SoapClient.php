@@ -27,7 +27,7 @@ class SoapClient extends \SoapClient
      *
      * @var array
      */
-    protected $types;
+    protected $types = [];
 
     /**
      * @var HandlerInterface

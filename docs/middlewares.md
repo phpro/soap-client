@@ -104,6 +104,7 @@ $wsse->withUserToken('username', 'password', true);
 // With end-to-end encryption enabled:
 $wsse = new WsseMiddleware('privatekey.pem', 'publickey.pyb');
 $wsse->withEncryption('client-x509.pem');
+$wsse->withServerCertificateHasSubjectKeyIdentifier(true);
 
 // Add it to the clientbuilder
 $clientBuilder->addMiddleware($wsse);
