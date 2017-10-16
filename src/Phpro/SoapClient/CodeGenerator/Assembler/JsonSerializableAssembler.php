@@ -103,12 +103,14 @@ class JsonSerializableAssembler implements AssemblerInterface
                 $lines[] = sprintf(
                     '%1$s\'%2$s\' => (is_object($this->%2$s) && method_exists($this->%2$s, ' .
                     '\'jsonSerialize\') ? $this->%2$s->jsonSerialize() : $this->%2$s),',
-                    $class->getIndentation(), $property->getName()
+                    $class->getIndentation(),
+                    $property->getName()
                 );
             } else {
                 $lines[] = sprintf(
                     '%1$s\'%2$s\' => $this->%2$s,',
-                    $class->getIndentation(), $property->getName()
+                    $class->getIndentation(),
+                    $property->getName()
                 );
             }
         }
