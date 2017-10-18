@@ -4,6 +4,7 @@ namespace PhproTest\SoapClient\Unit\Xml;
 
 use Phpro\SoapClient\Xml\WsdlXml;
 use Phpro\SoapClient\Xml\Xml;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Stream;
 
 /**
@@ -11,7 +12,7 @@ use Zend\Diactoros\Stream;
  *
  * @package PhproTest\SoapClient\Unit\Xml
  */
-class WsdlXmlTest extends \PHPUnit_Framework_TestCase
+class WsdlXmlTest extends TestCase
 {
 
     /**
