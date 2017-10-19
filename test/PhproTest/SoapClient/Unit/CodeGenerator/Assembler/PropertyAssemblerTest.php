@@ -57,7 +57,7 @@ class MyType
     /**
      * @var string
      */
-    private \$prop1 = null;
+    private \$prop1;
 
 
 }
@@ -87,7 +87,7 @@ class MyType
     /**
      * @var string
      */
-    public \$prop1 = null;
+    public \$prop1;
 
 
 }
