@@ -51,20 +51,22 @@ class PropertyAssembler implements AssemblerInterface
             if ($class->hasProperty($property->getName())) {
                 return;
             }
-            $propertyGenerator = PropertyGenerator::fromArray([
-                'name' => $property->getName(),
-                'visibility' => $this->visibility,
-                'docblock' => DocBlockGenerator::fromArray([
-                    'tags' => [
-                        [
-                            'name'        => 'var',
-                            'description' => $property->getType(),
+
+            $class->addPropertyFromGenerator(
+                PropertyGenerator::fromArray([
+                    'name'             => $property->getName(),
+                    'visibility'       => $this->visibility,
+                    'omitdefaultvalue' => true,
+                    'docblock'         => DocBlockGenerator::fromArray([
+                        'tags' => [
+                            [
+                                'name'        => 'var',
+                                'description' => $property->getType(),
+                            ],
                         ],
-                    ]
+                    ]),
                 ])
-            ]);
-            $propertyGenerator->omitDefaultValue();
-            $class->addPropertyFromGenerator($propertyGenerator);
+            );
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
