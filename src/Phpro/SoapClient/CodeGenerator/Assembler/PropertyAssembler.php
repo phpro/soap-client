@@ -54,17 +54,17 @@ class PropertyAssembler implements AssemblerInterface
 
             $class->addPropertyFromGenerator(
                 PropertyGenerator::fromArray([
-                    'name'             => $property->getName(),
-                    'visibility'       => $this->visibility,
+                    'name' => $property->getName(),
+                    'visibility' => $this->visibility,
                     'omitdefaultvalue' => true,
-                    'docblock'         => DocBlockGenerator::fromArray([
+                    'docblock' => DocBlockGenerator::fromArray([
                         'tags' => [
                             [
                                 'name'        => 'var',
                                 'description' => $property->getType(),
                             ],
-                        ],
-                    ]),
+                        ]
+                    ])
                 ])
             );
         } catch (\Exception $e) {
