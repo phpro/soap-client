@@ -8,6 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 
@@ -16,7 +17,7 @@ use Zend\Code\Generator\PropertyGenerator;
  *
  * @package PhproTest\SoapClient\Unit\CodeGenerator\Assembler
  */
-class PropertyAssemblerTest extends \PHPUnit_Framework_TestCase
+class PropertyAssemblerTest extends TestCase
 {
 
     /**

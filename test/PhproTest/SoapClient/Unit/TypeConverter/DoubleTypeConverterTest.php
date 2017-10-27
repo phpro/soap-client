@@ -3,13 +3,14 @@
 namespace PhproTest\SoapClient\Unit\TypeConverter;
 
 use Phpro\SoapClient\Soap\TypeConverter\DoubleTypeConverter;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Double TypeConverter.
  *
  * @package PhproTest\SoapClient\Unit\TypeConverter
  */
-class DoubleTypeConverterTest extends \PHPUnit_Framework_TestCase
+class DoubleTypeConverterTest extends TestCase
 {
     /**
      * @var DoubleTypeConverter

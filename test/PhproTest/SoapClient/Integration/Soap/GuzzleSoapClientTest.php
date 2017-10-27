@@ -6,13 +6,14 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use Phpro\SoapClient\Soap\Handler\GuzzleHandle;
 use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class GuzzleSoapClientTest
  *
  * @package PhproTest\SoapClient\Integration\Soap
  */
-class GuzzleSoapClientTest extends \PHPUnit_Framework_TestCase
+class GuzzleSoapClientTest extends TestCase
 {
 
     /**

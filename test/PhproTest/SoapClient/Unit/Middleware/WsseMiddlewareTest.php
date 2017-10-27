@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Response;
 use Phpro\SoapClient\Middleware\WsseMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Xml\SoapXml;
+use PHPUnit\Framework\TestCase;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 
 /**
@@ -18,7 +19,7 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class WsseMiddlewareTest extends \PHPUnit_Framework_TestCase
+class WsseMiddlewareTest extends TestCase
 {
 
     /**
