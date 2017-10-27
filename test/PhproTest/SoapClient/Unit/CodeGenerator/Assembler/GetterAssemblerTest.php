@@ -4,6 +4,7 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\GetterAssembler;
+use Phpro\SoapClient\CodeGenerator\Assembler\GetterAssemblerOptions;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
@@ -21,7 +22,7 @@ class GetterAssemblerTest extends \PHPUnit_Framework_TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new GetterAssembler();
+        $assembler = new GetterAssembler(new GetterAssemblerOptions());
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
     
@@ -30,7 +31,7 @@ class GetterAssemblerTest extends \PHPUnit_Framework_TestCase
      */
     function it_can_assemble_property_context()
     {
-        $assembler = new GetterAssembler();
+        $assembler = new GetterAssembler(new GetterAssemblerOptions());
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }
@@ -40,7 +41,7 @@ class GetterAssemblerTest extends \PHPUnit_Framework_TestCase
      */
     function it_assembles_a_property()
     {
-        $assembler = new GetterAssembler();
+        $assembler = new GetterAssembler(new GetterAssemblerOptions());
         $context = $this->createContext();
         $assembler->assemble($context);
 
@@ -70,9 +71,45 @@ CODE;
     /**
      * @test
      */
+    public function it_assembles_with_return_type()
+    {
+        $options = (new GetterAssemblerOptions())
+            ->withReturnType();
+        $assembler = new GetterAssembler($options);
+
+        $context = $this->createContext('prop2');
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @return int
+     */
+    public function getProp2() : int
+    {
+        return \$this->prop2;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
     function it_assembles_property_methodnames_correctly()
     {
-        $assembler = new GetterAssembler(true);
+        $options = (new GetterAssemblerOptions())->withBoolGetters();
+        $assembler = new GetterAssembler($options);
 
         $context = $this->createContext('prop3');
         $assembler->assemble($context);

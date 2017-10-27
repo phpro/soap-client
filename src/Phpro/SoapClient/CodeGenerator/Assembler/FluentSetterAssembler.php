@@ -55,22 +55,27 @@ class FluentSetterAssembler implements AssemblerInterface
             $class->removeMethod($methodName);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
-                    'name' => $methodName,
+                    'name'       => $methodName,
                     'parameters' => $this->getParameter($property),
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                    'body' => sprintf('$this->%1$s = $%1$s;%2$sreturn $this;', $property->getName(), $class::LINE_FEED),
-                    'docblock' => DocBlockGenerator::fromArray([
+                    'body'       => sprintf(
+                        '$this->%1$s = $%1$s;%2$sreturn $this;',
+                        $property->getName(),
+                        $class::LINE_FEED
+                    ),
+                    'returntype' => $this->options->useReturnType() ? $class->getFqcn() : null,
+                    'docblock'   => DocBlockGenerator::fromArray([
                         'tags' => [
                             [
-                                'name' => 'param',
-                                'description' => sprintf('%s $%s', $property->getType(), $property->getName())
+                                'name'        => 'param',
+                                'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
                             ],
                             [
-                                'name' => 'return',
-                                'description' => '$this'
-                            ]
-                        ]
-                    ])
+                                'name'        => 'return',
+                                'description' => '$this',
+                            ],
+                        ],
+                    ]),
                 ])
             );
         } catch (\Exception $e) {
@@ -86,9 +91,14 @@ class FluentSetterAssembler implements AssemblerInterface
     private function getParameter(Property $property): array
     {
         $type = $property->getType();
-        if ($this->options->useReturnType() && TypeChecker::hasValidType($type)) {
-            return [['name' => $property->getName(), 'type' => $type]];
-        };
+        if (TypeChecker::hasValidType($type)) {
+            return [
+                [
+                    'name' => $property->getName(),
+                    'type' => $type,
+                ],
+            ];
+        }
 
         return [$property->getName()];
     }

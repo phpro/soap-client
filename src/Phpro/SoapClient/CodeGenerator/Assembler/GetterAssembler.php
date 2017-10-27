@@ -56,18 +56,19 @@ class GetterAssembler implements AssemblerInterface
             $class->removeMethod($methodName);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
-                    'name' => $methodName,
+                    'name'       => $methodName,
                     'parameters' => [],
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                    'body' => sprintf('return $this->%s;', $property->getName()),
-                    'docblock' => DocBlockGenerator::fromArray([
+                    'body'       => sprintf('return $this->%s;', $property->getName()),
+                    'returntype' => $this->options->useReturnType() ? $property->getType() : null,
+                    'docblock'   => DocBlockGenerator::fromArray([
                         'tags' => [
                             [
-                                'name' => 'return',
-                                'description' => $property->getType()
-                            ]
-                        ]
-                    ])
+                                'name'        => 'return',
+                                'description' => $property->getType(),
+                            ],
+                        ],
+                    ]),
                 ])
             );
         } catch (\Exception $e) {
@@ -84,6 +85,7 @@ class GetterAssembler implements AssemblerInterface
         if (!$this->options->useBoolGetters()) {
             return 'get';
         }
+
         return $property->getType() === 'bool' ? 'is' : 'get';
     }
 }

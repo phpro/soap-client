@@ -34,7 +34,7 @@ class GetterAssemblerOptions
      *
      * @return GetterAssemblerOptions
      */
-    public function withBoolGetters(bool $boolGetters): GetterAssemblerOptions
+    public function withBoolGetters(bool $boolGetters = true): GetterAssemblerOptions
     {
         $new = clone $this;
         $new->boolGetters = $boolGetters;
@@ -47,7 +47,7 @@ class GetterAssemblerOptions
      *
      * @return GetterAssemblerOptions
      */
-    public function withReturnType(bool $returnType): GetterAssemblerOptions
+    public function withReturnType(bool $returnType = true): GetterAssemblerOptions
     {
         $new = clone $this;
         $new->returnType = $returnType;

@@ -29,7 +29,7 @@ class FluentSetterAssemblerOptions
      *
      * @return FluentSetterAssemblerOptions
      */
-    public function withReturnType(bool $returnType): FluentSetterAssemblerOptions
+    public function withReturnType(bool $returnType = true): FluentSetterAssemblerOptions
     {
         $new = clone $this;
         $new->returnType = $returnType;
