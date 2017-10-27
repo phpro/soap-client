@@ -19,6 +19,18 @@ use Zend\Code\Generator\ClassGenerator;
 class GetterAssemblerTest extends TestCase
 {
     /**
+     * @param string $version
+     * @return bool
+     */
+    function zendOlderOrEqual($version)
+    {
+        $zendCodeVersion = \PackageVersions\Versions::getVersion('zendframework/zend-code');
+        $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
+
+        return version_compare($zendCodeVersion, $version, '>=');
+    }
+
+    /**
      * @test
      */
     function it_is_an_assembler()
@@ -26,7 +38,7 @@ class GetterAssemblerTest extends TestCase
         $assembler = new GetterAssembler(new GetterAssemblerOptions());
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
-    
+
     /**
      * @test
      */
@@ -74,6 +86,9 @@ CODE;
      */
     public function it_assembles_with_return_type()
     {
+        if (!$this->zendOlderOrEqual('3.3.0')) {
+            $this->markTestSkipped('zendframework/zend-code 3.3.0 required');
+        }
         $options = (new GetterAssemblerOptions())
             ->withReturnType();
         $assembler = new GetterAssembler($options);
@@ -147,7 +162,7 @@ CODE;
         $properties = [
             'prop1' => 'string',
             'prop2' => 'int',
-            'prop3' => 'boolean'
+            'prop3' => 'boolean',
         ];
 
         $class = new ClassGenerator('MyType', 'MyNamespace');

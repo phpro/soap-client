@@ -19,6 +19,17 @@ use Zend\Code\Generator\ClassGenerator;
  */
 class FluentSetterAssemblerTest extends TestCase
 {
+    /**
+     * @param string $version
+     * @return bool
+     */
+    function zendOlderOrEqual($version)
+    {
+        $zendCodeVersion = \PackageVersions\Versions::getVersion('zendframework/zend-code');
+        $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
+
+        return version_compare($zendCodeVersion, $version, '>=');
+    }
 
     /**
      * @test
@@ -112,6 +123,9 @@ CODE;
      */
     public function it_generates_return_types()
     {
+        if (!$this->zendOlderOrEqual('3.3.0')) {
+            $this->markTestSkipped('zend-code not new enough');
+        }
         $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withReturnType());
         $context = $this->createContextWithAnUnknownType();
         $assembler->assemble($context);
@@ -148,7 +162,7 @@ CODE;
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'string'
+            'prop1' => 'string',
         ]);
         $property = new Property('prop1', 'string');
 
@@ -162,7 +176,7 @@ CODE;
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'foobar'
+            'prop1' => 'foobar',
         ]);
         $property = new Property('prop1', 'foobar');
 
