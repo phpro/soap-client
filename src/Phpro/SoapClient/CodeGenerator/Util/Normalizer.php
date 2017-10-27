@@ -50,23 +50,16 @@ class Normalizer
         $normalizations = [
             'long' => 'int',
             'short' => 'int',
-            'dateTime' => '\\DateTime',
+            'datetime' => '\\DateTime',
             'date' => '\\DateTime',
             'boolean' => 'bool',
             'decimal' => 'float',
             'double' => 'float',
         ];
 
-        return preg_replace(
-            array_map(
-                function ($search) {
-                    return '/^' . $search. '$/i';
-                },
-                array_keys($normalizations)
-            ),
-            array_values($normalizations),
-            $type
-        );
+        $searchType = strtolower($type);
+
+        return array_key_exists($searchType, $normalizations) ? $normalizations[$searchType] : $type;
     }
 
     /**
