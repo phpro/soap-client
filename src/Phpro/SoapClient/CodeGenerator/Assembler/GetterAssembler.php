@@ -2,7 +2,6 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
-use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
@@ -36,7 +35,7 @@ class GetterAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof PropertyContext;
     }
@@ -80,7 +79,7 @@ class GetterAssembler implements AssemblerInterface
      * @param Property $property
      * @return string
      */
-    public function getPrefix(Property $property)
+    public function getPrefix(Property $property): string
     {
         if (!$this->options->useBoolGetters()) {
             return 'get';

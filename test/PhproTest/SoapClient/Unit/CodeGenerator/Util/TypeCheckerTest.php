@@ -18,7 +18,7 @@ class TypeCheckerTest extends TestCase
      */
     function it_can_check_a_type($type, $expected)
     {
-        $this->assertEquals($expected, TypeChecker::hasValidType($type));
+        $this->assertEquals($expected, TypeChecker::isKnownType($type));
     }
 
     /**

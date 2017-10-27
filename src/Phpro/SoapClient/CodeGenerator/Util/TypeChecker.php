@@ -23,13 +23,9 @@ class TypeChecker
      *
      * @return bool
      */
-    public static function hasValidType(string $type): bool
+    public static function isKnownType(string $type): bool
     {
-        if (self::isInternalPhpType($type) || self::isClassType($type)) {
-            return true;
-        }
-
-        return false;
+        return self::isInternalPhpType($type) || self::isClassType($type);
     }
 
     /**

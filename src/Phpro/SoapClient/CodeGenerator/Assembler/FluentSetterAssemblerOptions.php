@@ -19,7 +19,7 @@ class FluentSetterAssemblerOptions
     /**
      * @return FluentSetterAssemblerOptions
      */
-    public static function create()
+    public static function create(): FluentSetterAssemblerOptions
     {
         return new self();
     }

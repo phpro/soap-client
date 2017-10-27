@@ -2,7 +2,6 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
-use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
@@ -37,7 +36,7 @@ class FluentSetterAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context) : bool
     {
         return $context instanceof PropertyContext;
     }
@@ -93,7 +92,7 @@ class FluentSetterAssembler implements AssemblerInterface
     private function getParameter(Property $property): array
     {
         $type = $property->getType();
-        if (TypeChecker::hasValidType($type)) {
+        if (TypeChecker::isKnownType($type)) {
             return [
                 [
                     'name' => $property->getName(),
