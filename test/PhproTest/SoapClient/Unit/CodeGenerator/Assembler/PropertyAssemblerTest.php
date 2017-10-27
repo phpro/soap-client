@@ -48,7 +48,8 @@ class PropertyAssemblerTest extends \PHPUnit_Framework_TestCase
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
-        $expected = <<<CODE
+        if (version_compare(PHP_VERSION, '7.1', '>=')) {
+            $expected = <<<CODE
 namespace MyNamespace;
 
 class MyType
@@ -63,6 +64,24 @@ class MyType
 }
 
 CODE;
+        } else {
+            $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @var string
+     */
+    private \$prop1 = null;
+
+
+}
+
+CODE;
+
+        }
 
         $this->assertEquals($expected, $code);
     }
@@ -78,7 +97,8 @@ CODE;
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
-        $expected = <<<CODE
+        if (version_compare(PHP_VERSION, '7.1', '>=')) {
+            $expected = <<<CODE
 namespace MyNamespace;
 
 class MyType
@@ -93,6 +113,23 @@ class MyType
 }
 
 CODE;
+        }else{
+            $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @var string
+     */
+    public \$prop1 = null;
+
+
+}
+
+CODE;
+        }
 
         $this->assertEquals($expected, $code);
     }
@@ -105,7 +142,7 @@ CODE;
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
             'prop1' => 'string',
-            'prop2' => 'int'
+            'prop2' => 'int',
         ]);
         $property = new Property('prop1', 'string');
 
