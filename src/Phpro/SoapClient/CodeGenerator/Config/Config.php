@@ -310,11 +310,11 @@ class Config implements ConfigInterface
      */
     public function getTypeNamespace()
     {
-        if (!$this->clientNamespace) {
-            throw InvalidArgumentException::clientNamespaceIsMissing();
+        if (!$this->typesNamespace) {
+            throw InvalidArgumentException::typeNamespaceIsMissing();
         }
 
-        return $this->clientNamespace;
+        return $this->typesNamespace;
     }
 
     /**
