@@ -45,7 +45,7 @@ This handler is based on middlewares which are applied to your guzzle client.
 Load HTTP plug core packages:
 
 ```sh
-composer require php-http/httplug:^1.0 php-http/message-factory:^1.0 php-http/discovery:^1.0 php-http/message:^1.0
+composer require psr/http-message:^1.1 php-http/httplug:^1.1 php-http/message-factory:^1.0 php-http/discovery:^1.3 php-http/message:^1.6
 ```
 
 **Select HTTP Client**
