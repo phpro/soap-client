@@ -33,7 +33,7 @@ This way, you will always be able to download and manipulate the WSDL file even 
 Load HTTP plug core packages:
 
 ```sh
-composer require psr/http-message:^1.1 php-http/httplug:^1.1 php-http/message-factory:^1.0 php-http/discovery:^1.3 php-http/message:^1.6
+composer require psr/http-message:^1.0 php-http/httplug:^1.1 php-http/message-factory:^1.0 php-http/discovery:^1.3 php-http/message:^1.6
 ```
 
 **Select HTTP Client**
