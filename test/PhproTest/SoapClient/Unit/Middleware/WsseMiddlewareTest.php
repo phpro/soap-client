@@ -2,12 +2,11 @@
 
 namespace PhproTest\SoapClient\Unit\Middleware;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Http\Client\Common\PluginClient;
+use Http\Message\MessageFactory\GuzzleMessageFactory;
+use Http\Mock\Client;
 use Phpro\SoapClient\Middleware\WsseMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Xml\SoapXml;
@@ -21,16 +20,15 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
  */
 class WsseMiddlewareTest extends TestCase
 {
-
     /**
-     * @var ClientInterface
+     * @var PluginClient
      */
     private $client;
 
     /**
-     * @var MockHandler
+     * @var Client
      */
-    private $handler;
+    private $mockClient;
 
     /**
      * @var WsseMiddleware
@@ -42,14 +40,12 @@ class WsseMiddlewareTest extends TestCase
      */
     protected function setUp()
     {
-        $this->handler = new MockHandler([]);
         $this->middleware = new WsseMiddleware(
             FIXTURE_DIR . '/certificates/wsse-client-private-key.pem',
             FIXTURE_DIR . '/certificates/wsse-client-public-key.pub'
         );
-        $stack = new HandlerStack($this->handler);
-        $stack->push($this->middleware);
-        $this->client = new Client(['handler' => $stack]);
+        $this->mockClient = new Client(new GuzzleMessageFactory());
+        $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
     /**
@@ -74,10 +70,10 @@ class WsseMiddlewareTest extends TestCase
     function it_adds_Wsse_to_the_request_xml()
     {
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/empty-request.xml');
-        $this->handler->append($response = new Response(200));
-        $result = $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->mockClient->addResponse($response = new Response(200));
+        $result = $this->client->sendRequest($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
-        $soapBody = (string)$this->handler->getLastRequest()->getBody();
+        $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xml = $this->fetchSoapXml($soapBody);
 
         $this->assertEquals($result, $response);
@@ -119,10 +115,10 @@ class WsseMiddlewareTest extends TestCase
     {
         $this->middleware->withTimestamp(100);
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/empty-request.xml');
-        $this->handler->append($response = new Response(200));
-        $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->mockClient->addResponse($response = new Response(200));
+        $this->client->sendRequest($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
-        $soapBody = (string)$this->handler->getLastRequest()->getBody();
+        $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xml = $this->fetchSoapXml($soapBody);
 
         $this->assertEquals(
@@ -138,10 +134,10 @@ class WsseMiddlewareTest extends TestCase
     {
         $this->middleware->withAllHeadersSigned();
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/wsa.xml');
-        $this->handler->append($response = new Response(200));
-        $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->mockClient->addResponse($response = new Response(200));
+        $this->client->sendRequest($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
-        $soapBody = (string)$this->handler->getLastRequest()->getBody();
+        $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xml = $this->fetchSoapXml($soapBody);
 
         $this->assertEquals(5, $xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference')->length, 'Not all headers are signed!');
@@ -158,10 +154,10 @@ class WsseMiddlewareTest extends TestCase
     {
         $this->middleware->withDigitalSignMethod(XMLSecurityKey::RSA_SHA256);
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/empty-request.xml');
-        $this->handler->append($response = new Response(200));
-        $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->mockClient->addResponse($response = new Response(200));
+        $this->client->sendRequest($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
-        $soapBody = (string)$this->handler->getLastRequest()->getBody();
+        $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xml = $this->fetchSoapXml($soapBody);
 
         // Check defaults:
@@ -178,10 +174,10 @@ class WsseMiddlewareTest extends TestCase
     {
         $this->middleware->withUserToken('username', 'password', false);
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/empty-request.xml');
-        $this->handler->append($response = new Response(200));
-        $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->mockClient->addResponse($response = new Response(200));
+        $this->client->sendRequest($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
-        $soapBody = (string)$this->handler->getLastRequest()->getBody();
+        $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xml = $this->fetchSoapXml($soapBody);
 
         // Check defaults:
@@ -209,10 +205,10 @@ class WsseMiddlewareTest extends TestCase
     {
         $this->middleware->withUserToken('username', 'password', true);
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/empty-request.xml');
-        $this->handler->append($response = new Response(200));
-        $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->mockClient->addResponse($response = new Response(200));
+        $this->client->sendRequest($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
-        $soapBody = (string)$this->handler->getLastRequest()->getBody();
+        $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xml = $this->fetchSoapXml($soapBody);
 
         // Check defaults:

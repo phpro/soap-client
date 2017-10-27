@@ -2,12 +2,11 @@
 
 namespace PhproTest\SoapClient\Unit\Middleware\Wsdl;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Http\Client\Common\PluginClient;
+use Http\Message\MessageFactory\GuzzleMessageFactory;
+use Http\Mock\Client;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Middleware\Wsdl\DisableExtensionsMiddleware;
 use Phpro\SoapClient\Xml\WsdlXml;
@@ -22,14 +21,14 @@ class DisableExtensionsMiddlewareTest extends TestCase
 {
 
     /**
-     * @var ClientInterface
+     * @var PluginClient
      */
     private $client;
 
     /**
-     * @var MockHandler
+     * @var Client
      */
-    private $handler;
+    private $mockClient;
 
     /**
      * @var DisableExtensionsMiddleware
@@ -41,11 +40,9 @@ class DisableExtensionsMiddlewareTest extends TestCase
      */
     protected function setUp()
     {
-        $this->handler = new MockHandler([]);
         $this->middleware = new DisableExtensionsMiddleware();
-        $stack = new HandlerStack($this->handler);
-        $stack->push($this->middleware);
-        $this->client = new Client(['handler' => $stack]);
+        $this->mockClient = new Client(new GuzzleMessageFactory());
+        $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
     /**
@@ -69,13 +66,13 @@ class DisableExtensionsMiddlewareTest extends TestCase
      */
     function it_removes_required_wsdl_extensions()
     {
-        $this->handler->append(new Response(
+        $this->mockClient->addResponse(new Response(
             200,
             [],
             file_get_contents(FIXTURE_DIR . '/wsdl/wsdl-extensions.wsdl'))
         );
 
-        $response = $this->client->send(new Request('POST', '/'));
+        $response = $this->client->sendRequest(new Request('POST', '/'));
         $xml = WsdlXml::fromStream($response->getBody());
         $xpath = '//wsdl:binding/wsaw:UsingAddressing[@wsdl:required="%s"]';
 

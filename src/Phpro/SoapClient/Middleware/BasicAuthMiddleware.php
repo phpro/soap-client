@@ -2,13 +2,9 @@
 
 namespace Phpro\SoapClient\Middleware;
 
+use Http\Promise\Promise;
 use Psr\Http\Message\RequestInterface;
 
-/**
- * Class BasicAuthMiddleware
- *
- * @package Phpro\SoapClient\Middleware
- */
 class BasicAuthMiddleware extends Middleware
 {
     /**
@@ -21,31 +17,18 @@ class BasicAuthMiddleware extends Middleware
      */
     private $password;
 
-    /**
-     * NtlmMiddleware constructor.
-     *
-     * @param string $username
-     * @param string $password
-     */
     public function __construct(string $username, string $password)
     {
         $this->username = $username;
         $this->password = $password;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return 'basic_auth_middleware';
     }
 
-    /**
-     * {@inheritdoc}
-     * @throws \InvalidArgumentException
-     */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request): Promise
     {
         $request = $request->withHeader(
             'Authorization',
@@ -54,6 +37,6 @@ class BasicAuthMiddleware extends Middleware
             ))
         );
 
-        return $handler($request, $options);
+        return $handler($request);
     }
 }

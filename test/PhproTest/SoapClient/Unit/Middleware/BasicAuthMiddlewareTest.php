@@ -2,12 +2,11 @@
 
 namespace PhproTest\SoapClient\Unit\Middleware;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Http\Client\Common\PluginClient;
+use Http\Message\MessageFactory\GuzzleMessageFactory;
+use Http\Mock\Client;
 use Phpro\SoapClient\Middleware\BasicAuthMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
@@ -21,14 +20,14 @@ class BasicAuthMiddlewareTest extends TestCase
 {
 
     /**
-     * @var ClientInterface
+     * @var PluginClient
      */
     private $client;
 
     /**
-     * @var MockHandler
+     * @var Client
      */
-    private $handler;
+    private $mockClient;
 
     /**
      * @var BasicAuthMiddleware
@@ -40,11 +39,9 @@ class BasicAuthMiddlewareTest extends TestCase
      */
     protected function setUp()
     {
-        $this->handler = new MockHandler([]);
         $this->middleware = new BasicAuthMiddleware('username', 'password');
-        $stack = new HandlerStack($this->handler);
-        $stack->push($this->middleware);
-        $this->client = new Client(['handler' => $stack]);
+        $this->mockClient = new Client(new GuzzleMessageFactory());
+        $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
     /**
@@ -68,9 +65,9 @@ class BasicAuthMiddlewareTest extends TestCase
      */
     function it_adds_basic_auth_to_the_request()
     {
-        $this->handler->append(new Response());
-        $this->client->send(new Request('POST', '/'));
-        $sentRequest = $this->handler->getLastRequest();
+        $this->mockClient->addResponse(new Response());
+        $this->client->sendRequest(new Request('POST', '/'));
+        $sentRequest = $this->mockClient->getRequests()[0];
         $this->assertEquals(
             sprintf('Basic %s', base64_encode('username:password')),
             $sentRequest->getHeader('Authorization')[0]);

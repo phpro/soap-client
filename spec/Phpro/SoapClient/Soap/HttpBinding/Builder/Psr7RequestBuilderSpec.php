@@ -2,30 +2,30 @@
 
 namespace spec\Phpro\SoapClient\Soap\HttpBinding\Builder;
 
-use Interop\Http\Factory\RequestFactoryInterface;
-use Interop\Http\Factory\StreamFactoryInterface;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Stream;
+use Http\Message\MessageFactory;
+use Http\Message\StreamFactory;
 use Phpro\SoapClient\Exception\RequestException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\Soap\HttpBinding\Builder\Psr7RequestBuilder;
 use Psr\Http\Message\RequestInterface;
-use Zend\Diactoros\Request;
-use Zend\Diactoros\Stream;
 
 /**
  * Class Psr7RequestBuilderSpec
  */
 class Psr7RequestBuilderSpec extends ObjectBehavior
 {
-    function let(RequestFactoryInterface $requestFactory, StreamFactoryInterface $streamFactory)
+    function let(MessageFactory $requestFactory, StreamFactory $streamFactory)
     {
         $this->beConstructedWith($requestFactory, $streamFactory);
         $requestFactory->createRequest(Argument::cetera())->will(function ($arguments) {
-            return new Request($arguments[1], $arguments[0]);
+            return new Request($arguments[0], $arguments[1]);
         });
 
         $streamFactory->createStream(Argument::type('string'))->will(function ($arguments) {
-            $stream = new Stream('php://memory', 'r+');
+            $stream = new Stream(fopen('php://memory', 'rwb'));
             $stream->write($arguments[0]);
             $stream->rewind();
 

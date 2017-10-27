@@ -2,23 +2,23 @@
 
 namespace spec\Phpro\SoapClient\Soap\HttpBinding\Converter;
 
-use Interop\Http\Factory\RequestFactoryInterface;
-use Interop\Http\Factory\StreamFactoryInterface;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Stream;
+use Http\Message\MessageFactory;
+use Http\Message\StreamFactory;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\Soap\HttpBinding\Converter\Psr7Converter;
-use Zend\Diactoros\Request;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
 
 /**
  * Class Psr7ConverterSpec
  */
 class Psr7ConverterSpec extends ObjectBehavior
 {
-    function let(RequestFactoryInterface $requestFactory, StreamFactoryInterface $streamFactory)
+    function let(MessageFactory $requestFactory, StreamFactory $streamFactory)
     {
         $this->beConstructedWith($requestFactory, $streamFactory);
     }
@@ -29,11 +29,15 @@ class Psr7ConverterSpec extends ObjectBehavior
     }
 
     function it_can_create_a_request(
-        RequestFactoryInterface $requestFactory,
-        StreamFactoryInterface $streamFactory
+        MessageFactory $requestFactory,
+        StreamFactory $streamFactory
     ) {
-        $requestFactory->createRequest('POST', '/url')->willReturn($request = new Request());
-        $streamFactory->createStream('request')->willReturn($stream = new Stream('php://memory', 'r+'));
+        $requestFactory->createRequest('POST', '/url')->willReturn(
+            $request = new Request('POST', '/uri')
+        );
+        $streamFactory->createStream('request')->willReturn(
+            $stream = new Stream(fopen('php://memory', 'rwb'))
+        );
         $soapRequest = new SoapRequest('request', '/url', 'action', 1, 0);
 
         $result = $this->convertSoapRequest($soapRequest);
@@ -43,7 +47,7 @@ class Psr7ConverterSpec extends ObjectBehavior
 
     function it_can_create_a_response()
     {
-        $stream = new Stream('php://memory', 'r+');
+        $stream = new Stream(fopen('php://memory', 'rwb'));
         $stream->write('response');
         $stream->rewind();
         $response = (new Response())->withBody($stream);

@@ -2,12 +2,11 @@
 
 namespace PhproTest\SoapClient\Unit\Middleware;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Http\Client\Common\PluginClient;
+use Http\Message\MessageFactory\GuzzleMessageFactory;
+use Http\Mock\Client;
 use Phpro\SoapClient\Xml\SoapXml;
 use Phpro\SoapClient\Middleware\Middleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
@@ -21,16 +20,15 @@ use PHPUnit\Framework\TestCase;
  */
 class RemoveEmptyNodesMiddlewareTest extends TestCase
 {
-
     /**
-     * @var ClientInterface
+     * @var PluginClient
      */
     private $client;
 
     /**
-     * @var MockHandler
+     * @var Client
      */
-    private $handler;
+    private $mockClient;
 
     /**
      * @var Middleware
@@ -42,11 +40,9 @@ class RemoveEmptyNodesMiddlewareTest extends TestCase
      */
     protected function setUp()
     {
-        $this->handler = new MockHandler([]);
         $this->middleware = new RemoveEmptyNodesMiddleware();
-        $stack = new HandlerStack($this->handler);
-        $stack->push($this->middleware);
-        $this->client = new Client(['handler' => $stack]);
+        $this->mockClient = new Client(new GuzzleMessageFactory());
+        $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
     /**
@@ -71,10 +67,10 @@ class RemoveEmptyNodesMiddlewareTest extends TestCase
     function it_removes_empty_nodes_from_request_xml()
     {
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/with-empty-nodes-request.xml');
-        $this->handler->append($response = new Response(200));
-        $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->mockClient->addResponse($response = new Response(200));
+        $this->client->sendRequest($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
-        $soapBody = (string)$this->handler->getLastRequest()->getBody();
+        $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xml = $this->fetchSoapXml($soapBody);
 
         $this->assertEquals($xml->xpath('//env:Body/ns1:UpdateCustomers/*')->length, 3, 'Not all empty nodes are removed');

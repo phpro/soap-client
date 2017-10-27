@@ -91,8 +91,8 @@ class LastRequestInfo
 
         if ($requestString) {
             $requestParts = explode(
-                "\r\n\r\n",
-                substr($requestString, strpos($requestString, "\r\n") + 1),
+                "\n\n",
+                substr($requestString, strpos($requestString, "\n") + 1),
                 2
             );
 
@@ -102,8 +102,8 @@ class LastRequestInfo
 
         if ($responseString) {
             $responseParts = explode(
-                "\r\n\r\n",
-                substr($responseString, strpos($responseString, "\r\n") + 1),
+                "\n\n",
+                substr($responseString, strpos($responseString, "\n") + 1),
                 2
             );
 

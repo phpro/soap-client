@@ -2,30 +2,18 @@
 
 namespace Phpro\SoapClient\Middleware;
 
+use Http\Promise\Promise;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
 
-/**
- * Class RemoveEmptyNodesMiddleware
- *
- * @package Phpro\SoapClient\Middleware
- */
 class RemoveEmptyNodesMiddleware extends MiddleWare
 {
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return 'remove_empty_nodes_middleware';
     }
 
-    /**
-     * @param callable         $handler
-     * @param RequestInterface $request
-     * @param array            $options
-     */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request): Promise
     {
         $xml = SoapXml::fromStream($request->getBody());
 
@@ -38,6 +26,6 @@ class RemoveEmptyNodesMiddleware extends MiddleWare
 
         $request = $request->withBody($xml->toStream());
 
-        return $handler($request, $options);
+        return $handler($request);
     }
 }

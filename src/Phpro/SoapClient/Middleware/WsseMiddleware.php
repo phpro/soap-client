@@ -2,17 +2,13 @@
 
 namespace Phpro\SoapClient\Middleware;
 
+use Http\Promise\Promise;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RobRichards\WsePhp\WSSESoap;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 
-/**
- * Class WsseMiddleware
- *
- * @package Phpro\SoapClient\Middleware
- */
 class WsseMiddleware extends Middleware
 {
 
@@ -76,68 +72,39 @@ class WsseMiddleware extends Middleware
      */
     private $serverCertificateHasSubjectKeyIdentifier = true;
 
-    /**
-     * WsseMiddleware constructor.
-     *
-     * @param string $privateKeyFile
-     * @param string $publicKeyFile
-     */
     public function __construct(string $privateKeyFile, string $publicKeyFile)
     {
         $this->privateKeyFile = $privateKeyFile;
         $this->publicKeyFile = $publicKeyFile;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return 'wsse_middleware';
     }
 
-    /**
-     * @param int $timestamp
-     *
-     * @return $this
-     */
-    public function withTimestamp(int $timestamp = 3600)
+    public function withTimestamp(int $timestamp = 3600): self
     {
         $this->timestamp = $timestamp;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function withAllHeadersSigned()
+    public function withAllHeadersSigned(): self
     {
         $this->signAllHeaders = true;
 
         return $this;
     }
 
-    /**
-     * @param string $digitalSignMethod
-     *
-     * @return $this
-     */
-    public function withDigitalSignMethod(string $digitalSignMethod)
+    public function withDigitalSignMethod(string $digitalSignMethod): self
     {
         $this->digitalSignMethod = $digitalSignMethod;
 
         return $this;
     }
 
-    /**
-     * @param string      $username
-     * @param string|null $password
-     * @param bool        $digest
-     *
-     * @return $this
-     */
-    public function withUserToken(string $username, string $password = null, $digest = false)
+    public function withUserToken(string $username, string $password = null, $digest = false): self
     {
         $this->hasUserToken = true;
         $this->userTokenName = $username;
@@ -147,12 +114,7 @@ class WsseMiddleware extends Middleware
         return $this;
     }
 
-    /**
-     * @param $serverCertificateFile
-     *
-     * @return $this
-     */
-    public function withEncryption($serverCertificateFile)
+    public function withEncryption(string $serverCertificateFile): self
     {
         $this->encrypt = true;
         $this->serverCertificateFile = $serverCertificateFile;
@@ -160,11 +122,6 @@ class WsseMiddleware extends Middleware
         return $this;
     }
 
-    /**
-     * @param bool $hasSubjectKeyIdentifier
-     *
-     * @return $this
-     */
     public function withServerCertificateHasSubjectKeyIdentifier(bool $hasSubjectKeyIdentifier)
     {
         $this->serverCertificateHasSubjectKeyIdentifier = $hasSubjectKeyIdentifier;
@@ -172,18 +129,9 @@ class WsseMiddleware extends Middleware
         return $this;
     }
 
-    /**
-     * @param callable         $handler
-     * @param RequestInterface $request
-     * @param array            $options
-     *
-     * @return mixed
-     */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request): Promise
     {
-
         $xml = SoapXml::fromStream($request->getBody());
-
         $wsse = new WSSESoap($xml->getXmlDocument());
 
         // Prepare the WSSE soap class:
@@ -219,15 +167,10 @@ class WsseMiddleware extends Middleware
 
         $request = $request->withBody($xml->toStream());
 
-        return $handler($request, $options);
+        return $handler($request);
     }
 
-    /**
-     * @param ResponseInterface $response
-     *
-     * @return ResponseInterface
-     */
-    public function afterResponse(ResponseInterface $response)
+    public function afterResponse(ResponseInterface $response): ResponseInterface
     {
         if (!$this->encrypt) {
             return $response;

@@ -2,12 +2,12 @@
 
 namespace spec\Phpro\SoapClient\Soap\HttpBinding;
 
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Phpro\SoapClient\Soap\SoapClient;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
-use Zend\Diactoros\Request;
-use Zend\Diactoros\Response;
 
 /**
  * Class LastRequestInfoSpec
@@ -67,27 +67,25 @@ class LastRequestInfoSpec extends ObjectBehavior
 
     function it_can_load_from_psr7_request_and_response()
     {
-        $request = new Request('/', 'POST', 'php://temp', ['x-request-header' => 'value']);
-        $request->getBody()->write('REQUESTBODY');
-        $response = new Response('php://memory', 200, ['x-response-header' => 'value']);
-        $response->getBody()->write('RESPONSEBODY');
+        $request = new Request('POST', '/', ['x-request-header' => 'value'], 'REQUESTBODY');
+        $response = new Response(200, ['x-response-header' => 'value'], 'RESPONSEBODY');
 
         $result = $this->createFromPsr7RequestAndResponse($request, $response);
-        $result->getLastRequestHeaders()->shouldBe('X-Request-Header: value');
+        $result->getLastRequestHeaders()->shouldBe('x-request-header: value');
         $result->getLastRequest()->shouldBe('REQUESTBODY');
-        $result->getLastResponseHeaders()->shouldBe('X-Response-Header: value');
+        $result->getLastResponseHeaders()->shouldBe('x-response-header: value');
         $result->getLastResponse()->shouldBe('RESPONSEBODY');
     }
 
     function it_can_load_from_psr7_request_and_response_without_body()
     {
-        $request = new Request('/', 'GET', 'php://temp', ['x-request-header' => 'value']);
-        $respone = new Response('php://memory', 204, ['x-response-header' => 'value']);
+        $request = new Request('GET', '/', ['x-request-header' => 'value'], '');
+        $respone = new Response(204, ['x-response-header' => 'value'], '');
 
         $result = $this->createFromPsr7RequestAndResponse($request, $respone);
-        $result->getLastRequestHeaders()->shouldBe('X-Request-Header: value');
+        $result->getLastRequestHeaders()->shouldBe('x-request-header: value');
         $result->getLastRequest()->shouldBe('');
-        $result->getLastResponseHeaders()->shouldBe('X-Response-Header: value');
+        $result->getLastResponseHeaders()->shouldBe('x-response-header: value');
         $result->getLastResponse()->shouldBe('');
     }
 }
