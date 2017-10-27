@@ -49,7 +49,7 @@ class PropertyAssemblerTest extends TestCase
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
-        if (version_compare(PHP_VERSION, '7.1', '>=')) {
+        if (PHP_VERSION_ID >= 70100) {
             $expected = <<<CODE
 namespace MyNamespace;
 
@@ -98,7 +98,7 @@ CODE;
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
-        if (version_compare(PHP_VERSION, '7.1', '>=')) {
+        if (PHP_VERSION_ID >= 70100) {
             $expected = <<<CODE
 namespace MyNamespace;
 
