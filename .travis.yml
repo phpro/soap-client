@@ -12,9 +12,6 @@ matrix:
     - php: 7.1
     - php: 7.1
       env: DEPENDENCIES='low'
-    - php: 7.2snapshot
-    - php: 7.2snapshot
-      env: DEPENDENCIES='low'
   fast_finish: true
 
 before_install:
