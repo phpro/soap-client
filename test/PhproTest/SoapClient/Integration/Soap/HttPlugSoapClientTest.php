@@ -8,7 +8,7 @@ use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class HttplugSoapClientTest
+ * Class HttPlugSoapClientTest
  *
  * @package PhproTest\SoapClient\Integration\Soap
  */

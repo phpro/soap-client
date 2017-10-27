@@ -10,7 +10,7 @@ use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Middleware\MiddlewareSupportingInterface;
 use Phpro\SoapClient\Util\Filesystem;
 
-class HttPlugProvider implements WsdlProviderInterface, MiddlewareSupportingInterface
+class HttPlugWsdlProvider implements WsdlProviderInterface, MiddlewareSupportingInterface
 {
     /**
      * @var HttpClient
@@ -38,7 +38,7 @@ class HttPlugProvider implements WsdlProviderInterface, MiddlewareSupportingInte
         $this->filesystem = $filesystem;
     }
 
-    public static function createForClient(HttpClient $client): HttPlugProvider
+    public static function createForClient(HttpClient $client): HttPlugWsdlProvider
     {
         return new self($client, new Filesystem());
     }
