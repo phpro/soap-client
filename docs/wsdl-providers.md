@@ -54,6 +54,12 @@ $provider->setLocation('/some/destination/file.wsdl');
 
 // Middlewares support:
 $provider->addMiddleware($middleware);
+
+
+// Register to the client builder
+$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
+$clientBuilder->withWsdlProvider($provider);
+$client = $clientBuilder->build();
 ```
 
 *Note:* If you want to cache the WSDL so that you don't have to download it on every request, you can use the built-in caching options:
