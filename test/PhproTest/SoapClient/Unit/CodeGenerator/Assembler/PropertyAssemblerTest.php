@@ -19,12 +19,12 @@ use Zend\Code\Generator\PropertyGenerator;
  */
 class PropertyAssemblerTest extends TestCase
 {
-    function zendOlderThan($version)
+    function zendCodeCompare($version, $operator)
     {
         $zendCodeVersion = \PackageVersions\Versions::getVersion('zendframework/zend-code');
         $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
 
-        return version_compare($zendCodeVersion, $version, '<');
+        return version_compare($zendCodeVersion, $version, $operator);
     }
 
     /**
@@ -41,9 +41,10 @@ class PropertyAssemblerTest extends TestCase
      */
     function it_assembles_property_without_default_value()
     {
-        if ($this->zendOlderThan('3.3.0')) {
+        if ($this->zendCodeCompare('3.3.0', '<')) {
             $this->markTestSkipped('Running it_assembles_property_with_default_value instead');
         }
+
         $assembler = new PropertyAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
@@ -72,9 +73,10 @@ CODE;
      */
     function it_assembles_property_with_default_value()
     {
-        if (!$this->zendOlderThan('3.3.0')) {
+        if ($this->zendCodeCompare('3.3.0', '>=')) {
             $this->markTestSkipped('Running it_assembles_property_without_default_value instead');
         }
+
         $assembler = new PropertyAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
@@ -103,9 +105,10 @@ CODE;
      */
     function it_assembles_with_visibility_without_default_value()
     {
-        if ($this->zendOlderThan('3.3.0')) {
+        if ($this->zendCodeCompare('3.3.0', '<')) {
             $this->markTestSkipped('Running it_assembles_with_visibility_with_default_value instead');
         }
+
         $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
         $context = $this->createContext();
         $assembler->assemble($context);
@@ -135,9 +138,10 @@ CODE;
      */
     function it_assembles_with_visibility_with_default_value()
     {
-        if (!$this->zendOlderThan('3.3.0')) {
+        if ($this->zendCodeCompare('3.3.0', '>=')) {
             $this->markTestSkipped('Running it_assembles_with_visibility_without_default_value instead');
         }
+
         $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
         $context = $this->createContext();
         $assembler->assemble($context);
@@ -162,7 +166,7 @@ CODE;
     }
 
     /**
-     * @return TypeContext
+     * @return PropertyContext
      */
     private function createContext()
     {
