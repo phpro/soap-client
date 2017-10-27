@@ -19,6 +19,11 @@ use Zend\Code\Generator\PropertyGenerator;
  */
 class PropertyAssemblerTest extends TestCase
 {
+    function show_null() {
+        $zendCodeVersion = \PackageVersions\Versions::getVersion('zendframework/zend-code');
+        $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
+        return version_compare($zendCodeVersion, '3.3.0', '<');
+    }
 
     /**
      * @test
@@ -47,9 +52,8 @@ class PropertyAssemblerTest extends TestCase
         $assembler = new PropertyAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
-
         $code = $context->getClass()->generate();
-        if (PHP_VERSION_ID >= 70100) {
+        if (!$this->show_null()) {
             $expected = <<<CODE
 namespace MyNamespace;
 
@@ -96,9 +100,8 @@ CODE;
         $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
         $context = $this->createContext();
         $assembler->assemble($context);
-
         $code = $context->getClass()->generate();
-        if (PHP_VERSION_ID >= 70100) {
+        if (!$this->show_null()) {
             $expected = <<<CODE
 namespace MyNamespace;
 
