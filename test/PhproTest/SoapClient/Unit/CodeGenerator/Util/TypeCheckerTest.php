@@ -3,13 +3,14 @@
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Util;
 
 use Phpro\SoapClient\CodeGenerator\Util\TypeChecker;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class TypeCheckerTest
  *
  * @package PhproTest\SoapClient\Unit\CodeGenerator\Util
  */
-class TypeCheckerTest extends \PHPUnit_Framework_TestCase
+class TypeCheckerTest extends TestCase
 {
     /**
      * @test

@@ -63,7 +63,9 @@ class FluentSetterAssembler implements AssemblerInterface
                         $property->getName(),
                         $class::LINE_FEED
                     ),
-                    'returntype' => $this->options->useReturnType() ? $class->getFqcn() : null,
+                    'returntype' => $this->options->useReturnType()
+                        ? $class->getNamespaceName().'\\'.$class->getName()
+                        : null,
                     'docblock'   => DocBlockGenerator::fromArray([
                         'tags' => [
                             [
