@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ResultAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\ClassGenerator;
 
 /**
@@ -13,7 +14,7 @@ use Zend\Code\Generator\ClassGenerator;
  *
  * @package PhproTest\SoapClient\Unit\CodeGenerator\Assembler
  */
-class ResultAssemblerTest extends \PHPUnit_Framework_TestCase
+class ResultAssemblerTest extends TestCase
 {
 
     /**

@@ -36,3 +36,6 @@ In the last part of the snippet you can see how the client works.
  It will use the generated value-objects to call the `RequestInterface` on the SoapClient.
  As a result the `ResultProviderInterface` will return the actual `ResultInterface` which contains the `getGreeting()` method.
  Pretty readable right?
+ 
+A client implements a single WSDL, so when the service you are implementing has multiple WSDL's then you'll need to create a client for each of the WSDL's you want to use.
+ You can then manually create a wrapper class if you desire to do so.

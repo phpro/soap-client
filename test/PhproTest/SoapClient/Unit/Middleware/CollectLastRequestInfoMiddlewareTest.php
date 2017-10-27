@@ -12,13 +12,14 @@ use Phpro\SoapClient\Middleware\CollectLastRequestInfoMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
 use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class CollectLastRequestInfoMiddleware
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class CollectLastRequestInfoMiddlewareTest extends \PHPUnit_Framework_TestCase
+class CollectLastRequestInfoMiddlewareTest extends TestCase
 {
 
     /**
