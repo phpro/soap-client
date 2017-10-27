@@ -237,10 +237,10 @@ class WsseMiddlewareTest extends TestCase
 
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/empty-request-with-head-and-body.xml');
         $soapResponse = file_get_contents(FIXTURE_DIR . '/soap/wsse-decrypt-response.xml');
-        $this->handler->append($response = new Response(200, [], $soapResponse));
-        $response = $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->mockClient->addResponse($response = new Response(200, [], $soapResponse));
+        $response = $this->client->sendRequest($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
-        $encryptedXml = $this->fetchSoapXml((string)$this->handler->getLastRequest()->getBody());
+        $encryptedXml = $this->fetchSoapXml((string)$this->mockClient->getRequests()[0]->getBody());
         $decryptedXml = $this->fetchSoapXml($response->getBody());
 
         // Check Request headers:
