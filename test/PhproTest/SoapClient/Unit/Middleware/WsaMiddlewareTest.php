@@ -11,13 +11,14 @@ use GuzzleHttp\Psr7\Response;
 use Phpro\SoapClient\Middleware\WsaMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Xml\SoapXml;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class WsaMiddleware
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class WsaMiddlewareTest extends \PHPUnit_Framework_TestCase
+class WsaMiddlewareTest extends TestCase
 {
 
     /**

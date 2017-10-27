@@ -3,21 +3,18 @@
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
-use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssembler;
-use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
+use Phpro\SoapClient\CodeGenerator\Assembler\ExtendAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
-use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\PropertyGenerator;
 
 /**
- * Class PropertyAssemblerTest
+ * Class ExtendAssemblerTest
  *
  * @package PhproTest\SoapClient\Unit\CodeGenerator\Assembler
  */
-class PropertyAssemblerTest extends TestCase
+class ExtendAssemblerTest extends TestCase
 {
 
     /**
@@ -25,16 +22,16 @@ class PropertyAssemblerTest extends TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new PropertyAssembler();
+        $assembler = new ExtendAssembler(\ArrayIterator::class);
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
 
     /**
      * @test
      */
-    function it_can_assemble_property_context()
+    function it_can_assemble_type_context()
     {
-        $assembler = new PropertyAssembler();
+        $assembler = new ExtendAssembler(\ArrayIterator::class);
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }
@@ -42,9 +39,9 @@ class PropertyAssemblerTest extends TestCase
     /**
      * @test
      */
-    function it_assembles_a_property()
+    function it_assembles_a_type()
     {
-        $assembler = new PropertyAssembler();
+        $assembler = new ExtendAssembler(\ArrayIterator::class);
         $context = $this->createContext();
         $assembler->assemble($context);
 
@@ -52,13 +49,10 @@ class PropertyAssemblerTest extends TestCase
         $expected = <<<CODE
 namespace MyNamespace;
 
-class MyType
-{
+use ArrayIterator;
 
-    /**
-     * @var string
-     */
-    private \$prop1 = null;
+class MyType extends ArrayIterator
+{
 
 
 }
@@ -68,13 +62,12 @@ CODE;
         $this->assertEquals($expected, $code);
     }
 
-
     /**
      * @test
      */
-    function it_assembles_with_visibility()
+    function it_assembles_a_type_with_extended_class_name_equal_to_generated_class_name()
     {
-        $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
+        $assembler = new ExtendAssembler('MyNamespace\\MyType');
         $context = $this->createContext();
         $assembler->assemble($context);
 
@@ -84,11 +77,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
-    /**
-     * @var string
-     */
-    public \$prop1 = null;
 
 
 }
@@ -108,8 +96,7 @@ CODE;
             'prop1' => 'string',
             'prop2' => 'int'
         ]);
-        $property = new Property('prop1', 'string');
 
-        return new PropertyContext($class, $type, $property);
+        return new TypeContext($class, $type);
     }
 }

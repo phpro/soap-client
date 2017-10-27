@@ -29,7 +29,7 @@ This way, you will always be able to download and manipulate the WSDL file even 
 
 **Configuration**
 ```php
-$provider = GuzzleWsdlProvider::create($client);
+$provider = GuzzleWsdlProvider::createForClient($client);
 
 // Optional location:
 $provider->setLocation('/some/destination/file.wsdl');
