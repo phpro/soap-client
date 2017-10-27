@@ -19,10 +19,12 @@ use Zend\Code\Generator\PropertyGenerator;
  */
 class PropertyAssemblerTest extends TestCase
 {
-    function show_null() {
+    function zendOlderThan($version)
+    {
         $zendCodeVersion = \PackageVersions\Versions::getVersion('zendframework/zend-code');
         $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
-        return version_compare($zendCodeVersion, '3.3.0', '<');
+
+        return version_compare($zendCodeVersion, $version, '<');
     }
 
     /**
@@ -37,24 +39,16 @@ class PropertyAssemblerTest extends TestCase
     /**
      * @test
      */
-    function it_can_assemble_property_context()
+    function it_assembles_property_without_default_value()
     {
-        $assembler = new PropertyAssembler();
-        $context = $this->createContext();
-        $this->assertTrue($assembler->canAssemble($context));
-    }
-
-    /**
-     * @test
-     */
-    function it_assembles_a_property()
-    {
+        if ($this->zendOlderThan('3.3.0')) {
+            $this->markTestSkipped('Running it_assembles_property_with_default_value instead');
+        }
         $assembler = new PropertyAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
         $code = $context->getClass()->generate();
-        if (!$this->show_null()) {
-            $expected = <<<CODE
+        $expected = <<<CODE
 namespace MyNamespace;
 
 class MyType
@@ -69,8 +63,23 @@ class MyType
 }
 
 CODE;
-        } else {
-            $expected = <<<CODE
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_property_with_default_value()
+    {
+        if (!$this->zendOlderThan('3.3.0')) {
+            $this->markTestSkipped('Running it_assembles_property_without_default_value instead');
+        }
+        $assembler = new PropertyAssembler();
+        $context = $this->createContext();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
 namespace MyNamespace;
 
 class MyType
@@ -86,23 +95,22 @@ class MyType
 
 CODE;
 
-        }
-
         $this->assertEquals($expected, $code);
     }
-
 
     /**
      * @test
      */
-    function it_assembles_with_visibility()
+    function it_assembles_with_visibility_without_default_value()
     {
+        if ($this->zendOlderThan('3.3.0')) {
+            $this->markTestSkipped('Running it_assembles_with_visibility_with_default_value instead');
+        }
         $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
         $context = $this->createContext();
         $assembler->assemble($context);
         $code = $context->getClass()->generate();
-        if (!$this->show_null()) {
-            $expected = <<<CODE
+        $expected = <<<CODE
 namespace MyNamespace;
 
 class MyType
@@ -117,8 +125,24 @@ class MyType
 }
 
 CODE;
-        }else{
-            $expected = <<<CODE
+
+        $this->assertEquals($expected, $code);
+    }
+
+
+    /**
+     * @test
+     */
+    function it_assembles_with_visibility_with_default_value()
+    {
+        if (!$this->zendOlderThan('3.3.0')) {
+            $this->markTestSkipped('Running it_assembles_with_visibility_without_default_value instead');
+        }
+        $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
+        $context = $this->createContext();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
 namespace MyNamespace;
 
 class MyType
@@ -133,7 +157,6 @@ class MyType
 }
 
 CODE;
-        }
 
         $this->assertEquals($expected, $code);
     }
