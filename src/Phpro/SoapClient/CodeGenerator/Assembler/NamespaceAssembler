@@ -1,0 +1,81 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Urmat
+ * Date: 13.11.2017
+ * Time: 14:47
+ */
+
+namespace Phpro\SoapClient\CodeGenerator\Assembler;
+
+use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
+use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+
+/**
+ * Class NamespaceAssembler
+ * @package Klabs\Sale\AviaBundle\Service\Amadeus\CodeGenerator\Assembler
+ */
+class NamespaceAssembler implements AssemblerInterface {
+	/**
+	 * @var string $prefix
+	 */
+	protected $prefix = '';
+
+	/**
+	 * NamespaceAssembler constructor.
+	 *
+	 * @param string $prefix
+	 */
+	function __construct( string $prefix = '' ) {
+		$this->prefix = $prefix;
+	}
+
+	/**
+	 * @param ContextInterface $context
+	 *
+	 * @return bool
+	 */
+	public function canAssemble( ContextInterface $context ) {
+		return $context instanceof TypeContext;
+	}
+
+	/**
+	 * @param ContextInterface $context
+	 */
+	public function assemble( ContextInterface $context ) {
+		/** @var TypeContext $context */
+		$class = $context->getClass();
+		$class->setName( $this->getName( $context ) );
+		$class->setNamespaceName( $this->getNamespace( $context ) );
+	}
+
+	/**
+	 * @param TypeContext $context
+	 *
+	 * @return bool|string
+	 */
+	protected function getName( TypeContext $context ) {
+		$name = $context->getType()->getXsdName();
+		if ( ( $pos = strpos( $name, "_" ) ) !== false )
+		{
+			return substr( $name, $pos + 1 );
+		}
+
+		return $name;
+	}
+
+	/**
+	 * @param TypeContext $context
+	 *
+	 * @return string
+	 */
+	protected function getNamespace( TypeContext $context ) {
+		$namespace = $this->prefix;
+		$namespace .= "\\" . str_replace( "_", '\\', $context->getType()->getFullName() );
+		$namespace = str_replace( $this->getName( $context ), "", $namespace );
+
+		return Normalizer::normalizeNamespace( $namespace );
+	}
+}
