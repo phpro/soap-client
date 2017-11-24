@@ -22,7 +22,7 @@ class IteratorAssembler implements AssemblerInterface
      *
      * @return bool
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof TypeContext;
     }
@@ -58,7 +58,7 @@ class IteratorAssembler implements AssemblerInterface
      *
      * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
-    private function implementGetIterator($class, $firstProperty)
+    private function implementGetIterator(ClassGenerator $class, Property $firstProperty)
     {
         $methodName = 'getIterator';
         $class->removeMethod($methodName);

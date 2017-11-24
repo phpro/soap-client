@@ -30,7 +30,7 @@ class SoapXml extends Xml
     /**
      * @return string
      */
-    public function getSoapNamespaceUri()
+    public function getSoapNamespaceUri(): string
     {
         return $this->getEnvelope()->namespaceURI;
     }
@@ -48,7 +48,7 @@ class SoapXml extends Xml
     /**
      * @return DOMElement
      */
-    public function getEnvelope()
+    public function getEnvelope(): DOMElement
     {
         return $this->getRootElement();
     }
@@ -56,7 +56,7 @@ class SoapXml extends Xml
     /**
      * @return \DOMNodeList
      */
-    public function getHeaders()
+    public function getHeaders(): \DOMNodeList
     {
         return $this->xpath('//soap:Envelope/soap:Header');
     }
@@ -81,7 +81,7 @@ class SoapXml extends Xml
     /**
      * @return DOMElement|null
      */
-    public function getBody()
+    public function getBody(): DOMElement
     {
         $list = $this->xpath('//soap:Envelope/soap:Body');
 

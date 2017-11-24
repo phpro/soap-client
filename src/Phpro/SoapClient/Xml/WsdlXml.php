@@ -27,7 +27,7 @@ class WsdlXml extends Xml
     /**
      * @return string
      */
-    public function getWsdlNamespaceUri()
+    public function getWsdlNamespaceUri(): string
     {
         return $this->getRootNamespace();
     }

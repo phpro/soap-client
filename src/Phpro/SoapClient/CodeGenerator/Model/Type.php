@@ -41,7 +41,7 @@ class Type
      * @param string     $xsdName
      * @param Property[] $properties
      */
-    public function __construct($namespace, $xsdName, array $properties)
+    public function __construct(string $namespace, string $xsdName, array $properties)
     {
         $this->namespace = Normalizer::normalizeNamespace($namespace);
         $this->xsdName = $xsdName;
@@ -55,7 +55,7 @@ class Type
     /**
      * @return string
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
@@ -63,7 +63,7 @@ class Type
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -71,11 +71,17 @@ class Type
     /**
      * @return string
      */
-    public function getXsdName()
+    public function getXsdName(): string
     {
         return $this->xsdName;
     }
 
+
+    /**
+     * @param string $destination
+     *
+     * @return SplFileInfo
+     */
     public function getFileInfo(string $destination) : SplFileInfo
     {
         $name = str_replace('_', DIRECTORY_SEPARATOR, $this->getName());
@@ -89,7 +95,7 @@ class Type
      * @deprecated please use getFileInfo instead
      * @return string
      */
-    public function getPathname($destination)
+    public function getPathname(string $destination): string
     {
         return $this->getFileInfo($destination)->getPathname();
     }
@@ -97,7 +103,7 @@ class Type
     /**
      * @return string
      */
-    public function getFullName()
+    public function getFullName(): string
     {
         $fqnName = sprintf('%s\\%s', $this->getNamespace(), $this->getName());
 
@@ -107,7 +113,7 @@ class Type
     /**
      * @return Property[]
      */
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->properties;
     }

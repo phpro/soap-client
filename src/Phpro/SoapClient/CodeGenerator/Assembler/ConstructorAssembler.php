@@ -21,7 +21,7 @@ class ConstructorAssembler implements AssemblerInterface
      *
      * @return bool
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof TypeContext;
     }
@@ -49,7 +49,7 @@ class ConstructorAssembler implements AssemblerInterface
      * @return MethodGenerator
      * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
-    private function assembleConstructor(Type $type)
+    private function assembleConstructor(Type $type): MethodGenerator
     {
         $body = [];
         $constructor = MethodGenerator::fromArray([

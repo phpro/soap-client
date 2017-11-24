@@ -122,7 +122,7 @@ class WsseMiddleware extends Middleware
         return $this;
     }
 
-    public function withServerCertificateHasSubjectKeyIdentifier(bool $hasSubjectKeyIdentifier)
+    public function withServerCertificateHasSubjectKeyIdentifier(bool $hasSubjectKeyIdentifier): self
     {
         $this->serverCertificateHasSubjectKeyIdentifier = $hasSubjectKeyIdentifier;
 

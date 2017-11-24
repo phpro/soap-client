@@ -6,7 +6,7 @@ use Http\Promise\Promise;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
 
-class RemoveEmptyNodesMiddleware extends MiddleWare
+class RemoveEmptyNodesMiddleware extends Middleware
 {
     public function getName(): string
     {

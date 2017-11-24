@@ -114,7 +114,7 @@ class GenerateTypesCommand extends Command
      * @param SplFileInfo   $fileInfo
      * @return bool
      */
-    protected function handleType(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
+    protected function handleType(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo): bool
     {
         // Generate type sub folders if needed
         $this->filesystem->ensureDirectoryExists($fileInfo->getPath());
@@ -153,7 +153,7 @@ class GenerateTypesCommand extends Command
      * @return bool
      *
      */
-    protected function handleExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
+    protected function handleExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo): bool
     {
         $this->output->write(sprintf('Type %s exists. Trying to patch ...', $type->getName()));
         $patched = $this->patchExistingFile($generator, $type, $fileInfo);
@@ -176,7 +176,7 @@ class GenerateTypesCommand extends Command
      * @param SplFileInfo   $fileInfo
      * @return bool
      */
-    protected function patchExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
+    protected function patchExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo): bool
     {
         try {
             $this->filesystem->createBackup($fileInfo->getPathname());
@@ -208,11 +208,11 @@ class GenerateTypesCommand extends Command
     /**
      * @return bool
      */
-    protected function askForOverwrite()
+    protected function askForOverwrite(): bool
     {
         $overwriteByDefault = $this->input->getOption('overwrite');
         $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
 
-        return $this->getHelper('question')->ask($this->input, $this->output, $question);
+        return (bool)$this->getHelper('question')->ask($this->input, $this->output, $question);
     }
 }

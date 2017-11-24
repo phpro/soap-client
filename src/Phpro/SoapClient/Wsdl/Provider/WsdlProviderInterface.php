@@ -19,5 +19,5 @@ interface WsdlProviderInterface
      * @return string
      * @throws WsdlException
      */
-    public function provide(string $source);
+    public function provide(string $source): string;
 }

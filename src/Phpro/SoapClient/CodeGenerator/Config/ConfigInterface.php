@@ -16,23 +16,23 @@ interface ConfigInterface
      * @return string
      * @deprecated use getClientNamespace or getTypeNamespace instead
      */
-    public function getNamespace();
+    public function getNamespace(): string;
 
     /**
      * @return string
      */
-    public function getWsdl();
+    public function getWsdl(): string;
 
     /**
      * array
      */
-    public function getSoapOptions();
+    public function getSoapOptions(): array;
 
     /**
      * @return string
      * @deprecated Use getTypeDestination or getClientDestination instead
      */
-    public function getDestination();
+    public function getDestination(): string;
 
     /**
      * @return string
@@ -47,7 +47,7 @@ interface ConfigInterface
     /**
      * @return RuleSetInterface
      */
-    public function getRuleSet();
+    public function getRuleSet(): RuleSetInterface;
 
     /**
      * @return string
@@ -62,5 +62,5 @@ interface ConfigInterface
     /**
      * @return WsdlProviderInterface
      */
-    public function getWsdlProvider();
+    public function getWsdlProvider(): WsdlProviderInterface;
 }

@@ -35,11 +35,11 @@ class ClientGenerator implements GeneratorInterface
 
     /**
      * @param FileGenerator $file
-     * @param Client $client
+     * @param Client        $client
      *
      * @return string
      */
-    public function generate(FileGenerator $file, $client)
+    public function generate(FileGenerator $file, $client): string
     {
         $class = $file->getClass() ?: new ClassGenerator();
         $class->setNamespaceName($client->getNamespace());

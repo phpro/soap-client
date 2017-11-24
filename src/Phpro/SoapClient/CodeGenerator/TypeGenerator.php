@@ -37,7 +37,7 @@ class TypeGenerator implements GeneratorInterface
      *
      * @return string
      */
-    public function generate(FileGenerator $file, $type)
+    public function generate(FileGenerator $file, $type): string
     {
         $class = $file->getClass() ?: new ClassGenerator();
         $class->setNamespaceName($type->getNamespace());

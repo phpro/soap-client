@@ -15,7 +15,7 @@ class MixedWsdlProvider implements WsdlProviderInterface
      *
      * {@inheritdoc}
      */
-    public function provide(string $source)
+    public function provide(string $source): string
     {
         return $source;
     }

@@ -29,7 +29,7 @@ class TypeMap
      * @param string $namespace
      * @param array $types
      */
-    public function __construct($namespace, array $types)
+    public function __construct(string $namespace, array $types)
     {
         $this->namespace = Normalizer::normalizeNamespace($namespace);
 
@@ -44,7 +44,7 @@ class TypeMap
      *
      * @return TypeMap
      */
-    public static function fromSoapClient($namespace, SoapClient $client)
+    public static function fromSoapClient(string $namespace, SoapClient $client): self
     {
         return new self($namespace, $client->getSoapTypes());
     }
@@ -52,7 +52,7 @@ class TypeMap
     /**
      * @return string
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
@@ -60,7 +60,7 @@ class TypeMap
     /**
      * @return array|Type[]
      */
-    public function getTypes()
+    public function getTypes(): array
     {
         return $this->types;
     }

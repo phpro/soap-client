@@ -11,12 +11,12 @@ interface ClassMapInterface
 {
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getWsdlType();
 
     /**
      * @return string
      */
-    public function getPhpClassName();
+    public function getPhpClassName(): string;
 }

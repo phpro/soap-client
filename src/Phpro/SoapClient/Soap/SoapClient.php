@@ -84,7 +84,7 @@ class SoapClient extends \SoapClient
      *
      * @return array    Array of types and their properties
      */
-    public function getSoapTypes()
+    public function getSoapTypes(): array
     {
         if ($this->types) {
             return $this->types;
@@ -92,7 +92,7 @@ class SoapClient extends \SoapClient
 
         $soapTypes = $this->__getTypes();
         foreach ($soapTypes as $soapType) {
-            $properties = array();
+            $properties = [];
             $lines = explode("\n", $soapType);
             if (!preg_match('/struct (.*) {/', $lines[0], $matches)) {
                 continue;
@@ -114,20 +114,13 @@ class SoapClient extends \SoapClient
     }
 
     /**
-     * Get a SOAP type’s elements
-     *
-     * @param string $type Object name
-     * @return array       Elements for the type
-     */
-
-    /**
      * Get SOAP elements for a complexType
      *
      * @param string $complexType Name of SOAP complexType
      *
      * @return array  Names of elements and their types
      */
-    public function getSoapElements($complexType)
+    public function getSoapElements(string $complexType): array
     {
         $types = $this->getSoapTypes();
         if (isset($types[$complexType])) {
@@ -143,7 +136,7 @@ class SoapClient extends \SoapClient
      *
      * @return string
      */
-    public function getSoapElementType($complexType, $element)
+    public function getSoapElementType(string $complexType, string $element): string
     {
         $elements = $this->getSoapElements($complexType);
         if ($elements && isset($elements[$element])) {
@@ -160,9 +153,14 @@ class SoapClient extends \SoapClient
      *
      * @return string
      */
-    public function doInternalRequest($request, $location, $action, $version, $oneWay = 0)
-    {
-        return (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
+    public function doInternalRequest(
+        string $request,
+        string $location,
+        string $action,
+        int $version,
+        int $oneWay = 0
+    ): string {
+        return (string)parent::__doRequest($request, $location, $action, $version, $oneWay);
     }
 
     /**
@@ -187,10 +185,10 @@ class SoapClient extends \SoapClient
 
         // Copy the request info in the correct internal __last_* parameters:
         // We don't need the trace option: always remember the last response @ request
-        $this->__last_request = (string) $lastRequestInfo->getLastRequest() ?? $request;
-        $this->__last_response = (string) $lastRequestInfo->getLastResponse() ?? $response->getResponse();
-        $this->__last_request_headers = (string) $lastRequestInfo->getLastRequestHeaders();
-        $this->__last_response_headers = (string) $lastRequestInfo->getLastResponseHeaders();
+        $this->__last_request = (string)$lastRequestInfo->getLastRequest() ?? $request;
+        $this->__last_response = (string)$lastRequestInfo->getLastResponse() ?? $response->getResponse();
+        $this->__last_request_headers = (string)$lastRequestInfo->getLastRequestHeaders();
+        $this->__last_response_headers = (string)$lastRequestInfo->getLastResponseHeaders();
 
         // Return the response or an empty response when oneWay is enabled.
         return $oneWay ? null : $response->getResponse();
@@ -201,7 +199,7 @@ class SoapClient extends \SoapClient
      */
     public function __getLastRequest(): string
     {
-        return $this->__last_request ?: (string) parent::__getLastRequest();
+        return $this->__last_request ?: (string)parent::__getLastRequest();
     }
 
     /**
@@ -209,7 +207,7 @@ class SoapClient extends \SoapClient
      */
     public function __getLastResponse(): string
     {
-        return $this->__last_response ?: (string) parent::__getLastResponse();
+        return $this->__last_response ?: (string)parent::__getLastResponse();
     }
 
     /**
@@ -217,7 +215,7 @@ class SoapClient extends \SoapClient
      */
     public function __getLastRequestHeaders(): string
     {
-        return $this->__last_request_headers ?: (string) parent::__getLastRequestHeaders();
+        return $this->__last_request_headers ?: (string)parent::__getLastRequestHeaders();
     }
 
     /**
@@ -225,6 +223,6 @@ class SoapClient extends \SoapClient
      */
     public function __getLastResponseHeaders(): string
     {
-        return $this->__last_response_headers ?: (string) parent::__getLastResponseHeaders();
+        return $this->__last_response_headers ?: (string)parent::__getLastResponseHeaders();
     }
 }

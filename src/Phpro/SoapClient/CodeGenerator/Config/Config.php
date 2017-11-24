@@ -77,7 +77,7 @@ class Config implements ConfigInterface
      * @param string $wsdl
      * @param string $destination
      */
-    public function __construct($wsdl = '', $destination = '')
+    public function __construct(string $wsdl = '', string $destination = '')
     {
         $this->setWsdl($wsdl);
         $this->setDestination($destination);
@@ -92,7 +92,7 @@ class Config implements ConfigInterface
     /**
      * @return Config
      */
-    public static function create()
+    public static function create(): self
     {
         return new static();
     }
@@ -102,7 +102,7 @@ class Config implements ConfigInterface
      * @throws InvalidArgumentException
      * @deprecated use getTypeNamespace or getClientNamespace instead
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->typesNamespace;
     }
@@ -113,7 +113,7 @@ class Config implements ConfigInterface
      * @return Config
      * @deprecated use setTypeNamespace of setClientNamespace instead
      */
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace): self
     {
         $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
 
@@ -144,7 +144,7 @@ class Config implements ConfigInterface
      * @return string
      * @throws InvalidArgumentException
      */
-    public function getWsdl()
+    public function getWsdl(): string
     {
         if (!$this->wsdl) {
             throw InvalidArgumentException::wsdlConfigurationIsMissing();
@@ -164,7 +164,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function setWsdl($wsdl)
+    public function setWsdl($wsdl): self
     {
         $this->wsdl = $wsdl;
 
@@ -177,7 +177,7 @@ class Config implements ConfigInterface
      *
      * @return $this
      */
-    public function addSoapOption($key, $value)
+    public function addSoapOption(string $key, $value): self
     {
         $this->soapOptions[$key] = $value;
 
@@ -187,7 +187,7 @@ class Config implements ConfigInterface
     /**
      * @return array
      */
-    public function getSoapOptions()
+    public function getSoapOptions(): array
     {
         return $this->soapOptions;
     }
@@ -209,7 +209,7 @@ class Config implements ConfigInterface
      * @throws InvalidArgumentException
      * @deprecated
      */
-    public function getDestination()
+    public function getDestination(): string
     {
         if (!$this->typeDestination) {
             throw InvalidArgumentException::destinationConfigurationIsMissing();
@@ -224,7 +224,7 @@ class Config implements ConfigInterface
      * @return Config
      * @deprecated
      */
-    public function setDestination($destination)
+    public function setDestination(string $destination): self
     {
         $this->typeDestination = rtrim($destination, '/\\');
 
@@ -234,7 +234,7 @@ class Config implements ConfigInterface
     /**
      * @return RuleSetInterface
      */
-    public function getRuleSet()
+    public function getRuleSet(): RuleSetInterface
     {
         return $this->ruleSet;
     }
@@ -256,7 +256,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function addRule(RuleInterface $rule)
+    public function addRule(RuleInterface $rule): self
     {
         $this->ruleSet->addRule($rule);
 
@@ -298,7 +298,7 @@ class Config implements ConfigInterface
      * @param string $clientNamespace
      * @return Config
      */
-    public function setClientNamespace($clientNamespace)
+    public function setClientNamespace($clientNamespace): self
     {
         $this->clientNamespace = $clientNamespace;
 
@@ -375,7 +375,7 @@ class Config implements ConfigInterface
      * @param WsdlProviderInterface $wsdlProvider
      * @return Config
      */
-    public function setWsdlProvider(WsdlProviderInterface $wsdlProvider)
+    public function setWsdlProvider(WsdlProviderInterface $wsdlProvider): self
     {
         $this->wsdlProvider = $wsdlProvider;
         return $this;

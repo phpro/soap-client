@@ -17,7 +17,7 @@ class Filesystem
     /**
      * @param string $directory
      */
-    public function ensureDirectoryExists($directory)
+    public function ensureDirectoryExists(string $directory)
     {
         if (is_dir($directory)) {
             return;
@@ -31,20 +31,20 @@ class Filesystem
     }
 
     /**
-     * @param $file
+     * @param string $file
      *
      * @return bool
      */
-    public function fileExists($file)
+    public function fileExists(string $file): bool
     {
         return is_file($file) && is_readable($file);
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return string
      */
-    public function getFileContents($path)
+    public function getFileContents(string $path): string
     {
         if (!$this->fileExists($path)) {
             throw new InvalidArgumentException(sprintf('File %s does not exist.', $path));
@@ -54,10 +54,10 @@ class Filesystem
     }
 
     /**
-     * @param $path
-     * @param $content
+     * @param string $path
+     * @param mixed $content
      */
-    public function putFileContents($path, $content)
+    public function putFileContents(string $path, $content)
     {
         file_put_contents($path, $content);
     }
@@ -65,7 +65,7 @@ class Filesystem
     /**
      * @param string $file
      */
-    public function createBackup($file)
+    public function createBackup(string $file)
     {
         if (!$this->fileExists($file)) {
             throw new RuntimeException('Could not create a backup from a non existing file: ' . $file);
@@ -78,7 +78,7 @@ class Filesystem
     /**
      * @param string $file
      */
-    public function removeBackup($file)
+    public function removeBackup(string $file)
     {
         $backupFile = preg_replace('{\.backup$}', '', $file) . '.backup';
         if (!$this->fileExists($backupFile)) {

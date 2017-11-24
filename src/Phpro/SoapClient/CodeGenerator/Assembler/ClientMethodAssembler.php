@@ -19,7 +19,7 @@ class ClientMethodAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof ClientMethodContext;
     }
@@ -27,9 +27,10 @@ class ClientMethodAssembler implements AssemblerInterface
     /**
      * @param ContextInterface|ClientMethodContext $context
      *
+     * @return bool
      * @throws AssemblerException
      */
-    public function assemble(ContextInterface $context)
+    public function assemble(ContextInterface $context): bool
     {
         $class = $context->getClass();
         $class->setExtendedClass(Client::class);
@@ -50,12 +51,14 @@ class ClientMethodAssembler implements AssemblerInterface
                             $param->getName()
                         ),
                         // TODO: Use normalizer once https://github.com/phpro/soap-client/pull/61 is merged
-                        'returntype'    => '\\'.$method->getParameterNamespace().'\\'.$method->getReturnType(),
+                        'returntype' => '\\'.$method->getParameterNamespace().'\\'.$method->getReturnType(),
                     ]
                 )
             );
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
+
+        return true;
     }
 }

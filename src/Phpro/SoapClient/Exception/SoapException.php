@@ -14,7 +14,7 @@ class SoapException extends RuntimeException
      *
      * @return SoapException
      */
-    public static function fromThrowable(\Throwable $throwable)
+    public static function fromThrowable(\Throwable $throwable): self
     {
         return new self($throwable->getMessage(), $throwable->getCode(), $throwable);
     }

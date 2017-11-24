@@ -36,7 +36,7 @@ class FluentSetterAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context) : bool
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof PropertyContext;
     }
