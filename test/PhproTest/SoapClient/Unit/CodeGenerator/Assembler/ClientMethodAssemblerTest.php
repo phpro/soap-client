@@ -5,6 +5,7 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\ClientMethodAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
+use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\ClassGenerator;
 
 /**
@@ -12,7 +13,7 @@ use Zend\Code\Generator\ClassGenerator;
  *
  * @package PhproTest\SoapClient\Unit\CodeGenerator\Assembler
  */
-class ClientMethodAssemblerTest extends \PHPUnit_Framework_TestCase
+class ClientMethodAssemblerTest extends TestCase
 {
     /**
      * @test
