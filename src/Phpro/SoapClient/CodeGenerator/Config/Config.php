@@ -29,7 +29,7 @@ class Config implements ConfigInterface
     /**
      * @var string
      */
-    protected $typesNamespace = '';
+    protected $typeNamespace = '';
 
     /**
      * @var
@@ -104,7 +104,7 @@ class Config implements ConfigInterface
      */
     public function getNamespace(): string
     {
-        return $this->typesNamespace;
+        return $this->typeNamespace;
     }
 
     /**
@@ -115,7 +115,7 @@ class Config implements ConfigInterface
      */
     public function setNamespace(string $namespace): self
     {
-        $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
+        $this->typeNamespace = Normalizer::normalizeNamespace($namespace);
 
         return $this;
     }
@@ -123,9 +123,9 @@ class Config implements ConfigInterface
     /**
      * @return string
      */
-    public function getTypesNamespace()
+    public function getTypeNamespace()
     {
-        return $this->typesNamespace;
+        return $this->typeNamespace;
     }
 
     /**
@@ -135,7 +135,7 @@ class Config implements ConfigInterface
      */
     public function setTypeNamespace($namespace)
     {
-        $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
+        $this->typeNamespace = Normalizer::normalizeNamespace($namespace);
 
         return $this;
     }
@@ -303,18 +303,6 @@ class Config implements ConfigInterface
         $this->clientNamespace = $clientNamespace;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypeNamespace()
-    {
-        if (!$this->typesNamespace) {
-            throw InvalidArgumentException::typeNamespaceIsMissing();
-        }
-
-        return $this->typesNamespace;
     }
 
     /**

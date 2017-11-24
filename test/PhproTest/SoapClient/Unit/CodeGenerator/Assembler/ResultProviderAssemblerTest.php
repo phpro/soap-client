@@ -56,7 +56,7 @@ class MyType implements ResultProviderInterface
 {
 
     /**
-     * @return SomeClass|ResultInterface
+     * @return \MyNamespace\SomeClass|ResultInterface
      */
     public function getResult()
     {

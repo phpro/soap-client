@@ -22,15 +22,22 @@ class Property
     private $type;
 
     /**
+     * @var string
+     */
+    private $namespace;
+
+    /**
      * Property constructor.
      *
      * @param string $name
      * @param string $type
+     * @param string $namespace
      */
-    public function __construct(string $name, string $type)
+    public function __construct(string $name, string $type, string $namespace = '')
     {
         $this->name = Normalizer::normalizeProperty($name);
         $this->type = Normalizer::normalizeDataType($type);
+        $this->namespace = Normalizer::normalizeNamespace($namespace);
     }
 
     /**
@@ -46,7 +53,11 @@ class Property
      */
     public function getType(): string
     {
-        return $this->type;
+        if (Normalizer::isKnownType($this->type)) {
+            return $this->type;
+        }
+
+        return '\\'.$this->namespace.'\\'.$this->type;
     }
 
     /**

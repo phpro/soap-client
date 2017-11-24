@@ -117,7 +117,7 @@ class ConfigSpec extends ObjectBehavior
     public function it_has_a_type_namespace()
     {
         $this->setTypeNamespace($value = 'TypeNamespace');
-        $this->getTypesNamespace()->shouldBe($value);
+        $this->getTypeNamespace()->shouldBe($value);
     }
 
     public function it_has_a_client_namespace()
