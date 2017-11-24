@@ -218,6 +218,9 @@ You can adjust the visibility of the property by injecting the visibility in the
 new PropertyAssembler(PropertyGenerator::VISIBILITY_PROTECTED)
 ```
 
+Please note that the default ruleset has a visibility of private.
+If you want to override this, you will have to override all rules by calling `Phpro\SoapClient\CodeGenerator\Config\Config::setRuleSet`.
+
 
 ## RequestAssembler
 
