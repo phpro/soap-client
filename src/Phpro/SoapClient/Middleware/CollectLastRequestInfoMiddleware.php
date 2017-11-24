@@ -2,16 +2,12 @@
 
 namespace Phpro\SoapClient\Middleware;
 
+use Http\Promise\Promise;
 use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
 use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Class CollectLastRequestInfoMiddleware
- *
- * @package Phpro\SoapClient\Middleware
- */
 class CollectLastRequestInfoMiddleware extends Middleware implements LastRequestInfoCollectorInterface
 {
     /**
@@ -24,38 +20,26 @@ class CollectLastRequestInfoMiddleware extends Middleware implements LastRequest
      */
     private $lastResponse;
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return 'collect_last_request_info_middleware';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request): Promise
     {
         $this->lastRequest = $request;
         $this->lastResponse = null;
 
-        return $handler($request, $options);
+        return $handler($request);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function afterResponse(ResponseInterface $response)
+    public function afterResponse(ResponseInterface $response): ResponseInterface
     {
         $this->lastResponse = $response;
 
         return $response;
     }
 
-    /**
-     * @return LastRequestInfo
-     */
     public function collectLastRequestInfo(): LastRequestInfo
     {
         if (!$this->lastRequest || !$this->lastResponse) {

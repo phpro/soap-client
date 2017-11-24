@@ -14,28 +14,52 @@ $client = $clientBuilder->build();
 
 Here is a list of built-in providers:
 
-- [GuzzleWsdlProvider](#guzzlewsdlprovider)
+- [HttPlugWsdlProvider](#httplugwsdlprovider)
 - [LocalWsdlProvider](#localwsdlprovider)
 - [MixedWsdlProvider](#mixedwsdlprovider)
 
 Can't find the wsdl provider you were looking for?
 [It is always possible to create your own one!](#creating-your-own-wsdl-provider)
 
-## GuzzleWsdlProvider
+## HttPlugWsdlProvider
 
-The guzzle WSDL provider can be used for downloading remote WSDLs.
+[HTTPlug](http://httplug.io/) is a HTTP client abstraction that can be used with multiple client packages.
+The HTTPlug WSDL provider can be used for downloading remote WSDLs.
 It has support for [middlewares](middlewares.md) so that you have full control over the HTTP request and response.
 This way, you will always be able to download and manipulate the WSDL file even if it secured with e.g. NTLM.
 
+**Dependencies**
+
+Load HTTP plug core packages:
+
+```sh
+composer require psr/http-message:^1.0 php-http/httplug:^1.1 php-http/message-factory:^1.0 php-http/discovery:^1.3 php-http/message:^1.6 php-http/client-common:^1.6
+```
+
+**Select HTTP Client**
+
+Select one of the many clients you want to use to perform the HTTP requests:
+http://docs.php-http.org/en/latest/clients.html#clients-adapters
+
+```sh
+composer require php-http/client-implementation:^1.0
+```
+
 **Configuration**
 ```php
-$provider = GuzzleWsdlProvider::createForClient($client);
+$provider = HttPlugWsdlProvider::createForClient($client);
 
 // Optional location:
 $provider->setLocation('/some/destination/file.wsdl');
 
 // Middlewares support:
 $provider->addMiddleware($middleware);
+
+
+// Register to the client builder
+$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
+$clientBuilder->withWsdlProvider($provider);
+$client = $clientBuilder->build();
 ```
 
 *Note:* If you want to cache the WSDL so that you don't have to download it on every request, you can use the built-in caching options:

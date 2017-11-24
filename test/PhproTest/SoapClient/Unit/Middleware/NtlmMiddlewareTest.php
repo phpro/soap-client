@@ -2,12 +2,12 @@
 
 namespace PhproTest\SoapClient\Unit\Middleware;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Http\Client\Common\PluginClient;
+use Http\Message\MessageFactory\GuzzleMessageFactory;
+use Http\Mock\Client;
+use Phpro\SoapClient\Exception\RuntimeException;
 use Phpro\SoapClient\Middleware\NtlmMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
@@ -19,16 +19,15 @@ use PHPUnit\Framework\TestCase;
  */
 class NtlmMiddlewareTest extends TestCase
 {
-
     /**
-     * @var ClientInterface
+     * @var PluginClient
      */
     private $client;
 
     /**
-     * @var MockHandler
+     * @var Client
      */
-    private $handler;
+    private $mockClient;
 
     /**
      * @var NtlmMiddleware
@@ -40,11 +39,9 @@ class NtlmMiddlewareTest extends TestCase
      */
     protected function setUp()
     {
-        $this->handler = new MockHandler([]);
         $this->middleware = new NtlmMiddleware('username', 'password');
-        $stack = new HandlerStack($this->handler);
-        $stack->push($this->middleware);
-        $this->client = new Client(['handler' => $stack]);
+        $this->mockClient = new Client(new GuzzleMessageFactory());
+        $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
     /**
@@ -68,10 +65,11 @@ class NtlmMiddlewareTest extends TestCase
      */
     function it_adds_ntlm_auth_to_the_request()
     {
-        $this->handler->append(new Response());
-        $this->client->send(new Request('POST', '/'));
-        $sentOptions = $this->handler->getLastOptions();
-        $this->assertEquals(CURLAUTH_NTLM, $sentOptions['curl'][CURLOPT_HTTPAUTH]);
-        $this->assertEquals('username:password', $sentOptions['curl'][CURLOPT_USERPWD]);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageRegExp('/CURLOPT_HTTPAUTH \= CURLAUTH_NTLM/i');
+        $this->expectExceptionMessageRegExp('/CURLOPT_USERPWD \= "username\:password"/i');
+
+        $this->mockClient->addResponse(new Response());
+        $this->client->sendRequest(new Request('POST', '/'));
     }
 }

@@ -5,8 +5,8 @@ namespace Phpro\SoapClient\Xml;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
+use Http\Discovery\StreamFactoryDiscovery;
 use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\Stream;
 
 /**
  * Class Xml
@@ -113,8 +113,8 @@ class Xml
      */
     public function toStream(): StreamInterface
     {
-        $stream = new Stream('php://memory', 'r+');
-        $stream->write($this->toString());
+        $streamFactory = StreamFactoryDiscovery::find();
+        $stream = $streamFactory->createStream($this->toString());
         $stream->rewind();
 
         return $stream;

@@ -133,7 +133,7 @@ property to false on the fly so that you don't have to change the WSDL on the se
 
 **Usage**
 ```php
-$wsdlProvier = GuzzleWsdlProvider::create($client);
+$wsdlProvier = HttPlugWsdlProvider::create($client);
 $wsdlProvider->addMiddleware(new DisableExtensionsMiddleware());
 $clientBuilder->withWsdlProvider($wsdlProvider);
 ```
@@ -142,7 +142,7 @@ $clientBuilder->withWsdlProvider($wsdlProvider);
 ## Creating your own middleware
 
 Didn't find the middleware you needed? No worries! It is very easy to create your own middleware.
-We currently added a thin layer above [Guzzle middlewares](http://docs.guzzlephp.org/en/latest/handlers-and-middleware.html#middleware) 
+We currently added a thin layer above [HTTPlug plugins](http://docs.php-http.org/en/latest/plugins/index.html) 
 to make it easy to modify PSR-7 request and responses.
 
 
@@ -164,7 +164,7 @@ class MyMiddleware extends \Phpro\SoapClient\Middleware\MiddleWare
      *
      * @return PromiseInterface
      */
-    public function beforeRequest(callable $handler, RequestInterface $request, array $options)
+    public function beforeRequest(callable $handler, RequestInterface $request): Promise
     {
         return $handler($request, $options);
     }
@@ -174,7 +174,7 @@ class MyMiddleware extends \Phpro\SoapClient\Middleware\MiddleWare
      *
      * @return ResponseInterface
      */
-    public function afterResponse(ResponseInterface $response)
+    public function afterResponse(ResponseInterface $response): ResponseInterface
     {
         return $response;
     }

@@ -2,10 +2,10 @@
 
 namespace PhproTest\SoapClient\Unit\Xml;
 
+use GuzzleHttp\Psr7\Stream;
 use Phpro\SoapClient\Xml\SoapXml;
 use Phpro\SoapClient\Xml\Xml;
 use PHPUnit\Framework\TestCase;
-use Zend\Diactoros\Stream;
 
 /**
  * Class SoapXmlTest
@@ -152,7 +152,7 @@ class SoapXmlTest extends TestCase
     function it_is_possible_to_create_from_a_psr7_stream()
     {
         $rawXml = $this->xml->saveXML();
-        $stream = new Stream('php://memory', 'r+');
+        $stream = new Stream(fopen('php://memory', 'rwb'));
         $stream->write($rawXml);
         $stream->rewind();
 

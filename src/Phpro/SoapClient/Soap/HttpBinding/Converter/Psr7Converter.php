@@ -2,6 +2,8 @@
 
 namespace Phpro\SoapClient\Soap\HttpBinding\Converter;
 
+use Http\Message\MessageFactory;
+use Http\Message\StreamFactory;
 use Interop\Http\Factory\RequestFactoryInterface;
 use Interop\Http\Factory\StreamFactoryInterface;
 use Phpro\SoapClient\Soap\HttpBinding\Builder\Psr7RequestBuilder;
@@ -9,7 +11,6 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response\Serializer;
 
 /**
  * Class Psr7Converter
@@ -21,22 +22,16 @@ class Psr7Converter
     /**
      * @var RequestFactoryInterface
      */
-    private $requestFactory;
+    private $messageFactory;
 
     /**
      * @var StreamFactoryInterface
      */
     private $streamFactory;
 
-    /**
-     * Psr7Converter constructor.
-     *
-     * @param RequestFactoryInterface $requestFactory
-     * @param StreamFactoryInterface  $streamFactory
-     */
-    public function __construct(RequestFactoryInterface $requestFactory, StreamFactoryInterface $streamFactory)
+    public function __construct(MessageFactory $messageFactory, StreamFactory $streamFactory)
     {
-        $this->requestFactory = $requestFactory;
+        $this->messageFactory = $messageFactory;
         $this->streamFactory = $streamFactory;
     }
 
@@ -48,7 +43,7 @@ class Psr7Converter
      */
     public function convertSoapRequest(SoapRequest $request): RequestInterface
     {
-        $builder = new Psr7RequestBuilder($this->requestFactory, $this->streamFactory);
+        $builder = new Psr7RequestBuilder($this->messageFactory, $this->streamFactory);
 
         $request->isSOAP11() ? $builder->isSOAP11() : $builder->isSOAP12();
         $builder->setEndpoint($request->getLocation());

@@ -2,12 +2,11 @@
 
 namespace PhproTest\SoapClient\Unit\Middleware;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Http\Client\Common\PluginClient;
+use Http\Message\MessageFactory\GuzzleMessageFactory;
+use Http\Mock\Client;
 use Phpro\SoapClient\Middleware\CollectLastRequestInfoMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
@@ -21,16 +20,15 @@ use PHPUnit\Framework\TestCase;
  */
 class CollectLastRequestInfoMiddlewareTest extends TestCase
 {
-
     /**
-     * @var ClientInterface
+     * @var PluginClient
      */
     private $client;
 
     /**
-     * @var MockHandler
+     * @var Client
      */
-    private $handler;
+    private $mockClient;
 
     /**
      * @var CollectLastRequestInfoMiddleware
@@ -42,11 +40,9 @@ class CollectLastRequestInfoMiddlewareTest extends TestCase
      */
     protected function setUp()
     {
-        $this->handler = new MockHandler([]);
         $this->middleware = new CollectLastRequestInfoMiddleware();
-        $stack = new HandlerStack($this->handler);
-        $stack->push($this->middleware);
-        $this->client = new Client(['handler' => $stack]);
+        $this->mockClient = new Client(new GuzzleMessageFactory());
+        $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
     /**
@@ -78,8 +74,8 @@ class CollectLastRequestInfoMiddlewareTest extends TestCase
      */
     function it_remembers_the_last_request_and_response()
     {
-        $this->handler->append($response = new Response(200, ['Content-Type' => 'text/plain'], 'response'));
-        $this->client->send($request = new Request('POST', '/', ['User-Agent' => 'no'], 'request'));
+        $this->mockClient->addResponse($response = new Response(200, ['Content-Type' => 'text/plain'], 'response'));
+        $this->client->sendRequest($request = new Request('POST', '/', ['User-Agent' => 'no'], 'request'));
 
         $result = $this->middleware->collectLastRequestInfo();
         $this->assertInstanceOf(LastRequestInfo::class, $result);

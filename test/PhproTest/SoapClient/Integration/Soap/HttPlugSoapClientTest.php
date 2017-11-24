@@ -2,25 +2,22 @@
 
 namespace PhproTest\SoapClient\Integration\Soap;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use Phpro\SoapClient\Soap\Handler\GuzzleHandle;
+use Http\Adapter\Guzzle6\Client;
+use Phpro\SoapClient\Soap\Handler\HttPlugHandle;
 use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class GuzzleSoapClientTest
+ * Class HttPlugSoapClientTest
  *
  * @package PhproTest\SoapClient\Integration\Soap
  */
-class GuzzleSoapClientTest extends TestCase
+class HttplugSoapClientTest extends TestCase
 {
-
     /**
      * Wheather API
      */
     const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/wheater-ws.wsdl';
-
 
     /**
      * @var PhproSoapClient
@@ -28,19 +25,13 @@ class GuzzleSoapClientTest extends TestCase
     protected $client;
 
     /**
-     * @var HandlerStack
-     */
-    protected $handlerStack;
-
-    /**
      * Configure client
      */
     function setUp()
     {
-        $guzzleClient = new Client(['headers' => ['User-Agent' => 'testing/1.0']]);
+        $httpClient = Client::createWithConfig(['headers' => ['User-Agent' => 'testing/1.0']]);
         $this->client = new PhproSoapClient(self::CDYNE_WSDL, ['soap_version' => SOAP_1_2]);
-        $this->client->setHandler(GuzzleHandle::createForClient($guzzleClient));
-        $this->handlerStack = $guzzleClient->getConfig('handler');
+        $this->client->setHandler(HttPlugHandle::createForClient($httpClient));
     }
 
     /**
