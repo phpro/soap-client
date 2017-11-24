@@ -18,23 +18,24 @@ use Zend\Code\Generator\MethodGenerator;
 class GetterAssembler implements AssemblerInterface
 {
     /**
-     * @var bool
+     * @var GetterAssemblerOptions
      */
-    private $boolGetters;
+    private $options;
 
     /**
      * GetterAssembler constructor.
-     * @param bool $boolGetters
+     *
+     * @param GetterAssemblerOptions $options
      */
-    public function __construct($boolGetters = false)
+    public function __construct(GetterAssemblerOptions $options)
     {
-        $this->boolGetters = $boolGetters;
+        $this->options = $options;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof PropertyContext;
     }
@@ -54,18 +55,19 @@ class GetterAssembler implements AssemblerInterface
             $class->removeMethod($methodName);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
-                    'name' => $methodName,
+                    'name'       => $methodName,
                     'parameters' => [],
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                    'body' => sprintf('return $this->%s;', $property->getName()),
-                    'docblock' => DocBlockGenerator::fromArray([
+                    'body'       => sprintf('return $this->%s;', $property->getName()),
+                    'returntype' => $this->options->useReturnType() ? $property->getType() : null,
+                    'docblock'   => DocBlockGenerator::fromArray([
                         'tags' => [
                             [
-                                'name' => 'return',
-                                'description' => $property->getType()
-                            ]
-                        ]
-                    ])
+                                'name'        => 'return',
+                                'description' => $property->getType(),
+                            ],
+                        ],
+                    ]),
                 ])
             );
         } catch (\Exception $e) {
@@ -77,11 +79,12 @@ class GetterAssembler implements AssemblerInterface
      * @param Property $property
      * @return string
      */
-    public function getPrefix(Property $property)
+    public function getPrefix(Property $property): string
     {
-        if (!$this->boolGetters) {
+        if (!$this->options->useBoolGetters()) {
             return 'get';
         }
+
         return $property->getType() === 'bool' ? 'is' : 'get';
     }
 }
