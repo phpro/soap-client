@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Response;
 use Phpro\SoapClient\Middleware\WsseMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Xml\SoapXml;
+use PHPUnit\Framework\TestCase;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 
 /**
@@ -18,7 +19,7 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class WsseMiddlewareTest extends \PHPUnit_Framework_TestCase
+class WsseMiddlewareTest extends TestCase
 {
 
     /**
@@ -235,21 +236,38 @@ class WsseMiddlewareTest extends \PHPUnit_Framework_TestCase
      */
     function it_is_possible_to_encrypt_a_request()
     {
-        $this->markTestIncomplete(
-            'Encryption is not possible in newer versions of PHP. More info: ' .
-            'https://github.com/robrichards/wse-php/issues/28'
-        );
-
         $this->middleware->withEncryption(FIXTURE_DIR . '/certificates/wsse-client-x509.pem');
-        $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/empty-request.xml');
-        $this->handler->append($response = new Response(200));
-        $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
+        $this->middleware->withServerCertificateHasSubjectKeyIdentifier(true);
 
-        $soapBody = (string)$this->handler->getLastRequest()->getBody();
-        $xml = $this->fetchSoapXml($soapBody);
+        $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/empty-request-with-head-and-body.xml');
+        $soapResponse = file_get_contents(FIXTURE_DIR . '/soap/wsse-decrypt-response.xml');
+        $this->handler->append($response = new Response(200, [], $soapResponse));
+        $response = $this->client->send($request = new Request('POST', '/', ['SOAPAction' => 'myaction'], $soapRequest));
 
+        $encryptedXml = $this->fetchSoapXml((string)$this->handler->getLastRequest()->getBody());
+        $decryptedXml = $this->fetchSoapXml($response->getBody());
 
-        $this->assertTrue(false, 'TODO: Add asserts!');
+        // Check Request headers:
+        $this->assertEquals($encryptedXml->xpath('//soap:Header/wsse:Security/xenc:EncryptedKey')->length, 1, 'No EncryptedKey tag');
+        $this->assertEquals($encryptedXml->xpath('//soap:Header/wsse:Security/xenc:EncryptedKey/xenc:EncryptionMethod')->length, 1, 'No EncryptionMethod tag');
+        $this->assertEquals($encryptedXml->xpath('//soap:Header/wsse:Security/xenc:EncryptedKey/dsig:KeyInfo')->length, 1, 'No KeyInfo tag');
+        $this->assertEquals($encryptedXml->xpath('//soap:Header/wsse:Security/xenc:EncryptedKey/dsig:KeyInfo/wsse:SecurityTokenReference')->length, 1, 'No SecurityTokenReference tag');
+        $this->assertEquals($encryptedXml->xpath('//soap:Header/wsse:Security/xenc:EncryptedKey/dsig:KeyInfo/wsse:SecurityTokenReference/wsse:KeyIdentifier')->length, 1, 'No KeyIdentifier tag');
+        $this->assertEquals($encryptedXml->xpath('//soap:Header/wsse:Security/ds:Signature')->length, 0, 'Signature is not encrypted');
+        $this->assertEquals($encryptedXml->xpath('//soap:Header/wsse:Security/xenc:EncryptedData')->length, 1, 'Signature is not encrypted');
+
+        // Check request body:
+        $this->assertEquals($encryptedXml->xpath('//soap:Body/xenc:EncryptedData')->length, 1, 'No EncryptedData tag');
+        $this->assertEquals($encryptedXml->xpath('//soap:Body/xenc:EncryptedData/xenc:EncryptionMethod')->length, 1, 'No EncryptionMethod tag');
+        $this->assertEquals($encryptedXml->xpath('//soap:Body/xenc:EncryptedData/xenc:CipherData')->length, 1, 'No CipherData tag');
+        $this->assertEquals($encryptedXml->xpath('//soap:Body/xenc:EncryptedData/xenc:CipherData/xenc:CipherValue')->length, 1, 'No CipherValue tag');
+
+        // Check response headers:
+        $this->assertEquals($decryptedXml->xpath('//soap:Header/wsse:Security/xenc:EncryptedData')->length, 0, 'Encrypted data was not decrypted');
+        $this->assertEquals($decryptedXml->xpath('//soap:Header/wsse:Security/ds:Signature')->length, 1, 'Signature could not be decrypted');
+
+        // Check respone body:
+        $this->assertEquals($decryptedXml->xpath('//soap:Body/xenc:EncryptedData')->length, 0, 'Encrypted data was not decrypted');
     }
 
     /**
@@ -267,6 +285,8 @@ class WsseMiddlewareTest extends \PHPUnit_Framework_TestCase
         $soapXml->registerNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
         $soapXml->registerNamespace('wsu', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd');
         $soapXml->registerNamespace('wsa', 'http://schemas.xmlsoap.org/ws/2004/08/addressing');
+        $soapXml->registerNamespace('xenc', 'http://www.w3.org/2001/04/xmlenc#');
+        $soapXml->registerNamespace('dsig', 'http://www.w3.org/2000/09/xmldsig#');
 
         return $soapXml;
     }

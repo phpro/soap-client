@@ -19,7 +19,7 @@ Here is a list of built-in handlers:
 
 The SoapHandle is used by default and works with the built-in `__doRequest()` method.
 This Handle is not configurable and can be used for soap implementations which do not use extensions.
-It is activated by default to get you going as quick as posile.
+It is activated by default to get you going as quick as posible.
 
 **Configuration**
 ```php
@@ -32,7 +32,7 @@ $client = $clientBuilder->build();
 
 *Features: LastRequestInfoCollector, MiddlewareSupporting*
 
-With this handler it is easy to get in control about the HTTP layer of the SOAP client.
+With this handler, it is easy to get in control about the HTTP layer of the SOAP client.
 You can specify one or multiple middlewares that are being applied on your guzzle client.
 This makes it possible to manipulate the request and response objects so that you can get full control.
 

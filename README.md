@@ -6,10 +6,10 @@
 
 Sick and tired of building crappy SOAP implementations?
  This package aims to help you with some common SOAP integration pains in PHP.
- It's goal is to make integrating with SOAP fun again!
+ Its goal is to make integrating with SOAP fun again!
  Let's inspect some of the pains that are solved by this package:
  
-By default the SoapClient works with a mix of arrays, stdClasses and other scalar types. 
+By default, the SoapClient works with a mix of arrays, stdClasses and other scalar types. 
  This is not a good practice in a modern OOP world because:
  
 - It makes your code hard to test.
@@ -35,7 +35,7 @@ This package will force you into wrapping a SoapClient into your own Client.
  It will always be clear to the developer what's in your client, how it works and what it returns.
  We even provided a base Client for you to use with some common used methods for debugging, authentication and an event system.
  
-In lots of SOAP integrations the logging, caching and Soap calls are in the same method.
+In lots of SOAP integrations, the logging, caching and Soap calls are in the same method.
  This makes your code hard to read and dependent on other classes / packages.
 
 Creating a great OO SOAP client means that you'll have to create a lot of code.
@@ -43,7 +43,7 @@ Creating a great OO SOAP client means that you'll have to create a lot of code.
  That is why we've added the tools to automatically generate the SOAP objects from the XSD scheme inside the WSDL.
  It is even possible to specify your own code-generation rules and code assemblers or use one of our many built-in classes.
 
-It is important keep your code clean. This is why we added an event-listener to your Soap client.
+It is important keep your code clean. Therefore, we added an event-listener to your Soap client.
  You can hook in at every important step of the SOAP flow.
  This way it is possible to add logging, validation, caching and error handling with event subscribers. 
  Pretty cool right?!
@@ -51,7 +51,7 @@ It is important keep your code clean. This is why we added an event-listener to 
 Implementing SOAP extensions is a real pain in the ass.
  It forces you to overwrite core methods of the built-in SOAP client.
  If you ever had to implement WSA or WSSE in SOAP, you know that there is something wrong in the core.
- Therefore we made it easy for you to extend our SOAP client. 
+ Therefore, we made it easy for you to extend our SOAP client. 
  You can specify which data transfer handler like e.g. Guzzle you want to use.
  Depending on the selected handler, 
  you can easily add support for SOAP extensions or advanced authentication through HTTP middlewares.

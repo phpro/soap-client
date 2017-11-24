@@ -10,13 +10,14 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Phpro\SoapClient\Middleware\NtlmMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class NtlmMiddleware
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class NtlmMiddlewareTest extends \PHPUnit_Framework_TestCase
+class NtlmMiddlewareTest extends TestCase
 {
 
     /**

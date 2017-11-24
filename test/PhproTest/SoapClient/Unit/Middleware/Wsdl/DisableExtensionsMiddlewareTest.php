@@ -11,13 +11,14 @@ use GuzzleHttp\Psr7\Response;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Middleware\Wsdl\DisableExtensionsMiddleware;
 use Phpro\SoapClient\Xml\WsdlXml;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class BasicAuthMiddleware
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class DisableExtensionsMiddlewareTest extends \PHPUnit_Framework_TestCase
+class DisableExtensionsMiddlewareTest extends TestCase
 {
 
     /**
