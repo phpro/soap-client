@@ -12,8 +12,11 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 
 return Config::create()
     ->setWsdl('http://localhost/path/to/soap.wsdl')
-    ->setDestination('src/SoapTypes')
-    ->setNamespace('SoapTypes')
+    ->setTypeDestination('src/SoapTypes')
+    ->setTypeNamespace('SoapTypes')
+    ->setClientDestination('src/SoapClient')
+    ->setClientNamespace('SoapClient')
+    ->setClientName('MySoapClient')
     ->addSoapOption('features', SOAP_SINGLE_ELEMENT_ARRAYS)
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler()))
     ->addRule(new Rules\TypenameMatchesRule(
@@ -34,11 +37,17 @@ String - REQUIRED
 The full path the the WSDL file you want to parse
 
 
-**destination**
+**type destination**
 
 String - REQUIRED
 
 The destination of the generated PHP classes. 
+
+**client destination**
+
+String - REQUIRED
+
+The destination of the generated soap client. 
 
 
 **soapOptions**
@@ -59,12 +68,24 @@ Default values:
 ```
 
 
-**namespace**
+**type namespace**
 
 String - OPTIONAL
 
 The namespace of the PHP Classes you want to generate.
 
+
+**client namespace**
+
+String - OPTIONAL
+
+The namespace of the generated client.
+
+**client name**
+
+String - OPTIONAL
+
+The class name of the client, defaults to 'Client'.
 
 **rules**
 

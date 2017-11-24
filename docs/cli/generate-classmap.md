@@ -2,7 +2,7 @@
 
 Before you can generate code, you'll need to add some additional dev dependencies to your project:
 ```sh
-composer require --dev zendframework/zend-code:^3.0.4
+composer require --dev zendframework/zend-code:^3.1.0
 ```
 
 When the value-objects are generated, we need to tell SOAP about how the PHP classes are mapped to the XSD types.

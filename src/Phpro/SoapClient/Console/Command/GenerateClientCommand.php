@@ -2,14 +2,15 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
+use Phpro\SoapClient\CodeGenerator\ClientGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
-use Phpro\SoapClient\CodeGenerator\Model\Type;
-use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
+use Phpro\SoapClient\CodeGenerator\Model\Client;
+use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
-use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,14 +19,14 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Zend\Code\Generator\FileGenerator;
 
 /**
- * Class GenerateTypesCommand
+ * Class GenerateClientCommand
  *
  * @package Phpro\SoapClient\Console\Command
  */
-class GenerateTypesCommand extends Command
+class GenerateClientCommand extends Command
 {
 
-    const COMMAND_NAME = 'generate:types';
+    const COMMAND_NAME = 'generate:client';
 
     /**
      * @var Filesystem
@@ -47,7 +48,7 @@ class GenerateTypesCommand extends Command
      */
     public function __construct(Filesystem $filesystem)
     {
-        parent::__construct(null);
+        parent::__construct();
         $this->filesystem = $filesystem;
     }
 
@@ -58,15 +59,14 @@ class GenerateTypesCommand extends Command
     {
         $this
             ->setName(self::COMMAND_NAME)
-            ->setDescription('Generates types based on WSDL.')
+            ->setDescription('Generates a client based on WSDL.')
             ->addOption(
                 'config',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The location of the soap code-generator config file'
             )
-            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default')
-        ;
+            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default');
     }
 
     /**
@@ -86,21 +86,36 @@ class GenerateTypesCommand extends Command
         if (!$config instanceof ConfigInterface) {
             throw InvalidArgumentException::invalidConfigFile();
         }
-
-        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
-        $generator = new TypeGenerator($config->getRuleSet());
-
-        foreach ($typeMap->getTypes() as $type) {
-            $fileInfo = $type->getFileInfo($config->getDestination());
-            if ($this->handleType($generator, $type, $fileInfo)) {
-                $this->output->writeln(
-                    sprintf('Generated class %s to %s', $type->getFullName(), $fileInfo->getPathname())
-                );
-            }
+        if (!$config instanceof Config) {
+            throw InvalidArgumentException::invalidConfigFile();
         }
 
+        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
+        $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypesNamespace());
+        $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
+        $generator = new ClientGenerator($config->getRuleSet());
+        $fileGenerator = new FileGenerator();
+        $this->generateClient(
+            $fileGenerator,
+            $generator,
+            $client,
+            $config->getClientDestination().'/'.$config->getClientName().'.php'
+        );
         $this->output->writeln('Done');
+    }
+
+    /**
+     * Generates one type class
+     *
+     * @param FileGenerator $file
+     * @param ClientGenerator|TypeGenerator $generator
+     * @param Client $client
+     * @param string $path
+     */
+    protected function generateClient(FileGenerator $file, ClientGenerator $generator, Client $client, $path)
+    {
+        $code = $generator->generate($file, $client);
+        $this->filesystem->putFileContents($path, $code);
     }
 
     /**
@@ -109,24 +124,23 @@ class GenerateTypesCommand extends Command
      * If patching the old class does not wor: ask for an overwrite
      * Create a class from an empty file
      *
-     * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param SplFileInfo   $fileInfo
+     * @param ClientGenerator|TypeGenerator $generator
+     * @param Client $client
+     * @param $path
      * @return bool
      */
-    protected function handleType(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
+    protected function handleClient(ClientGenerator $generator, Client $client, $path)
     {
-        // Generate type sub folders if needed
-        $this->filesystem->ensureDirectoryExists($fileInfo->getPath());
         // Handle existing class:
-        if ($fileInfo->isFile()) {
-            if ($this->handleExistingFile($generator, $type, $fileInfo)) {
+        if ($this->filesystem->fileExists($path)) {
+            if ($this->handleExistingFile($generator, $client, $path)) {
                 return true;
             }
 
             // Ask if a class can be overwritten if it contains errors
             if (!$this->askForOverwrite()) {
-                $this->output->writeln(sprintf('Skipping %s', $type->getName()));
+                $this->output->writeln(sprintf('Skipping %s', $client->getName()));
+
                 return false;
             }
         }
@@ -134,7 +148,7 @@ class GenerateTypesCommand extends Command
         // Try to create a blanco class:
         try {
             $file = new FileGenerator();
-            $this->generateType($file, $generator, $type, $fileInfo);
+            $this->generateClient($file, $generator, $client, $path);
         } catch (\Exception $e) {
             $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
 
@@ -148,18 +162,18 @@ class GenerateTypesCommand extends Command
      * An existing file was found. Try to patch or ask if it can be overwritten.
      *
      * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param SplFileInfo   $fileInfo
+     * @param Client $client
+     * @param string $path
      * @return bool
-     *
      */
-    protected function handleExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
+    protected function handleExistingFile(TypeGenerator $generator, Client $client, $path)
     {
-        $this->output->write(sprintf('Type %s exists. Trying to patch ...', $type->getName()));
-        $patched = $this->patchExistingFile($generator, $type, $fileInfo);
+        $this->output->write(sprintf('Type %s exists. Trying to patch ...', $client->getName()));
+        $patched = $this->patchExistingFile($generator, $client, $path);
 
         if ($patched) {
             $this->output->writeln('Patched!');
+
             return true;
         }
 
@@ -172,37 +186,25 @@ class GenerateTypesCommand extends Command
      * This method tries to patch an existing type class.
      *
      * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param SplFileInfo   $fileInfo
+     * @param Client $client
+     * @param string $path
      * @return bool
+     * @internal param Type $type
      */
-    protected function patchExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
+    protected function patchExistingFile(TypeGenerator $generator, Client $client, $path)
     {
         try {
-            $this->filesystem->createBackup($fileInfo->getPathname());
-            $file = FileGenerator::fromReflectedFileName($fileInfo->getPathname());
-            $this->generateType($file, $generator, $type, $fileInfo);
+            $this->filesystem->createBackup($path);
+            $file = FileGenerator::fromReflectedFileName($path);
+            $this->generateClient($file, $generator, $client, $path);
         } catch (\Exception $e) {
-            $this->output->writeln('<fg=red>' . $e->getMessage() . '</fg=red>');
-            $this->filesystem->removeBackup($fileInfo->getPathname());
+            $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
+            $this->filesystem->removeBackup($path);
+
             return false;
         }
 
         return true;
-    }
-
-    /**
-     * Generates one type class
-     *
-     * @param FileGenerator $file
-     * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param SplFileInfo   $fileInfo
-     */
-    protected function generateType(FileGenerator $file, TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
-    {
-        $code = $generator->generate($file, $type);
-        $this->filesystem->putFileContents($fileInfo->getPathname(), $code);
     }
 
     /**

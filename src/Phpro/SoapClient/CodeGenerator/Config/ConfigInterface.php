@@ -14,6 +14,7 @@ interface ConfigInterface
 {
     /**
      * @return string
+     * @deprecated use getClientNamespace or getTypeNamespace instead
      */
     public function getNamespace();
 
@@ -29,13 +30,34 @@ interface ConfigInterface
 
     /**
      * @return string
+     * @deprecated Use getTypeDestination or getClientDestination instead
      */
     public function getDestination();
+
+    /**
+     * @return string
+     */
+    public function getClientDestination();
+
+    /**
+     * @return string
+     */
+    public function getTypeDestination();
 
     /**
      * @return RuleSetInterface
      */
     public function getRuleSet();
+
+    /**
+     * @return string
+     */
+    public function getClientNamespace();
+
+    /**
+     * @return string
+     */
+    public function getTypeNamespace();
 
     /**
      * @return WsdlProviderInterface

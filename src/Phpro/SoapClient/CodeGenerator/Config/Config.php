@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Config;
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Assembler\ClientMethodAssembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
@@ -20,11 +21,20 @@ use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
  */
 class Config implements ConfigInterface
 {
+    /**
+     * @var string
+     */
+    protected $clientName = 'Client';
 
     /**
      * @var string
      */
-    protected $namespace = '';
+    protected $typesNamespace = '';
+
+    /**
+     * @var
+     */
+    protected $clientNamespace = '';
 
     /**
      * @var string
@@ -44,7 +54,12 @@ class Config implements ConfigInterface
     /**
      * @var string
      */
-    protected $destination = '';
+    protected $clientDestination = '';
+
+    /**
+     * @var string
+     */
+    protected $typeDestination = '';
 
     /**
      * @var RuleSetInterface
@@ -69,6 +84,7 @@ class Config implements ConfigInterface
         $this->ruleSet = new RuleSet([
             new Rules\AssembleRule(new Assembler\PropertyAssembler()),
             new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
+            new Rules\AssembleRule(new ClientMethodAssembler())
         ]);
         $this->wsdlProvider = new MixedWsdlProvider();
     }
@@ -84,10 +100,32 @@ class Config implements ConfigInterface
     /**
      * @return string
      * @throws InvalidArgumentException
+     * @deprecated use getTypeNamespace or getClientNamespace instead
      */
     public function getNamespace()
     {
-        return $this->namespace;
+        return $this->typesNamespace;
+    }
+
+    /**
+     * @param string $namespace
+     *
+     * @return Config
+     * @deprecated use setTypeNamespace of setClientNamespace instead
+     */
+    public function setNamespace($namespace)
+    {
+        $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypesNamespace()
+    {
+        return $this->typesNamespace;
     }
 
     /**
@@ -95,9 +133,10 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function setNamespace($namespace)
+    public function setTypeNamespace($namespace)
     {
-        $this->namespace = Normalizer::normalizeNamespace($namespace);
+        $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
+
         return $this;
     }
 
@@ -121,20 +160,20 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @param array $soapOptions
+     * @param string $wsdl
      *
-     * @return $this
+     * @return Config
      */
-    public function setSoapOptions(array $soapOptions)
+    public function setWsdl($wsdl)
     {
-        $this->soapOptions = $soapOptions;
+        $this->wsdl = $wsdl;
 
         return $this;
     }
 
     /**
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return $this
      */
@@ -154,37 +193,41 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @param string $wsdl
+     * @param array $soapOptions
      *
-     * @return Config
+     * @return $this
      */
-    public function setWsdl($wsdl)
+    public function setSoapOptions(array $soapOptions)
     {
-        $this->wsdl = $wsdl;
+        $this->soapOptions = $soapOptions;
+
         return $this;
     }
 
     /**
      * @return string
      * @throws InvalidArgumentException
+     * @deprecated
      */
     public function getDestination()
     {
-        if (!$this->destination) {
+        if (!$this->typeDestination) {
             throw InvalidArgumentException::destinationConfigurationIsMissing();
         }
 
-        return $this->destination;
+        return $this->typeDestination;
     }
 
     /**
      * @param string $destination
      *
      * @return Config
+     * @deprecated
      */
     public function setDestination($destination)
     {
-        $this->destination = rtrim($destination, '/\\');
+        $this->typeDestination = rtrim($destination, '/\\');
+
         return $this;
     }
 
@@ -197,17 +240,6 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @param RuleInterface $rule
-     *
-     * @return Config
-     */
-    public function addRule(RuleInterface $rule)
-    {
-        $this->ruleSet->addRule($rule);
-        return $this;
-    }
-
-    /**
      * @param RuleSetInterface $ruleSet
      *
      * @return Config
@@ -215,6 +247,119 @@ class Config implements ConfigInterface
     public function setRuleSet(RuleSetInterface $ruleSet)
     {
         $this->ruleSet = $ruleSet;
+
+        return $this;
+    }
+
+    /**
+     * @param RuleInterface $rule
+     *
+     * @return Config
+     */
+    public function addRule(RuleInterface $rule)
+    {
+        $this->ruleSet->addRule($rule);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientName()
+    {
+        return $this->clientName;
+    }
+
+    /**
+     * @param string $clientName
+     * @return $this
+     */
+    public function setClientName($clientName)
+    {
+        $this->clientName = $clientName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientNamespace()
+    {
+        if (!$this->clientNamespace) {
+            throw InvalidArgumentException::clientNamespaceIsMissing();
+        }
+
+        return $this->clientNamespace;
+    }
+
+    /**
+     * @param string $clientNamespace
+     * @return Config
+     */
+    public function setClientNamespace($clientNamespace)
+    {
+        $this->clientNamespace = $clientNamespace;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeNamespace()
+    {
+        if (!$this->typesNamespace) {
+            throw InvalidArgumentException::typeNamespaceIsMissing();
+        }
+
+        return $this->typesNamespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientDestination()
+    {
+        if (!$this->clientDestination) {
+            throw InvalidArgumentException::clientDestinationIsMissing();
+        }
+
+        return $this->clientDestination;
+    }
+
+    /**
+     * @param string $clientDestination
+     * @return Config
+     */
+    public function setClientDestination($clientDestination)
+    {
+        $this->clientDestination = $clientDestination;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeDestination()
+    {
+        if (!$this->typeDestination) {
+            throw InvalidArgumentException::typeDestinationIsMissing();
+        }
+
+        return $this->typeDestination;
+    }
+
+    /**
+     * @param string $typeDestination
+     * @return Config
+     */
+    public function setTypeDestination($typeDestination)
+    {
+        $this->typeDestination = $typeDestination;
+
         return $this;
     }
 
