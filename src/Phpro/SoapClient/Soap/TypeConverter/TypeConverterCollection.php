@@ -35,7 +35,7 @@ class TypeConverterCollection
      *
      * @return string
      */
-    private function serialize(TypeConverterInterface $converter)
+    private function serialize(TypeConverterInterface $converter): string
     {
         return $converter->getTypeNamespace() . ':' . $converter->getTypeName();
     }
@@ -48,7 +48,7 @@ class TypeConverterCollection
      * @return TypeConverterCollection
      * @throws InvalidArgumentException
      */
-    public function add(TypeConverterInterface $converter)
+    public function add(TypeConverterInterface $converter): self
     {
         if ($this->has($converter)) {
             throw new InvalidArgumentException(
@@ -66,7 +66,7 @@ class TypeConverterCollection
      *
      * @return TypeConverterCollection
      */
-    public function set(TypeConverterInterface $converter)
+    public function set(TypeConverterInterface $converter): self
     {
         $serialized = $this->serialize($converter);
         $this->converters[$serialized] = $converter;
@@ -82,7 +82,7 @@ class TypeConverterCollection
      *
      * @return bool
      */
-    public function has(TypeConverterInterface $converter)
+    public function has(TypeConverterInterface $converter): bool
     {
         $serialized = $this->serialize($converter);
         if (isset($this->converters[$serialized])) {
@@ -97,7 +97,7 @@ class TypeConverterCollection
      *
      * @return array
      */
-    public function toSoapTypeMap()
+    public function toSoapTypeMap(): array
     {
         $typemap = [];
 

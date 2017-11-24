@@ -17,5 +17,5 @@ interface GeneratorInterface
      *
      * @return string
      */
-    public function generate(FileGenerator $file, $model);
+    public function generate(FileGenerator $file, $model): string;
 }

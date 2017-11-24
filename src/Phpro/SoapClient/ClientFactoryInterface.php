@@ -14,7 +14,7 @@ interface ClientFactoryInterface
 {
 
     /**
-     * @param SoapClient      $soapClient
+     * @param SoapClient               $soapClient
      * @param EventDispatcherInterface $dispatcher
      *
      * @return ClientInterface

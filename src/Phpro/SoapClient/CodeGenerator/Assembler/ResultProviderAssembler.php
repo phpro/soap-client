@@ -38,7 +38,7 @@ class ResultProviderAssembler implements AssemblerInterface
     /**
      * {@inheritdoc}
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof TypeContext;
     }
@@ -107,7 +107,7 @@ class ResultProviderAssembler implements AssemblerInterface
      *
      * @return string
      */
-    private function generateGetResultBody(Property $property)
+    private function generateGetResultBody(Property $property): string
     {
         if ($this->wrapperClass === null) {
             return sprintf('return $this->%s;', $property->getName());
@@ -125,7 +125,7 @@ class ResultProviderAssembler implements AssemblerInterface
      *
      * @return string
      */
-    private function generateGetResultReturnTag(Property $property)
+    private function generateGetResultReturnTag(Property $property): string
     {
         if ($this->wrapperClass === null) {
             return $property->getType() . '|' . Normalizer::getClassNameFromFQN(ResultInterface::class);

@@ -45,7 +45,7 @@ class PropertyContext implements ContextInterface
     /**
      * @return ClassGenerator
      */
-    public function getClass()
+    public function getClass(): ClassGenerator
     {
         return $this->class;
     }
@@ -53,7 +53,7 @@ class PropertyContext implements ContextInterface
     /**
      * @return Type
      */
-    public function getType()
+    public function getType(): Type
     {
         return $this->type;
     }
@@ -61,7 +61,7 @@ class PropertyContext implements ContextInterface
     /**
      * @return Property
      */
-    public function getProperty()
+    public function getProperty(): Property
     {
         return $this->property;
     }

@@ -21,7 +21,7 @@ class ClassMapAssembler implements AssemblerInterface
      *
      * @return bool
      */
-    public function canAssemble(ContextInterface $context)
+    public function canAssemble(ContextInterface $context): bool
     {
         return $context instanceof ClassMapContext;
     }
@@ -56,7 +56,7 @@ class ClassMapAssembler implements AssemblerInterface
      *
      * @return string
      */
-    private function assembleClassMap(TypeMap $typeMap, $linefeed, $indentation)
+    private function assembleClassMap(TypeMap $typeMap, string $linefeed, string $indentation): string
     {
         $classMap = [];
         foreach ($typeMap->getTypes() as $type) {
@@ -77,7 +77,7 @@ class ClassMapAssembler implements AssemblerInterface
      *
      * @return string
      */
-    private function assembleClassMapCollection($classMap, $linefeed)
+    private function assembleClassMapCollection(string $classMap, string $linefeed): string
     {
         $code = [
             'new ClassMapCollection([',

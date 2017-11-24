@@ -37,7 +37,7 @@ class TypeContext implements ContextInterface
     /**
      * @return ClassGenerator
      */
-    public function getClass()
+    public function getClass(): ClassGenerator
     {
         return $this->class;
     }
@@ -45,7 +45,7 @@ class TypeContext implements ContextInterface
     /**
      * @return Type
      */
-    public function getType()
+    public function getType(): Type
     {
         return $this->type;
     }

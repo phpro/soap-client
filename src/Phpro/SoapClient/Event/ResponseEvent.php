@@ -42,7 +42,7 @@ class ResponseEvent extends Event
     /**
      * @return RequestEvent
      */
-    public function getRequestEvent()
+    public function getRequestEvent(): RequestEvent
     {
         return $this->requestEvent;
     }
@@ -50,7 +50,7 @@ class ResponseEvent extends Event
     /**
      * @return ResultInterface
      */
-    public function getResponse()
+    public function getResponse(): ResultInterface
     {
         return $this->response;
     }
@@ -58,7 +58,7 @@ class ResponseEvent extends Event
     /**
      * @return Client
      */
-    public function getClient()
+    public function getClient(): Client
     {
         return $this->client;
     }

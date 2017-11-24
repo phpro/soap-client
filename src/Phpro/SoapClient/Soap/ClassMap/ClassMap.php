@@ -21,10 +21,10 @@ class ClassMap implements ClassMapInterface
     private $phpClassName;
 
     /**
-     * @param $wsdlType
-     * @param $phpClassName
+     * @param string $wsdlType
+     * @param string $phpClassName
      */
-    public function __construct($wsdlType, $phpClassName)
+    public function __construct(string $wsdlType, string $phpClassName)
     {
         $this->wsdlType = $wsdlType;
         $this->phpClassName = $phpClassName;
@@ -33,13 +33,13 @@ class ClassMap implements ClassMapInterface
     /**
      * @return string
      */
-    public function getPhpClassName()
+    public function getPhpClassName(): string
     {
         return $this->phpClassName;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getWsdlType()
     {

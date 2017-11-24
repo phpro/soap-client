@@ -44,7 +44,7 @@ class FaultEvent extends Event
     /**
      * @return SoapException
      */
-    public function getSoapException()
+    public function getSoapException(): SoapException
     {
         return $this->soapException;
     }
@@ -52,7 +52,7 @@ class FaultEvent extends Event
     /**
      * @return RequestEvent
      */
-    public function getRequestEvent()
+    public function getRequestEvent(): RequestEvent
     {
         return $this->requestEvent;
     }
@@ -60,7 +60,7 @@ class FaultEvent extends Event
     /**
      * @return Client
      */
-    public function getClient()
+    public function getClient(): Client
     {
         return $this->client;
     }

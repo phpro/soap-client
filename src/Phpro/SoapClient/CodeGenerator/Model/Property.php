@@ -27,7 +27,7 @@ class Property
      * @param string $name
      * @param string $type
      */
-    public function __construct($name, $type)
+    public function __construct(string $name, string $type)
     {
         $this->name = Normalizer::normalizeProperty($name);
         $this->type = Normalizer::normalizeDataType($type);
@@ -36,7 +36,7 @@ class Property
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -44,7 +44,7 @@ class Property
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -52,7 +52,7 @@ class Property
     /**
      * @return string
      */
-    public function getterName()
+    public function getterName(): string
     {
         return Normalizer::generatePropertyMethod('get', $this->getName());
     }
@@ -60,7 +60,7 @@ class Property
     /**
      * @return string
      */
-    public function setterName()
+    public function setterName(): string
     {
         return Normalizer::generatePropertyMethod('set', $this->getName());
     }

@@ -28,11 +28,11 @@ class ClassMapCollection
     }
 
     /**
-     * @param ClassMap $classMap
+     * @param ClassMapInterface $classMap
      *
      * @return ClassMapCollection
      */
-    public function add(ClassMapInterface $classMap)
+    public function add(ClassMapInterface $classMap): self
     {
         if ($this->has($classMap)) {
             throw new InvalidArgumentException('The classmap already exists!');
@@ -42,22 +42,23 @@ class ClassMapCollection
     }
 
     /**
-     * @param ClassMap $classMap
+     * @param ClassMapInterface $classMap
      *
      * @return $this
      */
-    public function set(ClassMapInterface $classMap)
+    public function set(ClassMapInterface $classMap): self
     {
         $this->classMaps[$classMap->getWsdlType()] = $classMap;
+
         return $this;
     }
 
     /**
-     * @param ClassMap $classMap
+     * @param ClassMapInterface $classMap
      *
      * @return bool
      */
-    public function has(ClassMapInterface $classMap)
+    public function has(ClassMapInterface $classMap): bool
     {
         return array_key_exists($classMap->getWsdlType(), $this->classMaps);
     }
@@ -65,12 +66,13 @@ class ClassMapCollection
     /**
      * @return array
      */
-    public function toSoapClassMap()
+    public function toSoapClassMap(): array
     {
         $map = [];
         foreach ($this->classMaps as $classMap) {
             $map[$classMap->getWsdlType()] = $classMap->getPhpClassName();
         }
+
         return $map;
     }
 }

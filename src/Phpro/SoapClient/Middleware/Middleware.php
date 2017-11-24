@@ -19,7 +19,7 @@ class Middleware implements MiddlewareInterface
         return 'empty_middleware';
     }
 
-    public function handleRequest(RequestInterface $request, callable $next, callable $first)
+    public function handleRequest(RequestInterface $request, callable $next, callable $first): \Closure
     {
         return $this->beforeRequest($next, $request)
             ->then(

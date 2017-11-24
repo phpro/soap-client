@@ -58,7 +58,7 @@ class LastRequestInfo
      *
      * @return LastRequestInfo
      */
-    public static function createFromSoapClient(\SoapClient $soapClient)
+    public static function createFromSoapClient(\SoapClient $soapClient): self
     {
         return new self(
             (string) $soapClient->__getLastRequestHeaders(),
@@ -74,8 +74,10 @@ class LastRequestInfo
      *
      * @return LastRequestInfo
      */
-    public static function createFromPsr7RequestAndResponse(RequestInterface $request, ResponseInterface $response)
-    {
+    public static function createFromPsr7RequestAndResponse(
+        RequestInterface $request,
+        ResponseInterface $response
+    ): self {
         // Reset the bodies:
         $request->getBody()->rewind();
         $response->getBody()->rewind();
@@ -126,7 +128,7 @@ class LastRequestInfo
     /**
      * @return LastRequestInfo
      */
-    public static function createEmpty()
+    public static function createEmpty(): self
     {
         return new self('', '', '', '');
     }

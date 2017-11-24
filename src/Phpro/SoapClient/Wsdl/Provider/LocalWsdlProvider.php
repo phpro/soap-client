@@ -30,7 +30,7 @@ class LocalWsdlProvider implements WsdlProviderInterface
     /**
      * @return LocalWsdlProvider
      */
-    public static function create()
+    public static function create(): self
     {
         return new self(new Filesystem());
     }
