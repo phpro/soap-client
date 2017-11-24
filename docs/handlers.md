@@ -19,7 +19,7 @@ Here is a list of built-in handlers:
 
 The SoapHandle is used by default and works with the built-in `__doRequest()` method.
 This Handle is not configurable and can be used for soap implementations which do not use extensions.
-It is activated by default to get you going as quick as posile.
+It is activated by default to get you going as quick as posible.
 
 **Configuration**
 ```php
