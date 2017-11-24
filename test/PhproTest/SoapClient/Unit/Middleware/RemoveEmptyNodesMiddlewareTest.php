@@ -12,13 +12,14 @@ use Phpro\SoapClient\Xml\SoapXml;
 use Phpro\SoapClient\Middleware\Middleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Middleware\RemoveEmptyNodesMiddleware;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class RemoveEmptyNodesMiddlewareTest
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class RemoveEmptyNodesMiddlewareTest extends \PHPUnit_Framework_TestCase
+class RemoveEmptyNodesMiddlewareTest extends TestCase
 {
 
     /**

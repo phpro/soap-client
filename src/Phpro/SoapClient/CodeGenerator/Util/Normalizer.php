@@ -47,15 +47,19 @@ class Normalizer
      */
     public static function normalizeDataType(string $type): string
     {
-        return strtr($type, [
+        $normalizations = [
             'long'     => 'int',
             'short'    => 'int',
-            'dateTime' => '\\DateTime',
+            'datetime' => '\\DateTime',
             'date'     => '\\DateTime',
             'boolean'  => 'bool',
             'decimal'  => 'float',
             'double'   => 'float',
-        ]);
+        ];
+
+        $searchType = strtolower($type);
+
+        return array_key_exists($searchType, $normalizations) ? $normalizations[$searchType] : $type;
     }
 
     /**

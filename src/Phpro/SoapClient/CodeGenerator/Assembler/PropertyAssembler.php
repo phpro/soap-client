@@ -56,6 +56,7 @@ class PropertyAssembler implements AssemblerInterface
                 PropertyGenerator::fromArray([
                     'name' => $property->getName(),
                     'visibility' => $this->visibility,
+                    'omitdefaultvalue' => true,
                     'docblock' => DocBlockGenerator::fromArray([
                         'tags' => [
                             [

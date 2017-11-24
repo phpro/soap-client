@@ -7,6 +7,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler\ResultProviderAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\Type\MixedResult;
+use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\ClassGenerator;
 
 /**
@@ -14,7 +15,7 @@ use Zend\Code\Generator\ClassGenerator;
  *
  * @package PhproTest\SoapClient\Unit\CodeGenerator\Assembler
  */
-class ResultProviderAssemblerTest extends \PHPUnit_Framework_TestCase
+class ResultProviderAssemblerTest extends TestCase
 {
     /**
      * @test

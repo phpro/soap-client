@@ -3,13 +3,14 @@
 namespace PhproTest\SoapClient\Unit\TypeConverter;
 
 use Phpro\SoapClient\Soap\TypeConverter\DecimalTypeConverter;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test Decimal TypeConverter.
  *
  * @package PhproTest\SoapClient\Unit\TypeConverter
  */
-class DecimalTypeConverterTest extends \PHPUnit_Framework_TestCase
+class DecimalTypeConverterTest extends TestCase
 {
     /**
      * @var DecimalTypeConverter
