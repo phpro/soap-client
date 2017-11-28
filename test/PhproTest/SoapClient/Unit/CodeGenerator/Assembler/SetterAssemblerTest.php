@@ -4,6 +4,7 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\SetterAssembler;
+use Phpro\SoapClient\CodeGenerator\Assembler\SetterAssemblerOptions;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
@@ -24,7 +25,7 @@ class SetterAssemblerTest extends TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new SetterAssembler();
+        $assembler = new SetterAssembler(new SetterAssemblerOptions());
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
 
@@ -33,7 +34,7 @@ class SetterAssemblerTest extends TestCase
      */
     function it_can_assemble_property_context()
     {
-        $assembler = new SetterAssembler();
+        $assembler = new SetterAssembler(new SetterAssemblerOptions());
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }
@@ -43,7 +44,7 @@ class SetterAssemblerTest extends TestCase
      */
     function it_assembles_a_property()
     {
-        $assembler = new SetterAssembler();
+        $assembler = new SetterAssembler((new SetterAssemblerOptions())->withTypeHints());
         $context = $this->createContext();
         $assembler->assemble($context);
 
@@ -57,7 +58,7 @@ class MyType
     /**
      * @param string \$prop1
      */
-    public function setProp1(\$prop1)
+    public function setProp1(string \$prop1)
     {
         \$this->prop1 = \$prop1;
     }
