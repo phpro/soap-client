@@ -45,7 +45,7 @@ class Config implements ConfigInterface
      * @var array
      */
     protected $soapOptions = [
-        'trace' => false,
+        'trace'      => false,
         'exceptions' => true,
         'keep_alive' => true,
         'cache_wsdl' => WSDL_CACHE_NONE,
@@ -72,6 +72,21 @@ class Config implements ConfigInterface
     protected $wsdlProvider;
 
     /**
+     * @var string
+     */
+    protected $classMapName;
+
+    /**
+     * @var string
+     */
+    protected $classMapNamespace;
+
+    /**
+     * @var string
+     */
+    protected $classMapDestination;
+
+    /**
      * Config constructor.
      *
      * @param string $wsdl
@@ -80,12 +95,14 @@ class Config implements ConfigInterface
     public function __construct(string $wsdl = '', string $destination = '')
     {
         $this->setWsdl($wsdl);
-        $this->setDestination($destination);
-        $this->ruleSet = new RuleSet([
-            new Rules\AssembleRule(new Assembler\PropertyAssembler()),
-            new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
-            new Rules\AssembleRule(new ClientMethodAssembler())
-        ]);
+        $this->setTypeDestination($destination);
+        $this->ruleSet = new RuleSet(
+            [
+                new Rules\AssembleRule(new Assembler\PropertyAssembler()),
+                new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
+                new Rules\AssembleRule(new ClientMethodAssembler()),
+            ]
+        );
         $this->wsdlProvider = new MixedWsdlProvider();
     }
 
@@ -123,7 +140,7 @@ class Config implements ConfigInterface
     /**
      * @return string
      */
-    public function getTypesNamespace()
+    public function getTypesNamespace(): string
     {
         return $this->typesNamespace;
     }
@@ -133,7 +150,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function setTypeNamespace($namespace)
+    public function setTypeNamespace($namespace): self
     {
         $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
 
@@ -173,7 +190,7 @@ class Config implements ConfigInterface
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return $this
      */
@@ -244,7 +261,7 @@ class Config implements ConfigInterface
      *
      * @return Config
      */
-    public function setRuleSet(RuleSetInterface $ruleSet)
+    public function setRuleSet(RuleSetInterface $ruleSet): self
     {
         $this->ruleSet = $ruleSet;
 
@@ -266,7 +283,7 @@ class Config implements ConfigInterface
     /**
      * @return string
      */
-    public function getClientName()
+    public function getClientName(): string
     {
         return $this->clientName;
     }
@@ -275,7 +292,7 @@ class Config implements ConfigInterface
      * @param string $clientName
      * @return $this
      */
-    public function setClientName($clientName)
+    public function setClientName($clientName): self
     {
         $this->clientName = $clientName;
 
@@ -285,7 +302,7 @@ class Config implements ConfigInterface
     /**
      * @return string
      */
-    public function getClientNamespace()
+    public function getClientNamespace(): string
     {
         if (!$this->clientNamespace) {
             throw InvalidArgumentException::clientNamespaceIsMissing();
@@ -308,7 +325,7 @@ class Config implements ConfigInterface
     /**
      * @return string
      */
-    public function getTypeNamespace()
+    public function getTypeNamespace(): string
     {
         if (!$this->typesNamespace) {
             throw InvalidArgumentException::typeNamespaceIsMissing();
@@ -320,7 +337,7 @@ class Config implements ConfigInterface
     /**
      * @return string
      */
-    public function getClientDestination()
+    public function getClientDestination(): string
     {
         if (!$this->clientDestination) {
             throw InvalidArgumentException::clientDestinationIsMissing();
@@ -333,7 +350,7 @@ class Config implements ConfigInterface
      * @param string $clientDestination
      * @return Config
      */
-    public function setClientDestination($clientDestination)
+    public function setClientDestination($clientDestination): self
     {
         $this->clientDestination = $clientDestination;
 
@@ -343,7 +360,7 @@ class Config implements ConfigInterface
     /**
      * @return string
      */
-    public function getTypeDestination()
+    public function getTypeDestination(): string
     {
         if (!$this->typeDestination) {
             throw InvalidArgumentException::typeDestinationIsMissing();
@@ -356,7 +373,7 @@ class Config implements ConfigInterface
      * @param string $typeDestination
      * @return Config
      */
-    public function setTypeDestination($typeDestination)
+    public function setTypeDestination($typeDestination): self
     {
         $this->typeDestination = $typeDestination;
 
@@ -378,6 +395,61 @@ class Config implements ConfigInterface
     public function setWsdlProvider(WsdlProviderInterface $wsdlProvider): self
     {
         $this->wsdlProvider = $wsdlProvider;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassMapName(): string
+    {
+        return $this->classMapName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassMapNamespace(): string
+    {
+        return $this->classMapNamespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassMapDestination(): string
+    {
+        return $this->classMapDestination;
+    }
+
+    /**
+     * @param string $classMapName
+     * @return Config
+     */
+    public function setClassMapName(string $classMapName):self
+    {
+        $this->classMapName = $classMapName;
+        return $this;
+    }
+
+    /**
+     * @param string $classMapNamespace
+     * @return Config
+     */
+    public function setClassMapNamespace(string $classMapNamespace):self
+    {
+        $this->classMapNamespace = $classMapNamespace;
+        return $this;
+    }
+
+    /**
+     * @param string $classMapDestination
+     * @return Config
+     */
+    public function setClassMapDestination(string $classMapDestination) : self
+    {
+        $this->classMapDestination = $classMapDestination;
         return $this;
     }
 }

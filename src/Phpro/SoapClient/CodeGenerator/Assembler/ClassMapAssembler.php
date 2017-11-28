@@ -8,6 +8,8 @@ use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Soap\ClassMap\ClassMap;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
+use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\MethodGenerator;
 
 /**
  * Class ClassMapAssembler
@@ -33,17 +35,34 @@ class ClassMapAssembler implements AssemblerInterface
      */
     public function assemble(ContextInterface $context)
     {
+        $class = ClassGenerator::fromArray(
+            [
+                'name' => $context->getName(),
+            ]
+        );
         $file = $context->getFile();
+        $file->setClass($class);
+        $file->setNamespace($context->getNamespace());
         $typeMap = $context->getTypeMap();
+        $typeNamespace = $typeMap->getNamespace();
+        $file->setUse($typeNamespace, preg_match('/Type$/', $typeNamespace) ? null : 'Type');
 
         try {
             $file->setUse(ClassMapCollection::class);
             $file->setUse(ClassMap::class);
-
             $linefeed = $file::LINE_FEED;
             $classMap = $this->assembleClassMap($typeMap, $linefeed, $file->getIndentation());
-            $code = $this->assembleClassMapCollection($classMap, $linefeed) . $linefeed;
-            $file->setBody($code);
+            $code = $this->assembleClassMapCollection($classMap, $linefeed).$linefeed;
+            $class->addMethodFromGenerator(
+                MethodGenerator::fromArray(
+                    [
+                        'name'       => 'getCollection',
+                        'static'     => true,
+                        'body'       => 'return '.$code,
+                        'returntype' => ClassMapCollection::class,
+                    ]
+                )
+            );
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
@@ -61,10 +80,10 @@ class ClassMapAssembler implements AssemblerInterface
         $classMap = [];
         foreach ($typeMap->getTypes() as $type) {
             $classMap[] = sprintf(
-                '%snew ClassMap(\'%s\', \\%s::class),',
+                '%snew ClassMap(\'%s\', %s::class),',
                 $indentation,
                 $type->getXsdName(),
-                $type->getFullName()
+                'Type\\'.$type->getName()
             );
         }
 

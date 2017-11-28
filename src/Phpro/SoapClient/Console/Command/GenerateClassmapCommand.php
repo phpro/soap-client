@@ -53,8 +53,7 @@ class GenerateClassmapCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The location of the soap code-generator config file'
-            )
-        ;
+            );
     }
 
     /**
@@ -77,7 +76,16 @@ class GenerateClassmapCommand extends Command
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
 
         $file = new FileGenerator();
-        $generator = new ClassMapGenerator($config->getRuleSet());
-        $output->write($generator->generate($file, $typeMap));
+        $generator = new ClassMapGenerator(
+            $config->getRuleSet(),
+            $config->getClassMapName(),
+            $config->getClassMapNamespace()
+        );
+        // TODO: ask for overwrites, backups
+        $this->filesystem->putFileContents(
+            $config->getClassMapDestination().DIRECTORY_SEPARATOR.$config->getClassMapName().'.php',
+            $generator->generate($file, $typeMap)
+        );
+        $output->write('DONE');
     }
 }

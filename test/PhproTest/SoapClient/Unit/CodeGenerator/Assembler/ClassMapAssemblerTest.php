@@ -72,6 +72,6 @@ CODE;
             ]
         ]);
 
-        return new ClassMapContext($file, $typeMap);
+        return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace');
     }
 }

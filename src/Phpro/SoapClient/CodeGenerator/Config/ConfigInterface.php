@@ -63,4 +63,19 @@ interface ConfigInterface
      * @return WsdlProviderInterface
      */
     public function getWsdlProvider(): WsdlProviderInterface;
+
+    /**
+     * @return string
+     */
+    public function getClassMapName() : string;
+
+    /**
+     * @return string
+     */
+    public function getClassMapNamespace() : string;
+
+    /**
+     * @return string
+     */
+    public function getClassMapDestination() : string;
 }

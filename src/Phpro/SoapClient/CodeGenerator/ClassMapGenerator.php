@@ -20,13 +20,27 @@ class ClassMapGenerator implements GeneratorInterface
     private $ruleSet;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    /**
      * TypeGenerator constructor.
      *
      * @param RuleSetInterface $ruleSet
+     * @param string           $name
+     * @param string           $namespace
      */
-    public function __construct(RuleSetInterface $ruleSet)
+    public function __construct(RuleSetInterface $ruleSet, string $name, string $namespace)
     {
         $this->ruleSet = $ruleSet;
+        $this->name = $name;
+        $this->namespace = $namespace;
     }
 
     /**
@@ -37,8 +51,8 @@ class ClassMapGenerator implements GeneratorInterface
      */
     public function generate(FileGenerator $file, $typeMap): string
     {
-        $this->ruleSet->applyRules(new ClassMapContext($file, $typeMap));
-        
+        $this->ruleSet->applyRules(new ClassMapContext($file, $typeMap, $this->name, $this->namespace));
+
         return $file->generate();
     }
 }
