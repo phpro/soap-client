@@ -131,6 +131,8 @@ Example output:
     }
 ```
 
+This assembler needs to be constructed with an instance of `GetterAssemblerOptions`
+
 ## InterfaceAssembler
 
 The `InterfaceAssembler` can be used to add a specific interface to the generated class.
@@ -318,6 +320,8 @@ Example output:
         $this->prop1 = $prop1;
     }
 ```
+
+This assembler needs to be constructed with an instance of `SetterAssemblerOptions`.
 
 
 ## TraitAssembler
