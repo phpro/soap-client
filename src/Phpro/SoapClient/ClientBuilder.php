@@ -98,12 +98,6 @@ class ClientBuilder
         $this->clientFactory = $clientFactory;
         $this->wsdl = $wsdl;
         $this->soapOptions = $soapOptions;
-
-        // Add default converters:
-        $this->addTypeConverter(new TypeConverter\DateTimeTypeConverter());
-        $this->addTypeConverter(new TypeConverter\DateTypeConverter());
-        $this->addTypeConverter(new TypeConverter\DecimalTypeConverter());
-        $this->addTypeConverter(new TypeConverter\DoubleTypeConverter());
     }
 
     /**
@@ -171,6 +165,25 @@ class ClientBuilder
     }
 
     /**
+     * Add the default to converters
+     */
+    public function addDefaultTypeConverters()
+    {
+        $converters = [
+            new TypeConverter\DateTimeTypeConverter(),
+            new TypeConverter\DateTypeConverter(),
+            new TypeConverter\DecimalTypeConverter(),
+            new TypeConverter\DoubleTypeConverter()
+        ];
+
+        foreach ($converters as $converter) {
+            if (!$this->converters->has($converter)) {
+                $this->addTypeConverter($converter);
+            }
+        }
+    }
+
+    /**
      * @param HandlerInterface $handler
      */
     public function withHandler(HandlerInterface $handler)
@@ -187,13 +200,25 @@ class ClientBuilder
     }
 
     /**
+     * @return SoapClientFactory
+     */
+    public function createSoapClientFactory()
+    {
+        // Add default converters:
+        $this->addDefaultTypeConverters();
+
+        return new SoapClientFactory($this->classMaps, $this->converters);
+    }
+
+    /**
      * @return ClientInterface
      * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
     public function build(): ClientInterface
     {
-        $soapClientFactory = new SoapClientFactory($this->classMaps, $this->converters);
-        $soapClient = $soapClientFactory->factory($this->wsdlProvider->provide($this->wsdl), $this->soapOptions);
+        $soapClient = $this
+            ->createSoapClientFactory()
+            ->factory($this->wsdlProvider->provide($this->wsdl), $this->soapOptions);
 
         if ($this->handler && !$soapClient instanceof SoapClient) {
             throw new InvalidArgumentException(sprintf(
