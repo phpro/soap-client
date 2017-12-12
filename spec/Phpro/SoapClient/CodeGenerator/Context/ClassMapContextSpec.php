@@ -19,7 +19,7 @@ class ClassMapContextSpec extends ObjectBehavior
 {
     function let(FileGenerator $fileGenerator, TypeMap $typeMap)
     {
-        $this->beConstructedWith($fileGenerator, $typeMap);
+        $this->beConstructedWith($fileGenerator, $typeMap, 'ClassMap', 'App\\Mynamespace');
     }
 
     function it_is_initializable()
