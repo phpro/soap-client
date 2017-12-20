@@ -13,7 +13,7 @@ use Zend\Code\Generator\FileGenerator;
 
 class GenerateClientFactoryCommand extends AbstractCommand
 {
-    public const COMMAND_NAME = 'generate:clientbuilder';
+    public const COMMAND_NAME = 'generate:clientfactory';
 
     /**
      * @var Filesystem
@@ -37,7 +37,7 @@ class GenerateClientFactoryCommand extends AbstractCommand
     {
         $this
             ->setName(self::COMMAND_NAME)
-            ->setDescription('Generates a client builder')
+            ->setDescription('Generates a client factory')
             ->addOption(
                 'config',
                 null,

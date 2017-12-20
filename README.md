@@ -79,6 +79,7 @@ $ composer require phpro/soap-client
 2. [Generate PHP classes based on SOAP types.](docs/cli/generate-types.md)
 3. [Generate a class map](docs/cli/generate-classmap.md)
 4. [Generate your own SOAP client.](docs/cli/generate-client.md)
+4. [Generate a client factory.](docs/cli/generate-clientfactory.md)
 5. [Use your SOAP client.](docs/usage.md)
 6. [Test your SOAP client.](docs/testing.md)
 

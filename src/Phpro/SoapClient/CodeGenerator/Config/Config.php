@@ -404,6 +404,10 @@ class Config implements ConfigInterface
      */
     public function getClassMapName(): string
     {
+        if (!$this->classMapName) {
+            throw InvalidArgumentException::classmapNameMissing();
+        }
+
         return $this->classMapName;
     }
 
@@ -412,6 +416,10 @@ class Config implements ConfigInterface
      */
     public function getClassMapNamespace(): string
     {
+        if (!$this->classMapNamespace) {
+            throw InvalidArgumentException::classmapNamespaceMissing();
+        }
+
         return $this->classMapNamespace;
     }
 
@@ -420,6 +428,10 @@ class Config implements ConfigInterface
      */
     public function getClassMapDestination(): string
     {
+        if (!$this->classMapDestination) {
+            throw InvalidArgumentException::classmapDestinationMissing();
+        }
+
         return $this->classMapDestination;
     }
 
@@ -427,9 +439,10 @@ class Config implements ConfigInterface
      * @param string $classMapName
      * @return Config
      */
-    public function setClassMapName(string $classMapName):self
+    public function setClassMapName(string $classMapName): self
     {
         $this->classMapName = $classMapName;
+
         return $this;
     }
 
@@ -437,9 +450,10 @@ class Config implements ConfigInterface
      * @param string $classMapNamespace
      * @return Config
      */
-    public function setClassMapNamespace(string $classMapNamespace):self
+    public function setClassMapNamespace(string $classMapNamespace): self
     {
         $this->classMapNamespace = $classMapNamespace;
+
         return $this;
     }
 
@@ -447,9 +461,10 @@ class Config implements ConfigInterface
      * @param string $classMapDestination
      * @return Config
      */
-    public function setClassMapDestination(string $classMapDestination) : self
+    public function setClassMapDestination(string $classMapDestination): self
     {
         $this->classMapDestination = $classMapDestination;
+
         return $this;
     }
 }
