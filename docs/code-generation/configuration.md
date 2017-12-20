@@ -30,6 +30,9 @@ return Config::create()
 ;
 ```
 
+Luckily a command is provided to generate this for you in an interactive manner.
+Execute `vendor/bin/soap-client generate:config` to start the interactive config generator.
+
 **wsdl**
 
 String - REQUIRED

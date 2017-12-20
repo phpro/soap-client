@@ -2,13 +2,14 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
+use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
+use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Zend\Code\Generator\FileGenerator;
-use Phpro\SoapClient\CodeGenerator\Config\Config;
 
 class GenerateConfigCommand extends Command
 {
@@ -20,16 +21,6 @@ class GenerateConfigCommand extends Command
     private $filesystem;
 
     /**
-     * @var FileGenerator
-     */
-    private $file;
-
-    /**
-     * @var string
-     */
-    private $body = "return Config::create()\n";
-
-    /**
      * GenerateConfigCommand constructor.
      * @param Filesystem $filesystem
      */
@@ -37,17 +28,6 @@ class GenerateConfigCommand extends Command
     {
         $this->filesystem = $filesystem;
         parent::__construct();
-    }
-
-    protected function addSetter($name, $value, $namespace = false)
-    {
-        if ($value === '') {
-            return;
-        }
-        if ($namespace) {
-            $value = str_replace('/', '\\', $value);
-        }
-        $this->body .= sprintf("\t->%s('%s')".PHP_EOL, $name, addslashes($value));
     }
 
     protected function configure(): void
@@ -59,52 +39,84 @@ class GenerateConfigCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->file = new FileGenerator();
-        $this->file->setUse('Phpro\\SoapClient\\CodeGenerator\\Assembler');
-        $this->file->setUse('Phpro\\SoapClient\\CodeGenerator\\Rules');
-        $this->file->setUse(Config::class);
+        $context = new ConfigContext();
         $io = new SymfonyStyle($input, $output);
-
         $io->section('Config settings');
-        $dest = $io->ask('config location (Where to put the config, including .php)');
-        $this->addSetter('setWsdl', $io->ask('Wsdl location (URL or path to file)'));
-        $this->typeConfig($io);
-        $this->clientConfig($io);
-        $this->classmapConfig($io);
+        $dest = $io->ask('config location (Where to put the config, including .php)', 'config/default.php');
+        $context->addSetter('setWsdl', $io->ask('Wsdl location (URL or path to file)'));
+        $this->typeConfig($io, $context);
+        $this->clientConfig($io, $context);
+        $this->classmapConfig($io, $context);
+        $this->rulesetConfig($io, $context);
 
-        $this->file->setBody($this->body.';');
-        $this->filesystem->putFileContents($dest, $this->file->generate());
+        $generator = new ConfigGenerator();
+        $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));
+        $io->success("Config has been written to $dest");
     }
 
-    protected function typeConfig(SymfonyStyle $io)
+    protected function typeConfig(SymfonyStyle $io, ConfigContext $context)
     {
         $io->section('Type Configuration');
         if (!$io->confirm('Do you want to configure the types?')) {
             return;
         }
-        $this->addSetter('setTypeDestination', $io->ask('destination (location where files are generated)'));
-        $this->addSetter('setTypeNamespace', $io->ask('namespace (namespace of all types)'), true);
+        $context->addSetter(
+            'setTypeDestination',
+            $io->ask('destination (location where files are generated)', 'src/type')
+        );
+        $context->addSetter(
+            'setTypeNamespace',
+            $io->ask('namespace (namespace of all types)', 'App/Type'),
+            true
+        );
     }
 
-    protected function clientConfig(SymfonyStyle $io)
+    protected function clientConfig(SymfonyStyle $io, ConfigContext $context)
     {
         $io->section('Client Configuration');
         if (!$io->confirm('Do you want to configure the client?')) {
             return;
         }
-        $this->addSetter('setClientDestination', $io->ask('destination (location where the client file is put)'));
-        $this->addSetter('setClientName', $io->ask('name (name of the client)'));
-        $this->addSetter('setClientNamespace', $io->ask('namespace (namespace of the client)'), true);
+        $context->addSetter(
+            'setClientDestination',
+            $io->ask('destination (location where the client file is put)', 'src/client')
+        );
+        $context->addSetter(
+            'setClientName',
+            $io->ask('name (name of the client)', 'Client')
+        );
+        $context->addSetter(
+            'setClientNamespace',
+            $io->ask('namespace (namespace of the client)', 'App/Client'),
+            true
+        );
     }
 
-    public function classmapConfig(SymfonyStyle $io)
+    public function classmapConfig(SymfonyStyle $io, ConfigContext $context)
     {
         $io->section('Classmap Configuration');
         if (!$io->confirm('Do you want to configure the classmap?')) {
             return;
         }
-        $this->addSetter('setClientDestination', $io->ask('destination (location where the classmap is generated)'));
-        $this->addSetter('setClientName', $io->ask('name (name of the classmap)'));
-        $this->addSetter('setClientNamespace', $io->ask('namespace (namespace of the classmap)'), true);
+        $context->addSetter(
+            'setClassmapDestination',
+            $io->ask('destination (location where the classmap is generated)', 'src/classmap')
+        );
+        $context->addSetter(
+            'setClassmapName',
+            $io->ask('name (name of the classmap)', 'Classmap')
+        );
+        $context->addSetter(
+            'setClassmapNamespace',
+            $io->ask('namespace (namespace of the classmap)', 'App/Classmap'),
+            true
+        );
+    }
+
+    public function rulesetConfig(SymfonyStyle $io, ConfigContext $context)
+    {
+        $io->section('Ruleset Configuration');
+        $context->setRequestRegex($io->ask('Regex for matching request objects', $context->getRequestRegex()));
+        $context->setResponseRegex($io->ask('Regex for matching response objects', $context->getResponseRegex()));
     }
 }
