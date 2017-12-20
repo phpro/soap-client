@@ -21,6 +21,8 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 
+\$getterOptions = new Assembler\GetterAssemblerOptions();
+    
 return Config::create()
 	->setWsdl('wsdl.xml')
 	->setTypeDestination('src/type')
@@ -43,8 +45,8 @@ return Config::create()
         ->addRule(
             new Rules\TypenameMatchesRule(
                 new Rules\MultiRule([
-                    new Rules\AssembleRule(new Assembler\ResponseAssembler()),
-                    new Rules\AssembleRule(new Assembler\GetterAssembler()),
+                    new Rules\AssembleRule(new Assembler\ResultAssembler()),
+                    new Rules\AssembleRule(new Assembler\GetterAssembler(\$getterOptions)),
                 ]),
                 '/Response$/i'
             )

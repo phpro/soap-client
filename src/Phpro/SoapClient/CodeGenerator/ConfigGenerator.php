@@ -13,7 +13,13 @@ use Zend\Code\Generator\FileGenerator;
  */
 class ConfigGenerator implements GeneratorInterface
 {
-    private $body = "return Config::create()\n";
+    private $body = <<<BODY
+\$getterOptions = new Assembler\GetterAssemblerOptions();
+    
+return Config::create()
+
+BODY;
+
 
     private $ruleset = <<<RULESET
         ->addRule(
@@ -28,8 +34,8 @@ class ConfigGenerator implements GeneratorInterface
         ->addRule(
             new Rules\TypenameMatchesRule(
                 new Rules\MultiRule([
-                    new Rules\AssembleRule(new Assembler\ResponseAssembler()),
-                    new Rules\AssembleRule(new Assembler\GetterAssembler()),
+                    new Rules\AssembleRule(new Assembler\ResultAssembler()),
+                    new Rules\AssembleRule(new Assembler\GetterAssembler(\$getterOptions)),
                 ]),
                 '%s'
             )
