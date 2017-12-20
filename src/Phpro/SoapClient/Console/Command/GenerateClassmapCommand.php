@@ -20,7 +20,7 @@ use Zend\Code\Generator\FileGenerator;
  *
  * @package Phpro\SoapClient\Console\Command
  */
-class GenerateClassmapCommand extends Command
+class GenerateClassmapCommand extends AbstractCommand
 {
 
     public const COMMAND_NAME = 'generate:classmap';
@@ -76,17 +76,7 @@ class GenerateClassmapCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
-
-        $configFile = $input->getOption('config');
-        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-
-        /** @noinspection PhpIncludeInspection */
-        $config = include $configFile;
-        if (!$config instanceof ConfigInterface) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
+        $config = $this->loadConfig($input, $this->filesystem);
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);

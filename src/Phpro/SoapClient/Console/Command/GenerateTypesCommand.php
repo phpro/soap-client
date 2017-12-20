@@ -22,10 +22,10 @@ use Zend\Code\Generator\FileGenerator;
  *
  * @package Phpro\SoapClient\Console\Command
  */
-class GenerateTypesCommand extends Command
+class GenerateTypesCommand extends AbstractCommand
 {
 
-    const COMMAND_NAME = 'generate:types';
+    public const COMMAND_NAME = 'generate:types';
 
     /**
      * @var Filesystem
@@ -76,16 +76,7 @@ class GenerateTypesCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
-
-        $configFile = $this->input->getOption('config');
-        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-
-        $config = include $configFile;
-        if (!$config instanceof ConfigInterface) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
+        $config = $this->loadConfig($input, $this->filesystem);
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);

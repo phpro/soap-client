@@ -14,8 +14,8 @@ use Symfony\Component\Console\Application as SymfonyApplication;
  */
 class Application extends SymfonyApplication
 {
-    const APP_NAME = 'SoapClient';
-    const APP_VERSION = '0.1.0';
+    public const APP_NAME = 'SoapClient';
+    public const APP_VERSION = '0.1.0';
 
     /**
      * Set up application:
@@ -35,6 +35,7 @@ class Application extends SymfonyApplication
         $commands[] = new Command\GenerateTypesCommand($filesystem);
         $commands[] = new Command\GenerateClassmapCommand($filesystem);
         $commands[] = new Command\GenerateClientCommand($filesystem);
+        $commands[] = new Command\GenerateClientFactoryCommand($filesystem);
 
         return $commands;
     }

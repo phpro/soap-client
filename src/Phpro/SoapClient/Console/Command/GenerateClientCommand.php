@@ -23,10 +23,10 @@ use Zend\Code\Generator\FileGenerator;
  *
  * @package Phpro\SoapClient\Console\Command
  */
-class GenerateClientCommand extends Command
+class GenerateClientCommand extends AbstractCommand
 {
 
-    const COMMAND_NAME = 'generate:client';
+    public const COMMAND_NAME = 'generate:client';
 
     /**
      * @var Filesystem
@@ -76,19 +76,7 @@ class GenerateClientCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
-
-        $configFile = $this->input->getOption('config');
-        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-
-        $config = include $configFile;
-        if (!$config instanceof ConfigInterface) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-        if (!$config instanceof Config) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
+        $config = $this->loadConfig($input, $this->filesystem);
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypesNamespace());
@@ -107,10 +95,10 @@ class GenerateClientCommand extends Command
     /**
      * Generates one type class
      *
-     * @param FileGenerator $file
+     * @param FileGenerator                 $file
      * @param ClientGenerator|TypeGenerator $generator
-     * @param Client $client
-     * @param string $path
+     * @param Client                        $client
+     * @param string                        $path
      */
     protected function generateClient(FileGenerator $file, ClientGenerator $generator, Client $client, $path)
     {
@@ -125,8 +113,8 @@ class GenerateClientCommand extends Command
      * Create a class from an empty file
      *
      * @param ClientGenerator|TypeGenerator $generator
-     * @param Client $client
-     * @param $path
+     * @param Client                        $client
+     * @param                               $path
      * @return bool
      */
     protected function handleClient(ClientGenerator $generator, Client $client, $path)
@@ -162,8 +150,8 @@ class GenerateClientCommand extends Command
      * An existing file was found. Try to patch or ask if it can be overwritten.
      *
      * @param TypeGenerator $generator
-     * @param Client $client
-     * @param string $path
+     * @param Client        $client
+     * @param string        $path
      * @return bool
      */
     protected function handleExistingFile(TypeGenerator $generator, Client $client, $path)
@@ -186,8 +174,8 @@ class GenerateClientCommand extends Command
      * This method tries to patch an existing type class.
      *
      * @param TypeGenerator $generator
-     * @param Client $client
-     * @param string $path
+     * @param Client        $client
+     * @param string        $path
      * @return bool
      * @internal param Type $type
      */
