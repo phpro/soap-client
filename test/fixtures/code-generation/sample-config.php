@@ -6,9 +6,9 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 
 return Config::create()
     ->setWsdl('http://wsf.cdyne.com/WeatherWS/Weather.asmx?WSDL')
-    ->setDestination('codegen')
-    ->setNamespace('Testing')
-    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler()))
+    ->setTypeDestination('codegen')
+    ->setTypeNamespace('Testing')
+    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(GetterAssemblerOptions::create()->withBoolGetters(false))))
     ->addRule(new Rules\TypenameMatchesRule(
         new Rules\AssembleRule(new Assembler\ResultAssembler()),
         '/Response$/'
