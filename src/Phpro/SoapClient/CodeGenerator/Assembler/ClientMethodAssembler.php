@@ -7,6 +7,10 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use Phpro\SoapClient\Exception\AssemblerException;
+use Phpro\SoapClient\Exception\SoapException;
+use Phpro\SoapClient\Type\RequestInterface;
+use Phpro\SoapClient\Type\ResultInterface;
+use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -52,6 +56,27 @@ class ClientMethodAssembler implements AssemblerInterface
                         ),
                         // TODO: Use normalizer once https://github.com/phpro/soap-client/pull/61 is merged
                         'returntype' => '\\'.$method->getParameterNamespace().'\\'.$method->getReturnType(),
+                        'docblock' => DocBlockGenerator::fromArray([
+                            'tags' => [
+                                [
+                                    'name' => 'param',
+                                    'description' => sprintf(
+                                        '\%s|\%s $%s',
+                                        RequestInterface::class,
+                                        $param->getType(),
+                                        $param->getName()
+                                    ),
+                                ],
+                                [
+                                    'name' => 'return',
+                                    'description' => '\\' . ResultInterface::class,
+                                ],
+                                [
+                                    'name' => 'throws',
+                                    'description' => '\\' . SoapException::class,
+                                ],
+                            ]
+                        ])->setWordWrap(false),
                     ]
                 )
             );

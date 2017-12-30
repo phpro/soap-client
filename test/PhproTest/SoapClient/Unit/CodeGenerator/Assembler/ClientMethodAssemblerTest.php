@@ -66,6 +66,11 @@ namespace MyNamespace;
 class  extends \Phpro\SoapClient\Client
 {
 
+    /**
+     * @param \Phpro\SoapClient\Type\RequestInterface|\MyTypeNamespace\ParamType \$ParamType
+     * @return \Phpro\SoapClient\Type\ResultInterface
+     * @throws \Phpro\SoapClient\Exception\SoapException
+     */
     public function functionName(\MyTypeNamespace\ParamType \$ParamType) : \MyTypeNamespace\ReturnType
     {
         return \$this->call('ParamType', \$ParamType);
