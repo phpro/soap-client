@@ -14,42 +14,50 @@ use Zend\Code\Generator\FileGenerator;
 class ConfigGenerator implements GeneratorInterface
 {
     private $body = <<<BODY
-\$getterOptions = new Assembler\GetterAssemblerOptions();
-    
 return Config::create()
 
 BODY;
 
 
     private $ruleset = <<<RULESET
-        ->addRule(
-            new Rules\TypenameMatchesRule(
-                new Rules\MultiRule([
-                    new Rules\AssembleRule(new Assembler\RequestAssembler()),
-                    new Rules\AssembleRule(new Assembler\ConstructorAssembler()),
-                ]),
-                '%s'
-            )
-        )
-        ->addRule(
-            new Rules\TypenameMatchesRule(
-                new Rules\MultiRule([
-                    new Rules\AssembleRule(new Assembler\ResultAssembler()),
-                    new Rules\AssembleRule(new Assembler\GetterAssembler(\$getterOptions)),
-                ]),
-                '%s'
-            )
-        )
+->addRule(
+    new Rules\TypenameMatchesRule(
+        new Rules\MultiRule([
+            new Rules\AssembleRule(new Assembler\RequestAssembler()),
+            new Rules\AssembleRule(new Assembler\ConstructorAssembler()),
+        ]),
+        '%s'
+    )
+)
+->addRule(
+    new Rules\TypenameMatchesRule(
+        new Rules\MultiRule([
+            new Rules\AssembleRule(new Assembler\ResultAssembler()),
+            new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())),
+        ]),
+        '%s'
+    )
+)
 RULESET;
 
 
     /**
-     * @param      $name
-     * @param      $value
+     * @param               $name
+     * @param               $value
+     * @param FileGenerator $file
      */
-    private function addSetter($name, $value)
+    private function addSetter($name, $value, FileGenerator $file)
     {
-        $this->body .= sprintf("\t->%s('%s')".PHP_EOL, $name, $value);
+        $this->body .= sprintf("%s->%s('%s')".PHP_EOL, $file->getIndentation(), $name, $value);
+    }
+
+    /**
+     * @param FileGenerator $file
+     * @return string
+     */
+    private function getIndentedRuleSet(FileGenerator $file): string
+    {
+        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $this->ruleset);
     }
 
     /**
@@ -64,9 +72,10 @@ RULESET;
         $file->setUse(Config::class);
 
         foreach ($context->getSetters() as $name => $value) {
-            $this->addSetter($name, $value);
+            $this->addSetter($name, $value, $file);
         }
-        $this->body .= sprintf($this->ruleset, $context->getRequestRegex(), $context->getResponseRegex());
+        $ruleset = $this->getIndentedRuleSet($file);
+        $this->body .= sprintf($ruleset, $context->getRequestRegex(), $context->getResponseRegex());
         $file->setBody($this->body.';'.PHP_EOL);
 
         return $file->generate();

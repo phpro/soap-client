@@ -26,13 +26,6 @@ class ConfigContextSpec extends ObjectBehavior
     {
         $this->addSetter('setTest', 'test\'run');
         $this->getSetters()->shouldBeArray();
-        $this->getSetters()['setTest']->shouldBe('test\\\'run');
-    }
-
-    function it_adds_namespaces()
-    {
-        $this->addSetter('setTest', 'test/run/go', true);
-        $this->getSetters()->shouldBeArray();
-        $this->getSetters()['setTest']->shouldBe('test\\\\run\\\\go');
+        $this->getSetters()['setTest']->shouldBe('test\'run');
     }
 }

@@ -8,17 +8,9 @@ class ConfigContext implements ContextInterface
     private $requestRegex = '/Request$/i';
     private $responseRegex = '/Response$/i';
 
-    public function addSetter(string $name, string $value, bool $namespace = false): self
+    public function addSetter(string $name, string $value): self
     {
-        if ($value === '') {
-            return $this;
-        }
-        if ($namespace) {
-            $this->setters[$name] = str_replace('/', '\\\\', $value);
-
-            return $this;
-        }
-        $this->setters[$name] = addslashes($value);
+        $this->setters[$name] = $value;
 
         return $this;
     }
@@ -41,10 +33,13 @@ class ConfigContext implements ContextInterface
 
     /**
      * @param string $requestRegex
+     * @return ConfigContext
      */
-    public function setRequestRegex(string $requestRegex): void
+    public function setRequestRegex(string $requestRegex): self
     {
         $this->requestRegex = $requestRegex;
+
+        return $this;
     }
 
     /**
@@ -57,9 +52,12 @@ class ConfigContext implements ContextInterface
 
     /**
      * @param string $responseRegex
+     * @return ConfigContext
      */
-    public function setResponseRegex(string $responseRegex): void
+    public function setResponseRegex(string $responseRegex): self
     {
         $this->responseRegex = $responseRegex;
+
+        return $this;
     }
 }

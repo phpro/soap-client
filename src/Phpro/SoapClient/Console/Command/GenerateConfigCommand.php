@@ -42,7 +42,7 @@ class GenerateConfigCommand extends Command
         $context = new ConfigContext();
         $io = new SymfonyStyle($input, $output);
         $io->section('Config settings');
-        $dest = $io->ask('config location (Where to put the config, including .php)', 'config/default.php');
+        $dest = $io->ask('config location (Where to put the config, including .php)', 'config/soap-client.php');
         $context->addSetter('setWsdl', $io->ask('Wsdl location (URL or path to file)'));
         $this->typeConfig($io, $context);
         $this->clientConfig($io, $context);
@@ -57,38 +57,33 @@ class GenerateConfigCommand extends Command
     protected function typeConfig(SymfonyStyle $io, ConfigContext $context)
     {
         $io->section('Type Configuration');
-        if (!$io->confirm('Do you want to configure the types?')) {
-            return;
-        }
         $context->addSetter(
             'setTypeDestination',
-            $io->ask('destination (location where files are generated)', 'src/type')
+            $io->ask('destination (location where files are generated)', 'src/App/Type')
         );
         $context->addSetter(
             'setTypeNamespace',
-            $io->ask('namespace (namespace of all types)', 'App/Type'),
-            true
+            $io->ask('namespace (namespace of all types)', 'App/Type')
         );
     }
 
     protected function clientConfig(SymfonyStyle $io, ConfigContext $context)
     {
         $io->section('Client Configuration');
-        if (!$io->confirm('Do you want to configure the client?')) {
-            return;
-        }
-        $context->addSetter(
+        $this->addNonEmptySetter(
+            $context,
             'setClientDestination',
-            $io->ask('destination (location where the client file is put)', 'src/client')
+            $io->ask('destination (location where the client file is put)', 'src/App/Client')
         );
-        $context->addSetter(
+        $this->addNonEmptySetter(
+            $context,
             'setClientName',
             $io->ask('name (name of the client)', 'Client')
         );
-        $context->addSetter(
+        $this->addNonEmptySetter(
+            $context,
             'setClientNamespace',
-            $io->ask('namespace (namespace of the client)', 'App/Client'),
-            true
+            $io->ask('namespace (namespace of the client)', 'App/Client')
         );
     }
 
@@ -98,25 +93,40 @@ class GenerateConfigCommand extends Command
         if (!$io->confirm('Do you want to configure the classmap?')) {
             return;
         }
-        $context->addSetter(
+        $this->addNonEmptySetter(
+            $context,
             'setClassmapDestination',
-            $io->ask('destination (location where the classmap is generated)', 'src/classmap')
+            $io->ask('destination (location where the classmap is generated)', 'src/App/Classmap')
         );
-        $context->addSetter(
+        $this->addNonEmptySetter(
+            $context,
             'setClassmapName',
             $io->ask('name (name of the classmap)', 'Classmap')
         );
-        $context->addSetter(
+        $this->addNonEmptySetter(
+            $context,
             'setClassmapNamespace',
-            $io->ask('namespace (namespace of the classmap)', 'App/Classmap'),
-            true
+            $io->ask('namespace (namespace of the classmap)', 'App/Classmap')
         );
     }
 
     public function rulesetConfig(SymfonyStyle $io, ConfigContext $context)
     {
         $io->section('Ruleset Configuration');
-        $context->setRequestRegex($io->ask('Regex for matching request objects', $context->getRequestRegex()));
-        $context->setResponseRegex($io->ask('Regex for matching response objects', $context->getResponseRegex()));
+        $requestKeyword = $io->ask('Keyword for matching request objects', 'Request');
+        $context->setRequestRegex("/$requestKeyword$/i");
+        $responseKeyword = $io->ask('Keyword for matching response objects', 'Response');
+        $context->setResponseRegex("/$responseKeyword$/i");
+    }
+
+    private function addNonEmptySetter(ConfigContext $context, string $key, string $value)
+    {
+        if ($value === '') {
+            return;
+        }
+        if (preg_match('/namespace$/i', $key)) {
+            $value = str_replace('/', '\\\\', $value);
+        }
+        $context->addSetter($key, $value);
     }
 }
