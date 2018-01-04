@@ -15,7 +15,6 @@ matrix:
   fast_finish: true
 
 before_install:
-  - php -i
   - composer selfupdate
   - composer global require hirak/prestissimo
 
