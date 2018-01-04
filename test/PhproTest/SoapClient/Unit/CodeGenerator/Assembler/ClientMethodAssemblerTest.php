@@ -63,13 +63,19 @@ class ClientMethodAssemblerTest extends TestCase
         $expected = <<<CODE
 namespace MyNamespace;
 
+use Phpro\SoapClient\Type\RequestInterface;
+use MyTypeNamespace\ParamType;
+use Phpro\SoapClient\Type\ResultInterface;
+use MyTypeNamespace\ReturnType;
+use Phpro\SoapClient\Exception\SoapException;
+
 class  extends \Phpro\SoapClient\Client
 {
 
     /**
-     * @param \Phpro\SoapClient\Type\RequestInterface|\MyTypeNamespace\ParamType \$ParamType
-     * @return \Phpro\SoapClient\Type\ResultInterface
-     * @throws \Phpro\SoapClient\Exception\SoapException
+     * @param RequestInterface|ParamType \$ParamType
+     * @return ResultInterface|ReturnType
+     * @throws SoapException
      */
     public function functionName(\MyTypeNamespace\ParamType \$ParamType) : \MyTypeNamespace\ReturnType
     {

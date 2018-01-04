@@ -10,6 +10,7 @@ use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
+use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
@@ -61,19 +62,30 @@ class ClientMethodAssembler implements AssemblerInterface
                                 [
                                     'name' => 'param',
                                     'description' => sprintf(
-                                        '\%s|\%s $%s',
-                                        RequestInterface::class,
-                                        $param->getType(),
+                                        '%s|%s $%s',
+                                        $this->generateShortClassNameAndAddImport(RequestInterface::class, $class),
+                                        $this->generateShortClassNameAndAddImport($param->getType(), $class),
                                         $param->getName()
                                     ),
                                 ],
                                 [
                                     'name' => 'return',
-                                    'description' => '\\' . ResultInterface::class,
+                                    'description' => sprintf(
+                                        '%s|%s',
+                                        $this->generateShortClassNameAndAddImport(ResultInterface::class, $class),
+                                        $this->generateShortClassNameAndAddImport(
+                                            $method->getParameterNamespace().'\\'.$method->getReturnType(),
+                                            $class
+                                        )
+                                    ),
+
                                 ],
                                 [
                                     'name' => 'throws',
-                                    'description' => '\\' . SoapException::class,
+                                    'description' => $this->generateShortClassNameAndAddImport(
+                                        SoapException::class,
+                                        $class
+                                    ),
                                 ],
                             ]
                         ])->setWordWrap(false),
@@ -85,5 +97,26 @@ class ClientMethodAssembler implements AssemblerInterface
         }
 
         return true;
+    }
+
+    /**
+     * @param string         $fqnClassName   Fully qualified class name.
+     * @param ClassGenerator $classGenerator Class generator object.
+     *
+     * @return string
+     */
+    protected function generateShortClassNameAndAddImport(string $fqnClassName, ClassGenerator $classGenerator): string
+    {
+        $fqnClassName = ltrim($fqnClassName, '\\');
+        $parts = explode('\\', $fqnClassName);
+        $className = array_pop($parts);
+        $classNamespace = implode('\\', $parts);
+        $currentNamespace = (string) $classGenerator->getNamespaceName();
+
+        if ($classNamespace !== $currentNamespace || ! in_array($fqnClassName, $classGenerator->getUses())) {
+            $classGenerator->addUse($fqnClassName);
+        }
+
+        return $className;
     }
 }
