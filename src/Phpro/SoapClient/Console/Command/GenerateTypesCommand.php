@@ -2,11 +2,9 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
-use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
-use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use SplFileInfo;
@@ -22,7 +20,7 @@ use Zend\Code\Generator\FileGenerator;
  *
  * @package Phpro\SoapClient\Console\Command
  */
-class GenerateTypesCommand extends AbstractCommand
+class GenerateTypesCommand extends Command
 {
 
     public const COMMAND_NAME = 'generate:types';
@@ -76,8 +74,7 @@ class GenerateTypesCommand extends AbstractCommand
     {
         $this->input = $input;
         $this->output = $output;
-        $config = $this->loadConfig($input, $this->filesystem);
-
+        $config = $this->getHelper('config')->load($input, $this->filesystem);
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
         $generator = new TypeGenerator($config->getRuleSet());

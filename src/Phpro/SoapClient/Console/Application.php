@@ -4,6 +4,7 @@
 namespace Phpro\SoapClient\Console;
 
 use Phpro\SoapClient\Console\Command;
+use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Application as SymfonyApplication;
 
@@ -30,6 +31,7 @@ class Application extends SymfonyApplication
      */
     protected function getDefaultCommands(): array
     {
+        $this->setHelperSet((new ConfigHelper())->getHelperSet());
         $filesystem = new Filesystem();
         $commands = parent::getDefaultCommands();
         $commands[] = new Command\GenerateTypesCommand($filesystem);

@@ -38,6 +38,26 @@ class ClientFactoryContextSpec extends ObjectBehavior
         $this->getClassmapFqcn()->shouldBe('App\\Classmap\\Myclassmap');
     }
 
+    function it_returns_a_client_name()
+    {
+        $this->getClientName()->shouldBe('Myclient');
+    }
+
+    function it_returns_the_client_namespace()
+    {
+        $this->getClientNamespace()->shouldBe('App\\Client');
+    }
+
+    function it_returns_the_classmap_name()
+    {
+        $this->getClassmapName()->shouldBe('Myclassmap');
+    }
+
+    function it_returns_the_classmap_namespace()
+    {
+        $this->getClassmapNamespace()->shouldBe('App\\Classmap');
+    }
+
     function it_constructs_from_config(Config $config)
     {
         $config->getClientNamespace()->willReturn('App\\Client');

@@ -3,12 +3,9 @@
 namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ClientGenerator;
-use Phpro\SoapClient\CodeGenerator\Config\Config;
-use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
-use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
@@ -23,7 +20,7 @@ use Zend\Code\Generator\FileGenerator;
  *
  * @package Phpro\SoapClient\Console\Command
  */
-class GenerateClientCommand extends AbstractCommand
+class GenerateClientCommand extends Command
 {
 
     public const COMMAND_NAME = 'generate:client';

@@ -3,9 +3,7 @@
 namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
-use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
-use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
@@ -20,7 +18,7 @@ use Zend\Code\Generator\FileGenerator;
  *
  * @package Phpro\SoapClient\Console\Command
  */
-class GenerateClassmapCommand extends AbstractCommand
+class GenerateClassmapCommand extends Command
 {
 
     public const COMMAND_NAME = 'generate:classmap';
@@ -76,8 +74,7 @@ class GenerateClassmapCommand extends AbstractCommand
     {
         $this->input = $input;
         $this->output = $output;
-        $config = $this->loadConfig($input, $this->filesystem);
-
+        $config = $this->getHelper('config')->load($input, $this->filesystem);
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
 

@@ -5,13 +5,14 @@ namespace Phpro\SoapClient\Console\Command;
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
 use Phpro\SoapClient\Util\Filesystem;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Zend\Code\Generator\FileGenerator;
 
-class GenerateClientFactoryCommand extends AbstractCommand
+class GenerateClientFactoryCommand extends Command
 {
     public const COMMAND_NAME = 'generate:clientfactory';
 
@@ -53,7 +54,7 @@ class GenerateClientFactoryCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $config = $this->loadConfig($input, $this->filesystem);
+        $config = $this->getHelper('config')->load($input, $this->filesystem);
         $context = ClientFactoryContext::fromConfig($config);
         $generator = new ClientFactoryGenerator();
         $dest = $config->getClientDestination().DIRECTORY_SEPARATOR.$config->getClientName().'Factory.php';
