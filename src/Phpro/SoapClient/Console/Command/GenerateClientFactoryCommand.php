@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
+use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,7 +35,7 @@ class GenerateClientFactoryCommand extends Command
     /**
      * Configure the command.
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName(self::COMMAND_NAME)
@@ -54,11 +55,20 @@ class GenerateClientFactoryCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $config = $this->getHelper('config')->load($input, $this->filesystem);
+        $config = $this->getConfigHelper()->load($input);
         $context = ClientFactoryContext::fromConfig($config);
         $generator = new ClientFactoryGenerator();
         $dest = $config->getClientDestination().DIRECTORY_SEPARATOR.$config->getClientName().'Factory.php';
         $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));
         $io->success("Generated a client factory at $dest");
+    }
+
+    /**
+     * Function for added type hint
+     * @return ConfigHelper
+     */
+    public function getConfigHelper(): ConfigHelper
+    {
+        return $this->getHelper('config');
     }
 }

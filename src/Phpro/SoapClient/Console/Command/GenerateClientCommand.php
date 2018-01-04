@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\ClientGenerator;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
+use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
@@ -73,7 +74,7 @@ class GenerateClientCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
-        $config = $this->loadConfig($input, $this->filesystem);
+        $config = $this->getConfigHelper()->load($input);
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypesNamespace());
@@ -201,5 +202,14 @@ class GenerateClientCommand extends Command
         $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
 
         return $this->getHelper('question')->ask($this->input, $this->output, $question);
+    }
+
+    /**
+     * Function for added type hint
+     * @return ConfigHelper
+     */
+    public function getConfigHelper(): ConfigHelper
+    {
+        return $this->getHelper('config');
     }
 }

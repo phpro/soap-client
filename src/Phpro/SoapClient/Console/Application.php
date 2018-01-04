@@ -7,6 +7,7 @@ use Phpro\SoapClient\Console\Command;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Application as SymfonyApplication;
+use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * Class Application
@@ -31,7 +32,6 @@ class Application extends SymfonyApplication
      */
     protected function getDefaultCommands(): array
     {
-        $this->setHelperSet((new ConfigHelper())->getHelperSet());
         $filesystem = new Filesystem();
         $commands = parent::getDefaultCommands();
         $commands[] = new Command\GenerateTypesCommand($filesystem);
@@ -40,5 +40,21 @@ class Application extends SymfonyApplication
         $commands[] = new Command\GenerateClientFactoryCommand($filesystem);
 
         return $commands;
+    }
+
+    protected function setHelpers(Filesystem $filesystem)
+    {
+        $configHelper = new ConfigHelper($filesystem);
+        $set = new HelperSet();
+        $set->set($configHelper);
+        $this->setHelperSet($set);
+    }
+
+    protected function getDefaultHelperSet(): HelperSet
+    {
+        $set = parent::getDefaultHelperSet();
+        $set->set(new ConfigHelper(new Filesystem()));
+
+        return $set;
     }
 }
