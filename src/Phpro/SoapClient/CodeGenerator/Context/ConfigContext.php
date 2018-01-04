@@ -5,8 +5,16 @@ namespace Phpro\SoapClient\CodeGenerator\Context;
 class ConfigContext implements ContextInterface
 {
     private $setters = [];
-    private $requestRegex = '/Request$/i';
-    private $responseRegex = '/Response$/i';
+
+    /**
+     * @var string
+     */
+    private $requestRegex = '';
+
+    /**
+     * @var string
+     */
+    private $responseRegex = '';
 
     public function addSetter(string $name, string $value): self
     {

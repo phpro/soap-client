@@ -7,11 +7,9 @@ use Zend\Code\Generator\FileGenerator;
 
 class ConfigGeneratorTest extends TestCase
 {
-    private $expected;
-
-    public function setUp()
+    public function testGenerate()
     {
-        $this->expected = <<<CONTENT
+        $expected = <<<CONTENT
 <?php
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
@@ -48,10 +46,6 @@ return Config::create()
     );
 
 CONTENT;
-    }
-
-    public function testGenerate()
-    {
         $context = new ConfigContext();
         $context
             ->addSetter('setWsdl', 'wsdl.xml')
@@ -68,11 +62,31 @@ CONTENT;
 
         $generator = new ConfigGenerator();
         $generated = $generator->generate(new FileGenerator(), $context);
-        self::assertEquals($this->expected, $generated);
+        self::assertEquals($expected, $generated);
     }
 
     public function testGenerateWithoutRegex()
     {
+        $expected =         $expected = <<<CONTENT
+<?php
+
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+use Phpro\SoapClient\CodeGenerator\Config\Config;
+
+return Config::create()
+    ->setWsdl('wsdl.xml')
+    ->setTypeDestination('src/type')
+    ->setTypeNamespace('App\\\\Type')
+    ->setClientDestination('src/client')
+    ->setClientName('Client')
+    ->setClientNamespace('App\\\\Client')
+    ->setClassmapDestination('src/classmap')
+    ->setClassmapName('Classmap')
+    ->setClassmapNamespace('App\\\\Classmap')
+;
+
+CONTENT;
         $context = new ConfigContext();
         $context
             ->addSetter('setWsdl', 'wsdl.xml')
@@ -87,6 +101,6 @@ CONTENT;
 
         $generator = new ConfigGenerator();
         $generated = $generator->generate(new FileGenerator(), $context);
-        self::assertEquals($this->expected, $generated);
+        self::assertEquals($expected, $generated);
     }
 }

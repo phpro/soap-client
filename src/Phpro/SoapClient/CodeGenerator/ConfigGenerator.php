@@ -74,8 +74,10 @@ RULESET;
         foreach ($context->getSetters() as $name => $value) {
             $this->addSetter($name, $value, $file);
         }
-        $ruleset = $this->getIndentedRuleSet($file);
-        $this->body .= sprintf($ruleset, $context->getRequestRegex(), $context->getResponseRegex());
+        if ($context->getRequestRegex() !== '' && $context->getResponseRegex() !== '') {
+            $ruleset = $this->getIndentedRuleSet($file);
+            $this->body .= sprintf($ruleset, $context->getRequestRegex(), $context->getResponseRegex());
+        }
         $file->setBody($this->body.';'.PHP_EOL);
 
         return $file->generate();
