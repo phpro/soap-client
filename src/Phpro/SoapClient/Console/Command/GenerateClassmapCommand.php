@@ -82,7 +82,6 @@ class GenerateClassmapCommand extends Command
             throw InvalidArgumentException::invalidConfigFile();
         }
 
-        /** @noinspection PhpIncludeInspection */
         $config = include $configFile;
         if (!$config instanceof ConfigInterface) {
             throw InvalidArgumentException::invalidConfigFile();

@@ -45,7 +45,7 @@ class Config implements ConfigInterface
      * @var array
      */
     protected $soapOptions = [
-        'trace'      => false,
+        'trace' => false,
         'exceptions' => true,
         'keep_alive' => true,
         'cache_wsdl' => WSDL_CACHE_NONE,
@@ -90,12 +90,10 @@ class Config implements ConfigInterface
      * Config constructor.
      *
      * @param string $wsdl
-     * @param string $destination
      */
-    public function __construct(string $wsdl = '', string $destination = '')
+    public function __construct(string $wsdl = '')
     {
         $this->setWsdl($wsdl);
-        $this->setTypeDestination($destination);
         $this->ruleSet = new RuleSet(
             [
                 new Rules\AssembleRule(new Assembler\PropertyAssembler()),
@@ -190,7 +188,7 @@ class Config implements ConfigInterface
 
     /**
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return $this
      */
@@ -427,9 +425,10 @@ class Config implements ConfigInterface
      * @param string $classMapName
      * @return Config
      */
-    public function setClassMapName(string $classMapName):self
+    public function setClassMapName(string $classMapName): self
     {
         $this->classMapName = $classMapName;
+
         return $this;
     }
 
@@ -437,9 +436,10 @@ class Config implements ConfigInterface
      * @param string $classMapNamespace
      * @return Config
      */
-    public function setClassMapNamespace(string $classMapNamespace):self
+    public function setClassMapNamespace(string $classMapNamespace): self
     {
         $this->classMapNamespace = $classMapNamespace;
+
         return $this;
     }
 
@@ -447,9 +447,10 @@ class Config implements ConfigInterface
      * @param string $classMapDestination
      * @return Config
      */
-    public function setClassMapDestination(string $classMapDestination) : self
+    public function setClassMapDestination(string $classMapDestination): self
     {
         $this->classMapDestination = $classMapDestination;
+
         return $this;
     }
 }
