@@ -64,7 +64,7 @@ class ClientMethodAssembler implements AssemblerInterface
                                     'description' => sprintf(
                                         '%s|%s $%s',
                                         $this->generateShortClassNameAndAddImport(RequestInterface::class, $class),
-                                        $this->generateShortClassNameAndAddImport($param->getType(), $class),
+                                        $this->getPrefixedClassNameAndAddImport($param->getType(), $class),
                                         $param->getName()
                                     ),
                                 ],
@@ -73,7 +73,7 @@ class ClientMethodAssembler implements AssemblerInterface
                                     'description' => sprintf(
                                         '%s|%s',
                                         $this->generateShortClassNameAndAddImport(ResultInterface::class, $class),
-                                        $this->generateShortClassNameAndAddImport(
+                                        $this->getPrefixedClassNameAndAddImport(
                                             $method->getParameterNamespace().'\\'.$method->getReturnType(),
                                             $class
                                         )
@@ -115,6 +115,29 @@ class ClientMethodAssembler implements AssemblerInterface
 
         if ($classNamespace !== $currentNamespace || ! in_array($fqnClassName, $classGenerator->getUses())) {
             $classGenerator->addUse($fqnClassName);
+        }
+
+        return $className;
+    }
+
+    /**
+     * @param string         $fqnClassName   Fully qualified class name.
+     * @param ClassGenerator $classGenerator Class generator object.
+     *
+     * @return string
+     */
+    protected function getPrefixedClassNameAndAddImport(string $fqnClassName, ClassGenerator $classGenerator): string
+    {
+        $fqnClassName = ltrim($fqnClassName, '\\');
+        $parts = explode('\\', $fqnClassName);
+        $className = array_pop($parts);
+        $prefix = array_pop($parts);
+        $className = $prefix . '\\' . $className;
+        $classNamespace = implode('\\', $parts) . '\\' . $prefix;
+        $currentNamespace = (string) $classGenerator->getNamespaceName();
+
+        if ($classNamespace !== $currentNamespace || ! in_array($fqnClassName, $classGenerator->getUses())) {
+            $classGenerator->addUse(ltrim($classNamespace, '\\'));
         }
 
         return $className;
