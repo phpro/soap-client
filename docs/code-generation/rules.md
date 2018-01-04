@@ -22,7 +22,7 @@ The goal of a rule is to run a code assembler.
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
-$rule = Rules\AssembleRule(new Assembler\GetterAssembler())
+$rule = Rules\AssembleRule(new Assembler\GetterAssembler($someGetterOptions))
 ```
 
 The `AssemblerRule` will always apply an assembler in the right context. 
@@ -37,7 +37,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
 $rule = Rules\MultiRule([
-    Rules\AssembleRule(new Assembler\GetterAssembler()),
+    Rules\AssembleRule(new Assembler\GetterAssembler($someGetterOptions)),
     Rules\AssembleRule(new Assembler\SetterAssembler()),
 ]);
 ```
