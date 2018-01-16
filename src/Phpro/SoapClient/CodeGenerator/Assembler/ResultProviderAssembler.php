@@ -89,6 +89,7 @@ class ResultProviderAssembler implements AssemblerInterface
                 'name' => $methodName,
                 'parameters' => [],
                 'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
+                'returntype' => ResultInterface::class,
                 'body' => $this->generateGetResultBody($property),
                 'docblock' => DocBlockGenerator::fromArray([
                     'tags' => [

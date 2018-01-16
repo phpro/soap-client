@@ -10,8 +10,6 @@ use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Assembler;
 
-$getterOptions = new Assembler\GetterAssemblerOptions();
-
 return Config::create()
     ->setWsdl('http://localhost/path/to/soap.wsdl')
     ->setTypeDestination('src/SoapTypes')
@@ -23,7 +21,11 @@ return Config::create()
     ->setClassMapDestination('src/acme/classmap')
     ->setClassMapName('AcmeClassmap')
     ->addSoapOption('features', SOAP_SINGLE_ELEMENT_ARRAYS)
-    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler($getterOptions)))
+    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(
+        (new Assembler\GetterAssemblerOptions())
+            ->withReturnType()
+            ->withBoolGetters()
+    )))
     ->addRule(new Rules\TypenameMatchesRule(
         new Rules\AssembleRule(new Assembler\RequestAssembler()),
         '/Request$/'
