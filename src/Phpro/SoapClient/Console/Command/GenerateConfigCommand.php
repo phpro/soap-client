@@ -41,82 +41,38 @@ class GenerateConfigCommand extends Command
     {
         $context = new ConfigContext();
         $io = new SymfonyStyle($input, $output);
-        $io->section('Config settings');
+
+        // Common information
         $dest = $io->ask('config location (Where to put the config, including .php)', 'config/soap-client.php');
         $context->addSetter('setWsdl', $io->ask('Wsdl location (URL or path to file)'));
-        $this->typeConfig($io, $context);
-        $this->clientConfig($io, $context);
-        $this->classmapConfig($io, $context);
-        $this->rulesetConfig($io, $context);
+        $name = $io->ask('Name for this client');
+        $baseDir = $io->ask('Directory where the client should be generated in');
+        $namespace = $io->ask('Namespace for your client');
 
-        $generator = new ConfigGenerator();
-        $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));
-        $io->success("Config has been written to $dest");
-    }
+        // Type
+        $context->addSetter('setTypeDestination', $baseDir.DIRECTORY_SEPARATOR.'Type');
+        $context->addSetter('setTypeNamespace', $namespace.'\\Type');
 
-    protected function typeConfig(SymfonyStyle $io, ConfigContext $context)
-    {
-        $io->section('Type Configuration');
-        $context->addSetter(
-            'setTypeDestination',
-            $io->ask('destination (location where files are generated)', 'src/App/Type')
-        );
-        $context->addSetter(
-            'setTypeNamespace',
-            $io->ask('namespace (namespace of all types)', 'App/Type')
-        );
-    }
+        // Client
+        $this->addNonEmptySetter($context, 'setClientDestination', $baseDir);
+        $this->addNonEmptySetter($context, 'setClientName', $name.'Client');
+        $this->addNonEmptySetter($context, 'setClientNamespace', $namespace);
 
-    protected function clientConfig(SymfonyStyle $io, ConfigContext $context)
-    {
-        $io->section('Client Configuration');
-        $this->addNonEmptySetter(
-            $context,
-            'setClientDestination',
-            $io->ask('destination (location where the client file is put)', 'src/App/Client')
-        );
-        $this->addNonEmptySetter(
-            $context,
-            'setClientName',
-            $io->ask('name (name of the client)', 'Client')
-        );
-        $this->addNonEmptySetter(
-            $context,
-            'setClientNamespace',
-            $io->ask('namespace (namespace of the client)', 'App/Client')
-        );
-    }
+        // Classmap
+        $this->addNonEmptySetter($context, 'setClassMapDestination', $baseDir);
+        $this->addNonEmptySetter($context, 'setClassMapName', $name.'Classmap');
+        $this->addNonEmptySetter($context, 'setClassMapNamespace', $namespace);
 
-    public function classmapConfig(SymfonyStyle $io, ConfigContext $context)
-    {
-        $io->section('Classmap Configuration');
-        if (!$io->confirm('Do you want to configure the classmap?')) {
-            return;
-        }
-        $this->addNonEmptySetter(
-            $context,
-            'setClassmapDestination',
-            $io->ask('destination (location where the classmap is generated)', 'src/App/Classmap')
-        );
-        $this->addNonEmptySetter(
-            $context,
-            'setClassmapName',
-            $io->ask('name (name of the classmap)', 'Classmap')
-        );
-        $this->addNonEmptySetter(
-            $context,
-            'setClassmapNamespace',
-            $io->ask('namespace (namespace of the classmap)', 'App/Classmap')
-        );
-    }
-
-    public function rulesetConfig(SymfonyStyle $io, ConfigContext $context)
-    {
-        $io->section('Ruleset Configuration');
+        // Ruleset
         $requestKeyword = $io->ask('Keyword for matching request objects', 'Request');
         $context->setRequestRegex("/$requestKeyword$/i");
         $responseKeyword = $io->ask('Keyword for matching response objects', 'Response');
         $context->setResponseRegex("/$responseKeyword$/i");
+
+        // Create the config
+        $generator = new ConfigGenerator();
+        $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));
+        $io->success("Config has been written to $dest");
     }
 
     private function addNonEmptySetter(ConfigContext $context, string $key, string $value)
