@@ -33,7 +33,7 @@ class Property
      * @param string $type
      * @param string $namespace
      */
-    public function __construct(string $name, string $type, string $namespace = '')
+    public function __construct(string $name, string $type, string $namespace)
     {
         $this->name = Normalizer::normalizeProperty($name);
         $this->type = Normalizer::normalizeDataType($type);
