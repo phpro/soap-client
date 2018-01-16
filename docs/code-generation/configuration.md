@@ -10,6 +10,8 @@ use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Assembler;
 
+$getterOptions = new Assembler\GetterAssemblerOptions();
+
 return Config::create()
     ->setWsdl('http://localhost/path/to/soap.wsdl')
     ->setTypeDestination('src/SoapTypes')
@@ -17,8 +19,11 @@ return Config::create()
     ->setClientDestination('src/SoapClient')
     ->setClientNamespace('SoapClient')
     ->setClientName('MySoapClient')
+    ->setClassMapNamespace('Acme\\Classmap')
+    ->setClassMapDestination('src/acme/classmap')
+    ->setClassMapName('AcmeClassmap')
     ->addSoapOption('features', SOAP_SINGLE_ELEMENT_ARRAYS)
-    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler()))
+    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler($getterOptions)))
     ->addRule(new Rules\TypenameMatchesRule(
         new Rules\AssembleRule(new Assembler\RequestAssembler()),
         '/Request$/'
@@ -86,6 +91,18 @@ The namespace of the generated client.
 String - OPTIONAL
 
 The class name of the client, defaults to 'Client'.
+
+**classmap name**
+
+Name of the classmap class
+
+**classmap destination**
+
+The location of a directory the classmap should be generated in.
+
+**classmap namespace**
+
+Name for the classmap
 
 **rules**
 
