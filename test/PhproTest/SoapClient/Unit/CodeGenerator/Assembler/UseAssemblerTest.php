@@ -46,7 +46,7 @@ class UseAssemblerTest extends TestCase
         $assembler = new UseAssembler('MyUsedClass');
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', []);
-        $property = new Property('prop1', 'string');
+        $property = new Property('prop1', 'string', 'ns1');
         $context = new PropertyContext($class, $type, $property);
         $this->assertTrue($assembler->canAssemble($context));
     }

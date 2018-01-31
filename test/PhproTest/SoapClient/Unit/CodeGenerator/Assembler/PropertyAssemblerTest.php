@@ -175,7 +175,7 @@ CODE;
             'prop1' => 'string',
             'prop2' => 'int',
         ]);
-        $property = new Property('prop1', 'string');
+        $property = new Property('prop1', 'string', 'ns1');
 
         return new PropertyContext($class, $type, $property);
     }

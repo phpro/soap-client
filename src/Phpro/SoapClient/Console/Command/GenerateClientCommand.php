@@ -91,7 +91,7 @@ class GenerateClientCommand extends Command
         }
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypesNamespace());
+        $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypeNamespace());
         $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
         $generator = new ClientGenerator($config->getRuleSet());
         $fileGenerator = new FileGenerator();
