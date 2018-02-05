@@ -28,7 +28,22 @@ class WsaMiddleware extends Middleware
         $xml = SoapXml::fromStream($request->getBody());
 
         $wsa = new WSASoap($xml->getXmlDocument());
-        $wsa->addAction($request->getHeader('SOAPAction')[0]);
+
+        $actionHeader = $request->getHeader('SOAPAction');
+        if ($actionHeader) {
+            $wsa->addAction($actionHeader[0]);
+        } else {
+            $contentType = $request->getHeader('Content-Type')[0];
+            $parts = explode(';', $contentType);
+            foreach ($parts as $part) {
+                if (strpos($part, 'action=') !== false) {
+                    $actionParts = explode('=', $part);
+                    $action = trim($actionParts[1], '"');
+                    $wsa->addAction($action);
+                }
+            }
+        }
+        
         $wsa->addTo((string) $request->getUri());
         $wsa->addMessageID();
         $wsa->addReplyTo($this->address);
