@@ -58,15 +58,35 @@ class Client implements ClientInterface
      */
     public function debugLastSoapRequest(): array
     {
+        $format = function ($xml) {
+            if (!$xml) {
+                return '';
+            }
+
+            $doc = new \DOMDocument('1.0');
+            $doc->formatOutput = true;
+            if (strpos(strtolower($xml), '<html') !== false) {
+                if ($doc->loadHTML($xml)) {
+                    return $doc->saveHTML();
+                }
+            } else {
+                if ($doc->loadXML($xml)) {
+                    return $doc->saveXML();
+                }
+            }
+
+            return $xml;
+        };
+
         return [
-            'request'  => [
-                'headers' => $this->soapClient->__getLastRequestHeaders(),
-                'body'    => $this->soapClient->__getLastRequest(),
+            'request' => [
+                'headers' => trim($this->soapClient->__getLastRequestHeaders()),
+                'body'    => $format($this->soapClient->__getLastRequest()),
             ],
             'response' => [
-                'headers' => $this->soapClient->__getLastResponseHeaders(),
-                'body'    => $this->soapClient->__getLastResponse(),
-            ],
+                'headers' => trim($this->soapClient->__getLastResponseHeaders()),
+                'body'    => $format($this->soapClient->__getLastResponse()),
+            ]
         ];
     }
 
