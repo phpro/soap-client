@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\Middleware;
 
 use Http\Promise\Promise;
+use Phpro\SoapClient\Exception\RequestException;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
 use RobRichards\WsePhp\WSASoap;
@@ -28,22 +29,7 @@ class WsaMiddleware extends Middleware
         $xml = SoapXml::fromStream($request->getBody());
 
         $wsa = new WSASoap($xml->getXmlDocument());
-
-        $actionHeader = $request->getHeader('SOAPAction');
-        if ($actionHeader) {
-            $wsa->addAction($actionHeader[0]);
-        } else {
-            $contentType = $request->getHeader('Content-Type')[0];
-            $parts = explode(';', $contentType);
-            foreach ($parts as $part) {
-                if (strpos($part, 'action=') !== false) {
-                    $actionParts = explode('=', $part);
-                    $action = trim($actionParts[1], '"');
-                    $wsa->addAction($action);
-                }
-            }
-        }
-        
+        $wsa->addAction($this->detectSoapAction($request));
         $wsa->addTo((string) $request->getUri());
         $wsa->addMessageID();
         $wsa->addReplyTo($this->address);
@@ -51,5 +37,22 @@ class WsaMiddleware extends Middleware
         $request = $request->withBody($xml->toStream());
 
         return $handler($request);
+    }
+
+    private function detectSoapAction(RequestInterface $request): string
+    {
+        $header = $request->getHeader('SOAPAction');
+        if ($header) {
+            return $header[0];
+        }
+
+        $contentType = $request->getHeader('Content-Type')[0];
+        foreach (explode(';', $contentType) as $part) {
+            if (strpos($part, 'action=') !== false) {
+                return trim(explode('=', $part)[1], '"\'');
+            }
+        }
+
+        throw new RequestException('Action not found in HTTP headers to be included in WSA headers.');
     }
 }
