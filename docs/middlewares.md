@@ -12,7 +12,7 @@ You can take a look to the list of handlers and check if your handler has the fe
 Next, you can use one of the built-in middlewares:
 
 - [BasicAuthMiddleware](#basicauthmiddleware)
-- [NtlmMiddleware](#ntlmmiddleware)
+- [NtlmMiddleware](#ntlmmiddleware) (deprecated)
 - [WsaMiddleware](#wsamiddleware)
 - [WsseMiddleware](#wssemiddleware)
 - [RemoveEmptyNodesMiddleware](#removeemptynodesmiddleware)
@@ -37,15 +37,11 @@ $clientBuilder->addMiddleware(new BasicAuthMiddleware('username', 'password'));
 
 ### NtlmMiddleware
 
-Another popular authentication method is NTLM authentication. 
-This NTLM middleware makes it possible to authenticate through NTLM to your remote server.
-It works with the NTLM options that are available in Curl so that we did not have to reinvent the encryption.
+**Deprecated:** since we moved from Guzzle, you will need to write your own NTLM auth implementation. Your best try
+is using a cURL Client with the following options: `[CURLOPT_HTTPAUTH => CURLAUTH_NTLM, CURLOPT_USERPWD => 'user:pass']`.
 
-**Usage**
-```php
-$clientBuilder->addMiddleware(new NtlmMiddleware('username', 'password'));
-```
-
+However, take care as there's a [cURL misbehavior](https://github.com/curl/curl/pull/1242) that might block
+you going forward with some SOAP servers.
 
 ### WsaMiddleware
 
