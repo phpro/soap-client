@@ -106,6 +106,9 @@ $wsse = new WsseMiddleware('privatekey.pem', 'publickey.pyb');
 $wsse->withEncryption('client-x509.pem');
 $wsse->withServerCertificateHasSubjectKeyIdentifier(true);
 
+// With no encryption, only additional options - and using the fluent methods
+$wsse = (new WsseMiddleware)->withUserToken('username', 'password');
+
 // Add it to the clientbuilder
 $clientBuilder->addMiddleware($wsse);
 ```
