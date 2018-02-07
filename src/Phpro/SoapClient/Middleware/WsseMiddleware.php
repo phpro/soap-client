@@ -72,7 +72,7 @@ class WsseMiddleware extends Middleware
      */
     private $serverCertificateHasSubjectKeyIdentifier = true;
 
-    public function __construct(string $privateKeyFile, string $publicKeyFile)
+    public function __construct(string $privateKeyFile = null, string $publicKeyFile = null)
     {
         $this->privateKeyFile = $privateKeyFile;
         $this->publicKeyFile = $publicKeyFile;
@@ -143,14 +143,18 @@ class WsseMiddleware extends Middleware
             $wsse->addUserToken($this->userTokenName, $this->userTokenPassword, $this->userTokenDigest);
         }
 
-        // Create new XMLSec Key using the dsigType and type is private key
-        $key = new XMLSecurityKey($this->digitalSignMethod, ['type' => 'private']);
-        $key->loadKey($this->privateKeyFile, true);
-        $wsse->signSoapDoc($key);
+        if ($this->privateKeyFile) {
+            // Create new XMLSec Key using the dsigType and type is private key
+            $key = new XMLSecurityKey($this->digitalSignMethod, ['type' => 'private']);
+            $key->loadKey($this->privateKeyFile, true);
+            $wsse->signSoapDoc($key);
+        }
 
-        //  Add certificate (BinarySecurityToken) to the message and attach pointer to Signature:
-        $token = $wsse->addBinaryToken(file_get_contents($this->publicKeyFile));
-        $wsse->attachTokentoSig($token);
+        if ($this->publicKeyFile) {
+            //  Add certificate (BinarySecurityToken) to the message and attach pointer to Signature:
+            $token = $wsse->addBinaryToken(file_get_contents($this->publicKeyFile));
+            $wsse->attachTokentoSig($token);
+        }
 
         // Add end-to-end encryption if configured:
         if ($this->encrypt) {
