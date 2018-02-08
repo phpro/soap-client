@@ -45,7 +45,7 @@ class Config implements ConfigInterface
      * @var array
      */
     protected $soapOptions = [
-        'trace'      => false,
+        'trace' => false,
         'exceptions' => true,
         'keep_alive' => true,
         'cache_wsdl' => WSDL_CACHE_NONE,
@@ -165,7 +165,7 @@ class Config implements ConfigInterface
 
     /**
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return $this
      */

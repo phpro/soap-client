@@ -94,7 +94,7 @@ class GenerateTypesCommand extends Command
     /**
      * Try to create a class for a type.
      * When a class exists: try to patch
-     * If patching the old class does not wor: ask for an overwrite
+     * If patching the old class does not work: ask for an overwrite
      * Create a class from an empty file
      *
      * @param TypeGenerator $generator
