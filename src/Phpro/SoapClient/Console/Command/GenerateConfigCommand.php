@@ -15,6 +15,12 @@ class GenerateConfigCommand extends Command
 {
     public const COMMAND_NAME = 'generate:config';
 
+    public const RULE_CONFIRMATION = <<<CONFIRMATION
+This tool can set some basic code generation rules. This requires some knowledge of the SOAP service.
+Take a look at the message section in the WSDL. Are you able to match request and response elements based on keywords?
+These keywords are used in a case insensitive regex match with '/' delimiters, escape accordingly!
+CONFIRMATION;
+
     /**
      * @var Filesystem
      */
@@ -64,15 +70,11 @@ class GenerateConfigCommand extends Command
         $this->addNonEmptySetter($context, 'setClassMapNamespace', $namespace);
 
         // Ruleset
-        if ($io->confirm(
-            'Do you wish to match rulesets on keywords?'
-            .' (you need distinct keywords for this, ie: Request and Response)',
-            false
-        )) {
+        if ($io->confirm(self::RULE_CONFIRMATION, false)) {
             $requestKeyword = $io->ask('Keyword for matching request objects', '');
-            $context->setRequestRegex("/$requestKeyword$/i");
+            $context->setRequestRegex("/$requestKeyword/i");
             $responseKeyword = $io->ask('Keyword for matching response objects', '');
-            $context->setResponseRegex("/$responseKeyword$/i");
+            $context->setResponseRegex("/$responseKeyword/i");
         }
 
         // Create the config
