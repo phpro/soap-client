@@ -61,7 +61,7 @@ CONFIRMATION;
 
         // Client
         $this->addNonEmptySetter($context, 'setClientDestination', $baseDir);
-        $this->addNonEmptySetter($context, 'setClientName', $name.'Client');
+        $this->addNonEmptySetter($context, 'setClientName', $name);
         $this->addNonEmptySetter($context, 'setClientNamespace', $namespace);
 
         // Classmap
