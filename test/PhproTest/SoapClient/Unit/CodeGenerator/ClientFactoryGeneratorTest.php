@@ -2,6 +2,8 @@
 
 
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
+use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
+use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
 use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\FileGenerator;
@@ -37,7 +39,14 @@ class MyclientFactory
 
 
 BODY;
-        $context = new ClientFactoryContext('Myclient', 'App\\Client', 'Myclassmap', 'App\\Classmap');
+        $clientContext = new ClientContext('Myclient', 'App\\Client');
+        $classMapContext = new ClassMapContext(
+            new FileGenerator(),
+            new \Phpro\SoapClient\CodeGenerator\Model\TypeMap('App\\Types', []),
+            'Myclassmap',
+            'App\\Classmap'
+        );
+        $context = new ClientFactoryContext($clientContext, $classMapContext);
         $generator = new ClientFactoryGenerator();
         self::assertEquals($expected, $generator->generate(new FileGenerator(), $context));
     }

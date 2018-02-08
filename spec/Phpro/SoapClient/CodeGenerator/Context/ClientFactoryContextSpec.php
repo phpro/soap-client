@@ -3,10 +3,14 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
 use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
+use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
+use Zend\Code\Generator\FileGenerator;
 
 /**
  * Class ClientFactoryContextSpec
@@ -15,7 +19,14 @@ class ClientFactoryContextSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('Myclient', 'App\\Client', 'Myclassmap', 'App\\Classmap');
+        $clientContext = new ClientContext('Myclient', 'App\\Client');
+        $classMapContext = new ClassMapContext(
+            new FileGenerator(),
+            new TypeMap('ns', []),
+            'Myclassmap',
+            'App\\Classmap'
+        );
+        $this->beConstructedWith($clientContext, $classMapContext);
     }
 
     function it_is_initializable()
@@ -56,16 +67,5 @@ class ClientFactoryContextSpec extends ObjectBehavior
     function it_returns_the_classmap_namespace()
     {
         $this->getClassmapNamespace()->shouldBe('App\\Classmap');
-    }
-
-    function it_constructs_from_config(Config $config)
-    {
-        $config->getClientNamespace()->willReturn('App\\Client');
-        $config->getClientName()->willReturn($client = 'Someclient');
-        $config->getClassMapNamespace()->willReturn('App\\Classmap');
-        $config->getClassMapName()->willReturn('Myclassmap');
-        $this->beConstructedThrough([ClientFactoryContext::class, 'fromConfig'], [$config]);
-        $this->shouldHaveType(ClientFactoryContext::class);
-        $this->getClientName()->shouldBe($client);
     }
 }

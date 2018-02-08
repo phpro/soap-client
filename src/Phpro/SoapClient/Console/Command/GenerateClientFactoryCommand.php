@@ -3,7 +3,10 @@
 namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
+use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
+use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
+use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
@@ -56,7 +59,14 @@ class GenerateClientFactoryCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $config = $this->getConfigHelper()->load($input);
-        $context = ClientFactoryContext::fromConfig($config);
+        $classmapContext = new ClassMapContext(
+            new FileGenerator(),
+            new TypeMap('', []),
+            $config->getClassMapName(),
+            $config->getClassMapNamespace()
+        );
+        $clientContext = new ClientContext($config->getClientName(), $config->getClientNamespace());
+        $context = new ClientFactoryContext($clientContext, $classmapContext);
         $generator = new ClientFactoryGenerator();
         $dest = $config->getClientDestination().DIRECTORY_SEPARATOR.$config->getClientName().'Factory.php';
         $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));

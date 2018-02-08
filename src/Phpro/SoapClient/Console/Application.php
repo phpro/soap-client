@@ -42,14 +42,6 @@ class Application extends SymfonyApplication
         return $commands;
     }
 
-    protected function setHelpers(Filesystem $filesystem)
-    {
-        $configHelper = new ConfigHelper($filesystem);
-        $set = new HelperSet();
-        $set->set($configHelper);
-        $this->setHelperSet($set);
-    }
-
     protected function getDefaultHelperSet(): HelperSet
     {
         $set = parent::getDefaultHelperSet();

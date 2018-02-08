@@ -66,4 +66,9 @@ interface ConfigInterface
      * @return string
      */
     public function getClassMapDestination() : string;
+
+    /**
+     * @return string
+     */
+    public function getClientName():string;
 }

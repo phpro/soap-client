@@ -2,64 +2,53 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
-use Phpro\SoapClient\CodeGenerator\Config\Config;
-
 class ClientFactoryContext implements ContextInterface
 {
-    private $clientName;
-    private $clientNamespace;
-    private $classmapName;
-    private $classmapNamespace;
+    /**
+     * @var ClassMapContext
+     */
+    private $classMapContext;
+
+    /**
+     * @var ClientContext
+     */
+    private $clientContext;
 
     public function __construct(
-        string $clientName,
-        string $clientNamespace,
-        string $classmapName,
-        string $classmapNamespace
+        ClientContext $clientContext,
+        ClassMapContext $classMapContext
     ) {
-        $this->clientName = $clientName;
-        $this->clientNamespace = $clientNamespace;
-        $this->classmapName = $classmapName;
-        $this->classmapNamespace = $classmapNamespace;
-    }
-
-    public static function fromConfig(Config $config): self
-    {
-        return new self(
-            $config->getClientName(),
-            $config->getClientNamespace(),
-            $config->getClassMapName(),
-            $config->getClassMapNamespace()
-        );
+        $this->classMapContext = $classMapContext;
+        $this->clientContext = $clientContext;
     }
 
     public function getClientName(): string
     {
-        return $this->clientName;
+        return $this->clientContext->getName();
     }
 
     public function getClientNamespace(): string
     {
-        return $this->clientNamespace;
+        return $this->clientContext->getNamespace();
     }
 
     public function getClassmapName(): string
     {
-        return $this->classmapName;
+        return $this->classMapContext->getName();
     }
 
     public function getClassmapNamespace(): string
     {
-        return $this->classmapNamespace;
+        return $this->classMapContext->getNamespace();
     }
 
     public function getClientFqcn(): string
     {
-        return $this->clientNamespace.'\\'.$this->clientName;
+        return $this->clientContext->getFqcn();
     }
 
     public function getClassmapFqcn(): string
     {
-        return $this->classmapNamespace.'\\'.$this->classmapName;
+        return $this->classMapContext->getFqcn();
     }
 }
