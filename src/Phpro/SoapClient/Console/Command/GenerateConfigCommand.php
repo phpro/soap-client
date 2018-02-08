@@ -65,7 +65,8 @@ class GenerateConfigCommand extends Command
 
         // Ruleset
         if ($io->confirm(
-            'Do you wish to match rulesets on keywords? (you need distinct keywords for this, ie: Request and Response)',
+            'Do you wish to match rulesets on keywords?'
+            .' (you need distinct keywords for this, ie: Request and Response)',
             false
         )) {
             $requestKeyword = $io->ask('Keyword for matching request objects', '');
