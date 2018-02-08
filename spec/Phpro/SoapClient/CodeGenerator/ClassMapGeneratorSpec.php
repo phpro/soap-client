@@ -21,7 +21,7 @@ class ClassMapGeneratorSpec extends ObjectBehavior
 {
     function let(RuleSetInterface $ruleSet)
     {
-        $this->beConstructedWith($ruleSet);
+        $this->beConstructedWith($ruleSet, 'ClassMap', 'App\\Mynamespace');
     }
     
     function it_is_initializable()

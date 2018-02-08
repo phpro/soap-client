@@ -91,7 +91,7 @@ class GenerateClientCommand extends Command
         }
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypesNamespace());
+        $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypeNamespace());
         $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
         $generator = new ClientGenerator($config->getRuleSet());
         $fileGenerator = new FileGenerator();
@@ -121,7 +121,7 @@ class GenerateClientCommand extends Command
     /**
      * Try to create a class for a type.
      * When a class exists: try to patch
-     * If patching the old class does not wor: ask for an overwrite
+     * If patching the old class does not work: ask for an overwrite
      * Create a class from an empty file
      *
      * @param ClientGenerator|TypeGenerator $generator

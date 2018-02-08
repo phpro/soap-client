@@ -11,6 +11,7 @@ The goal of a rule is to run a code assembler.
 # Built-in rules
 
 - [AssemblerRule](#assemblerrule)
+- [ClientMethodMatchesRule](#clientmethodmatchesrule)
 - [MultiRule](#multirule)
 - [PopertynameMatchesRule](#propertynamematchesrule)
 - [TypeMapRule](#TypeMapRule)
@@ -22,13 +23,33 @@ The goal of a rule is to run a code assembler.
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
-$rule = Rules\AssembleRule(new Assembler\GetterAssembler())
+$rule = Rules\AssembleRule(new Assembler\GetterAssembler($someGetterOptions))
 ```
 
 The `AssemblerRule` will always apply an assembler in the right context. 
 This way, the code is added during every code generation command.
 
 In the example above, a getter will be created for every property in the SOAP type.
+
+## ClientMethodMatchesRule
+
+```php
+use My\Project\CodeGenerator\Assembler as CustomAssembler;
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+
+new Rules\ClientMethodMatchesRule(
+    new Rules\AssembleRule(new CustomAssembler\RemoveClientMethodAssembler()),
+    '/demoSetup$/'
+)
+```
+
+The `ClientMethodMatchesRule` can be used in the types generation command and contains a subRule and a regular expression.
+The subRule is mostly a regular AssembleRule, but can be any class that implements the RuleInterface.
+The regular expression will be matched against the method name added to the generated Client. 
+If the regular expression matches and the subRule is accepted, the defined assembler will run.
+ 
+In the example above, a custom `RemoveClientMethodAssembler` is is used to remove the `demoSetup` method from the Client completely.
 
 ## MultiRule
 
@@ -37,7 +58,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
 $rule = Rules\MultiRule([
-    Rules\AssembleRule(new Assembler\GetterAssembler()),
+    Rules\AssembleRule(new Assembler\GetterAssembler($someGetterOptions)),
     Rules\AssembleRule(new Assembler\SetterAssembler()),
 ]);
 ```

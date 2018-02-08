@@ -167,7 +167,7 @@ CODE;
 
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', $properties);
-        $property = new Property($propertyName, $properties[$propertyName]);
+        $property = new Property($propertyName, $properties[$propertyName], 'ns1');
 
         return new PropertyContext($class, $type, $property);
     }

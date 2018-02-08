@@ -92,7 +92,7 @@ $ composer require phpro/soap-client
   - [Caching plugin](docs/plugins/caching.md)
 - [Specify your data transfer handler.](docs/handlers.md)
   - [SoapHandle](docs/handlers.md#soaphandle)
-  - [GuzzleHandle](docs/handlers.md#guzzlehandle)
+  - [HTTPlugHandle](docs/handlers.md#httplughandle)
 - [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
   - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
   - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)

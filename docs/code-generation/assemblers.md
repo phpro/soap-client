@@ -131,6 +131,8 @@ Example output:
     }
 ```
 
+This assembler needs to be constructed with an instance of `GetterAssemblerOptions`
+
 ## InterfaceAssembler
 
 The `InterfaceAssembler` can be used to add a specific interface to the generated class.
@@ -268,7 +270,7 @@ class MyType implements ResultProviderInterface
     /**
      * @return SomeClass|ResultInterface
      */
-    public function getResult()
+    public function getResult() : \Phpro\SoapClient\Type\ResultInterface
     {
         return $this->prop1;
     }
@@ -280,7 +282,7 @@ This way, the result is wrapped with a class you specified.
 
 Example output:
 
-```
+```php
 namespace MyNamespace;
 
 use Phpro\SoapClient\Type\ResultProviderInterface;
@@ -292,7 +294,7 @@ class MyType implements ResultProviderInterface
     /**
      * @return MixedResult
      */
-    public function getResult()
+    public function getResult() : \Phpro\SoapClient\Type\ResultInterface
     {
         return new MixedResult($this->prop1);
     }
@@ -318,6 +320,8 @@ Example output:
         $this->prop1 = $prop1;
     }
 ```
+
+This assembler needs to be constructed with an instance of `SetterAssemblerOptions`.
 
 
 ## TraitAssembler

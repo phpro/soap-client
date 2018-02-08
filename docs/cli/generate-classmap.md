@@ -16,11 +16,26 @@ Usage:
 
 Options:
       --config=CONFIG   The location of the soap code-generator config file
+  -o, --overwrite       Makes it possible to overwrite by default
+  -h, --help            Display this help message
+  -q, --quiet           Do not output any message
+  -V, --version         Display this application version
+      --ansi            Force ANSI output
+      --no-ansi         Disable ANSI output
+  -n, --no-interaction  Do not ask any interactive question
+  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
 
 ```
 
-This command will generate a class map and display it on the screen.
- You will just need to copy it and next paste it in the `ClientBuilder`.
+To generate a classmap, following values need to be set in your config:
+```
+->setClassMapName('MyClassmap')
+->setClassMapNamespace('Myapp\\MyclassMap')
+->setClassMapDestination('src/myapp/myclassmap')
+```
+
+Where the name is the class name you want to give your classmap, the namespace is where this class should reside in and the destination in the relative path from the project root where the file should be put.
 
 
 Options:
@@ -33,12 +48,20 @@ Example output:
 ```php
 <?php
 
-use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
-use Phpro\SoapClient\Soap\ClassMap\ClassMap;
+namespace Myapp\Example\Classmap;
 
-new ClassMapCollection([
-        new ClassMap('HelloWorldRequest', \HelloWorldRequest::class),
-        new ClassMap('HelloWorldResponse', \HelloWorldResponse::class),
-        new ClassMap('Greeting', \Greeting::class),
-]);
+use ...
+
+class OrderClassMap
+{
+
+    public static function getCollection() : \Phpro\SoapClient\Soap\ClassMap\ClassMapCollection
+    {
+        return new ClassMapCollection([
+            new ClassMap('CreateOrder', Type\Example1::class),
+            new ClassMap('CardOrder', Type\Example2::class),
+            new ClassMap('OrderDetails', Type\Example3::class)
+        ]);
+    }
+}
 ```

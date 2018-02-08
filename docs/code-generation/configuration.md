@@ -18,7 +18,11 @@ return Config::create()
     ->setClientNamespace('SoapClient')
     ->setClientName('MySoapClient')
     ->addSoapOption('features', SOAP_SINGLE_ELEMENT_ARRAYS)
-    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler()))
+    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(
+        (new Assembler\GetterAssemblerOptions())
+            ->withReturnType(true)
+            ->withBoolGetters(true)
+    )))
     ->addRule(new Rules\TypenameMatchesRule(
         new Rules\AssembleRule(new Assembler\RequestAssembler()),
         '/Request$/'
