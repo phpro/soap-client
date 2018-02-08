@@ -51,7 +51,7 @@ CONFIRMATION;
         // Common information
         $dest = $io->ask('config location (Where to put the config, including .php)', 'config/soap-client.php');
         $context->addSetter('setWsdl', $io->ask('Wsdl location (URL or path to file)'));
-        $name = $io->ask('Name for this client');
+        $name = $io->ask('Generic name used to name this client (Results in <name>Client <name>Classmap etc.)');
         $baseDir = $io->ask('Directory where the client should be generated in');
         $namespace = $io->ask('Namespace for your client');
 
@@ -61,7 +61,7 @@ CONFIRMATION;
 
         // Client
         $this->addNonEmptySetter($context, 'setClientDestination', $baseDir);
-        $this->addNonEmptySetter($context, 'setClientName', $name);
+        $this->addNonEmptySetter($context, 'setClientName', $name.'Client');
         $this->addNonEmptySetter($context, 'setClientNamespace', $namespace);
 
         // Classmap
