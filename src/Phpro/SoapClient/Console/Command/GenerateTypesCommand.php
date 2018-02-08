@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Zend\Code\Generator\FileGenerator;
 
 /**
@@ -74,6 +75,8 @@ class GenerateTypesCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
+        $io = new SymfonyStyle($input, $output);
+
         $config = $this->getConfigHelper()->load($input);
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
@@ -88,7 +91,7 @@ class GenerateTypesCommand extends Command
             }
         }
 
-        $this->output->writeln('Done');
+        $io->success('All SOAP types generated');
     }
 
     /**

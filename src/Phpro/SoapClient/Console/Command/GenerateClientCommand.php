@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Zend\Code\Generator\FileGenerator;
 
 /**
@@ -74,8 +75,11 @@ class GenerateClientCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
+        $io = new SymfonyStyle($input, $output);
+
         $config = $this->getConfigHelper()->load($input);
 
+        $destination = $config->getClientDestination().'/'.$config->getClientName().'.php';
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypeNamespace());
         $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
@@ -85,9 +89,10 @@ class GenerateClientCommand extends Command
             $fileGenerator,
             $generator,
             $client,
-            $config->getClientDestination().'/'.$config->getClientName().'.php'
+            $destination
         );
-        $this->output->writeln('Done');
+
+        $io->success('Generated client at ' . $destination);
     }
 
     /**
