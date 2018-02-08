@@ -64,10 +64,15 @@ class GenerateConfigCommand extends Command
         $this->addNonEmptySetter($context, 'setClassMapNamespace', $namespace);
 
         // Ruleset
-        $requestKeyword = $io->ask('Keyword for matching request objects', 'Request');
-        $context->setRequestRegex("/$requestKeyword$/i");
-        $responseKeyword = $io->ask('Keyword for matching response objects', 'Response');
-        $context->setResponseRegex("/$responseKeyword$/i");
+        if ($io->confirm(
+            'Do you wish to match rulesets on keywords? (you need distinct keywords for this, ie: Request and Response)',
+            false
+        )) {
+            $requestKeyword = $io->ask('Keyword for matching request objects', '');
+            $context->setRequestRegex("/$requestKeyword$/i");
+            $responseKeyword = $io->ask('Keyword for matching response objects', '');
+            $context->setResponseRegex("/$responseKeyword$/i");
+        }
 
         // Create the config
         $generator = new ConfigGenerator();

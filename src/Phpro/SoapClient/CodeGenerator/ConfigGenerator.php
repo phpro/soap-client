@@ -19,7 +19,7 @@ return Config::create()
 BODY;
 
 
-    private const RULESET = <<<RULESET
+    const RULESET = <<<RULESET
 ->addRule(
     new Rules\TypenameMatchesRule(
         new Rules\MultiRule([
