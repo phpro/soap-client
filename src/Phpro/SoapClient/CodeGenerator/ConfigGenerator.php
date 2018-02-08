@@ -13,7 +13,7 @@ use Zend\Code\Generator\FileGenerator;
  */
 class ConfigGenerator implements GeneratorInterface
 {
-    private const BODY = <<<BODY
+    const BODY = <<<BODY
 return Config::create()
 
 BODY;
