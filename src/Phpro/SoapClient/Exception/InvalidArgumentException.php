@@ -75,4 +75,27 @@ class InvalidArgumentException extends \InvalidArgumentException
     {
         return new static('You did not configure a type destination.');
     }
+
+    /**
+     * @return InvalidArgumentException
+     */
+    public static function classmapNameMissing()
+    {
+        return new static('You did not configure a classmap name.');
+    }
+
+    /**
+     * @return InvalidArgumentException
+     */
+    public static function classmapNamespaceMissing()
+    {
+        return new static('You did not configure a classmap namespace.');
+    }
+    /**
+     * @return InvalidArgumentException
+     */
+    public static function classmapDestinationMissing()
+    {
+        return new static('You did not configure a classmap destination.');
+    }
 }

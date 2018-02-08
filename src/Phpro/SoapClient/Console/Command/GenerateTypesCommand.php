@@ -2,11 +2,10 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
-use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
-use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use SplFileInfo;
@@ -25,7 +24,7 @@ use Zend\Code\Generator\FileGenerator;
 class GenerateTypesCommand extends Command
 {
 
-    const COMMAND_NAME = 'generate:types';
+    public const COMMAND_NAME = 'generate:types';
 
     /**
      * @var Filesystem
@@ -65,8 +64,7 @@ class GenerateTypesCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'The location of the soap code-generator config file'
             )
-            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default')
-        ;
+            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default');
     }
 
     /**
@@ -76,17 +74,7 @@ class GenerateTypesCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
-
-        $configFile = $this->input->getOption('config');
-        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-
-        $config = include $configFile;
-        if (!$config instanceof ConfigInterface) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-
+        $config = $this->getConfigHelper()->load($input);
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
         $generator = new TypeGenerator($config->getRuleSet());
@@ -110,8 +98,8 @@ class GenerateTypesCommand extends Command
      * Create a class from an empty file
      *
      * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param SplFileInfo   $fileInfo
+     * @param Type $type
+     * @param SplFileInfo $fileInfo
      * @return bool
      */
     protected function handleType(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo): bool
@@ -127,6 +115,7 @@ class GenerateTypesCommand extends Command
             // Ask if a class can be overwritten if it contains errors
             if (!$this->askForOverwrite()) {
                 $this->output->writeln(sprintf('Skipping %s', $type->getName()));
+
                 return false;
             }
         }
@@ -148,8 +137,8 @@ class GenerateTypesCommand extends Command
      * An existing file was found. Try to patch or ask if it can be overwritten.
      *
      * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param SplFileInfo   $fileInfo
+     * @param Type $type
+     * @param SplFileInfo $fileInfo
      * @return bool
      *
      */
@@ -160,6 +149,7 @@ class GenerateTypesCommand extends Command
 
         if ($patched) {
             $this->output->writeln('Patched!');
+
             return true;
         }
 
@@ -172,8 +162,8 @@ class GenerateTypesCommand extends Command
      * This method tries to patch an existing type class.
      *
      * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param SplFileInfo   $fileInfo
+     * @param Type $type
+     * @param SplFileInfo $fileInfo
      * @return bool
      */
     protected function patchExistingFile(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo): bool
@@ -183,8 +173,9 @@ class GenerateTypesCommand extends Command
             $file = FileGenerator::fromReflectedFileName($fileInfo->getPathname());
             $this->generateType($file, $generator, $type, $fileInfo);
         } catch (\Exception $e) {
-            $this->output->writeln('<fg=red>' . $e->getMessage() . '</fg=red>');
+            $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
             $this->filesystem->removeBackup($fileInfo->getPathname());
+
             return false;
         }
 
@@ -196,8 +187,8 @@ class GenerateTypesCommand extends Command
      *
      * @param FileGenerator $file
      * @param TypeGenerator $generator
-     * @param Type          $type
-     * @param SplFileInfo   $fileInfo
+     * @param Type $type
+     * @param SplFileInfo $fileInfo
      */
     protected function generateType(FileGenerator $file, TypeGenerator $generator, Type $type, SplFileInfo $fileInfo)
     {
@@ -214,5 +205,14 @@ class GenerateTypesCommand extends Command
         $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
 
         return (bool)$this->getHelper('question')->ask($this->input, $this->output, $question);
+    }
+
+    /**
+     * Function for added type hint
+     * @return ConfigHelper
+     */
+    public function getConfigHelper(): ConfigHelper
+    {
+        return $this->getHelper('config');
     }
 }

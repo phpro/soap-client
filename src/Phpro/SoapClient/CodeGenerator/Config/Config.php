@@ -340,6 +340,10 @@ class Config implements ConfigInterface
      */
     public function getClassMapName(): string
     {
+        if (!$this->classMapName) {
+            throw InvalidArgumentException::classmapNameMissing();
+        }
+
         return $this->classMapName;
     }
 
@@ -348,6 +352,10 @@ class Config implements ConfigInterface
      */
     public function getClassMapNamespace(): string
     {
+        if (!$this->classMapNamespace) {
+            throw InvalidArgumentException::classmapNamespaceMissing();
+        }
+
         return $this->classMapNamespace;
     }
 
@@ -356,6 +364,10 @@ class Config implements ConfigInterface
      */
     public function getClassMapDestination(): string
     {
+        if (!$this->classMapDestination) {
+            throw InvalidArgumentException::classmapDestinationMissing();
+        }
+
         return $this->classMapDestination;
     }
 

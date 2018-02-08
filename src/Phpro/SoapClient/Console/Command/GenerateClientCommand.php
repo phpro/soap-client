@@ -3,12 +3,10 @@
 namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ClientGenerator;
-use Phpro\SoapClient\CodeGenerator\Config\Config;
-use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
-use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
@@ -26,7 +24,7 @@ use Zend\Code\Generator\FileGenerator;
 class GenerateClientCommand extends Command
 {
 
-    const COMMAND_NAME = 'generate:client';
+    public const COMMAND_NAME = 'generate:client';
 
     /**
      * @var Filesystem
@@ -76,19 +74,7 @@ class GenerateClientCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
-
-        $configFile = $this->input->getOption('config');
-        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-
-        $config = include $configFile;
-        if (!$config instanceof ConfigInterface) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-        if (!$config instanceof Config) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
+        $config = $this->getConfigHelper()->load($input);
 
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypeNamespace());
@@ -126,7 +112,7 @@ class GenerateClientCommand extends Command
      *
      * @param ClientGenerator|TypeGenerator $generator
      * @param Client $client
-     * @param $path
+     * @param string $path
      * @return bool
      */
     protected function handleClient(ClientGenerator $generator, Client $client, $path)
@@ -216,5 +202,14 @@ class GenerateClientCommand extends Command
         $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
 
         return $this->getHelper('question')->ask($this->input, $this->output, $question);
+    }
+
+    /**
+     * Function for added type hint
+     * @return ConfigHelper
+     */
+    public function getConfigHelper(): ConfigHelper
+    {
+        return $this->getHelper('config');
     }
 }

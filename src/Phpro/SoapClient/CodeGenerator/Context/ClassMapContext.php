@@ -79,4 +79,12 @@ class ClassMapContext implements ContextInterface
     {
         return $this->namespace;
     }
+
+    /**
+     * @return string
+     */
+    public function getFqcn(): string
+    {
+        return $this->namespace.'\\'.$this->name;
+    }
 }

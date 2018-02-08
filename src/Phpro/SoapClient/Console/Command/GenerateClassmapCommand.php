@@ -3,9 +3,8 @@
 namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
-use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
-use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
@@ -76,17 +75,7 @@ class GenerateClassmapCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
-
-        $configFile = $input->getOption('config');
-        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-
-        $config = include $configFile;
-        if (!$config instanceof ConfigInterface) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-
+        $config = $this->getConfigHelper()->load($input);
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
 
@@ -212,5 +201,14 @@ class GenerateClassmapCommand extends Command
         $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
 
         return $this->getHelper('question')->ask($this->input, $this->output, $question);
+    }
+
+    /**
+     * Function for added type hint
+     * @return ConfigHelper
+     */
+    public function getConfigHelper(): ConfigHelper
+    {
+        return $this->getHelper('config');
     }
 }
