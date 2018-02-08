@@ -10,6 +10,21 @@ namespace Phpro\SoapClient\CodeGenerator\Util;
 class Normalizer
 {
 
+    private static $normalizations = [
+        'long'     => 'int',
+        'short'    => 'int',
+        'datetime' => '\\DateTime',
+        'date'     => '\\DateTime',
+        'boolean'  => 'bool',
+        'decimal'  => 'float',
+        'double'   => 'float',
+        'string'   => 'string',
+        'self'     => 'self',
+        'callable' => 'callable',
+        'iterable' => 'iterable',
+        'array'    => 'array',
+    ];
+
     /**
      * @param string $namespace
      *
@@ -47,19 +62,14 @@ class Normalizer
      */
     public static function normalizeDataType(string $type): string
     {
-        $normalizations = [
-            'long'     => 'int',
-            'short'    => 'int',
-            'datetime' => '\\DateTime',
-            'date'     => '\\DateTime',
-            'boolean'  => 'bool',
-            'decimal'  => 'float',
-            'double'   => 'float',
-        ];
-
         $searchType = strtolower($type);
 
-        return array_key_exists($searchType, $normalizations) ? $normalizations[$searchType] : $type;
+        return array_key_exists($searchType, self::$normalizations) ? self::$normalizations[$searchType] : $type;
+    }
+
+    public static function isKnownType(string $type): bool
+    {
+        return \in_array($type, self::$normalizations, true);
     }
 
     /**
@@ -70,7 +80,7 @@ class Normalizer
      */
     public static function generatePropertyMethod(string $prefix, string $property): string
     {
-        return strtolower($prefix) . ucfirst(self::normalizeProperty($property));
+        return strtolower($prefix).ucfirst(self::normalizeProperty($property));
     }
 
     /**
@@ -95,7 +105,7 @@ class Normalizer
     {
         $use = $useName;
         if (!empty($useAlias)) {
-            $use .= ' as ' . $useAlias;
+            $use .= ' as '.$useAlias;
         }
 
         return $use;

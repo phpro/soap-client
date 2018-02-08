@@ -48,7 +48,7 @@ class Type
         $this->name = Normalizer::normalizeClassname($xsdName);
 
         foreach ($properties as $property => $type) {
-            $this->properties[] = new Property($property, $type);
+            $this->properties[] = new Property($property, $type, $this->namespace);
         }
     }
 

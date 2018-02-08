@@ -29,7 +29,7 @@ class Config implements ConfigInterface
     /**
      * @var string
      */
-    protected $typesNamespace = '';
+    protected $typeNamespace = '';
 
     /**
      * @var
@@ -96,13 +96,11 @@ class Config implements ConfigInterface
     {
         $this->setWsdl($wsdl);
         $this->setTypeDestination($destination);
-        $this->ruleSet = new RuleSet(
-            [
-                new Rules\AssembleRule(new Assembler\PropertyAssembler()),
-                new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
-                new Rules\AssembleRule(new ClientMethodAssembler()),
-            ]
-        );
+        $this->ruleSet = new RuleSet([
+            new Rules\AssembleRule(new Assembler\PropertyAssembler()),
+            new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
+            new Rules\AssembleRule(new ClientMethodAssembler())
+        ]);
         $this->wsdlProvider = new MixedWsdlProvider();
     }
 
@@ -116,33 +114,10 @@ class Config implements ConfigInterface
 
     /**
      * @return string
-     * @throws InvalidArgumentException
-     * @deprecated use getTypeNamespace or getClientNamespace instead
      */
-    public function getNamespace(): string
+    public function getTypeNamespace(): string
     {
-        return $this->typesNamespace;
-    }
-
-    /**
-     * @param string $namespace
-     *
-     * @return Config
-     * @deprecated use setTypeNamespace of setClientNamespace instead
-     */
-    public function setNamespace(string $namespace): self
-    {
-        $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypesNamespace(): string
-    {
-        return $this->typesNamespace;
+        return $this->typeNamespace;
     }
 
     /**
@@ -152,7 +127,7 @@ class Config implements ConfigInterface
      */
     public function setTypeNamespace($namespace): self
     {
-        $this->typesNamespace = Normalizer::normalizeNamespace($namespace);
+        $this->typeNamespace = Normalizer::normalizeNamespace($namespace);
 
         return $this;
     }
@@ -217,33 +192,6 @@ class Config implements ConfigInterface
     public function setSoapOptions(array $soapOptions)
     {
         $this->soapOptions = $soapOptions;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     * @throws InvalidArgumentException
-     * @deprecated
-     */
-    public function getDestination(): string
-    {
-        if (!$this->typeDestination) {
-            throw InvalidArgumentException::destinationConfigurationIsMissing();
-        }
-
-        return $this->typeDestination;
-    }
-
-    /**
-     * @param string $destination
-     *
-     * @return Config
-     * @deprecated
-     */
-    public function setDestination(string $destination): self
-    {
-        $this->typeDestination = rtrim($destination, '/\\');
 
         return $this;
     }

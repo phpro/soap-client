@@ -14,12 +14,6 @@ interface ConfigInterface
 {
     /**
      * @return string
-     * @deprecated use getClientNamespace or getTypeNamespace instead
-     */
-    public function getNamespace(): string;
-
-    /**
-     * @return string
      */
     public function getWsdl(): string;
 
@@ -27,12 +21,6 @@ interface ConfigInterface
      * array
      */
     public function getSoapOptions(): array;
-
-    /**
-     * @return string
-     * @deprecated Use getTypeDestination or getClientDestination instead
-     */
-    public function getDestination(): string;
 
     /**
      * @return string

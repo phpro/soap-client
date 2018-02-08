@@ -31,12 +31,6 @@ class ConfigSpec extends ObjectBehavior
         $this->shouldImplement(ConfigInterface::class);
     }
 
-    function it_has_a_namespace()
-    {
-        $this->setNamespace($value = 'MyNamespace');
-        $this->getNamespace()->shouldReturn($value);
-    }
-
     function it_has_a_wsdl()
     {
         $this->setWsdl($value = 'http://myservice/some.wsdl');
@@ -67,15 +61,9 @@ class ConfigSpec extends ObjectBehavior
         $this->shouldThrow(InvalidArgumentException::class)->duringGetWsdl();
     }
 
-    function it_has_a_destination()
+    function it_requires_a_typedestination()
     {
-        $this->setDestination($value = 'destination/folder');
-        $this->getDestination()->shouldReturn($value);
-    }
-
-    function it_requires_a_destination()
-    {
-        $this->shouldThrow(InvalidArgumentException::class)->duringGetDestination();
+        $this->shouldThrow(InvalidArgumentException::class)->duringGetTypeDestination();
     }
 
     function it_has_a_ruleset()
@@ -88,7 +76,7 @@ class ConfigSpec extends ObjectBehavior
     {
         $this->getSoapOptions()->shouldBe(
             [
-                'trace'      => false,
+                'trace' => false,
                 'exceptions' => true,
                 'keep_alive' => true,
                 'cache_wsdl' => WSDL_CACHE_NONE,
@@ -117,12 +105,23 @@ class ConfigSpec extends ObjectBehavior
     public function it_has_a_type_namespace()
     {
         $this->setTypeNamespace($value = 'TypeNamespace');
-        $this->getTypesNamespace()->shouldBe($value);
+        $this->getTypeNamespace()->shouldBe($value);
     }
 
     public function it_has_a_client_namespace()
     {
         $this->setClientNamespace($value = 'ClientNamespace');
         $this->getClientNamespace()->shouldBe($value);
+    }
+
+    public function it_requires_a_client_namespace()
+    {
+        $this->shouldThrow(InvalidArgumentException::class)->duringGetClientNamespace();
+    }
+
+    public function it_has_a_client_name()
+    {
+        $this->setClientName($value = 'ClientName');
+        $this->getClientName()->shouldBe($value);
     }
 }
