@@ -39,7 +39,7 @@ As you can see, we've normalized the exception. Our SOAP client will always thro
 
 In older SOAP services, it is possible that it is impossible to request with a `RequestInterface`.
  Those services typically require multiple SOAP arguments in the method.
- This is why we created a `MixedArgumentRequestInterface`.
+ This is why we created a `MultiArgumentRequestInterface`.
  With this interface, you can still use our SOAP client, but send multiple arguments to the SOAP service.
 
 ```php

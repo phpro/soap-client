@@ -92,7 +92,7 @@ class GenerateTypesCommand extends Command
         $generator = new TypeGenerator($config->getRuleSet());
 
         foreach ($typeMap->getTypes() as $type) {
-            $fileInfo = $type->getFileInfo($config->getDestination());
+            $fileInfo = $type->getFileInfo($config->getTypeDestination());
             if ($this->handleType($generator, $type, $fileInfo)) {
                 $this->output->writeln(
                     sprintf('Generated class %s to %s', $type->getFullName(), $fileInfo->getPathname())

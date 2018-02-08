@@ -16,7 +16,7 @@ class PropertySpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('name', 'type');
+        $this->beConstructedWith('name', 'Type', 'My\Namespace');
     }
 
     function it_is_initializable()
@@ -31,7 +31,7 @@ class PropertySpec extends ObjectBehavior
 
     function it_has_a_type()
     {
-        $this->getType()->shouldReturn('type');
+        $this->getType()->shouldReturn('\\My\\Namespace\\Type');
     }
 
     function it_has_a_getter_name()

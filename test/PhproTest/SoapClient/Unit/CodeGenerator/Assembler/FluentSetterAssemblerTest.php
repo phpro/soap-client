@@ -101,7 +101,7 @@ class MyType
 {
 
     /**
-     * @param foobar \$prop1
+     * @param \\MyNamespace\\foobar \$prop1
      * @return \$this
      */
     public function setProp1(\$prop1)
@@ -138,7 +138,7 @@ class MyType
 {
 
     /**
-     * @param foobar \$prop1
+     * @param \MyNamespace\\foobar \$prop1
      * @return \$this
      */
     public function setProp1(\$prop1) : \MyNamespace\MyType
@@ -164,7 +164,7 @@ CODE;
         $type = new Type('MyNamespace', 'MyType', [
             'prop1' => 'string',
         ]);
-        $property = new Property('prop1', 'string');
+        $property = new Property('prop1', 'string', 'ns1');
 
         return new PropertyContext($class, $type, $property);
     }
@@ -178,7 +178,7 @@ CODE;
         $type = new Type('MyNamespace', 'MyType', [
             'prop1' => 'foobar',
         ]);
-        $property = new Property('prop1', 'foobar');
+        $property = new Property('prop1', 'foobar', 'MyNamespace');
 
         return new PropertyContext($class, $type, $property);
     }
