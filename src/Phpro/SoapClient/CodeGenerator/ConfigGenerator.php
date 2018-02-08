@@ -13,13 +13,13 @@ use Zend\Code\Generator\FileGenerator;
  */
 class ConfigGenerator implements GeneratorInterface
 {
-    private $body = <<<BODY
+    private const BODY = <<<BODY
 return Config::create()
 
 BODY;
 
 
-    private $ruleset = <<<RULESET
+    private const RULESET = <<<RULESET
 ->addRule(
     new Rules\TypenameMatchesRule(
         new Rules\MultiRule([
@@ -42,13 +42,14 @@ RULESET;
 
 
     /**
-     * @param               $name
-     * @param               $value
+     * @param string $name
+     * @param string $value
      * @param FileGenerator $file
+     * @return string
      */
-    private function addSetter($name, $value, FileGenerator $file)
+    private function generateSetter(string $name, string $value, FileGenerator $file): string
     {
-        $this->body .= sprintf("%s->%s('%s')".PHP_EOL, $file->getIndentation(), $name, $value);
+        return sprintf("%s->%s('%s')".PHP_EOL, $file->getIndentation(), $name, $value);
     }
 
     /**
@@ -57,7 +58,7 @@ RULESET;
      */
     private function getIndentedRuleSet(FileGenerator $file): string
     {
-        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $this->ruleset);
+        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), self::RULESET);
     }
 
     /**
@@ -67,18 +68,19 @@ RULESET;
      */
     public function generate(FileGenerator $file, $context): string
     {
+        $body = self::BODY;
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Assembler');
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Rules');
         $file->setUse(Config::class);
 
         foreach ($context->getSetters() as $name => $value) {
-            $this->addSetter($name, $value, $file);
+            $body .= $this->generateSetter($name, $value, $file);
         }
         if ($context->getRequestRegex() !== '' && $context->getResponseRegex() !== '') {
             $ruleset = $this->getIndentedRuleSet($file);
-            $this->body .= sprintf($ruleset, $context->getRequestRegex(), $context->getResponseRegex());
+            $body .= sprintf($ruleset, $context->getRequestRegex(), $context->getResponseRegex());
         }
-        $file->setBody($this->body.';'.PHP_EOL);
+        $file->setBody($body.';'.PHP_EOL);
 
         return $file->generate();
     }
