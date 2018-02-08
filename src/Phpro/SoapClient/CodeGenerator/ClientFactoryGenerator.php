@@ -16,7 +16,7 @@ use Zend\Code\Generator\MethodGenerator;
  */
 class ClientFactoryGenerator implements GeneratorInterface
 {
-    private const BODY = <<<BODY
+    const BODY = <<<BODY
 \$clientFactory = new PhproClientFactory(%1\$s::class);
 \$clientBuilder = new ClientBuilder(\$clientFactory, \$wsdl, []);
 \$clientBuilder->withClassMaps(%2\$s::getCollection());
