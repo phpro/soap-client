@@ -273,18 +273,6 @@ class Config implements ConfigInterface
     /**
      * @return string
      */
-    public function getTypeNamespace(): string
-    {
-        if (!$this->typesNamespace) {
-            throw InvalidArgumentException::typeNamespaceIsMissing();
-        }
-
-        return $this->typesNamespace;
-    }
-
-    /**
-     * @return string
-     */
     public function getClientDestination(): string
     {
         if (!$this->clientDestination) {
