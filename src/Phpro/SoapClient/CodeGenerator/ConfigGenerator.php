@@ -18,8 +18,14 @@ return Config::create()
 
 BODY;
 
+    const RULESET_DEFAULT = <<<RULESET
+->addRule(
+    new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions()))
+)
+RULESET;
 
-    const RULESET = <<<RULESET
+
+    const RULESET_REQUEST_RESPONSE = <<<RULESET
 ->addRule(
     new Rules\TypenameMatchesRule(
         new Rules\MultiRule([
@@ -33,7 +39,6 @@ BODY;
     new Rules\TypenameMatchesRule(
         new Rules\MultiRule([
             new Rules\AssembleRule(new Assembler\ResultAssembler()),
-            new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())),
         ]),
         '%s'
     )
@@ -54,11 +59,12 @@ RULESET;
 
     /**
      * @param FileGenerator $file
+     * @param string $ruleset
      * @return string
      */
-    private function getIndentedRuleSet(FileGenerator $file): string
+    private function parseIndentedRuleSet(FileGenerator $file, string $ruleset): string
     {
-        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), self::RULESET);
+        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $ruleset).PHP_EOL;
     }
 
     /**
@@ -76,10 +82,14 @@ RULESET;
         foreach ($context->getSetters() as $name => $value) {
             $body .= $this->generateSetter($name, $value, $file);
         }
+
+        $body .= $this->parseIndentedRuleSet($file, self::RULESET_DEFAULT);
+
         if ($context->getRequestRegex() !== '' && $context->getResponseRegex() !== '') {
-            $ruleset = $this->getIndentedRuleSet($file);
-            $body .= sprintf($ruleset, $context->getRequestRegex(), $context->getResponseRegex());
+            $rules = $this->parseIndentedRuleSet($file, self::RULESET_REQUEST_RESPONSE);
+            $body .= sprintf($rules, $context->getRequestRegex(), $context->getResponseRegex());
         }
+
         $file->setBody($body.';'.PHP_EOL);
 
         return $file->generate();
