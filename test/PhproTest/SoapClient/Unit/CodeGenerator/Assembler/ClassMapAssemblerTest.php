@@ -48,15 +48,27 @@ class ClassMapAssemblerTest extends TestCase
         $expected = <<<CODE
 <?php
 
+namespace ClassMapNamespace;
+
+use MyNamespace as Type;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\ClassMap\ClassMap;
 
-new ClassMapCollection([
-    new ClassMap('MyType', \MyNamespace\MyType::class),
-]);
+class ClassMap
+{
+
+    public static function getCollection() : \Phpro\SoapClient\Soap\ClassMap\ClassMapCollection
+    {
+        return new ClassMapCollection([
+            new ClassMap('MyType', Type\MyType::class),
+        ]);
+    }
+
+
+}
+
 
 CODE;
-
         $this->assertEquals($expected, $code);
     }
 
@@ -72,6 +84,6 @@ CODE;
             ]
         ]);
 
-        return new ClassMapContext($file, $typeMap);
+        return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace');
     }
 }
