@@ -9,15 +9,12 @@ class XmlFormatter
             return '';
         }
 
+        $type = (strpos(strtolower($xml), '<html') !== false)? 'HTML' : 'XML';
+
         $doc = new \DOMDocument('1.0');
         $doc->formatOutput = true;
-
-        if (strpos(strtolower($xml), '<html') !== false) {
-            if ($doc->loadHTML($xml)) {
-                return $doc->saveHTML();
-            }
-        } elseif ($doc->loadXML($xml)) {
-            return $doc->saveXML();
+        if ($doc->{"load$type"}($xml)) {
+            return $doc->{"save$type"}();
         }
 
         return $xml;
