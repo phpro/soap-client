@@ -57,7 +57,7 @@ class Filesystem
      * @param string $path
      * @param mixed $content
      */
-    public function putFileContents(string $path, $content): void
+    public function putFileContents(string $path, $content)
     {
         $this->ensureDirectoryExists(\dirname($path));
         file_put_contents($path, $content);
