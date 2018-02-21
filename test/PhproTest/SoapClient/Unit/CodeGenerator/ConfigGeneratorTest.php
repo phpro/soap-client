@@ -27,7 +27,7 @@ return Config::create()
     ->setClassmapName('Classmap')
     ->setClassmapNamespace('App\\\\Classmap')
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
-    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler())
+    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler()))
     ->addRule(
         new Rules\TypenameMatchesRule(
             new Rules\MultiRule([
@@ -87,7 +87,7 @@ return Config::create()
     ->setClassmapName('Classmap')
     ->setClassmapNamespace('App\\\\Classmap')
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
-    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler())
+    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler()))
 ;
 
 CONTENT;
