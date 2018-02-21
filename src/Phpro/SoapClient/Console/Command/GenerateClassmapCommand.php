@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Zend\Code\Generator\FileGenerator;
 
 /**
@@ -75,6 +76,8 @@ class GenerateClassmapCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
+        $io = new SymfonyStyle($input, $output);
+
         $config = $this->getConfigHelper()->load($input);
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
         $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
@@ -86,6 +89,8 @@ class GenerateClassmapCommand extends Command
         );
         $path = $config->getClassMapDestination().DIRECTORY_SEPARATOR.$config->getClassMapName().'.php';
         $this->handleClassmap($generator, $typeMap, $path);
+
+        $io->success('Generated classmap at ' . $path);
     }
 
 

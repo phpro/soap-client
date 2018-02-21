@@ -70,7 +70,8 @@ class GenerateClientFactoryCommand extends Command
         $generator = new ClientFactoryGenerator();
         $dest = $config->getClientDestination().DIRECTORY_SEPARATOR.$config->getClientName().'Factory.php';
         $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));
-        $io->success("Generated a client factory at $dest");
+
+        $io->success('Generated client factory at ' . $dest);
     }
 
     /**

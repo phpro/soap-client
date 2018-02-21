@@ -73,6 +73,19 @@ Great, you made it so far! Let's find out how this module works:
 $ composer require phpro/soap-client
 ```
 
+## Scafolding Wizard
+
+Since life is too short to read documentation,
+ we've added a scafolding wizard which will get you communicating with your SOAP server in no time!
+All you need to do is:
+
+```sh
+composer require --dev zendframework/zend-code:^3.1.0
+./vendor/bin/soap-client wizard
+```
+
+You can customize the generated code based on the manual installation pages in the next chapter.
+
 ## Getting your SOAP integration up and running
 
 1. [Create your own SOAP client.](docs/client.md)
