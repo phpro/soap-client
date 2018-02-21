@@ -19,9 +19,8 @@ return Config::create()
 BODY;
 
     const RULESET_DEFAULT = <<<RULESET
-->addRule(
-    new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions()))
-)
+->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
+->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler())
 RULESET;
 
 
