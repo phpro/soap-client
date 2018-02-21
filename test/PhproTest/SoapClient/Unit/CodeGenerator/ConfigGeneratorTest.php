@@ -26,6 +26,8 @@ return Config::create()
     ->setClassmapDestination('src/classmap')
     ->setClassmapName('Classmap')
     ->setClassmapNamespace('App\\\\Classmap')
+    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
+    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler()))
     ->addRule(
         new Rules\TypenameMatchesRule(
             new Rules\MultiRule([
@@ -39,11 +41,11 @@ return Config::create()
         new Rules\TypenameMatchesRule(
             new Rules\MultiRule([
                 new Rules\AssembleRule(new Assembler\ResultAssembler()),
-                new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())),
             ]),
             '/Response$/i'
         )
-    );
+    )
+;
 
 CONTENT;
         $context = new ConfigContext();
@@ -67,7 +69,7 @@ CONTENT;
 
     public function testGenerateWithoutRegex()
     {
-        $expected =         $expected = <<<CONTENT
+        $expected = <<<CONTENT
 <?php
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
@@ -84,6 +86,8 @@ return Config::create()
     ->setClassmapDestination('src/classmap')
     ->setClassmapName('Classmap')
     ->setClassmapNamespace('App\\\\Classmap')
+    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
+    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler()))
 ;
 
 CONTENT;
