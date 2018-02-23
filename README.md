@@ -11,8 +11,62 @@ Sick and tired of building crappy SOAP implementations?
 
 # Demo
 <img src="https://raw.githubusercontent.com/wiki/phpro/soap-client/soap-client-demo-fast.gif" alt="Soap Client demo" width="100%"/> 
+ 
+## Installation
 
-# About the soap client
+```sh
+$ composer require phpro/soap-client
+```
+
+## Scafolding Wizard
+
+Since life is too short to read documentation,
+ we've added a scafolding wizard which will get you communicating with your SOAP server in no time!
+All you need to do is:
+
+```sh
+composer require --dev zendframework/zend-code:^3.1.0
+./vendor/bin/soap-client wizard
+```
+
+You can customize the generated code based on the manual installation pages in the next chapter.
+
+## Getting your SOAP integration up and running
+
+1. [Create your own SOAP client.](docs/client.md)
+2. [Generate PHP classes based on SOAP types.](docs/cli/generate-types.md)
+3. [Generate a class map](docs/cli/generate-classmap.md)
+4. [Generate your own SOAP client.](docs/cli/generate-client.md)
+5. [Generate a client factory.](docs/cli/generate-clientfactory.md)
+6. [Use your SOAP client.](docs/usage.md)
+7. [Test your SOAP client.](docs/testing.md)
+
+
+## Advanced configuration
+
+- [Add type converters.](docs/type-converter.md)
+- [Listen to events.](docs/events.md)
+  - [Logger plugin](docs/plugins/logger.md)
+  - [Validator plugin](docs/plugins/validator.md)
+  - [Caching plugin](docs/plugins/caching.md)
+- [Specify your data transfer handler.](docs/handlers.md)
+  - [SoapHandle](docs/handlers.md#soaphandle)
+  - [HTTPlugHandle](docs/handlers.md#httplughandle)
+- [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
+  - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
+  - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
+  - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
+  - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
+- [Select a WSDL Provider](docs/wsdl-providers.md)
+
+
+## Customize the code generation
+
+- [Configuration](docs/code-generation/configuration.md)
+- [Specify generation `Rules`](docs/code-generation/rules.md)
+- [Generate code through `Assemblers`](docs/code-generation/assemblers.md)
+
+# Why this soap client was made
 
 By default, the SoapClient works with a mix of arrays, stdClasses and other scalar types. 
  This is not a good practice in a modern OOP world because:
@@ -69,60 +123,3 @@ Last but not least, we want to make it easy for you to configure your SoapClient
  That is why we included a ClientBuilder on which you can configure your custom Client.
  You want some other settings during development and in production? 
  No problem! Sit back and let the ClientBuilder handle your Client initialisation.
- 
-Great, you made it so far! Let's find out how this module works:
- 
-## Installation
-
-```sh
-$ composer require phpro/soap-client
-```
-
-## Scafolding Wizard
-
-Since life is too short to read documentation,
- we've added a scafolding wizard which will get you communicating with your SOAP server in no time!
-All you need to do is:
-
-```sh
-composer require --dev zendframework/zend-code:^3.1.0
-./vendor/bin/soap-client wizard
-```
-
-You can customize the generated code based on the manual installation pages in the next chapter.
-
-## Getting your SOAP integration up and running
-
-1. [Create your own SOAP client.](docs/client.md)
-2. [Generate PHP classes based on SOAP types.](docs/cli/generate-types.md)
-3. [Generate a class map](docs/cli/generate-classmap.md)
-4. [Generate your own SOAP client.](docs/cli/generate-client.md)
-5. [Generate a client factory.](docs/cli/generate-clientfactory.md)
-6. [Use your SOAP client.](docs/usage.md)
-7. [Test your SOAP client.](docs/testing.md)
-
-
-## Advanced configuration
-
-- [Add type converters.](docs/type-converter.md)
-- [Listen to events.](docs/events.md)
-  - [Logger plugin](docs/plugins/logger.md)
-  - [Validator plugin](docs/plugins/validator.md)
-  - [Caching plugin](docs/plugins/caching.md)
-- [Specify your data transfer handler.](docs/handlers.md)
-  - [SoapHandle](docs/handlers.md#soaphandle)
-  - [HTTPlugHandle](docs/handlers.md#httplughandle)
-- [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
-  - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
-  - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
-  - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
-  - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
-- [Select a WSDL Provider](docs/wsdl-providers.md)
-
-
-## Customize the code generation
-
-- [Configuration](docs/code-generation/configuration.md)
-- [Specify generation `Rules`](docs/code-generation/rules.md)
-- [Generate code through `Assemblers`](docs/code-generation/assemblers.md)
-
