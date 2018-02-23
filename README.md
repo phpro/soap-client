@@ -8,7 +8,12 @@ Sick and tired of building crappy SOAP implementations?
  This package aims to help you with some common SOAP integration pains in PHP.
  Its goal is to make integrating with SOAP fun again!
  Let's inspect some of the pains that are solved by this package:
- 
+
+# Demo
+<img src="https://raw.githubusercontent.com/wiki/phpro/soap-client/soap-client-demo-fast.gif" alt="Soap Client demo" width="100%"/> 
+
+# About the soap client
+
 By default, the SoapClient works with a mix of arrays, stdClasses and other scalar types. 
  This is not a good practice in a modern OOP world because:
  
