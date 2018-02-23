@@ -16,9 +16,17 @@ use Zend\Code\Generator\FileGenerator;
 
 class TypeGeneratorTest extends TestCase
 {
+    function zendCodeCompare($version, $operator)
+    {
+        $zendCodeVersion = \PackageVersions\Versions::getVersion('zendframework/zend-code');
+        $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
+
+        return version_compare($zendCodeVersion, $version, $operator);
+    }
+
     public function testGenerate()
     {
-        $expected = <<<BODY
+        $expectedOldZend = <<<BODY
 <?php
 
 namespace App\Type;
@@ -52,6 +60,44 @@ class MyType
 
 
 BODY;
+
+        $expectedNewZend = <<<BODY
+<?php
+
+namespace App\Type;
+
+class MyType
+{
+
+    /**
+     * @var string
+     */
+    private \$test;
+
+    /**
+     * @return string
+     */
+    public function getTest()
+    {
+        return \$this->test;
+    }
+
+    /**
+     * @param string \$test
+     */
+    public function setTest(\$test)
+    {
+        \$this->test = \$test;
+    }
+
+
+}
+
+
+BODY;
+
+        // Use the version with or without default null value depending on zend-code version
+        $expected = $this->zendCodeCompare('3.3.0', '<') ? $expectedOldZend : $expectedNewZend;
         $ruleSet = new RuleSet(
             [
                 new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())),
