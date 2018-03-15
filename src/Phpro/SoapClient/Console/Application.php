@@ -16,8 +16,8 @@ use Symfony\Component\Console\Helper\HelperSet;
  */
 class Application extends SymfonyApplication
 {
-    public const APP_NAME = 'SoapClient';
-    public const APP_VERSION = '0.1.0';
+    const APP_NAME = 'SoapClient';
+    const APP_VERSION = '0.1.0';
 
     /**
      * Set up application:

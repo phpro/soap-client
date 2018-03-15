@@ -23,7 +23,7 @@ use Zend\Code\Generator\FileGenerator;
 class GenerateClassmapCommand extends Command
 {
 
-    public const COMMAND_NAME = 'generate:classmap';
+    const COMMAND_NAME = 'generate:classmap';
 
     /**
      * @var Filesystem
