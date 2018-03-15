@@ -25,7 +25,7 @@ use Zend\Code\Generator\FileGenerator;
 class GenerateTypesCommand extends Command
 {
 
-    public const COMMAND_NAME = 'generate:types';
+    const COMMAND_NAME = 'generate:types';
 
     /**
      * @var Filesystem

@@ -18,7 +18,7 @@ use Zend\Code\Generator\FileGenerator;
 
 class GenerateClientFactoryCommand extends Command
 {
-    public const COMMAND_NAME = 'generate:clientfactory';
+    const COMMAND_NAME = 'generate:clientfactory';
 
     /**
      * @var Filesystem
