@@ -38,7 +38,7 @@ class GenerateClientFactoryCommand extends Command
     /**
      * Configure the command.
      */
-    protected function configure(): void
+    protected function configure()
     {
         $this
             ->setName(self::COMMAND_NAME)
