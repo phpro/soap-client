@@ -5,6 +5,7 @@ use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
+use PhproTest\SoapClient\Util\SyntaxChecker;
 use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\FileGenerator;
 
@@ -48,6 +49,8 @@ BODY;
         );
         $context = new ClientFactoryContext($clientContext, $classMapContext);
         $generator = new ClientFactoryGenerator();
-        self::assertEquals($expected, $generator->generate(new FileGenerator(), $context));
+        $generated = $generator->generate(new FileGenerator(), $context);
+        self::assertEquals($expected, $generated);
+        self::assertTrue(SyntaxChecker::isValidPHP($generated));
     }
 }

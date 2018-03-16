@@ -2,6 +2,7 @@
 
 use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
+use PhproTest\SoapClient\Util\SyntaxChecker;
 use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\FileGenerator;
 
@@ -65,6 +66,7 @@ CONTENT;
         $generator = new ConfigGenerator();
         $generated = $generator->generate(new FileGenerator(), $context);
         self::assertEquals($expected, $generated);
+        self::assertTrue(SyntaxChecker::isValidPHP($generated));
     }
 
     public function testGenerateWithoutRegex()
@@ -106,5 +108,6 @@ CONTENT;
         $generator = new ConfigGenerator();
         $generated = $generator->generate(new FileGenerator(), $context);
         self::assertEquals($expected, $generated);
+        self::assertTrue(SyntaxChecker::isValidPHP($generated));
     }
 }
