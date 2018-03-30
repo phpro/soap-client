@@ -9,3 +9,4 @@ parameters:
                 - "test/*.php"
         phpspec: ~
         phpunit: ~
+        phplint: ~

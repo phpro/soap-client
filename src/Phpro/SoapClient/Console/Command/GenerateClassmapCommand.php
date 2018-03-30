@@ -54,7 +54,7 @@ class GenerateClassmapCommand extends Command
     /**
      * Configure the command.
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName(self::COMMAND_NAME)
