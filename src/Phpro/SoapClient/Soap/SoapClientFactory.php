@@ -53,6 +53,6 @@ class SoapClientFactory
 
         $options = array_merge($defaults, $soapOptions);
 
-        return new SoapClient($wsdl, $options);
+        return new \Phpro\SoapClient\Soap\SoapClient($wsdl, $options);
     }
 }
