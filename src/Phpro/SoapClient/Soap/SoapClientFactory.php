@@ -4,6 +4,8 @@ namespace Phpro\SoapClient\Soap;
 
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
+// Alias the SoapClient to prevent issues with phpvcr code overriding
+use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
 
 /**
  * Class SoapClientFactory
@@ -53,6 +55,6 @@ class SoapClientFactory
 
         $options = array_merge($defaults, $soapOptions);
 
-        return new SoapClient($wsdl, $options);
+        return new PhproSoapClient($wsdl, $options);
     }
 }
