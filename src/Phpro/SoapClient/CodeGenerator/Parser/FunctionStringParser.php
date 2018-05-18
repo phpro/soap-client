@@ -37,9 +37,9 @@ class FunctionStringParser
     {
         preg_match('/\((.*)\)/', $this->functionString, $properties);
         $parameters = [];
-        $properties = explode(',', $properties[1]);
+        $properties = preg_split('/,\s?/', $properties[1]);
         foreach ($properties as $property) {
-            list($type) = explode(' ', $property);
+            list($type) = explode(' ', trim($property));
             $parameters[] = new Parameter($type, $this->parameterNamespace.'\\'.$type);
         }
 
