@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Parser;
 
+use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
@@ -13,7 +14,7 @@ use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
 class FunctionStringParserSpec extends ObjectBehavior
 {
     function let() {
-        $this->beConstructedWith('TestResponse Test(Test $parameters)', 'MyParameterNamespace');
+        $this->beConstructedWith('TestResponse Test(Test1 $parameter1, Test2 $parameter2)', 'MyParameterNamespace');
     }
 
     function it_is_initializable()
@@ -22,7 +23,16 @@ class FunctionStringParserSpec extends ObjectBehavior
     }
 
     function it_should_parse_parameters() {
-        $this->parseParameters()->shouldHaveCount(1);
+        $result = $this->parseParameters();
+        $result->shouldHaveCount(2);
+
+        $result[0]->shouldHaveType(Parameter::class);
+        $result[0]->getName()->shouldBe('Test1');
+        $result[0]->getType()->shouldBe('MyParameterNamespace\Test1');
+
+        $result[1]->shouldHaveType(Parameter::class);
+        $result[1]->getName()->shouldBe('Test2');
+        $result[1]->getType()->shouldBe('MyParameterNamespace\Test2');
     }
 
     function it_should_parse_name() {
