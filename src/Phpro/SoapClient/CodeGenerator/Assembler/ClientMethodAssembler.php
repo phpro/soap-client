@@ -5,7 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
-use Phpro\SoapClient\CodeGenerator\Model\Parameter;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Zend\Code\Generator\MethodGenerator;
 
@@ -37,7 +37,6 @@ class ClientMethodAssembler implements AssemblerInterface
         $method = $context->getMethod();
         try {
             $params = $method->getParameters();
-            /** @var Parameter $param */
             $param = array_shift($params);
             $class->removeMethod($method->getMethodName());
             $class->addMethodFromGenerator(
@@ -47,7 +46,8 @@ class ClientMethodAssembler implements AssemblerInterface
                         'parameters' => $method->getParameters(),
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                         'body'       => sprintf(
-                            'return $this->call(\'%1$s\', $%1$s);',
+                            'return $this->call(\'%s\', $%s);',
+                            Normalizer::getClassNameFromFQN($param->getType()),
                             $param->getName()
                         ),
                         // TODO: Use normalizer once https://github.com/phpro/soap-client/pull/61 is merged

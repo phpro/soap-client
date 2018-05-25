@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
+use Zend\Code\Generator\ParameterGenerator;
 
 /**
  * Class ClientMethod
@@ -12,7 +13,7 @@ use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
 class ClientMethod
 {
     /**
-     * @var Parameter[]
+     * @var ParameterGenerator[]
      */
     private $parameters;
 
@@ -30,14 +31,6 @@ class ClientMethod
      * @var string
      */
     private $parameterNamespace;
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $params;
 
     /**
      * TypeModel constructor.
@@ -71,9 +64,9 @@ class ClientMethod
 
 
     /**
-     * @return array|Parameter[]
+     * @return array|ParameterGenerator[]
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
@@ -81,7 +74,7 @@ class ClientMethod
     /**
      * @return string
      */
-    public function getMethodName()
+    public function getMethodName(): string
     {
         return lcfirst($this->methodName);
     }
@@ -89,7 +82,7 @@ class ClientMethod
     /**
      * @return string
      */
-    public function getReturnType()
+    public function getReturnType(): string
     {
         return $this->returnType;
     }
@@ -97,7 +90,7 @@ class ClientMethod
     /**
      * @return string
      */
-    public function getParameterNamespace()
+    public function getParameterNamespace(): string
     {
         return $this->parameterNamespace;
     }
