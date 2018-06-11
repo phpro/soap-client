@@ -52,6 +52,6 @@ class DateTypeConverter implements TypeConverterInterface
      */
     public function convertPhpToXml($php): string
     {
-        return sprintf('<%1$s>%2$s</%1$s>', $this->getTypeName(), $php->format('Y-m-d'));
+        return $php !== null ? sprintf('<%1$s>%2$s</%1$s>', $this->getTypeName(), $php->format('Y-m-d')) : '';
     }
 }
