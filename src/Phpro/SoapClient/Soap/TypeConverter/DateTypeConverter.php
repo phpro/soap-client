@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\Soap\TypeConverter;
 
 use DateTime;
+use DateTimeInterface;
 use DOMDocument;
 
 /**
@@ -52,6 +53,10 @@ class DateTypeConverter implements TypeConverterInterface
      */
     public function convertPhpToXml($php): string
     {
-        return $php !== null ? sprintf('<%1$s>%2$s</%1$s>', $this->getTypeName(), $php->format('Y-m-d')) : '';
+        if (!$php instanceof DateTimeInterface) {
+            return '';
+        }
+
+        return sprintf('<%1$s>%2$s</%1$s>', $this->getTypeName(), $php->format('Y-m-d'));
     }
 }
