@@ -3,11 +3,14 @@
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\Client;
-use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
+use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
+use Phpro\SoapClient\Type\MultiArgumentRequest;
 use Zend\Code\Generator\MethodGenerator;
+use Zend\Code\Generator\ParameterGenerator;
 
 /**
  * Class ClientMethodAssembler
@@ -36,22 +39,20 @@ class ClientMethodAssembler implements AssemblerInterface
         $class->setExtendedClass(Client::class);
         $method = $context->getMethod();
         try {
-            $params = $method->getParameters();
-            $param = array_shift($params);
+            $param = $this->createParamsFromMethod($method);
             $class->removeMethod($method->getMethodName());
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [
                         'name'       => $method->getMethodName(),
-                        'parameters' => $method->getParameters(),
+                        'parameters' => [$param],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                         'body'       => sprintf(
                             'return $this->call(\'%s\', $%s);',
                             Normalizer::getClassNameFromFQN($param->getType()),
                             $param->getName()
                         ),
-                        // TODO: Use normalizer once https://github.com/phpro/soap-client/pull/61 is merged
-                        'returntype' => '\\'.$method->getParameterNamespace().'\\'.$method->getReturnType(),
+                        'returntype' => $method->getNamespacedReturnType(),
                     ]
                 )
             );
@@ -60,5 +61,28 @@ class ClientMethodAssembler implements AssemblerInterface
         }
 
         return true;
+    }
+
+    /**
+     * Creates the parameters for the record
+     *
+     * @param ClientMethod $method
+     *
+     * @return ParameterGenerator
+     */
+    private function createParamsFromMethod(ClientMethod $method): ParameterGenerator
+    {
+        $params = $method->getParameters();
+        if (count($params) > 1) {
+            return ParameterGenerator::fromArray(
+                [
+                    'name' => 'multiArgumentRequest',
+                    'type' => MultiArgumentRequest::class,
+                ]
+            );
+        }
+        $param = array_shift($params);
+
+        return ParameterGenerator::fromArray($param->toArray());
     }
 }

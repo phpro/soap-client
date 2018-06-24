@@ -3,7 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
-use Zend\Code\Generator\ParameterGenerator;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 
 /**
  * Class ClientMethod
@@ -13,7 +13,7 @@ use Zend\Code\Generator\ParameterGenerator;
 class ClientMethod
 {
     /**
-     * @var ParameterGenerator[]
+     * @var Parameter[]
      */
     private $parameters;
 
@@ -36,7 +36,7 @@ class ClientMethod
      * TypeModel constructor.
      *
      * @param string $name
-     * @param array  $params
+     * @param array $params
      * @param string $returnType
      * @param string $parameterNamespace
      */
@@ -48,6 +48,14 @@ class ClientMethod
         $this->returnType = $returnType;
     }
 
+    /**
+     * Creates an instance from parsing a soap function string
+     *
+     * @param string $functionString
+     * @param string $parameterNamespace
+     *
+     * @return ClientMethod
+     */
     public static function createFromExtSoapFunctionString(
         string $functionString,
         string $parameterNamespace
@@ -62,9 +70,8 @@ class ClientMethod
         );
     }
 
-
     /**
-     * @return array|ParameterGenerator[]
+     * @return array|Parameter[]
      */
     public function getParameters(): array
     {
@@ -82,9 +89,9 @@ class ClientMethod
     /**
      * @return string
      */
-    public function getReturnType(): string
+    public function getNamespacedReturnType(): string
     {
-        return $this->returnType;
+        return '\\'.Normalizer::normalizeNamespace($this->getParameterNamespace().'\\'.$this->getReturnType());
     }
 
     /**
@@ -93,5 +100,13 @@ class ClientMethod
     public function getParameterNamespace(): string
     {
         return $this->parameterNamespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReturnType(): string
+    {
+        return $this->returnType;
     }
 }

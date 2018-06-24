@@ -2,8 +2,8 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Parser;
 
+use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Zend\Code\Generator\ParameterGenerator;
 
 /**
  * Class FunctionStringParser
@@ -32,7 +32,7 @@ class FunctionStringParser
     }
 
     /**
-     * @return ParameterGenerator[]
+     * @return Parameter[]
      */
     public function parseParameters(): array
     {
@@ -42,7 +42,7 @@ class FunctionStringParser
         foreach ($properties as $property) {
             list($type, $name) = explode(' ', trim($property));
             $name = Normalizer::normalizeProperty($name);
-            $parameters[] = new ParameterGenerator($name, $this->parameterNamespace.'\\'.$type);
+            $parameters[] = new Parameter($name, $this->parameterNamespace.'\\'.$type);
         }
 
         return $parameters;
