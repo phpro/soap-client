@@ -5,9 +5,12 @@ namespace Phpro\SoapClient\Console;
 
 use Phpro\SoapClient\Console\Command;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
+use Phpro\SoapClient\Event\Subscriber\ZendCodeValidationSubscriber;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class Application
@@ -24,6 +27,7 @@ class Application extends SymfonyApplication
      */
     public function __construct()
     {
+        $this->setDispatcher($this->createEventDispatcher());
         parent::__construct(self::APP_NAME, self::APP_VERSION);
     }
 
@@ -50,5 +54,13 @@ class Application extends SymfonyApplication
         $set->set(new ConfigHelper(new Filesystem()));
 
         return $set;
+    }
+
+    private function createEventDispatcher(): EventDispatcherInterface
+    {
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addSubscriber(new ZendCodeValidationSubscriber());
+
+        return $dispatcher;
     }
 }
