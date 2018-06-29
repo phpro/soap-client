@@ -7,6 +7,11 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use Phpro\SoapClient\Exception\AssemblerException;
+use Phpro\SoapClient\Exception\SoapException;
+use Phpro\SoapClient\Type\RequestInterface;
+use Phpro\SoapClient\Type\ResultInterface;
+use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -52,6 +57,38 @@ class ClientMethodAssembler implements AssemblerInterface
                         ),
                         // TODO: Use normalizer once https://github.com/phpro/soap-client/pull/61 is merged
                         'returntype' => '\\'.$method->getParameterNamespace().'\\'.$method->getReturnType(),
+                        'docblock' => DocBlockGenerator::fromArray([
+                            'tags' => [
+                                [
+                                    'name' => 'param',
+                                    'description' => sprintf(
+                                        '%s|%s $%s',
+                                        $this->generateShortClassNameAndAddImport(RequestInterface::class, $class),
+                                        $this->getPrefixedClassNameAndAddImport($param->getType(), $class),
+                                        $param->getName()
+                                    ),
+                                ],
+                                [
+                                    'name' => 'return',
+                                    'description' => sprintf(
+                                        '%s|%s',
+                                        $this->generateShortClassNameAndAddImport(ResultInterface::class, $class),
+                                        $this->getPrefixedClassNameAndAddImport(
+                                            $method->getParameterNamespace().'\\'.$method->getReturnType(),
+                                            $class
+                                        )
+                                    ),
+
+                                ],
+                                [
+                                    'name' => 'throws',
+                                    'description' => $this->generateShortClassNameAndAddImport(
+                                        SoapException::class,
+                                        $class
+                                    ),
+                                ],
+                            ]
+                        ])->setWordWrap(false),
                     ]
                 )
             );
@@ -60,5 +97,49 @@ class ClientMethodAssembler implements AssemblerInterface
         }
 
         return true;
+    }
+
+    /**
+     * @param string         $fqnClassName   Fully qualified class name.
+     * @param ClassGenerator $classGenerator Class generator object.
+     *
+     * @return string
+     */
+    protected function generateShortClassNameAndAddImport(string $fqnClassName, ClassGenerator $classGenerator): string
+    {
+        $fqnClassName = ltrim($fqnClassName, '\\');
+        $parts = explode('\\', $fqnClassName);
+        $className = array_pop($parts);
+        $classNamespace = implode('\\', $parts);
+        $currentNamespace = (string) $classGenerator->getNamespaceName();
+
+        if ($classNamespace !== $currentNamespace || ! in_array($fqnClassName, $classGenerator->getUses())) {
+            $classGenerator->addUse($fqnClassName);
+        }
+
+        return $className;
+    }
+
+    /**
+     * @param string         $fqnClassName   Fully qualified class name.
+     * @param ClassGenerator $classGenerator Class generator object.
+     *
+     * @return string
+     */
+    protected function getPrefixedClassNameAndAddImport(string $fqnClassName, ClassGenerator $classGenerator): string
+    {
+        $fqnClassName = ltrim($fqnClassName, '\\');
+        $parts = explode('\\', $fqnClassName);
+        $className = array_pop($parts);
+        $prefix = array_pop($parts);
+        $className = $prefix . '\\' . $className;
+        $classNamespace = implode('\\', $parts) . '\\' . $prefix;
+        $currentNamespace = (string) $classGenerator->getNamespaceName();
+
+        if ($classNamespace !== $currentNamespace || ! in_array($fqnClassName, $classGenerator->getUses())) {
+            $classGenerator->addUse(ltrim($classNamespace, '\\'));
+        }
+
+        return $className;
     }
 }
