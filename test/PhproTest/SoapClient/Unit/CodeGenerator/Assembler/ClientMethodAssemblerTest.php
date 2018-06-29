@@ -41,10 +41,10 @@ class ClientMethodAssemblerTest extends TestCase
     {
         // ClassGenerator $class, ClientMethod $method
         $class = new ClassGenerator();
-        $class->setNamespaceName('MyNamespace');
+        $class->setNamespaceName('Vendor\\MyNamespace');
         $method = ClientMethod::createFromExtSoapFunctionString(
             'ReturnType functionName(ParamType $param)',
-            'MyTypeNamespace'
+            'Vendor\\MyTypeNamespace'
         );
 
         return new ClientMethodContext($class, $method);
@@ -57,10 +57,10 @@ class ClientMethodAssemblerTest extends TestCase
     {
         // ClassGenerator $class, ClientMethod $method
         $class = new ClassGenerator();
-        $class->setNamespaceName('MyNamespace');
+        $class->setNamespaceName('Vendor\\MyNamespace');
         $method = ClientMethod::createFromExtSoapFunctionString(
             'ReturnType functionName(ParamType $param, OtherParamType $param2)',
-            'MyTypeNamespace'
+            'Vendor\\MyTypeNamespace'
         );
 
         return new ClientMethodContext($class, $method);
@@ -77,12 +77,22 @@ class ClientMethodAssemblerTest extends TestCase
 
         $code = $context->getClass()->generate();
         $expected = <<<CODE
-namespace MyNamespace;
+namespace Vendor\MyNamespace;
+
+use Phpro\SoapClient\Type\RequestInterface;
+use Phpro\SoapClient\Type\ResultInterface;
+use Vendor\MyTypeNamespace;
+use Phpro\SoapClient\Exception\SoapException;
 
 class  extends \Phpro\SoapClient\Client
 {
 
-    public function functionName(\MyTypeNamespace\ParamType \$param) : \MyTypeNamespace\ReturnType
+    /**
+     * @param RequestInterface|MyTypeNamespace\ParamType \$param
+     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @throws SoapException
+     */
+    public function functionName(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
         return \$this->call('ParamType', \$param);
     }
@@ -106,7 +116,10 @@ CODE;
 
         $code = $context->getClass()->generate();
         $expected = <<<CODE
-namespace MyNamespace;
+namespace Vendor\MyNamespace;
+
+use Phpro\SoapClient\Type\ResultInterface;
+use Vendor\MyTypeNamespace;
 
 class  extends \Phpro\SoapClient\Client
 {
@@ -114,13 +127,13 @@ class  extends \Phpro\SoapClient\Client
     /**
      * MultiArgumentRequest with following params:
      *
-     * MyTypeNamespace\ParamType \$param
-     * MyTypeNamespace\OtherParamType \$param2
+     * Vendor\MyTypeNamespace\ParamType \$param
+     * Vendor\MyTypeNamespace\OtherParamType \$param2
      *
      * @param Phpro\SoapClient\Type\MultiArgumentRequest
-     * @return ReturnType
+     * @return ResultInterface|MyTypeNamespace\ReturnType
      */
-    public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \MyTypeNamespace\ReturnType
+    public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Vendor\MyTypeNamespace\ReturnType
     {
         return \$this->call('MultiArgumentRequest', \$multiArgumentRequest);
     }
