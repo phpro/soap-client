@@ -111,6 +111,15 @@ namespace MyNamespace;
 class  extends \Phpro\SoapClient\Client
 {
 
+    /**
+     * MultiArgumentRequest with following params:
+     *
+     * MyTypeNamespace\ParamType \$param
+     * MyTypeNamespace\OtherParamType \$param2
+     *
+     * @param Phpro\SoapClient\Type\MultiArgumentRequest
+     * @return ReturnType
+     */
     public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \MyTypeNamespace\ReturnType
     {
         return \$this->call('MultiArgumentRequest', \$multiArgumentRequest);
@@ -121,6 +130,5 @@ class  extends \Phpro\SoapClient\Client
 
 CODE;
         $this->assertEquals($expected, $code);
-
     }
 }

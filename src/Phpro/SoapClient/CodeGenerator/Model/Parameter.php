@@ -2,11 +2,6 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-/**
- * Class Parameter
- *
- * @package Phpro\SoapClient\CodeGenerator\Model
- */
 class Parameter
 {
     /**
