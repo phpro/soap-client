@@ -27,11 +27,11 @@ class FunctionStringParserSpec extends ObjectBehavior
         $result->shouldHaveCount(2);
 
         $result[0]->shouldHaveType(Parameter::class);
-        $result[0]->getName()->shouldBe('Test1');
+        $result[0]->getName()->shouldBe('parameter1');
         $result[0]->getType()->shouldBe('MyParameterNamespace\Test1');
 
         $result[1]->shouldHaveType(Parameter::class);
-        $result[1]->getName()->shouldBe('Test2');
+        $result[1]->getName()->shouldBe('parameter2');
         $result[1]->getType()->shouldBe('MyParameterNamespace\Test2');
     }
 

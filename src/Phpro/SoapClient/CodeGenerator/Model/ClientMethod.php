@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 
 /**
  * Class ClientMethod
@@ -30,20 +31,12 @@ class ClientMethod
      * @var string
      */
     private $parameterNamespace;
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $params;
 
     /**
      * TypeModel constructor.
      *
      * @param string $name
-     * @param array  $params
+     * @param array $params
      * @param string $returnType
      * @param string $parameterNamespace
      */
@@ -55,6 +48,14 @@ class ClientMethod
         $this->returnType = $returnType;
     }
 
+    /**
+     * Creates an instance from parsing a soap function string
+     *
+     * @param string $functionString
+     * @param string $parameterNamespace
+     *
+     * @return ClientMethod
+     */
     public static function createFromExtSoapFunctionString(
         string $functionString,
         string $parameterNamespace
@@ -69,11 +70,10 @@ class ClientMethod
         );
     }
 
-
     /**
      * @return array|Parameter[]
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
@@ -81,7 +81,7 @@ class ClientMethod
     /**
      * @return string
      */
-    public function getMethodName()
+    public function getMethodName(): string
     {
         return lcfirst($this->methodName);
     }
@@ -89,16 +89,24 @@ class ClientMethod
     /**
      * @return string
      */
-    public function getReturnType()
+    public function getNamespacedReturnType(): string
     {
-        return $this->returnType;
+        return '\\'.Normalizer::normalizeNamespace($this->getParameterNamespace().'\\'.$this->getReturnType());
     }
 
     /**
      * @return string
      */
-    public function getParameterNamespace()
+    public function getParameterNamespace(): string
     {
         return $this->parameterNamespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReturnType(): string
+    {
+        return $this->returnType;
     }
 }

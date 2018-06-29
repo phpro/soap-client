@@ -3,14 +3,13 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
-use Phpro\SoapClient\CodeGenerator\Model\Property;
 use PhpSpec\ObjectBehavior;
 
 /**
  * Class ParameterSpec
  *
  * @package spec\Phpro\SoapClient\CodeGenerator\Model
- * @mixin Property
+ * @mixin Parameter
  */
 class ParameterSpec extends ObjectBehavior
 {
@@ -32,5 +31,15 @@ class ParameterSpec extends ObjectBehavior
     function is_has_a_namespace()
     {
         $this->getNamespace()->shouldBe('MyParameterType');
+    }
+
+    function it_returns_an_array()
+    {
+        $this->toArray()->shouldBe(
+            [
+                'name' => 'MyParameter',
+                'type' => 'MyParameterType',
+            ]
+        );
     }
 }

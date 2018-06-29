@@ -51,6 +51,22 @@ class ClientMethodAssemblerTest extends TestCase
     }
 
     /**
+     * @return ClientMethodContext
+     */
+    private function createMultiArgumentContext()
+    {
+        // ClassGenerator $class, ClientMethod $method
+        $class = new ClassGenerator();
+        $class->setNamespaceName('MyNamespace');
+        $method = ClientMethod::createFromExtSoapFunctionString(
+            'ReturnType functionName(ParamType $param, OtherParamType $param2)',
+            'MyTypeNamespace'
+        );
+
+        return new ClientMethodContext($class, $method);
+    }
+
+    /**
      * @test
      */
     function it_assembles_a_method()
@@ -66,9 +82,9 @@ namespace MyNamespace;
 class  extends \Phpro\SoapClient\Client
 {
 
-    public function functionName(\MyTypeNamespace\ParamType \$ParamType) : \MyTypeNamespace\ReturnType
+    public function functionName(\MyTypeNamespace\ParamType \$param) : \MyTypeNamespace\ReturnType
     {
-        return \$this->call('ParamType', \$ParamType);
+        return \$this->call('ParamType', \$param);
     }
 
 
@@ -76,6 +92,43 @@ class  extends \Phpro\SoapClient\Client
 
 CODE;
 
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_multiargumentrequests()
+    {
+        $assembler = new ClientMethodAssembler();
+        $context = $this->createMultiArgumentContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class  extends \Phpro\SoapClient\Client
+{
+
+    /**
+     * MultiArgumentRequest with following params:
+     *
+     * MyTypeNamespace\ParamType \$param
+     * MyTypeNamespace\OtherParamType \$param2
+     *
+     * @param Phpro\SoapClient\Type\MultiArgumentRequest
+     * @return ReturnType
+     */
+    public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \MyTypeNamespace\ReturnType
+    {
+        return \$this->call('MultiArgumentRequest', \$multiArgumentRequest);
+    }
+
+
+}
+
+CODE;
         $this->assertEquals($expected, $code);
     }
 }

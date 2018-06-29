@@ -2,35 +2,56 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Zend\Code\Generator\ParameterGenerator;
-
-/**
- * Class Parameter
- * @package Phpro\SoapClient\CodeGenerator\Model
- */
-class Parameter extends ParameterGenerator
+class Parameter
 {
     /**
      * @var string
      */
-    private $originalType;
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $type;
 
     /**
      * Parameter constructor.
+     *
      * @param string $name
      * @param string $type
      */
-    public function __construct($name, $type)
+    public function __construct(string $name, string $type)
     {
-        parent::__construct($name, $type);
-        $this->originalType = $type;
+        $this->name = $name;
+        $this->type = $type;
     }
 
     /**
      * @return string
      */
-    public function getOriginalType()
+    public function getName(): string
     {
-        return $this->originalType;
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * Get an array representation for creating a Generator
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'type' => $this->type,
+        ];
     }
 }

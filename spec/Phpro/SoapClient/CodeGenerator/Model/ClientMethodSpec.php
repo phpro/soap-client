@@ -3,20 +3,19 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
-use Phpro\SoapClient\CodeGenerator\Model\Property;
 use PhpSpec\ObjectBehavior;
 
 /**
- * Class MethodSpec
+ * Class ClientMethodSpec
  *
  * @package spec\Phpro\SoapClient\CodeGenerator\Model
- * @mixin Property
+ * @mixin ClientMethod
  */
-class MethodSpec extends ObjectBehavior
+class ClientMethodSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('CreditResponse Credit(Credit $parameters)', 'ParamNamespace');
+        $this->beConstructedWith('testMethod', [], 'CreditResponse', 'ParamNamespace');
     }
 
     function it_is_initializable()
@@ -26,7 +25,7 @@ class MethodSpec extends ObjectBehavior
 
     function it_has_a_methodname()
     {
-        $this->getMethodName()->shouldReturn('credit');
+        $this->getMethodName()->shouldReturn('testMethod');
     }
 
     function it_has_parameters()
@@ -38,8 +37,14 @@ class MethodSpec extends ObjectBehavior
     {
         $this->getReturnType()->shouldBe('CreditResponse');
     }
+
     function it_has_a_parameter_namespace()
     {
         $this->getParameterNamespace()->shouldBe('ParamNamespace');
+    }
+
+    function it_has_namespaced_return_type()
+    {
+        $this->getNamespacedReturnType()->shouldBe('\\ParamNamespace\\CreditResponse');
     }
 }

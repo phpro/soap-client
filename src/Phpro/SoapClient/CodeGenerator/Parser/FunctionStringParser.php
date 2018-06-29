@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Parser;
 
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 
 /**
  * Class FunctionStringParser
@@ -33,14 +34,15 @@ class FunctionStringParser
     /**
      * @return Parameter[]
      */
-    public function parseParameters() : array
+    public function parseParameters(): array
     {
         preg_match('/\((.*)\)/', $this->functionString, $properties);
         $parameters = [];
         $properties = preg_split('/,\s?/', $properties[1]);
         foreach ($properties as $property) {
-            list($type) = explode(' ', trim($property));
-            $parameters[] = new Parameter($type, $this->parameterNamespace.'\\'.$type);
+            list($type, $name) = explode(' ', trim($property));
+            $name = Normalizer::normalizeProperty($name);
+            $parameters[] = new Parameter($name, $this->parameterNamespace.'\\'.$type);
         }
 
         return $parameters;
@@ -49,7 +51,7 @@ class FunctionStringParser
     /**
      * @return string
      */
-    public function parseName() : string
+    public function parseName(): string
     {
         preg_match('/^\w+ (\w+)/', $this->functionString, $matches);
 
