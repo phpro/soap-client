@@ -14,6 +14,11 @@ class FluentSetterAssemblerOptions
     /**
      * @var bool
      */
+    private $typeHints = false;
+
+    /**
+     * @var bool
+     */
     private $returnType = false;
 
     /**
@@ -22,6 +27,19 @@ class FluentSetterAssemblerOptions
     public static function create(): FluentSetterAssemblerOptions
     {
         return new self();
+    }
+
+    /**
+     * @param bool $typeHints
+     *
+     * @return FluentSetterAssemblerOptions
+     */
+    public function withTypeHints(bool $typeHints = true): FluentSetterAssemblerOptions
+    {
+        $new = clone $this;
+        $new->typeHints = $typeHints;
+
+        return $new;
     }
 
     /**
@@ -35,6 +53,14 @@ class FluentSetterAssemblerOptions
         $new->returnType = $returnType;
 
         return $new;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useTypeHints(): bool
+    {
+        return $this->typeHints;
     }
 
     /**

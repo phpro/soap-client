@@ -92,7 +92,7 @@ class FluentSetterAssembler implements AssemblerInterface
     private function getParameter(Property $property): array
     {
         $type = $property->getType();
-        if (TypeChecker::isKnownType($type)) {
+        if (TypeChecker::isKnownType($type) && $this->options->useTypeHints()) {
             return [
                 [
                     'name' => $property->getName(),
