@@ -84,6 +84,25 @@ Example output:
     }
 ```
 
+Generating type-hints is disabled by default, but can be enabled by passing `FluentSetterAssemblerOption` instance to the constructor with the option withTypeHints set to true.
+
+Example
+```php
+new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints())
+```
+
+```php
+    /**
+     * @param string $prop1
+     * @return $this
+     */
+    public function setProp1(string $prop1)
+    {
+        $this->prop1 = $prop1;
+        return $this;
+    }
+```
+
 ## FinalClassAssembler
 
 The `FinalClassAssembler` can be used to mark a generated class as final.
