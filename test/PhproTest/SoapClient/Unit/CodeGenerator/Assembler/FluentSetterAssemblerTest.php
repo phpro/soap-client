@@ -55,7 +55,7 @@ class FluentSetterAssemblerTest extends TestCase
      */
     function it_assembles_a_property()
     {
-        $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints());
+        $assembler = new FluentSetterAssembler(new FluentSetterAssemblerOptions());
         $context = $this->createContext();
         $assembler->assemble($context);
 
@@ -87,43 +87,9 @@ CODE;
     /**
      * @test
      */
-    function it_assembles_a_property_without_type_hints()
-    {
-        $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints(false));
-        $context = $this->createContext();
-        $assembler->assemble($context);
-
-        $code = $context->getClass()->generate();
-        $expected = <<<CODE
-namespace MyNamespace;
-
-class MyType
-{
-
-    /**
-     * @param string \$prop1
-     * @return \$this
-     */
-    public function setProp1(\$prop1)
-    {
-        \$this->prop1 = \$prop1;
-        return \$this;
-    }
-
-
-}
-
-CODE;
-
-        $this->assertEquals($expected, $code);
-    }
-
-    /**
-     * @test
-     */
     function it_assembles_a_property_with_an_unkown_type()
     {
-        $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints());
+        $assembler = new FluentSetterAssembler(new FluentSetterAssemblerOptions());
         $context = $this->createContextWithAnUnknownType();
         $assembler->assemble($context);
 
