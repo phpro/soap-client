@@ -27,7 +27,7 @@ to generate the code you want to add to the generated SOAP types.
 
 ## ClassMapAssembler
 
-The `ClassMapAssembler` is activaded by default and is used during the `generate:classmap` command.
+The `ClassMapAssembler` is activated by default and is used during the `generate:classmap` command.
 
 Example output:
 
