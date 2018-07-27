@@ -11,19 +11,109 @@ class Normalizer
 {
 
     private static $normalizations = [
-        'long'     => 'int',
-        'short'    => 'int',
+        'long' => 'int',
+        'short' => 'int',
         'datetime' => '\\DateTime',
-        'date'     => '\\DateTime',
-        'boolean'  => 'bool',
-        'decimal'  => 'float',
-        'double'   => 'float',
-        'string'   => 'string',
-        'self'     => 'self',
+        'date' => '\\DateTime',
+        'boolean' => 'bool',
+        'decimal' => 'float',
+        'double' => 'float',
+        'string' => 'string',
+        'self' => 'self',
         'callable' => 'callable',
         'iterable' => 'iterable',
-        'array'    => 'array',
+        'array' => 'array',
     ];
+
+    /**
+     * @var array
+     * @see https://secure.php.net/manual/en/reserved.keywords.php
+     */
+    private static $reservedKeywords = [
+        '__halt_compiler',
+        'abstract',
+        'and',
+        'array',
+        'as',
+        'break',
+        'callable',
+        'case',
+        'catch',
+        'class',
+        'clone',
+        'const',
+        'continue',
+        'declare',
+        'default',
+        'die',
+        'do',
+        'echo',
+        'else',
+        'elseif',
+        'empty',
+        'enddeclare',
+        'endfor',
+        'endforeach',
+        'endif',
+        'endswitch',
+        'endwhile',
+        'eval',
+        'exit',
+        'extends',
+        'final',
+        'finally',
+        'for',
+        'foreach',
+        'function',
+        'global',
+        'goto',
+        'if',
+        'implements',
+        'include',
+        'include_once',
+        'instanceof',
+        'insteadof',
+        'interface',
+        'isset',
+        'list',
+        'namespace',
+        'new',
+        'or',
+        'print',
+        'private',
+        'protected',
+        'public',
+        'require',
+        'require_once',
+        'return',
+        'static',
+        'switch',
+        'throw',
+        'trait',
+        'try',
+        'unset',
+        'use',
+        'var',
+        'while',
+        'xor',
+        'yield',
+    ];
+
+    /**
+     * @param string $name
+     * @param bool   $ucfirst
+     *
+     * @return string
+     */
+    private static function normalizeReservedKeywords(string $name, $ucfirst = true): string
+    {
+        if (!\in_array(strtolower($name), self::$reservedKeywords, true)) {
+            return $name;
+        }
+        $name = ucfirst($name);
+
+        return $ucfirst ? 'Client'.$name : 'client'.$name;
+    }
 
     /**
      * @param string $namespace
@@ -42,6 +132,8 @@ class Normalizer
      */
     public static function normalizeClassname($name): string
     {
+        $name = self::normalizeReservedKeywords($name);
+
         return ucfirst(preg_replace('{[^a-z0-9_]}i', '', $name));
     }
 
@@ -52,6 +144,8 @@ class Normalizer
      */
     public static function normalizeProperty($property)
     {
+        $property = self::normalizeReservedKeywords($property, false);
+
         return preg_replace('{[^a-z0-9_]}i', '', $property);
     }
 
@@ -101,10 +195,10 @@ class Normalizer
      *
      * @return string
      */
-    public static function getCompleteUseStatement(string $useName, $useAlias): string
+    public static function getCompleteUseStatement(string $useName, string $useAlias = null): string
     {
         $use = $useName;
-        if (!empty($useAlias)) {
+        if (null !== $useAlias && $useAlias !== '') {
             $use .= ' as '.$useAlias;
         }
 

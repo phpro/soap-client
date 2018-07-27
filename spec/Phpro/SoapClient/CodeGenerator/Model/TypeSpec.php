@@ -56,6 +56,14 @@ class TypeSpec extends ObjectBehavior
         $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/MyType/3/2.php');
     }
 
+    function it_should_prefix_reserved_keywords()
+    {
+        $this->beConstructedWith('MyNamespace', 'Final', ['xor' => 'string']);
+        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/ClientFinal.php');
+        $this->getName()->shouldReturn('ClientFinal');
+        $this->getProperties()[0]->getName()->shouldReturn('clientXor');
+    }
+
     function it_has_properties()
     {
         $props = $this->getProperties();
