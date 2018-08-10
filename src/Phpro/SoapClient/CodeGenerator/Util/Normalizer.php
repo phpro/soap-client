@@ -42,7 +42,7 @@ class Normalizer
      */
     public static function normalizeClassname($name): string
     {
-        return ucfirst(preg_replace('{[^a-z0-9_]}i', '', $name));
+        return ucfirst(preg_replace('{[^a-z0-9]}i', '', $name));
     }
 
     /**
