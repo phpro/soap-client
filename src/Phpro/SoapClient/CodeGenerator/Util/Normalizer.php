@@ -42,7 +42,10 @@ class Normalizer
      */
     public static function normalizeClassname($name): string
     {
-        return ucfirst(preg_replace('{[^a-z0-9]}i', '', $name));
+        $className = trim(preg_replace('{[^a-z0-9]+}i', ' ', $name));
+        $className = ucwords($className);
+
+        return str_replace(' ', '', $className);
     }
 
     /**
@@ -52,7 +55,11 @@ class Normalizer
      */
     public static function normalizeProperty($property)
     {
-        return preg_replace('{[^a-z0-9_]}i', '', $property);
+        $property = trim(preg_replace('{[^a-z0-9_]}i', ' ', $property));
+        $property = ucwords($property);
+        $property = lcfirst($property);
+
+        return str_replace(' ', '', $property);
     }
 
     /**
