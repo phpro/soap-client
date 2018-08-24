@@ -30,13 +30,13 @@ class NormalizerSpec extends ObjectBehavior
     function it_can_normalize_classnames()
     {
         $this->normalizeClassname('myType')->shouldReturn('MyType');
-        $this->normalizeClassname('my-./*type_123')->shouldReturn('Mytype_123');
+        $this->normalizeClassname('my-./*type_123')->shouldReturn('MyType123');
     }
 
     function it_noramizes_properties()
     {
         $this->normalizeProperty('prop1')->shouldReturn('prop1');
-        $this->normalizeProperty('my-./*prop_123')->shouldReturn('myprop_123');
+        $this->normalizeProperty('my-./*prop_123')->shouldReturn('myProp_123');
     }
 
     function it_normalizes_datatypes()

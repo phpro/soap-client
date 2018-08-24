@@ -50,10 +50,10 @@ class TypeSpec extends ObjectBehavior
         $this->getPathname('my/dir')->shouldReturn('my/dir/MyType.php');
     }
 
-    function it_should_replace_underscores_in_paths()
+    function it_should_not_replace_underscores_in_paths()
     {
-        $this->beConstructedWith('MyNamespace', 'myType_3_2', ['prop1' => 'string']);
-        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/MyType/3/2.php');
+        $this->beConstructedWith('MyNamespace', 'my_type_3_2', ['prop1' => 'string']);
+        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/MyType32.php');
     }
 
     function it_has_properties()
