@@ -39,7 +39,7 @@
     "phpro/grumphp": "~0.11",
     "phpspec/phpspec": "~3.2",
     "phpspec/prophecy": "~1.7",
-    "phpunit/phpunit": "~6.0",
+    "phpunit/phpunit": "~7.3",
     "psr/http-message": "^1.0",
     "robrichards/wse-php": "^2.0.2",
     "robrichards/xmlseclibs": "^3.0",

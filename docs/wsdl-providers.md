@@ -15,6 +15,7 @@ $client = $clientBuilder->build();
 Here is a list of built-in providers:
 
 - [HttPlugWsdlProvider](#httplugwsdlprovider)
+- [InMemoryWsdlProvider](#inmemorywsdlprovider)
 - [LocalWsdlProvider](#localwsdlprovider)
 - [MixedWsdlProvider](#mixedwsdlprovider)
 
@@ -75,6 +76,20 @@ To change the TTL of the cache, you can adjust following `php.ini` setting:
 ```php
 # See: http://php.net/manual/en/soap.configuration.php
 soap.wsdl_cache_ttl: 86400
+```
+
+
+## InMemoryWsdlProvider
+
+By using the in-memory WSDL provider, you can just use a complete XML version of the WSDL as source.
+This one might come in handy during tests, but probably shouldn't be used in production.
+
+**Configuration**
+```php
+$wsdl = '<definitions ..... />'
+$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
+$clientBuilder->withWsdlProvider(new InMemoryWsdlProvider());
+$client = $clientBuilder->build();
 ```
 
 
