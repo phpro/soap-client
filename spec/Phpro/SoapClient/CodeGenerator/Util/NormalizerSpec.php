@@ -4,7 +4,6 @@ namespace spec\Phpro\SoapClient\CodeGenerator\Util;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 /**
  * Class NormalizerSpec
@@ -30,12 +29,14 @@ class NormalizerSpec extends ObjectBehavior
     function it_can_normalize_classnames()
     {
         $this->normalizeClassname('myType')->shouldReturn('MyType');
+        $this->normalizeClassname('final')->shouldReturn('FinalType');
         $this->normalizeClassname('my-./*type_123')->shouldReturn('MyType123');
     }
 
     function it_noramizes_properties()
     {
         $this->normalizeProperty('prop1')->shouldReturn('prop1');
+        $this->normalizeProperty('final')->shouldReturn('finalType');
         $this->normalizeProperty('my-./*prop_123')->shouldReturn('myProp_123');
     }
 
@@ -73,7 +74,8 @@ class NormalizerSpec extends ObjectBehavior
 
     function it_gets_complete_use_statement()
     {
-        $this->getCompleteUseStatement('Namespace\MyClass', 'ClassAlias')->shouldReturn('Namespace\MyClass as ClassAlias');
+        $this->getCompleteUseStatement('Namespace\MyClass',
+            'ClassAlias')->shouldReturn('Namespace\MyClass as ClassAlias');
         $this->getCompleteUseStatement('Namespace\MyClass', null)->shouldReturn('Namespace\MyClass');
         $this->getCompleteUseStatement('MyClass', '')->shouldReturn('MyClass');
     }

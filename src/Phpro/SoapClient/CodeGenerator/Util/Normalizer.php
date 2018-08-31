@@ -11,19 +11,110 @@ class Normalizer
 {
 
     private static $normalizations = [
-        'long'     => 'int',
-        'short'    => 'int',
+        'long' => 'int',
+        'short' => 'int',
         'datetime' => '\\DateTime',
-        'date'     => '\\DateTime',
-        'boolean'  => 'bool',
-        'decimal'  => 'float',
-        'double'   => 'float',
-        'string'   => 'string',
-        'self'     => 'self',
+        'date' => '\\DateTime',
+        'boolean' => 'bool',
+        'decimal' => 'float',
+        'double' => 'float',
+        'string' => 'string',
+        'self' => 'self',
         'callable' => 'callable',
         'iterable' => 'iterable',
-        'array'    => 'array',
+        'array' => 'array',
     ];
+
+    /**
+     * @var array
+     * @see https://secure.php.net/manual/en/reserved.keywords.php
+     */
+    private static $reservedKeywords = [
+        '__halt_compiler',
+        'abstract',
+        'and',
+        'array',
+        'as',
+        'break',
+        'callable',
+        'case',
+        'catch',
+        'class',
+        'clone',
+        'const',
+        'continue',
+        'declare',
+        'default',
+        'die',
+        'do',
+        'echo',
+        'else',
+        'elseif',
+        'empty',
+        'enddeclare',
+        'endfor',
+        'endforeach',
+        'endif',
+        'endswitch',
+        'endwhile',
+        'eval',
+        'exit',
+        'extends',
+        'final',
+        'finally',
+        'for',
+        'foreach',
+        'function',
+        'global',
+        'goto',
+        'if',
+        'implements',
+        'include',
+        'include_once',
+        'instanceof',
+        'insteadof',
+        'interface',
+        'isset',
+        'list',
+        'namespace',
+        'new',
+        'or',
+        'print',
+        'private',
+        'protected',
+        'public',
+        'require',
+        'require_once',
+        'return',
+        'static',
+        'switch',
+        'throw',
+        'trait',
+        'try',
+        'unset',
+        'use',
+        'var',
+        'while',
+        'xor',
+        'yield',
+    ];
+
+    /**
+     * @param string $name
+     * @param bool   $ucfirst
+     *
+     * @return string
+     */
+    private static function normalizeReservedKeywords(string $name, $ucfirst = true): string
+    {
+        if (!\in_array(strtolower($name), self::$reservedKeywords, true)) {
+            return $name;
+        }
+        $name = ucfirst($name);
+        $name .= 'Type';
+
+        return $ucfirst ? ucfirst($name) : lcfirst($name);
+    }
 
     /**
      * @param string $namespace
@@ -36,12 +127,13 @@ class Normalizer
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return string
      */
-    public static function normalizeClassname($name): string
+    public static function normalizeClassname(string $name): string
     {
+        $name = self::normalizeReservedKeywords($name);
         $className = trim(preg_replace('{[^a-z0-9]+}i', ' ', $name));
         $className = ucwords($className);
 
@@ -49,12 +141,13 @@ class Normalizer
     }
 
     /**
-     * @param $property
+     * @param string $property
      *
-     * @return mixed
+     * @return string
      */
-    public static function normalizeProperty($property)
+    public static function normalizeProperty(string $property)
     {
+        $property = self::normalizeReservedKeywords($property, false);
         $property = trim(preg_replace('{[^a-z0-9_]}i', ' ', $property));
         $property = ucwords($property);
         $property = lcfirst($property);
@@ -108,10 +201,10 @@ class Normalizer
      *
      * @return string
      */
-    public static function getCompleteUseStatement(string $useName, $useAlias): string
+    public static function getCompleteUseStatement(string $useName, string $useAlias = null): string
     {
         $use = $useName;
-        if (!empty($useAlias)) {
+        if (null !== $useAlias && $useAlias !== '') {
             $use .= ' as '.$useAlias;
         }
 

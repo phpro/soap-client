@@ -76,21 +76,22 @@ class Type
         return $this->xsdName;
     }
 
-
     /**
      * @param string $destination
      *
      * @return SplFileInfo
      */
-    public function getFileInfo(string $destination) : SplFileInfo
+    public function getFileInfo(string $destination): SplFileInfo
     {
-        $path = rtrim($destination, '/\\').DIRECTORY_SEPARATOR.$this->getName().'.php';
+        $name = Normalizer::normalizeClassname($this->getName());
+        $path = rtrim($destination, '/\\').DIRECTORY_SEPARATOR.$name.'.php';
 
         return new SplFileInfo($path);
     }
 
     /**
      * @param string $destination
+     *
      * @deprecated please use getFileInfo instead
      * @return string
      */
