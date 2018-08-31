@@ -28,6 +28,16 @@ class SimpleContentTest extends AbstractSoapTestCase
         return $this->provideBasicWsdlOptions();
     }
 
+    /** @test */
+    function it_can_parse_simple_content_types()
+    {
+        $types = $this->client->getSoapTypes();
+        $type = $types['SimpleContent'];
+
+        $this->assertEquals($type['country'], 'string');
+        $this->assertEquals($type['_'], 'integer');
+    }
+
     /**
      * @test
      * @runInSeparateProcess
