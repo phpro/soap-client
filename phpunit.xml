@@ -9,5 +9,8 @@
         <testsuite name="Integration">
             <directory>./test/PhproTest/SoapClient/Integration</directory>
         </testsuite>
+        <testsuite name="Functional">
+            <directory>./test/PhproTest/SoapClient/Functional</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

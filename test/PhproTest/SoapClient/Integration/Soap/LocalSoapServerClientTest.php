@@ -2,6 +2,7 @@
 
 namespace PhproTest\SoapClient\Integration\Soap;
 
+use Phpro\SoapClient\Soap\Handler\LocalSoapServerHandle;
 use Phpro\SoapClient\Soap\SoapClient as PhproSoapClient;
 use PHPUnit\Framework\TestCase;
 
@@ -10,46 +11,50 @@ use PHPUnit\Framework\TestCase;
  *
  * @package PhproTest\SoapClient\Integration\Soap
  */
-class SoapClientTest extends TestCase
+class LocalSoapServerClientTest extends TestCase
 {
 
     /**
-     * Wheather API
+     * Weather API
      */
     const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/weather-ws.wsdl';
 
+    /**
+     * @var \SoapServer
+     */
+    private $server;
 
     /**
      * @var PhproSoapClient
      */
-    protected $client;
+    private $client;
 
     /**
      * Configure client
      */
-    function setUp()
+    protected function setUp()
     {
+        $this->server = new \SoapServer(self::CDYNE_WSDL, ['soap_version' => SOAP_1_2]);
         $this->client = new PhproSoapClient(self::CDYNE_WSDL, ['soap_version' => SOAP_1_2]);
+        $this->client->setHandler(new LocalSoapServerHandle($this->server));
+
+        $this->server->setObject(new class() {
+            public function GetCityWeatherByZIP($zip) {
+                return [
+                    'GetCityWeatherByZIPResult' => [
+                        'WeatherID' => 1,
+                        'Success' => true,
+                    ]
+                ];
+            }
+        });
     }
 
     /**
      * @test
+     * @@runInSeparateProcess
      */
-    function it_should_know_all_WSDL_types()
-    {
-        $types = $this->client->getSoapTypes();
-
-        $this->assertTrue(array_key_exists('GetCityForecastByZIP', $types));
-        $this->assertEquals('string', $types['GetCityForecastByZIP']['ZIP']);
-    }
-
-    /**
-     * @test
-     * @vcr soap-get-city-weather-by-zip-10013.yml
-     *
-     * Note: this method will throw Exceptions if VCR can't take over the configured SoapClient.
-     */
-    function it_should_be_possible_to_hook_php_vcr_for_testing()
+    function it_should_run_through_soap_server()
     {
         $result = $this->client->GetCityWeatherByZIP(['ZIP' => '10013']);
         $this->assertTrue($result->GetCityWeatherByZIPResult->Success);
@@ -57,9 +62,7 @@ class SoapClientTest extends TestCase
 
     /**
      * @test
-     * @vcr soap-get-city-weather-by-zip-10013.yml
-     *
-     *  Note: The headers are not remembered by the internally used php-vcr soapclient.
+     * @@runInSeparateProcess
      */
     function it_should_know_the_last_request_and_response()
     {
@@ -67,6 +70,6 @@ class SoapClientTest extends TestCase
         $this->assertEquals(0, strlen($this->client->__getLastResponse()));
         $this->client->GetCityWeatherByZIP(['ZIP' => '10013']);
         $this->assertGreaterThan(0, strlen($this->client->__getLastRequest()));
-        $this->assertGreaterThan(0, strlen($this->client->__getLastResponse()));
+        $this->assertGreaterThan(0, strlen($this->client->__getLastRequest()));
     }
 }

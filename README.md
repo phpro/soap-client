@@ -52,6 +52,7 @@ You can customize the generated code based on the manual installation pages in t
 - [Specify your data transfer handler.](docs/handlers.md)
   - [SoapHandle](docs/handlers.md#soaphandle)
   - [HTTPlugHandle](docs/handlers.md#httplughandle)
+  - [LocalSoapServerHandle](docs/handlers.md#localsoapserverhandle)
 - [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
   - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
   - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)

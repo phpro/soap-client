@@ -11,6 +11,7 @@ Here is a list of built-in handlers:
 
 - [SoapHandle](#soaphandle)
 - [HttPlugHandle](#guzzlehandle)
+- [LocalSoapServerHandle](#localsoapserverhandle)
 
 
 ## SoapHandle
@@ -61,5 +62,26 @@ composer require php-http/client-implementation:^1.0
 ```php
 $clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
 $clientBuilder->withHandler(HttPlugHandle::createForClient($httpClient));
+$client = $clientBuilder->build();
+```
+
+## LocalSoapServerHandle
+
+*Features: LastRequestInfoCollector*
+
+The LocalSoapServerHandle can be used to link the soap-client to a local PHP SoapServer instance.
+This handle can be used for testing purposes, it is not recommended to use it in production.
+
+*NOTE: * Since SoapServer is sending headers, you want to run this handler in a separate process.
+You can use `@runInSeparateProcess` in PHPunit.
+
+
+**Configuration**
+```php
+$soapServer = new \SoapServer('some.wsdl', []);
+$soapServer->setObject($someTestingImplementation);
+
+$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
+$clientBuilder->withHandler(new LocalSoapServerHandle($soapServer));
 $client = $clientBuilder->build();
 ```
