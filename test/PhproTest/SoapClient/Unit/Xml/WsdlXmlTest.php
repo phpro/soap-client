@@ -25,7 +25,7 @@ class WsdlXmlTest extends TestCase
     public function setUp()
     {
         $this->xml = new \DOMDocument();
-        $this->xml->load(FIXTURE_DIR . '/wsdl/wheater-ws.wsdl');
+        $this->xml->load(FIXTURE_DIR . '/wsdl/weather-ws.wsdl');
     }
 
     /**

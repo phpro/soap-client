@@ -70,7 +70,7 @@ $client = $clientBuilder->build();
 *Features: LastRequestInfoCollector*
 
 The LocalSoapServerHandle can be used to link the soap-client to a local PHP SoapServer instance.
-This handle can be used for testing purpose, it is not recommended to use it in production.
+This handle can be used for testing purposes, it is not recommended to use it in production.
 
 *NOTE: * Since SoapServer is sending headers, you want to run this handler in a separate process.
 You can use `@runInSeparateProcess` in PHPunit.

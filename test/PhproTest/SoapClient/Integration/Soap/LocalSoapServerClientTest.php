@@ -15,9 +15,9 @@ class LocalSoapServerClientTest extends TestCase
 {
 
     /**
-     * Wheather API
+     * Weather API
      */
-    const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/wheater-ws.wsdl';
+    const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/weather-ws.wsdl';
 
     /**
      * @var \SoapServer

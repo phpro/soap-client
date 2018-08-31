@@ -35,7 +35,7 @@ class XmlEntitiesTest extends AbstractSoapTestCase
      * @test
      * @runInSeparateProcess
      */
-    function it_encodes_special_charakters()
+    function it_encodes_special_characters()
     {
         $input = '<\'"ïnpüt"\'>';
         $output = '<\'"Sômé Spèçìâl Chàrz"\'>';

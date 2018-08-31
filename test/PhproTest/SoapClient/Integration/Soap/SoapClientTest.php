@@ -16,7 +16,7 @@ class SoapClientTest extends TestCase
     /**
      * Wheather API
      */
-    const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/wheater-ws.wsdl';
+    const CDYNE_WSDL = FIXTURE_DIR . '/wsdl/weather-ws.wsdl';
 
 
     /**
