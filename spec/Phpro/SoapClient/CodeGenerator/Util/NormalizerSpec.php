@@ -29,14 +29,14 @@ class NormalizerSpec extends ObjectBehavior
     function it_can_normalize_classnames()
     {
         $this->normalizeClassname('myType')->shouldReturn('MyType');
-        $this->normalizeClassname('final')->shouldReturn('ClientFinal');
+        $this->normalizeClassname('final')->shouldReturn('FinalType');
         $this->normalizeClassname('my-./*type_123')->shouldReturn('MyType123');
     }
 
     function it_noramizes_properties()
     {
         $this->normalizeProperty('prop1')->shouldReturn('prop1');
-        $this->normalizeProperty('final')->shouldReturn('clientFinal');
+        $this->normalizeProperty('final')->shouldReturn('finalType');
         $this->normalizeProperty('my-./*prop_123')->shouldReturn('myProp_123');
     }
 

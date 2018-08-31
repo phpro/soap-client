@@ -111,8 +111,9 @@ class Normalizer
             return $name;
         }
         $name = ucfirst($name);
+        $name .= 'Type';
 
-        return $ucfirst ? 'Client'.$name : 'client'.$name;
+        return $ucfirst ? ucfirst($name) : lcfirst($name);
     }
 
     /**
