@@ -126,27 +126,32 @@ class Normalizer
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return string
      */
-    public static function normalizeClassname($name): string
+    public static function normalizeClassname(string $name): string
     {
         $name = self::normalizeReservedKeywords($name);
+        $className = trim(preg_replace('{[^a-z0-9]+}i', ' ', $name));
+        $className = ucwords($className);
 
-        return ucfirst(preg_replace('{[^a-z0-9_]}i', '', $name));
+        return str_replace(' ', '', $className);
     }
 
     /**
-     * @param $property
+     * @param string $property
      *
-     * @return mixed
+     * @return string
      */
-    public static function normalizeProperty($property)
+    public static function normalizeProperty(string $property)
     {
         $property = self::normalizeReservedKeywords($property, false);
+        $property = trim(preg_replace('{[^a-z0-9_]}i', ' ', $property));
+        $property = ucwords($property);
+        $property = lcfirst($property);
 
-        return preg_replace('{[^a-z0-9_]}i', '', $property);
+        return str_replace(' ', '', $property);
     }
 
     /**

@@ -23,7 +23,7 @@ class PropertynameMatchesRuleSpec extends ObjectBehavior
 
     function let(RuleInterface $subRule)
     {
-        $this->beConstructedWith($subRule, '/^MyProperty/');
+        $this->beConstructedWith($subRule, '/^myProperty/');
     }
 
     function it_is_initializable()
@@ -43,7 +43,7 @@ class PropertynameMatchesRuleSpec extends ObjectBehavior
 
     function it_can_apply_to_property_context( RuleInterface $subRule, PropertyContext $context)
     {
-        $context->getProperty()->willReturn(new Property('MyProperty', 'string', 'ns1'));
+        $context->getProperty()->willReturn(new Property('myProperty', 'string', 'ns1'));
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }

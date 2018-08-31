@@ -84,7 +84,6 @@ class Type
     public function getFileInfo(string $destination): SplFileInfo
     {
         $name = Normalizer::normalizeClassname($this->getName());
-        $name = str_replace('_', DIRECTORY_SEPARATOR, $name);
         $path = rtrim($destination, '/\\').DIRECTORY_SEPARATOR.$name.'.php';
 
         return new SplFileInfo($path);
