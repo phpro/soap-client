@@ -38,6 +38,7 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeProperty('prop1')->shouldReturn('prop1');
         $this->normalizeProperty('final')->shouldReturn('finalType');
         $this->normalizeProperty('my-./*prop_123')->shouldReturn('myProp_123');
+        $this->normalizeProperty('My-./*prop_123')->shouldReturn('MyProp_123');
     }
 
     function it_normalizes_datatypes()
