@@ -101,18 +101,16 @@ class Normalizer
 
     /**
      * @param string $name
-     * @param bool   $ucfirst
      *
      * @return string
      */
-    private static function normalizeReservedKeywords(string $name, $ucfirst = true): string
+    private static function normalizeReservedKeywords(string $name): string
     {
         if (!\in_array(strtolower($name), self::$reservedKeywords, true)) {
             return $name;
         }
-        $name .= 'Type';
 
-        return $ucfirst ? ucfirst($name) : $name;
+        return $name.'Type';
     }
 
     /**
@@ -162,8 +160,6 @@ class Normalizer
      */
     public static function normalizeProperty(string $property): string
     {
-        $property = self::normalizeReservedKeywords($property, false);
-
         return self::camelCase($property, '{[^a-z0-9_]+}i');
     }
 
