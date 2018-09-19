@@ -30,15 +30,21 @@ class NormalizerSpec extends ObjectBehavior
     {
         $this->normalizeClassname('myType')->shouldReturn('MyType');
         $this->normalizeClassname('final')->shouldReturn('FinalType');
+        $this->normalizeClassname('Final')->shouldReturn('FinalType');
+        $this->normalizeClassname('UpperCased')->shouldReturn('UpperCased');
         $this->normalizeClassname('my-./*type_123')->shouldReturn('MyType123');
+        $this->normalizeClassname('my-./final*type_123')->shouldReturn('MyFinalType123');
     }
 
     function it_noramizes_properties()
     {
         $this->normalizeProperty('prop1')->shouldReturn('prop1');
-        $this->normalizeProperty('final')->shouldReturn('finalType');
+        $this->normalizeProperty('final')->shouldReturn('final');
+        $this->normalizeProperty('Final')->shouldReturn('Final');
+        $this->normalizeProperty('UpperCased')->shouldReturn('UpperCased');
         $this->normalizeProperty('my-./*prop_123')->shouldReturn('myProp_123');
         $this->normalizeProperty('My-./*prop_123')->shouldReturn('MyProp_123');
+        $this->normalizeProperty('My-./final*prop_123')->shouldReturn('MyFinalProp_123');
     }
 
     function it_normalizes_datatypes()
@@ -64,6 +70,12 @@ class NormalizerSpec extends ObjectBehavior
         $this->generatePropertyMethod('get', 'prop1')->shouldReturn('getProp1');
         $this->generatePropertyMethod('set', 'prop1')->shouldReturn('setProp1');
         $this->generatePropertyMethod('get', 'prop1_test*./')->shouldReturn('getProp1_test');
+        $this->generatePropertyMethod('get', 'UpperCased')->shouldReturn('getUpperCased');
+        $this->generatePropertyMethod('get', 'my-./*prop_123')->shouldReturn('getMyProp_123');
+        $this->generatePropertyMethod('get', 'My-./*prop_123')->shouldReturn('getMyProp_123');
+        $this->generatePropertyMethod('get', 'My-./final*prop_123')->shouldReturn('getMyFinalProp_123');
+        $this->generatePropertyMethod('get', 'final')->shouldReturn('getFinal');
+        $this->generatePropertyMethod('set', 'Final')->shouldReturn('setFinal');
     }
 
     function it_gets_classname_from_fqn()
