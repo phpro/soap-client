@@ -101,19 +101,16 @@ class Normalizer
 
     /**
      * @param string $name
-     * @param bool   $ucfirst
      *
      * @return string
      */
-    private static function normalizeReservedKeywords(string $name, $ucfirst = true): string
+    private static function normalizeReservedKeywords(string $name): string
     {
         if (!\in_array(strtolower($name), self::$reservedKeywords, true)) {
             return $name;
         }
-        $name = ucfirst($name);
-        $name .= 'Type';
 
-        return $ucfirst ? ucfirst($name) : lcfirst($name);
+        return $name.'Type';
     }
 
     /**
@@ -127,6 +124,24 @@ class Normalizer
     }
 
     /**
+     * Convert a word to camelCase or CamelCase (not changing first part!)
+     *
+     * @param string $word
+     * @param string $regexp
+     *
+     * @return string
+     */
+    private static function camelCase(string $word, string $regexp):string
+    {
+        $parts = array_filter(preg_split($regexp, $word));
+        $keepUnchanged = array_shift($parts);
+        $parts = array_map('ucfirst', $parts);
+        array_unshift($parts, $keepUnchanged);
+
+        return implode('', $parts);
+    }
+
+    /**
      * @param string $name
      *
      * @return string
@@ -134,10 +149,8 @@ class Normalizer
     public static function normalizeClassname(string $name): string
     {
         $name = self::normalizeReservedKeywords($name);
-        $className = trim(preg_replace('{[^a-z0-9]+}i', ' ', $name));
-        $className = ucwords($className);
 
-        return str_replace(' ', '', $className);
+        return ucfirst(self::camelCase($name, '{[^a-z0-9]+}i'));
     }
 
     /**
@@ -145,14 +158,9 @@ class Normalizer
      *
      * @return string
      */
-    public static function normalizeProperty(string $property)
+    public static function normalizeProperty(string $property): string
     {
-        $property = self::normalizeReservedKeywords($property, false);
-        $property = trim(preg_replace('{[^a-z0-9_]}i', ' ', $property));
-        $property = ucwords($property);
-        $property = lcfirst($property);
-
-        return str_replace(' ', '', $property);
+        return self::camelCase($property, '{[^a-z0-9_]+}i');
     }
 
     /**
