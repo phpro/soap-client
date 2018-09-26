@@ -39,7 +39,11 @@ abstract class AbstractSoapTestCase extends TestCase
 
         $this->server = new SoapServer($wsdl, $options);
         $this->configureServer($this->server);
+        $this->configureSoapClient($wsdl, $options);
+    }
 
+    protected function configureSoapClient($wsdl, $options)
+    {
         $this->client = new PhproSoapClient($wsdl, $options);
         $this->client->setHandler(new LocalSoapServerHandle($this->server));
     }
@@ -58,10 +62,13 @@ abstract class AbstractSoapTestCase extends TestCase
         ];
     }
 
-    protected function provideBasicWsdlOptions(): array {
-        return [
-            'soap_version' => SOAP_1_2,
-            'cache_wsdl' => WSDL_CACHE_NONE
-        ];
+    protected function provideBasicWsdlOptions(array $additionalOptions = []): array {
+        return array_merge(
+            [
+                'soap_version' => SOAP_1_2,
+                'cache_wsdl' => WSDL_CACHE_NONE
+            ],
+            $additionalOptions
+        );
     }
 }
