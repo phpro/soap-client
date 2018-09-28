@@ -42,6 +42,7 @@ class FunctionStringParser
         foreach ($properties as $property) {
             list($type, $name) = explode(' ', trim($property));
             $name = Normalizer::normalizeProperty($name);
+            $type = Normalizer::normalizeClassname($type);
             $parameters[] = new Parameter($name, $this->parameterNamespace.'\\'.$type);
         }
 

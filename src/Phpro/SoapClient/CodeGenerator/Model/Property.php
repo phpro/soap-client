@@ -57,7 +57,7 @@ class Property
             return $this->type;
         }
 
-        return '\\'.$this->namespace.'\\'.$this->type;
+        return '\\'.$this->namespace.'\\'.Normalizer::normalizeClassname($this->type);
     }
 
     /**
