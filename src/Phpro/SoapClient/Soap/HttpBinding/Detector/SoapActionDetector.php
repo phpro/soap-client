@@ -26,6 +26,6 @@ class SoapActionDetector
             }
         }
 
-        throw new RequestException('Action not found in HTTP headers to be included in WSA headers.', $request);
+        throw new RequestException('SOAP Action not found in HTTP headers.', $request);
     }
 }
