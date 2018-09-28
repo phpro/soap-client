@@ -69,7 +69,7 @@ You can customize the generated code based on the manual installation pages in t
 
 ## Known issues
 
-- [ext-soap](dos/known-issues/ext-soap.md)
+- [ext-soap](docs/known-issues/ext-soap.md)
 
 # Why this soap client was made
 
