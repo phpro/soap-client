@@ -63,4 +63,42 @@ class Base64BinaryTest extends AbstractSoapTestCase
         $this->assertContains(base64_encode($input), $this->client->__getLastRequest());
         $this->assertContains(base64_encode($output), $this->client->__getLastResponse());
     }
+
+    /**
+     * @test
+     * @runInSeparateProcess
+     */
+    function it_is_possible_to_get_the_raw_value_with_type_converter()
+    {
+        $this->configureSoapClient($this->getWsdl(), $this->provideBasicWsdlOptions([
+            'typemap' => [
+                [
+                    'type_name' => 'base64Binary',
+                    'type_ns' => 'http://www.w3.org/2001/XMLSchema',
+                    'from_xml' => function($xml) {
+                        $doc = new \DOMDocument();
+                        $doc->loadXML($xml);
+
+                        if ('' === $doc->textContent) {
+                            return null;
+                        }
+
+                        return $doc->textContent;
+                    },
+                    'to_xml' => function($raw) {
+                        return sprintf('<base64Binary>%s</base64Binary>', $raw);
+                    },
+                ],
+            ],
+        ]));
+
+        $input = base64_encode('input');
+        $output = base64_encode('output');
+        $response = (array)$this->client->validate($input);
+
+        $this->assertEquals($output, $response['output']);
+        $this->assertEquals(base64_decode($input), $response['input']);
+        $this->assertContains($input, $this->client->__getLastRequest());
+        $this->assertContains($output, $this->client->__getLastResponse());
+    }
 }
