@@ -150,5 +150,5 @@ Example:
 
 
 More information:
-- [Functional test](../../test/PhproTest/SoapClient/Functional/Encoding/SimpleContent.php)
+- [Functional test](../../test/PhproTest/SoapClient/Functional/Encoding/SimpleContentTest.php)
 
