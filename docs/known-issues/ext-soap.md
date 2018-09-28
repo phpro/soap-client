@@ -5,6 +5,9 @@
 - [Enumerations](#enumerations)
 - [SimpleContent](#simplecontent)
 
+Isn't your issue listed below? Feel free to provide additional issues in a functional tests.
+
+
 ## Base64 binary
 
 By default, ext-soap will encode / decode `xsd:base64Binary` types.
