@@ -5,7 +5,7 @@
 - [Enumerations](#enumerations)
 - [SimpleContent](#simplecontent)
 
-Isn't your issue listed below? Feel free to provide additional issues in a functional tests.
+Isn't your issue listed below? Feel free to provide additional issues in a functional test.
 
 
 ## Base64 binary
@@ -71,6 +71,12 @@ $soapOptions = [
     ],
 ];
 ```
+
+Alternative workaround:
+
+- Merge all properties of all types in one big class.
+- Map the master class to the xsd type in the classmap
+- This might be a bad idea of the objects are not very similar.
 
 More information:
 
