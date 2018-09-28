@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\Middleware;
 
 use Http\Promise\Promise;
+use Phpro\SoapClient\Soap\HttpBinding\Detector\SoapActionDetector;
 use Phpro\SoapClient\Xml\SoapXml;
 use Psr\Http\Message\RequestInterface;
 use RobRichards\WsePhp\WSASoap;
@@ -28,7 +29,7 @@ class WsaMiddleware extends Middleware
         $xml = SoapXml::fromStream($request->getBody());
 
         $wsa = new WSASoap($xml->getXmlDocument());
-        $wsa->addAction($request->getHeader('SOAPAction')[0]);
+        $wsa->addAction(SoapActionDetector::detectFromRequest($request));
         $wsa->addTo((string) $request->getUri());
         $wsa->addMessageID();
         $wsa->addReplyTo($this->address);
