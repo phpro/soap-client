@@ -2,8 +2,6 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\Soap\SoapClient;
-
 /**
  * Class ClientMethodMap
  *
@@ -21,7 +19,7 @@ class ClientMethodMap
         $this->methods = $methods;
     }
 
-    public static function fromSoapClient(SoapClient $client, $parameterNamespace = '') : ClientMethodMap
+    public static function fromSoapClient(\SoapClient $client, $parameterNamespace = '') : ClientMethodMap
     {
         $clientMethods = [];
         foreach ($client->__getFunctions() as $method) {
