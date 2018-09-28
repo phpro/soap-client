@@ -7,7 +7,6 @@ use GuzzleHttp\Psr7\Response;
 use Http\Client\Common\PluginClient;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
 use Http\Mock\Client;
-use Phpro\SoapClient\Exception\RequestException;
 use Phpro\SoapClient\Middleware\WsaMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Xml\SoapXml;
