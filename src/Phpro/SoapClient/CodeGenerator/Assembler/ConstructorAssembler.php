@@ -17,6 +17,21 @@ use Zend\Code\Generator\MethodGenerator;
 class ConstructorAssembler implements AssemblerInterface
 {
     /**
+     * @var ConstructorAssemblerOptions
+     */
+    private $options;
+
+    /**
+     * ConstructorAssembler constructor.
+     *
+     * @param ConstructorAssemblerOptions $options
+     */
+    public function __construct(ConstructorAssemblerOptions $options)
+    {
+        $this->options = $options;
+    }
+
+    /**
      * @param ContextInterface $context
      *
      * @return bool
@@ -62,9 +77,11 @@ class ConstructorAssembler implements AssemblerInterface
 
         foreach ($type->getProperties() as $property) {
             $body[] = sprintf('$this->%1$s = $%1$s;', $property->getName());
-            $constructor->setParameter([
-                'name' => $property->getName()
-            ]);
+            $withTypeHints = $this->options->useTypeHints() ? ['type' => $property->getType()] : [];
+
+            $constructor->setParameter(array_merge([
+                'name' => $property->getName(),
+            ], $withTypeHints));
             $docblock->setTag([
                 'name' => 'var',
                 'description' => sprintf('%s $%s', $property->getType(), $property->getName())
