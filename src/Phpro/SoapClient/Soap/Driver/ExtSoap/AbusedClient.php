@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phpro\SoapClient\Soap\Engine\ExtSoap;
+namespace Phpro\SoapClient\Soap\Driver\ExtSoap;
 
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 

@@ -4,11 +4,12 @@ declare( strict_types=1 );
 
 namespace PhproTest\SoapClient\Integration\Soap\Engine;
 
+use Phpro\SoapClient\Soap\Driver\ExtSoap\AbusedClient;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapServerHandle;
+use Phpro\SoapClient\Soap\Engine\Engine;
 use Phpro\SoapClient\Soap\Engine\EngineInterface;
-use Phpro\SoapClient\Soap\Engine\ExtSoap\AbusedClient;
-use Phpro\SoapClient\Soap\Engine\ExtSoap\ExtSoapEngineFactory;
-use Phpro\SoapClient\Soap\Engine\ExtSoap\ExtSoapOptions;
-use Phpro\SoapClient\Soap\Engine\ExtSoap\Handler\ExtSoapServerHandle;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 use Phpro\SoapClient\Xml\SoapXml;
@@ -32,6 +33,11 @@ class ExtSoapEngineTest extends TestCase
     private $handler;
 
     /**
+     * @var ExtSoapDriver
+     */
+    private $driver;
+
+    /**
      * @var AbusedClient
      */
     private $client;
@@ -45,7 +51,8 @@ class ExtSoapEngineTest extends TestCase
         $server = new \SoapServer($options->getWsdl(), $options->getOptions());
         $this->handler = new ExtSoapServerHandle($server);
         $this->client = AbusedClient::createFromOptions($options);
-        $this->engine = ExtSoapEngineFactory::createFromClientAndHandler($this->client, $this->handler);
+        $this->driver = ExtSoapDriver::createFromClient($this->client);
+        $this->engine = new Engine($this->driver, $this->handler);
 
         $server->setObject(new class() {
             public function GetCityWeatherByZIP($zip) {
@@ -64,7 +71,7 @@ class ExtSoapEngineTest extends TestCase
      */
     function it_should_be_able_to_encode_request()
     {
-        $encoded = $this->engine->encode('GetCityWeatherByZIP', [(object)['ZIP' => '10013']]);
+        $encoded = $this->driver->encode('GetCityWeatherByZIP', [(object)['ZIP' => '10013']]);
 
         $this->assertInstanceOf(SoapRequest::class, $encoded);
         $this->assertEquals('http://wsf.cdyne.com/WeatherWS/Weather.asmx', $encoded->getLocation());
@@ -102,7 +109,7 @@ class ExtSoapEngineTest extends TestCase
 </env:Envelope>
 EOXML;
 
-        $decoded = $this->engine->decode('GetCityWeatherByZIP', new SoapResponse($result));
+        $decoded = $this->driver->decode('GetCityWeatherByZIP', new SoapResponse($result));
         $this->assertTrue($decoded->GetCityWeatherByZIPResult->Success);
         $this->assertEquals(1, $decoded->GetCityWeatherByZIPResult->WeatherID);
     }

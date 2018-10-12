@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\Soap\Engine\ExtSoap\Handler;
+namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Handler;
 
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
 use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;

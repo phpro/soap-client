@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Phpro\SoapClient\Soap\Engine\ExtSoap;
+namespace Phpro\SoapClient\Soap\Driver\ExtSoap;
 
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
-use Phpro\SoapClient\Soap\Engine\MetadataInterface;
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
 
 class ExtSoapMetadata implements MetadataInterface
 {

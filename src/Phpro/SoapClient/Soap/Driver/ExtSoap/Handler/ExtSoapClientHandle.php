@@ -1,8 +1,8 @@
 <?php
 
-namespace Phpro\SoapClient\Soap\Engine\ExtSoap\Handler;
+namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Handler;
 
-use Phpro\SoapClient\Soap\Engine\ExtSoap\AbusedClient;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\AbusedClient;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
 use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
 use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;

@@ -4,26 +4,15 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine;
 
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
-use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
-use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 
 class Engine implements EngineInterface
 {
     /**
-     * @var MetadataInterface
+     * @var DriverInterface
      */
-    private $metadata;
-
-    /**
-     * @var EncoderInterface
-     */
-    private $encoder;
-
-    /**
-     * @var DecoderInterface
-     */
-    private $decoder;
+    private $driver;
 
     /**
      * @var HandlerInterface
@@ -31,37 +20,23 @@ class Engine implements EngineInterface
     private $handler;
 
     public function __construct(
-        MetadataInterface $metadata,
-        EncoderInterface $encoder,
-        DecoderInterface $decoder,
+        DriverInterface $driver,
         HandlerInterface $handler
     ) {
-        $this->encoder = $encoder;
-        $this->decoder = $decoder;
+        $this->driver = $driver;
         $this->handler = $handler;
-        $this->metadata = $metadata;
     }
 
     public function getMetadata(): MetadataInterface
     {
-        return $this->metadata;
+        return $this->driver->getMetadata();
     }
 
     public function request(string $method, array $arguments)
     {
-        $request = $this->encode($method, $arguments);
+        $request = $this->driver->encode($method, $arguments);
         $response = $this->handler->request($request);
 
-        return $this->decode($method, $response);
-    }
-
-    public function encode(string $method, array $arguments): SoapRequest
-    {
-        return $this->encoder->encode($method, $arguments);
-    }
-
-    public function decode(string $method, SoapResponse $response)
-    {
-        return $this->decoder->decode($method, $response);
+        return $this->driver->decode($method, $response);
     }
 }

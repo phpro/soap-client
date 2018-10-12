@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine;
 
-interface EngineInterface extends EncoderInterface, DecoderInterface
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataProviderInterface;
+
+interface EngineInterface extends MetadataProviderInterface
 {
-    public function getMetadata(): MetadataInterface;
     public function request(string $method, array $arguments);
 }
