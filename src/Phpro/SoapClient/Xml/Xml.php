@@ -71,12 +71,13 @@ class Xml
 
     /**
      * @param string $expression
+     * @param DOMNode|null $contextNode
      *
      * @return \DOMNodeList
      */
-    public function xpath(string $expression): \DOMNodeList
+    public function xpath(string $expression, \DOMNode $contextNode = null): \DOMNodeList
     {
-        return $this->xpath->query($expression);
+        return $this->xpath->query($expression, $contextNode);
     }
 
     /**

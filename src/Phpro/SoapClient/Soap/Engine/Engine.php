@@ -52,7 +52,7 @@ class Engine implements EngineInterface
         $request = $this->encode($method, $arguments);
         $response = $this->handler->request($request);
 
-        return $this->decode($response);
+        return $this->decode($method, $response);
     }
 
     public function encode(string $method, array $arguments): SoapRequest
@@ -60,8 +60,8 @@ class Engine implements EngineInterface
         return $this->encoder->encode($method, $arguments);
     }
 
-    public function decode(SoapResponse $response)
+    public function decode(string $method, SoapResponse $response)
     {
-        return $this->decoder->decode($response);
+        return $this->decoder->decode($method, $response);
     }
 }

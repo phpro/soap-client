@@ -19,9 +19,9 @@ class ExtSoapDecoder implements DecoderInterface
         $this->client = $client;
     }
 
-    public function decode(SoapResponse $response)
+    public function decode(string $method, SoapResponse $response)
     {
         $this->client->registerResponse($response->getResponse());
-        return $this->client->__doRequest('pseudo', 'location', 'action', SOAP_1_2);
+        return $this->client->__soapCall($method, []);
     }
 }

@@ -11,12 +11,12 @@ class AbusedClient extends \SoapClient
     /**
      * @var SoapRequest
      */
-    private $request;
+    protected $storedRequest;
 
     /**
      * @var string
      */
-    private $response = '';
+    protected $storedResponse = '';
 
     public static function createFromOptions(ExtSoapOptions $options): self
     {
@@ -25,9 +25,9 @@ class AbusedClient extends \SoapClient
 
     public function __doRequest($request, $location, $action, $version, $oneWay = 0)
     {
-        $this->request = new SoapRequest($request, $location, $action, $version, $oneWay);
+        $this->storedRequest = new SoapRequest($request, $location, $action, $version, $oneWay);
 
-        return $this->response;
+        return $this->storedResponse;
     }
 
     /**
@@ -39,7 +39,7 @@ class AbusedClient extends \SoapClient
      *
      * @return string
      */
-    public function doInternalRequest(
+    public function doActualRequest(
         string $request,
         string $location,
         string $action,
@@ -54,15 +54,15 @@ class AbusedClient extends \SoapClient
      */
     public function collectRequest(): SoapRequest
     {
-        if (!$this->request) {
+        if (!$this->storedRequest) {
             throw new \RuntimeException('No request has been registered yet.');
         }
 
-        return $this->request;
+        return $this->storedRequest;
     }
 
     public function registerResponse(string $response)
     {
-        $this->response = $response;
+        $this->storedResponse = $response;
     }
 }
