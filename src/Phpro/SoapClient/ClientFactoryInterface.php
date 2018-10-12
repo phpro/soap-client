@@ -2,22 +2,10 @@
 
 namespace Phpro\SoapClient;
 
-use SoapClient;
+use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-/**
- * Class ClientFactoryInterface
- *
- * @package Phpro\SoapClient
- */
 interface ClientFactoryInterface
 {
-
-    /**
-     * @param SoapClient               $soapClient
-     * @param EventDispatcherInterface $dispatcher
-     *
-     * @return ClientInterface
-     */
-    public function factory(SoapClient $soapClient, EventDispatcherInterface $dispatcher);
+    public function factory(EngineInterface $engine, EventDispatcherInterface $dispatcher): ClientInterface;
 }
