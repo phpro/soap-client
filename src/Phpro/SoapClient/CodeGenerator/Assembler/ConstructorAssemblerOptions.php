@@ -17,6 +17,11 @@ class ConstructorAssemblerOptions
     private $typeHints = false;
 
     /**
+     * @var bool
+     */
+    private $docBlocks = true;
+
+    /**
      * @return ConstructorAssemblerOptions
      */
     public static function create(): ConstructorAssemblerOptions
@@ -43,5 +48,26 @@ class ConstructorAssemblerOptions
     public function useTypeHints(): bool
     {
         return $this->typeHints;
+    }
+
+    /**
+     * @param bool $withDocBlocks
+     *
+     * @return ConstructorAssemblerOptions
+     */
+    public function withDocBlocks(bool $withDocBlocks = true): ConstructorAssemblerOptions
+    {
+        $new = clone $this;
+        $new->docBlocks = $withDocBlocks;
+
+        return $new;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useDocBlocks(): bool
+    {
+        return $this->docBlocks;
     }
 }

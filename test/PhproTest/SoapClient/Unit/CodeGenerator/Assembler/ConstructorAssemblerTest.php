@@ -118,6 +118,40 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_a_type_with_no_doc_blocks()
+    {
+        $assembler = new ConstructorAssembler(
+            (new ConstructorAssemblerOptions())
+                ->withDocBlocks(false)
+                ->withTypeHints(true)
+        );
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    public function __construct(string \$prop1, int \$prop2)
+    {
+        \$this->prop1 = \$prop1;
+        \$this->prop2 = \$prop2;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @return TypeContext
      */
     private function createContext()

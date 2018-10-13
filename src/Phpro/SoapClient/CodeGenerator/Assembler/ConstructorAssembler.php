@@ -82,13 +82,19 @@ class ConstructorAssembler implements AssemblerInterface
             $constructor->setParameter(array_merge([
                 'name' => $property->getName(),
             ], $withTypeHints));
-            $docblock->setTag([
-                'name' => 'var',
-                'description' => sprintf('%s $%s', $property->getType(), $property->getName())
-            ]);
+
+            if ($this->options->useDocBlocks()) {
+                $docblock->setTag([
+                    'name' => 'var',
+                    'description' => sprintf('%s $%s', $property->getType(), $property->getName())
+                ]);
+            }
         }
 
-        $constructor->setDocBlock($docblock);
+        if ($this->options->useDocBlocks()) {
+            $constructor->setDocBlock($docblock);
+        }
+
         $constructor->setBody(implode($constructor::LINE_FEED, $body));
 
         return $constructor;
