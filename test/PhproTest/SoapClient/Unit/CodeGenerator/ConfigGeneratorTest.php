@@ -32,7 +32,7 @@ return Config::create()
         new Rules\TypenameMatchesRule(
             new Rules\MultiRule([
                 new Rules\AssembleRule(new Assembler\RequestAssembler()),
-                new Rules\AssembleRule(new Assembler\ConstructorAssembler()),
+                new Rules\AssembleRule(new Assembler\ConstructorAssembler(new Assembler\ConstructorAssemblerOptions()),
             ]),
             '/Request$/i'
         )
