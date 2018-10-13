@@ -14,7 +14,7 @@ class ConstructorAssemblerOptions
     /**
      * @var bool
      */
-    private $withTypeHints = false;
+    private $typeHints = false;
 
     /**
      * @return ConstructorAssemblerOptions
@@ -32,7 +32,7 @@ class ConstructorAssemblerOptions
     public function withTypeHints(bool $withTypeHints = true): ConstructorAssemblerOptions
     {
         $new = clone $this;
-        $new->withTypeHints = $withTypeHints;
+        $new->typeHints = $withTypeHints;
 
         return $new;
     }
@@ -42,6 +42,6 @@ class ConstructorAssemblerOptions
      */
     public function useTypeHints(): bool
     {
-        return $this->withTypeHints;
+        return $this->typeHints;
     }
 }
