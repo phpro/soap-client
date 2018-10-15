@@ -154,7 +154,7 @@ CODE;
         $class = new ClassGenerator();
         $class->setNamespaceName('Vendor\\MyNamespace');
         $method = ClientMethod::createFromExtSoapFunctionString(
-            'ReturnType function_name(param_type $param)',
+            'return_type function_name(param_type $param)',
             'Vendor\\MyTypeNamespace'
         );
 

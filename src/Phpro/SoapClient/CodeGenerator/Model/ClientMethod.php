@@ -107,6 +107,6 @@ class ClientMethod
      */
     public function getReturnType(): string
     {
-        return $this->returnType;
+        return Normalizer::normalizeClassname($this->returnType);
     }
 }
