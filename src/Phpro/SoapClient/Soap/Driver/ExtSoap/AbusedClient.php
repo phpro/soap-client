@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\Soap\Driver\ExtSoap;
 
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
+use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 
 class AbusedClient extends \SoapClient
 {
@@ -14,9 +15,15 @@ class AbusedClient extends \SoapClient
     protected $storedRequest;
 
     /**
-     * @var string
+     * @var SoapResponse
      */
-    protected $storedResponse = '';
+    protected $storedResponse;
+
+    public function __construct($wsdl, array $options = [])
+    {
+        $options = ExtSoapOptionsResolverFactory::createForWsdl($wsdl)->resolve($options);
+        parent::__construct($wsdl, $options);
+    }
 
     public static function createFromOptions(ExtSoapOptions $options): self
     {
@@ -27,18 +34,9 @@ class AbusedClient extends \SoapClient
     {
         $this->storedRequest = new SoapRequest($request, $location, $action, $version, $oneWay);
 
-        return $this->storedResponse;
+        return $this->storedResponse ? $this->storedResponse->getResponse() : '';
     }
 
-    /**
-     * @param string $request
-     * @param string $location
-     * @param string $action
-     * @param int    $version
-     * @param int    $oneWay
-     *
-     * @return string
-     */
     public function doActualRequest(
         string $request,
         string $location,
@@ -46,12 +44,9 @@ class AbusedClient extends \SoapClient
         int $version,
         int $oneWay = 0
     ): string {
-        return (string)parent::__doRequest($request, $location, $action, $version, $oneWay);
+        return (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
     }
 
-    /**
-     * @return SoapRequest|null
-     */
     public function collectRequest(): SoapRequest
     {
         if (!$this->storedRequest) {
@@ -61,8 +56,14 @@ class AbusedClient extends \SoapClient
         return $this->storedRequest;
     }
 
-    public function registerResponse(string $response)
+    public function registerResponse(SoapResponse $response)
     {
         $this->storedResponse = $response;
+    }
+
+    public function cleanUpTemporaryState()
+    {
+        $this->storedRequest = null;
+        $this->storedResponse = null;
     }
 }

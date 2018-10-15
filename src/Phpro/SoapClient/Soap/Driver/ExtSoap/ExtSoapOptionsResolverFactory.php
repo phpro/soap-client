@@ -13,6 +13,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExtSoapOptionsResolverFactory
 {
+    public static function createForWsdl($wsdl): OptionsResolver
+    {
+        $resolver = self::create();
+        if (!$wsdl) {
+            $resolver = clone $resolver;
+            $resolver->setRequired(['uri', 'location']);
+        }
+
+        return $resolver;
+    }
+
     public static function create(): OptionsResolver
     {
         static $resolver;
@@ -51,7 +62,6 @@ class ExtSoapOptionsResolverFactory
         $resolver->setAllowedTypes('local_cert', ['string']);
         $resolver->setAllowedTypes('passphrase', ['string', 'int']);
 
-
         // Compression
         $resolver->setDefined(['compression']);
         $resolver->setAllowedTypes('compression', ['int']);
@@ -63,7 +73,8 @@ class ExtSoapOptionsResolverFactory
                        SOAP_COMPRESSION_ACCEPT
                        | SOAP_COMPRESSION_DEFLATE
                        | SOAP_COMPRESSION_GZIP
-                       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |9);
+                       | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+                );
         });
 
         // Encoding
@@ -76,8 +87,13 @@ class ExtSoapOptionsResolverFactory
 
         // Classmaps
         $resolver->setDefault('classmap', new ClassMapCollection());
-        $resolver->setAllowedTypes('classmap', ClassMapCollection::class);
-        $resolver->setNormalizer('classmap', function (Options $options, ClassMapCollection $value): array {
+        $resolver->setAllowedTypes('classmap', [ClassMapCollection::class, 'array']);
+        $resolver->setNormalizer('classmap', function (Options $options, $value): array {
+            // Classic array configuration:
+            if (!$value instanceof ClassMapCollection) {
+                return $value;
+            }
+
             return array_map(
                 function (ClassMap $classMap) {
                     return $classMap->getPhpClassName();
@@ -97,8 +113,13 @@ class ExtSoapOptionsResolverFactory
 
         // Typemaps
         $resolver->setDefault('typemap', new TypeConverterCollection());
-        $resolver->setAllowedTypes('typemap', TypeConverterCollection::class);
-        $resolver->setNormalizer('typemap', function (Options $options, TypeConverterCollection $value): array {
+        $resolver->setAllowedTypes('typemap', [TypeConverterCollection::class, 'array']);
+        $resolver->setNormalizer('typemap', function (Options $options, $value): array {
+            // Classic array configuration:
+            if (!$value instanceof TypeConverterCollection) {
+                return $value;
+            }
+
             return array_values(array_map(
                 function (TypeConverterInterface $converter) {
                     return [

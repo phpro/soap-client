@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Driver\ExtSoap;
 
+use Phpro\SoapClient\Exception\UnexpectedConfigurationException;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
@@ -64,7 +65,7 @@ class ExtSoapOptions
 
     public function getOptions(): array
     {
-        return ExtSoapOptionsResolverFactory::create()->resolve($this->options);
+        return $this->options;
     }
 
     public function withWsdlProvider(WsdlProviderInterface $wsdlProvider): self
@@ -76,9 +77,11 @@ class ExtSoapOptions
 
     public function getClassMap(): ClassMapCollection
     {
-        $this->options['classmap'] = $this->options['classmap'] ?? new ClassMapCollection();
-
-        return $this->options['classmap'];
+        return $this->fetchOptionOfTypeWithDefault(
+            'classmap',
+            ClassMapCollection::class,
+            new ClassMapCollection()
+        );
     }
 
     public function withClassMap(ClassMapCollection $classMapCollection): self
@@ -90,9 +93,11 @@ class ExtSoapOptions
 
     public function getTypeMap(): TypeConverterCollection
     {
-        $this->options['typemap'] = $this->options['typemap'] ?? new TypeConverterCollection();
-
-        return $this->options['typemap'];
+        return $this->fetchOptionOfTypeWithDefault(
+            'typemap',
+            TypeConverterCollection::class,
+            new TypeConverterCollection()
+        );
     }
 
     public function withTypeMap(TypeConverterCollection $typeConverterCollection): self
@@ -107,5 +112,16 @@ class ExtSoapOptions
         $this->options['wsdl_cache'] = WSDL_CACHE_NONE;
 
         return $this;
+    }
+
+    private function fetchOptionOfTypeWithDefault(string $key, string $type, $default)
+    {
+        $this->options[$key] = $this->options[$key] ?? $default;
+
+        if (!$this->options[$key] instanceof $type) {
+            throw UnexpectedConfigurationException::expectedTypeButGot($key, $type, $this->options[$key]);
+        }
+
+        return $this->options[$key];
     }
 }
