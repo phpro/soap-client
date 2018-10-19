@@ -67,6 +67,10 @@ You can customize the generated code based on the manual installation pages in t
 - [Specify generation `Rules`](docs/code-generation/rules.md)
 - [Generate code through `Assemblers`](docs/code-generation/assemblers.md)
 
+## Known issues
+
+- [ext-soap](docs/known-issues/ext-soap.md)
+
 # Why this soap client was made
 
 By default, the SoapClient works with a mix of arrays, stdClasses and other scalar types. 
