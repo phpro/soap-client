@@ -38,6 +38,12 @@ class ClientMethodSpec extends ObjectBehavior
         $this->getReturnType()->shouldBe('CreditResponse');
     }
 
+    function it_transforms_return_type()
+    {
+        $this->beConstructedWith('testMethod', [], 'credit_response', 'ParamNamespace');
+        $this->getReturnType()->shouldBe('CreditResponse');
+    }
+
     function it_has_a_parameter_namespace()
     {
         $this->getParameterNamespace()->shouldBe('ParamNamespace');

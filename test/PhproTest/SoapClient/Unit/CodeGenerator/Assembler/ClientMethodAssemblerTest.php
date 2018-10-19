@@ -94,7 +94,7 @@ class  extends \Phpro\SoapClient\Client
      */
     public function functionName(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return \$this->call('ParamType', \$param);
+        return \$this->call('functionName', \$param);
     }
 
 
@@ -135,13 +135,59 @@ class  extends \Phpro\SoapClient\Client
      */
     public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return \$this->call('MultiArgumentRequest', \$multiArgumentRequest);
+        return \$this->call('functionName', \$multiArgumentRequest);
     }
 
 
 }
 
 CODE;
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_a_method_with_underscore_param_type()
+    {
+        $assembler = new ClientMethodAssembler();
+        $class = new ClassGenerator();
+        $class->setNamespaceName('Vendor\\MyNamespace');
+        $method = ClientMethod::createFromExtSoapFunctionString(
+            'return_type function_name(param_type $param)',
+            'Vendor\\MyTypeNamespace'
+        );
+
+        $context = new ClientMethodContext($class, $method);
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace Vendor\MyNamespace;
+
+use Phpro\SoapClient\Type\RequestInterface;
+use Phpro\SoapClient\Type\ResultInterface;
+use Vendor\MyTypeNamespace;
+use Phpro\SoapClient\Exception\SoapException;
+
+class  extends \Phpro\SoapClient\Client
+{
+
+    /**
+     * @param RequestInterface|MyTypeNamespace\ParamType \$param
+     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @throws SoapException
+     */
+    public function functionName(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
+    {
+        return \$this->call('function_name', \$param);
+    }
+
+
+}
+
+CODE;
+
         $this->assertEquals($expected, $code);
     }
 }

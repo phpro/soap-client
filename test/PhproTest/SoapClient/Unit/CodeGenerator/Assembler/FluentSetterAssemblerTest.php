@@ -135,7 +135,7 @@ class MyType
 {
 
     /**
-     * @param \\MyNamespace\\foobar \$prop1
+     * @param \\MyNamespace\\Foobar \$prop1
      * @return \$this
      */
     public function setProp1(\$prop1)
@@ -172,7 +172,7 @@ class MyType
 {
 
     /**
-     * @param \MyNamespace\\foobar \$prop1
+     * @param \MyNamespace\\Foobar \$prop1
      * @return \$this
      */
     public function setProp1(\$prop1) : \MyNamespace\MyType
