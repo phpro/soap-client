@@ -20,7 +20,11 @@ class SoapExceptionSpec extends ObjectBehavior
 
     function it_should_handle_non_int_codes()
     {
-        $e = new \Exception('test', 'hy000');
-        $this->beConstructedThrough([$this, 'fromThrowable'], [$e]);
+        $e = new class ('message') extends \Exception
+        {
+            protected $code = 'HY000';
+        };
+        $this->beConstructedThrough('fromThrowable', [$e]);
+        $this->getCode()->shouldBe(0);
     }
 }
