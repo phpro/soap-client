@@ -47,7 +47,7 @@ class SoapClientFactory
             'trace' => true,
             'exceptions' => true,
             'keep_alive' => true,
-            'cache_wsdl' => WSDL_CACHE_BOTH,
+            'cache_wsdl' => WSDL_CACHE_DISK,
             'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
             'classmap' => $this->classMap->toSoapClassMap(),
             'typemap' => $this->typeConverters->toSoapTypeMap(),
