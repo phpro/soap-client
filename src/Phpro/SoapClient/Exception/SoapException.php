@@ -9,6 +9,15 @@ namespace Phpro\SoapClient\Exception;
  */
 class SoapException extends RuntimeException
 {
+    public function __construct(string $message = "", $code = 0, \Throwable $previous = null)
+    {
+        parent::__construct($message, (int)$code, $previous);
+
+        if (!is_int($code)) {
+            $this->code = $code;
+        }
+    }
+
     /**
      * @param \Throwable $throwable
      *
@@ -16,6 +25,6 @@ class SoapException extends RuntimeException
      */
     public static function fromThrowable(\Throwable $throwable): self
     {
-        return new self($throwable->getMessage(), (int)$throwable->getCode(), $throwable);
+        return new self($throwable->getMessage(), $throwable->getCode(), $throwable);
     }
 }

@@ -25,6 +25,6 @@ class SoapExceptionSpec extends ObjectBehavior
             protected $code = 'HY000';
         };
         $this->beConstructedThrough('fromThrowable', [$e]);
-        $this->getCode()->shouldBe(0);
+        $this->getCode()->shouldBe('HY000');
     }
 }
