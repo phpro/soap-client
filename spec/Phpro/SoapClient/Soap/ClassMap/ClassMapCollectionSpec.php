@@ -38,11 +38,4 @@ class ClassMapCollectionSpec extends ObjectBehavior
         $this->add($classMap2);
         $this->has($classMap2)->shouldBe(true);
     }
-
-    function it_should_convert_to_wsdl_classmap()
-    {
-        $this->toSoapClassMap()->shouldBe([
-            'WsdlType' => 'PhpClass'
-        ]);
-    }
 }

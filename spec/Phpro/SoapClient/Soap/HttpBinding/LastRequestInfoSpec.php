@@ -55,7 +55,7 @@ class LastRequestInfoSpec extends ObjectBehavior
     }
 
     // Note: the __get* cannot be mocked with phpspec.
-    function it_can_create_from_a_soapclient(SoapClient $client)
+    function it_can_create_from_a_soapclient(\SoapClient $client)
     {
         $result = $this->createFromSoapClient($client);
         $result->shouldBeAnInstanceOf(LastRequestInfo::class);

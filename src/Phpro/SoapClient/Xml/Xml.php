@@ -97,9 +97,9 @@ class Xml
     /**
      * @param string $content
      *
-     * @return Xml
+     * @return static
      */
-    public static function fromString(string $content): Xml
+    public static function fromString(string $content)
     {
         $xml = new DOMDocument();
         $xml->loadXML($content);

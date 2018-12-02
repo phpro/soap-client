@@ -6,23 +6,12 @@
     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
     xmlns="http://schemas.xmlsoap.org/wsdl/"
     targetNamespace="http://soapinterop.org/">
-    <types>
-        <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://soapinterop.org/xsd">
-            <xsd:complexType name="SimpleContent">
-                <xsd:simpleContent>
-                    <xsd:extension base="integer">
-                        <xsd:attribute name="country" type="string" />
-                    </xsd:extension>
-                </xsd:simpleContent>
-            </xsd:complexType>
-        </schema>
-    </types>
 
     <message name="validateRequest">
-        <part name="input" type="s:SimpleContent" />
+        <part name="input" type="xsd:string" />
     </message>
     <message name="validateResponse">
-        <part name="output" type="s:SimpleContent" />
+        <part name="output" type="xsd:string" />
     </message>
 
     <portType name="InteropTestPortType">

@@ -4,6 +4,7 @@ namespace spec\Phpro\SoapClient;
 
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\ClientInterface;
+use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Soap\SoapClient;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -11,9 +12,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ClientSpec extends ObjectBehavior
 {
-    function let(SoapClient $soapClient, EventDispatcherInterface $dispatcher)
+    function let(EngineInterface $engine, EventDispatcherInterface $dispatcher)
     {
-        $this->beConstructedWith($soapClient, $dispatcher);
+        $this->beConstructedWith($engine, $dispatcher);
     }
 
     function it_is_initializable()

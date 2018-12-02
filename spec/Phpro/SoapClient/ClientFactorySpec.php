@@ -4,6 +4,7 @@ namespace spec\Phpro\SoapClient;
 
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\ClientFactory;
+use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Soap\SoapClient;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -22,8 +23,8 @@ class ClientFactorySpec extends ObjectBehavior
         $this->shouldHaveType(ClientFactory::class);
     }
 
-    function it_should_load_a_new_client(SoapClient $soapClient, EventDispatcherInterface $dispatcher)
+    function it_should_load_a_new_client(EngineInterface $engine, EventDispatcherInterface $dispatcher)
     {
-        $this->factory($soapClient, $dispatcher)->shouldReturnAnInstanceOf(Client::class);
+        $this->factory($engine, $dispatcher)->shouldReturnAnInstanceOf(Client::class);
     }
 }

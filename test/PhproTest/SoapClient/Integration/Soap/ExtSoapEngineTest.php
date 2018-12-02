@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace PhproTest\SoapClient\Integration\Soap\Engine;
+namespace PhproTest\SoapClient\Integration\Soap;
 
 use Phpro\SoapClient\Soap\Driver\ExtSoap\AbusedClient;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
