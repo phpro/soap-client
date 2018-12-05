@@ -42,7 +42,7 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeMethodName('final')->shouldReturn('finalCall');
         $this->normalizeMethodName('Final')->shouldReturn('finalCall');
         $this->normalizeMethodName('UpperCased')->shouldReturn('upperCased');
-        $this->normalizeMethodName('my-./*method_123')->shouldReturn('myMethod123');
+        $this->normalizeMethodName('my-./*method_123')->shouldReturn('myMethod_123');
         $this->normalizeMethodName('123hello')->shouldReturn('hello123');
         $this->normalizeMethodName('123final')->shouldReturn('final123');
         $this->normalizeMethodName('123')->shouldReturn('call123');

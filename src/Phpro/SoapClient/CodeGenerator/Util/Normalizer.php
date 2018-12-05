@@ -158,7 +158,7 @@ class Normalizer
         // Methods cant be named after reserved keywords.
         $method = self::normalizeReservedKeywords($method, 'Call');
 
-        return lcfirst(self::camelCase($method, '{[^a-z0-9]+}i'));
+        return lcfirst(self::camelCase($method, '{[^a-z0-9_]+}i'));
     }
 
     /**
