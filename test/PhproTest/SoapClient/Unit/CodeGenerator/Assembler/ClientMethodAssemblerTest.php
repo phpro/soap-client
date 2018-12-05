@@ -178,7 +178,7 @@ class  extends \Phpro\SoapClient\Client
      * @return ResultInterface|MyTypeNamespace\ReturnType
      * @throws SoapException
      */
-    public function functionName(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
+    public function function_name(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
         return \$this->call('function_name', \$param);
     }
