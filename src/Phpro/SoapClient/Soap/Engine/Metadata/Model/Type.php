@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine\Metadata\Model;
 
-use Phpro\SoapClient\CodeGenerator\Model\Property;
-
 class Type
 {
     /**

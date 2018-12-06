@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Driver\ExtSoap;
 
-use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\MethodsParser;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\TypesParser;
+use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
 
@@ -21,9 +22,9 @@ class ExtSoapMetadata implements MetadataInterface
         $this->abusedClient = $abusedClient;
     }
 
-    public function getMethods(): ClientMethodMap
+    public function getMethods(): MethodCollection
     {
-        return ClientMethodMap::fromSoapClient($this->abusedClient);
+        return (new MethodsParser())->parse($this->abusedClient);
     }
 
     public function getTypes(): TypeCollection
