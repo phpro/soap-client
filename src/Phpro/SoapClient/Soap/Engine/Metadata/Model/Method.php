@@ -30,6 +30,9 @@ class Method
         }
     }
 
+    /**
+     * @return array|Parameter[]
+     */
     public function getParameters(): array
     {
         return $this->parameters;

@@ -29,6 +29,9 @@ class Type
         return $this->name;
     }
 
+    /**
+     * @return array|Property[]
+     */
     public function getProperties(): array
     {
         return $this->properties;
