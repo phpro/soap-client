@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator;
 
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
+use Phpro\SoapClient\Soap\Engine\Engine;
 use Zend\Code\Generator\FileGenerator;
 
 /**
@@ -44,6 +45,14 @@ RULESET;
 )
 RULESET;
 
+    const ENGINE_BOILERPLATE = <<<EOENGINE
+->setEngine(new Engine(
+        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('%s', []));
+        \$handler = new ExtSoapClientHandle(\$driver->getClient());
+    ))
+EOENGINE;
+
+
 
     /**
      * @param string $name
@@ -66,6 +75,11 @@ RULESET;
         return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $ruleset).PHP_EOL;
     }
 
+    private function parseEngine(FileGenerator $fileGenerator, string $wsdl): string
+    {
+        return $fileGenerator->getIndentation().sprintf(self::ENGINE_BOILERPLATE, $wsdl).PHP_EOL;
+    }
+
     /**
      * @param FileGenerator $file
      * @param ConfigContext $context
@@ -77,7 +91,9 @@ RULESET;
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Assembler');
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Rules');
         $file->setUse(Config::class);
+        $file->setUse(Engine::class);
 
+        $body .= $this->parseEngine($file, $context->getWsdl());
         foreach ($context->getSetters() as $name => $value) {
             $body .= $this->generateSetter($name, $value, $file);
         }

@@ -160,14 +160,14 @@ CODE;
     private function createContext($propertyName = 'prop1')
     {
         $properties = [
-            'prop1' => 'string',
-            'prop2' => 'int',
-            'prop3' => 'boolean',
+            'prop1' => new Property('prop1', 'string', 'ns1'),
+            'prop2' => new Property('prop2', 'int', 'ns1'),
+            'prop3' => new Property('prop3', 'boolean', 'ns1'),
         ];
 
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', $properties);
-        $property = new Property($propertyName, $properties[$propertyName], 'ns1');
+        $type = new Type('MyNamespace', 'MyType', array_values($properties));
+        $property = $properties[$propertyName];
 
         return new PropertyContext($class, $type, $property);
     }

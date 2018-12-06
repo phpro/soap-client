@@ -2,6 +2,8 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
+
 class Parameter
 {
     /**
@@ -24,6 +26,14 @@ class Parameter
     {
         $this->name = $name;
         $this->type = $type;
+    }
+
+    public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter)
+    {
+        return new self(
+            $parameter->getName(),
+            $parameterNamespace.'\\'.$parameter->getType()
+        );
     }
 
     /**

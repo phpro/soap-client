@@ -17,7 +17,11 @@ class TypeSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('MyNamespace', 'myType', ['prop1' => 'string']);
+        $this->beConstructedWith(
+            $namespace = 'MyNamespace',
+            'myType',
+            [new Property('prop1', 'string', $namespace)]
+        );
     }
 
     function it_is_initializable()
@@ -58,7 +62,12 @@ class TypeSpec extends ObjectBehavior
 
     function it_should_prefix_reserved_keywords()
     {
-        $this->beConstructedWith('MyNamespace', 'Final', ['xor' => 'string']);
+        $this->beConstructedWith(
+            $namespace = 'MyNamespace',
+            'Final',
+            [new Property('xor', 'string', $namespace)]
+        );
+
         $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/FinalType.php');
         $this->getName()->shouldReturn('FinalType');
         $this->getProperties()[0]->getName()->shouldReturn('xor');

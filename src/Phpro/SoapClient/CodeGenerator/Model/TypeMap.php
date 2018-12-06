@@ -3,7 +3,8 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Soap\SoapClient;
+use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type as MetadataType;
 
 /**
  * Class TypeMap
@@ -14,9 +15,9 @@ class TypeMap
 {
 
     /**
-     * @var array
+     * @var array|Type[]
      */
-    private $types = [];
+    private $types;
 
     /**
      * @var string
@@ -27,26 +28,22 @@ class TypeMap
      * TypeMap constructor.
      *
      * @param string $namespace
-     * @param array $types
+     * @param array|Type[] $types
      */
     public function __construct(string $namespace, array $types)
     {
         $this->namespace = Normalizer::normalizeNamespace($namespace);
-
-        foreach ($types as $type => $properties) {
-            $this->types[] = new Type($namespace, $type, $properties);
-        }
+        $this->types = $types;
     }
 
-    /**
-     * @param string     $namespace
-     * @param SoapClient $client
-     *
-     * @return TypeMap
-     */
-    public static function fromSoapClient(string $namespace, SoapClient $client): self
+    public static function fromMetadata(string $namespace, TypeCollection $types): self
     {
-        return new self($namespace, $client->getSoapTypes());
+        return new self(
+            $namespace,
+            $types->map(function (MetadataType $type) use ($namespace) {
+                return Type::fromMetadata($namespace, $type);
+            })
+        );
     }
 
     /**

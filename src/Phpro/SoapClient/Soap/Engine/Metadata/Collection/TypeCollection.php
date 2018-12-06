@@ -37,6 +37,11 @@ class TypeCollection implements \IteratorAggregate, \Countable
         $this->types[] = $type;
     }
 
+    public function map(callable  $callback): array
+    {
+        return array_map($callback, $this->types);
+    }
+
     public function fetchByName(string $name): Type
     {
         foreach ($this->types as $type) {

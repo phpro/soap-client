@@ -9,6 +9,7 @@ use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
+use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -40,7 +41,7 @@ class ClientGeneratorSpec extends ObjectBehavior
 
     function it_generates_clients(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
     {
-        $method = ClientMethod::createFromExtSoapFunctionString('TestResponse Test(Test $parameters)', 'MyParameterNamespace');
+        $method = new ClientMethod('Test', [new Parameter('parameters', 'Test')], 'TestResponse');
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
         $file->getClass()->willReturn($class);

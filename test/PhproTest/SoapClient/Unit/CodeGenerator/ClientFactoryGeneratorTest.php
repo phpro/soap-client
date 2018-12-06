@@ -28,8 +28,11 @@ class MyclientFactory
     public static function factory(string \$wsdl) : \App\Client\Myclient
     {
         \$clientFactory = new PhproClientFactory(Myclient::class);
-        \$clientBuilder = new ClientBuilder(\$clientFactory, \$wsdl, []);
-        \$clientBuilder->withClassMaps(Myclassmap::getCollection());
+        \$clientBuilder = ClientBuilder::fromExtSoap(
+            \$clientFactory,
+            ExtSoapOptions::defaults(\$wsdl, [])
+                ->withClassMap(Myclassmap::getCollection())
+        );
 
         return \$clientBuilder->build();
     }

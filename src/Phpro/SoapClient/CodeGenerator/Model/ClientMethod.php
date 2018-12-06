@@ -2,8 +2,9 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method as MetadataMethod;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 
 /**
  * Class ClientMethod
@@ -48,24 +49,19 @@ class ClientMethod
         $this->returnType = $returnType;
     }
 
-    /**
-     * Creates an instance from parsing a soap function string
-     *
-     * @param string $functionString
-     * @param string $parameterNamespace
-     *
-     * @return ClientMethod
-     */
-    public static function createFromExtSoapFunctionString(
-        string $functionString,
-        string $parameterNamespace
-    ): ClientMethod {
-        $parser = new FunctionStringParser($functionString, $parameterNamespace);
-
+    public static function fromMetadata(
+        string $parameterNamespace,
+        MetadataMethod $method
+    ): self {
         return new self(
-            $parser->parseName(),
-            $parser->parseParameters(),
-            $parser->parseReturnType(),
+            $method->getName(),
+            array_map(
+                function (MetadataParameter $parameter) use ($parameterNamespace) {
+                    return Parameter::fromMetadata($parameterNamespace, $parameter);
+                },
+                $method->getParameters()
+            ),
+            $method->getReturnType(),
             $parameterNamespace
         );
     }

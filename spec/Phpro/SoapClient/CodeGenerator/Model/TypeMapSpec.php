@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use PhpSpec\ObjectBehavior;
@@ -17,10 +18,10 @@ class TypeMapSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('MyNamespace', [
-            'type1' => [
-                'prop1' => 'string',
-            ],
+        $this->beConstructedWith($namespace = 'MyNamespace', [
+            new Type($namespace, 'type1', [
+                new Property('prop1', 'string', $namespace)
+            ])
         ]);
     }
 

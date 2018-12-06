@@ -37,6 +37,11 @@ class MethodCollection implements \IteratorAggregate, \Countable
         $this->methods[] = $method;
     }
 
+    public function map(callable  $callback): array
+    {
+        return array_map($callback, $this->methods);
+    }
+
     public function fetchByName(string $name): Method
     {
         foreach ($this->methods as $method) {

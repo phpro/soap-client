@@ -3,6 +3,8 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Property as MetadataProperty;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type as MetadataType;
 use SplFileInfo;
 
 /**
@@ -12,7 +14,6 @@ use SplFileInfo;
  */
 class Type
 {
-
     /**
      * @var string
      */
@@ -46,10 +47,24 @@ class Type
         $this->namespace = Normalizer::normalizeNamespace($namespace);
         $this->xsdName = $xsdName;
         $this->name = Normalizer::normalizeClassname($xsdName);
+        $this->properties = $properties;
+    }
 
-        foreach ($properties as $property => $type) {
-            $this->properties[] = new Property($property, $type, $this->namespace);
-        }
+    public static function fromMetadata(string $namespace, MetadataType $type): self
+    {
+        return new self(
+            $namespace,
+            $type->getName(),
+            array_map(
+                function (MetadataProperty $property) use ($namespace) {
+                    return Property::fromMetaData(
+                        $namespace,
+                        $property
+                    );
+                },
+                $type->getProperties()
+            )
+        );
     }
 
     /**

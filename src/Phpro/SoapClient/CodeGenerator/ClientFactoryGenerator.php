@@ -18,8 +18,11 @@ class ClientFactoryGenerator implements GeneratorInterface
 {
     const BODY = <<<BODY
 \$clientFactory = new PhproClientFactory(%1\$s::class);
-\$clientBuilder = new ClientBuilder(\$clientFactory, \$wsdl, []);
-\$clientBuilder->withClassMaps(%2\$s::getCollection());
+\$clientBuilder = ClientBuilder::fromExtSoap(
+    \$clientFactory,
+    ExtSoapOptions::defaults(\$wsdl, [])
+        ->withClassMap(Myclassmap::getCollection())
+);
 
 return \$clientBuilder->build();
 

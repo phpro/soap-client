@@ -7,7 +7,6 @@ use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
-use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -80,8 +79,11 @@ class GenerateClientCommand extends Command
         $config = $this->getConfigHelper()->load($input);
 
         $destination = $config->getClientDestination().'/'.$config->getClientName().'.php';
-        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypeNamespace());
+        $methodMap = ClientMethodMap::fromMetadata(
+            $config->getTypeNamespace(),
+            $config->getEngine()->getMetadata()->getMethods()
+        );
+
         $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
         $generator = new ClientGenerator($config->getRuleSet());
         $fileGenerator = new FileGenerator();

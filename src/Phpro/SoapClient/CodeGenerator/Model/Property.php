@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Property as MetadataProperty;
 
 /**
  * Class Property
@@ -38,6 +39,15 @@ class Property
         $this->name = Normalizer::normalizeProperty($name);
         $this->type = Normalizer::normalizeDataType($type);
         $this->namespace = Normalizer::normalizeNamespace($namespace);
+    }
+
+    public static function fromMetaData(string $namespace, MetadataProperty $property)
+    {
+        return new self(
+            $property->getName(),
+            $property->getType(),
+            $namespace
+        );
     }
 
     /**

@@ -15,9 +15,13 @@ class ConfigGeneratorTest extends TestCase
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\Soap\Engine\Engine;
 
 return Config::create()
-    ->setWsdl('wsdl.xml')
+    ->setEngine(new Engine(
+        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('wsdl.xml', []));
+        \$handler = new ExtSoapClientHandle(\$driver->getClient());
+    ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')
     ->setClientDestination('src/client')
@@ -50,7 +54,7 @@ return Config::create()
 CONTENT;
         $context = new ConfigContext();
         $context
-            ->addSetter('setWsdl', 'wsdl.xml')
+            ->setWsdl('wsdl.xml')
             ->addSetter('setTypeDestination', 'src/type')
             ->addSetter('setTypeNamespace', 'App\\\\Type')
             ->addSetter('setClientDestination', 'src/client')
@@ -75,9 +79,13 @@ CONTENT;
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\Soap\Engine\Engine;
 
 return Config::create()
-    ->setWsdl('wsdl.xml')
+    ->setEngine(new Engine(
+        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('wsdl.xml', []));
+        \$handler = new ExtSoapClientHandle(\$driver->getClient());
+    ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')
     ->setClientDestination('src/client')
@@ -93,7 +101,7 @@ return Config::create()
 CONTENT;
         $context = new ConfigContext();
         $context
-            ->addSetter('setWsdl', 'wsdl.xml')
+            ->setWsdl('wsdl.xml')
             ->addSetter('setTypeDestination', 'src/type')
             ->addSetter('setTypeNamespace', 'App\\\\Type')
             ->addSetter('setClientDestination', 'src/client')
@@ -107,4 +115,5 @@ CONTENT;
         $generated = $generator->generate(new FileGenerator(), $context);
         self::assertEquals($expected, $generated);
     }
+
 }

@@ -11,21 +11,9 @@ use Throwable;
  */
 class InvalidArgumentException extends \InvalidArgumentException
 {
-    /**
-     * @return InvalidArgumentException
-     */
-    public static function wsdlConfigurationIsMissing(): self
+    public static function engineNotConfigured(): self
     {
-        return new static('You did not configure a WSDL file.');
-    }
-
-    /**
-     * @param Throwable $e
-     * @return InvalidArgumentException
-     */
-    public static function wsdlCouldNotBeProvided(Throwable $e): self
-    {
-        return new static('The WSDL could not be loaded: ' . $e->getMessage(), 0, $e);
+        return new static('You did not configure a soap engine');
     }
 
     /**

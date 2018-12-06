@@ -80,9 +80,8 @@ CODE;
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'string'
+            $property = new Property('prop1', 'string', 'ns1'),
         ]);
-        $property = new Property('prop1', 'string', 'ns1');
 
         return new PropertyContext($class, $type, $property);
     }
