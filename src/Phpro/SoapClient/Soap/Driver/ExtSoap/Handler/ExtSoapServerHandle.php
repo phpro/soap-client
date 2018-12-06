@@ -3,13 +3,12 @@
 namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Handler;
 
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
-use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
 use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 use SoapServer;
 
-class ExtSoapServerHandle implements HandlerInterface, LastRequestInfoCollectorInterface
+class ExtSoapServerHandle implements HandlerInterface
 {
     /**
      * @var SoapServer

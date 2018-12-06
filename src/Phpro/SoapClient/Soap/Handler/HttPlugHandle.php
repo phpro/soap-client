@@ -17,7 +17,7 @@ use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 
-class HttPlugHandle implements HandlerInterface, MiddlewareSupportingInterface, LastRequestInfoCollectorInterface
+class HttPlugHandle implements HandlerInterface, MiddlewareSupportingInterface
 {
     /**
      * @var HttpClient

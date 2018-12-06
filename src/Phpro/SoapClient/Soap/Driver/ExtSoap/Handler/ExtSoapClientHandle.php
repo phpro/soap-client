@@ -4,12 +4,11 @@ namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Handler;
 
 use Phpro\SoapClient\Soap\Driver\ExtSoap\AbusedClient;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
-use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
 use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 
-class ExtSoapClientHandle implements HandlerInterface, LastRequestInfoCollectorInterface
+class ExtSoapClientHandle implements HandlerInterface
 {
     /**
      * @var AbusedClient

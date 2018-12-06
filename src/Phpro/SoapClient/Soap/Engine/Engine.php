@@ -6,6 +6,7 @@ namespace Phpro\SoapClient\Soap\Engine;
 
 use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
+use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 
 class Engine implements EngineInterface
 {
@@ -38,5 +39,10 @@ class Engine implements EngineInterface
         $response = $this->handler->request($request);
 
         return $this->driver->decode($method, $response);
+    }
+
+    public function collectLastRequestInfo(): LastRequestInfo
+    {
+        return $this->handler->collectLastRequestInfo();
     }
 }

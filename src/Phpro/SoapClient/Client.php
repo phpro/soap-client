@@ -42,19 +42,18 @@ class Client implements ClientInterface
      */
     public function debugLastSoapRequest(): array
     {
-        throw new \RuntimeException('Not implemented yet....');
+        $lastRequestInfo = $this->engine->collectLastRequestInfo();
         return [
             'request'  => [
-                'headers' => $this->soapClient->__getLastRequestHeaders(),
-                'body'    => $this->soapClient->__getLastRequest(),
+                'headers' => $lastRequestInfo->getLastRequestHeaders(),
+                'body' => $lastRequestInfo->getLastRequest(),
             ],
             'response' => [
-                'headers' => $this->soapClient->__getLastResponseHeaders(),
-                'body'    => $this->soapClient->__getLastResponse(),
+                'headers' => $lastRequestInfo->getLastResponseHeaders(),
+                'body' => $lastRequestInfo->getLastResponse(),
             ],
         ];
     }
-
 
     /**
      * @param string            $method

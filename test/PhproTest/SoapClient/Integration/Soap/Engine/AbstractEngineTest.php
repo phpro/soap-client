@@ -6,7 +6,6 @@ namespace PhproTest\SoapClient\Integration\Soap\Engine;
 
 use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
-use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
 use Phpro\SoapClient\Xml\SoapXml;
 use VCR\VCR;
 
@@ -47,13 +46,8 @@ abstract class AbstractEngineTest extends AbstractIntegrationTest
     function it_should_know_the_last_request_and_response()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/weather-ws.wsdl');
-        $handler = $this->getHandler();
-        if (!$handler instanceof LastRequestInfoCollectorInterface) {
-            $this->markTestSkipped('The handler does not support last request information');
-        }
-
-        $this->runWithCasette('get-city-weather-by-zip-10013.yml', function() use ($handler) {
-
+        $this->runWithCasette('get-city-weather-by-zip-10013.yml', function() {
+            $handler = $this->getHandler();
             $lastInfo = $handler->collectLastRequestInfo();
             $this->assertEquals(0, strlen($lastInfo->getLastRequest()));
             $this->assertEquals(0, strlen($lastInfo->getLastResponse()));
