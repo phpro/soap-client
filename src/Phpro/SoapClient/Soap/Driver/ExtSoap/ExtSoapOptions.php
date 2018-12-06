@@ -44,7 +44,7 @@ class ExtSoapOptions
                     'trace' => true,
                     'exceptions' => true,
                     'keep_alive' => true,
-                    'cache_wsdl' => WSDL_CACHE_BOTH,
+                    'cache_wsdl' => WSDL_CACHE_DISK, // Avoid memory cache: this causes SegFaults from time to time.
                     'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
                     'typemap' => new TypeConverterCollection([
                         new TypeConverter\DateTimeTypeConverter(),
