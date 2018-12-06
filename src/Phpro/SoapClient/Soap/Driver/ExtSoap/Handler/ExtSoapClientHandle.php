@@ -9,11 +9,6 @@ use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 
-/**
- * Class SoapHandle
- *
- * @package Phpro\SoapClient\Soap\Handler
- */
 class ExtSoapClientHandle implements HandlerInterface, LastRequestInfoCollectorInterface
 {
     /**
@@ -32,11 +27,6 @@ class ExtSoapClientHandle implements HandlerInterface, LastRequestInfoCollectorI
         $this->lastRequestInfo = LastRequestInfo::createEmpty();
     }
 
-    /**
-     * @param SoapRequest $request
-     *
-     * @return SoapResponse
-     */
     public function request(SoapRequest $request): SoapResponse
     {
         $response = $this->client->doActualRequest(
@@ -47,14 +37,16 @@ class ExtSoapClientHandle implements HandlerInterface, LastRequestInfoCollectorI
             $request->getOneWay()
         );
 
-        $this->lastRequestInfo = LastRequestInfo::createFromSoapClient($this->client);
+        $this->lastRequestInfo = new LastRequestInfo(
+            (string) $this->client->__getLastRequestHeaders(),
+            (string) $this->client->__getLastRequest(),
+            (string) $this->client->__getLastResponseHeaders(),
+            (string) $this->client->__getLastResponse()
+        );
 
         return new SoapResponse($response);
     }
 
-    /**
-     * @return LastRequestInfo
-     */
     public function collectLastRequestInfo(): LastRequestInfo
     {
         return $this->lastRequestInfo;
