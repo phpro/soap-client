@@ -33,7 +33,9 @@ class Parameter
     {
         return new self(
             $parameter->getName(),
-            $parameterNamespace.'\\'.$parameter->getType()
+            Normalizer::isKnownType($parameter->getType())
+                ? $parameter->getType()
+                : $parameterNamespace.'\\'.$parameter->getType()
         );
     }
 

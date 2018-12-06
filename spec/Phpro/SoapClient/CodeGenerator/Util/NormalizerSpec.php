@@ -36,6 +36,19 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeClassname('my-./final*type_123')->shouldReturn('MyFinalType123');
     }
 
+    function it_can_normalize_fqn_classnames()
+    {
+        $this->normalizeClassnameInFQN('ns1\\myType')->shouldReturn('ns1\\MyType');
+        $this->normalizeClassnameInFQN('ns1\\final')->shouldReturn('ns1\\FinalType');
+        $this->normalizeClassnameInFQN('ns1\\Final')->shouldReturn('ns1\\FinalType');
+        $this->normalizeClassnameInFQN('ns1\\UpperCased')->shouldReturn('ns1\\UpperCased');
+        $this->normalizeClassnameInFQN('ns1\\my-./*type_123')->shouldReturn('ns1\\MyType123');
+        $this->normalizeClassnameInFQN('ns1\\my-./final*type_123')->shouldReturn('ns1\\MyFinalType123');
+
+        $this->normalizeClassnameInFQN('string')->shouldReturn('string');
+        $this->normalizeClassnameInFQN('NoNamespace')->shouldReturn('NoNamespace');
+    }
+
     function it_can_normalize_method_names()
     {
         $this->normalizeMethodName('myMethod')->shouldReturn('myMethod');

@@ -175,6 +175,10 @@ class Normalizer
 
     public static function normalizeClassnameInFQN(string $fqn): string
     {
+        if (self::isKnownType($fqn)) {
+            return $fqn;
+        }
+
         $className = self::getClassNameFromFQN($fqn);
 
         return substr($fqn, 0, -1 * \strlen($className)).self::normalizeClassname($className);
