@@ -154,6 +154,40 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_with_normalised_class_name()
+    {
+        $options = (new GetterAssemblerOptions())->withReturnType();
+        $assembler = new GetterAssembler($options);
+
+        $context = $this->createContext('prop4');
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @return \\ns1\\MyResponse
+     */
+    public function getProp4() : \\ns1\\MyResponse
+    {
+        return \$this->prop4;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @param string $propertyName
      * @return PropertyContext
      */
@@ -163,6 +197,7 @@ CODE;
             'prop1' => new Property('prop1', 'string', 'ns1'),
             'prop2' => new Property('prop2', 'int', 'ns1'),
             'prop3' => new Property('prop3', 'boolean', 'ns1'),
+            'prop4' => new Property('prop4', 'My_Response', 'ns1'),
         ];
 
         $class = new ClassGenerator('MyType', 'MyNamespace');

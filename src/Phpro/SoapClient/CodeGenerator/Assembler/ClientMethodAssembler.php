@@ -47,12 +47,12 @@ class ClientMethodAssembler implements AssemblerInterface
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [
-                        'name' => $method->getMethodName(),
+                        'name' => Normalizer::normalizeMethodName($method->getMethodName()),
                         'parameters' => [$param],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                         'body' => sprintf(
                             'return $this->call(\'%s\', $%s);',
-                            Normalizer::getClassNameFromFQN($param->getType()),
+                            $method->getMethodName(),
                             $param->getName()
                         ),
                         'returntype' => $method->getNamespacedReturnType(),

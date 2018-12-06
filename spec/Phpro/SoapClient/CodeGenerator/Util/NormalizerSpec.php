@@ -36,6 +36,18 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeClassname('my-./final*type_123')->shouldReturn('MyFinalType123');
     }
 
+    function it_can_normalize_method_names()
+    {
+        $this->normalizeMethodName('myMethod')->shouldReturn('myMethod');
+        $this->normalizeMethodName('final')->shouldReturn('finalCall');
+        $this->normalizeMethodName('Final')->shouldReturn('finalCall');
+        $this->normalizeMethodName('UpperCased')->shouldReturn('upperCased');
+        $this->normalizeMethodName('my-./*method_123')->shouldReturn('myMethod_123');
+        $this->normalizeMethodName('123hello')->shouldReturn('hello123');
+        $this->normalizeMethodName('123final')->shouldReturn('final123');
+        $this->normalizeMethodName('123')->shouldReturn('call123');
+    }
+
     function it_noramizes_properties()
     {
         $this->normalizeProperty('prop1')->shouldReturn('prop1');

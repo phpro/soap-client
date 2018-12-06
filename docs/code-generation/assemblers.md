@@ -65,6 +65,41 @@ Example output:
     }
 ```
 
+Generating type-hints is disabled by default, but can be enabled by passing `ConstructorAssemblerOptions` instance to the constructor with the option `withTypeHints` set to true.
+
+Example
+```php
+new ConstructorAssembler((new ConstructorAssemblerOptions())->withTypeHints())
+```
+
+```php
+    /**
+     * Constructor
+     *
+     * @var string $prop1
+     * @var int $prop2
+     */
+    public function __construct(string $prop1, int $prop2)
+    {
+        $this->prop1 = $prop1;
+        $this->prop2 = $prop2;
+    }
+```
+
+Generating doc blocks is enabled by default, but can be disabled by passing `ConstructorAssemblerOptions` instance to the constructor with the option `withDocBlocks` set to false. This is normally used in conjunction with `withTypeHints`
+
+Example
+```php
+new ConstructorAssembler((new ConstructorAssemblerOptions())->withDocBlocks(false)->withTypeHints())
+```
+
+```php
+    public function __construct(string $prop1, int $prop2)
+    {
+        $this->prop1 = $prop1;
+        $this->prop2 = $prop2;
+    }
+```
 
 ## FluentSetterAssembler
 

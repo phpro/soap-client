@@ -34,16 +34,6 @@ class ClientMethodMap
         }));
     }
 
-    public static function fromSoapClient(\SoapClient $client, $parameterNamespace = '') : ClientMethodMap
-    {
-        $clientMethods = [];
-        foreach ($client->__getFunctions() as $method) {
-            $clientMethods[] = ClientMethod::createFromExtSoapFunctionString($method, $parameterNamespace);
-        }
-
-        return new self($clientMethods);
-    }
-
     /**
      * @return ClientMethod[]
      */

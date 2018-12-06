@@ -101,16 +101,17 @@ class Normalizer
 
     /**
      * @param string $name
+     * @param string $suffix
      *
      * @return string
      */
-    private static function normalizeReservedKeywords(string $name): string
+    private static function normalizeReservedKeywords(string $name, string $suffix): string
     {
         if (!\in_array(strtolower($name), self::$reservedKeywords, true)) {
             return $name;
         }
 
-        return $name.'Type';
+        return $name.$suffix;
     }
 
     /**
@@ -142,15 +143,41 @@ class Normalizer
     }
 
     /**
+     * @param string $method
+     *
+     * @return string
+     */
+    public static function normalizeMethodName(string $method): string
+    {
+        // Methods cant start with a number in PHP - move it after text
+        $method = preg_replace('{^([0-9]*)(.*)}', '$2$1', $method);
+        if (is_numeric($method)) {
+            $method = 'call' . $method;
+        }
+
+        // Methods cant be named after reserved keywords.
+        $method = self::normalizeReservedKeywords($method, 'Call');
+
+        return lcfirst(self::camelCase($method, '{[^a-z0-9_]+}i'));
+    }
+
+    /**
      * @param string $name
      *
      * @return string
      */
     public static function normalizeClassname(string $name): string
     {
-        $name = self::normalizeReservedKeywords($name);
+        $name = self::normalizeReservedKeywords($name, 'Type');
 
         return ucfirst(self::camelCase($name, '{[^a-z0-9]+}i'));
+    }
+
+    public static function normalizeClassnameInFQN(string $fqn): string
+    {
+        $className = self::getClassNameFromFQN($fqn);
+
+        return substr($fqn, 0, -1 * \strlen($className)).self::normalizeClassname($className);
     }
 
     /**

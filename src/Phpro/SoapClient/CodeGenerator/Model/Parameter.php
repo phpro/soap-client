@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 
 class Parameter
@@ -24,8 +25,8 @@ class Parameter
      */
     public function __construct(string $name, string $type)
     {
-        $this->name = $name;
-        $this->type = $type;
+        $this->name = Normalizer::normalizeProperty($name);
+        $this->type = Normalizer::normalizeClassnameInFQN($type);
     }
 
     public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter)
