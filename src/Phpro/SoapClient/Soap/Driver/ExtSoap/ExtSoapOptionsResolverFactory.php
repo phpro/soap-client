@@ -112,13 +112,17 @@ class ExtSoapOptionsResolverFactory
         $resolver->setAllowedTypes('default_socket_timeout', ['int']);
 
         // Typemaps
-        // An internal typemap containing the TypeConverterCollection is required.
-        // Otherwise GC will remove the converters - which results in segfaults during conversion.
-        $resolver->setDefined(['phpro_soapclient_typemap', 'typemap']);
-        $resolver->setDefault('phpro_soapclient_typemap', new TypeConverterCollection());
-        $resolver->setAllowedTypes('phpro_soapclient_typemap', [TypeConverterCollection::class]);
-        $resolver->setAllowedTypes('typemap', ['array']);
-        $resolver->setDefault('typemap', function (Options $options): array {
+        $resolver->setDefault('typemap', new TypeConverterCollection());
+        $resolver->setAllowedTypes('typemap', [TypeConverterCollection::class, 'array']);
+
+        $resolver->setDefined(['typemap']);
+        $resolver->setAllowedTypes('typemap', ['array', TypeConverterCollection::class]);
+        $resolver->setNormalizer('typemap', function (Options $options, $value): array {
+            // Classic array configuration:
+            if (!$value instanceof TypeConverterCollection) {
+                return $value;
+            }
+
             return array_values(array_map(
                 function (TypeConverterInterface $converter) {
                     return [
@@ -132,7 +136,7 @@ class ExtSoapOptionsResolverFactory
                         },
                     ];
                 },
-                iterator_to_array($options['phpro_soapclient_typemap'])
+                iterator_to_array($value)
             ));
         });
 
