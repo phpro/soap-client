@@ -17,7 +17,7 @@ abstract class AbstractMetadataProviderTest extends AbstractIntegrationTest
     /** @test */
     public function it_can_load_wsdl_methods()
     {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/stringContent.wsdl');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/string.wsdl');
 
         $metadata = $this->getMetadataProvider()->getMetadata();
         $methods = $metadata->getMethods();
@@ -58,6 +58,28 @@ abstract class AbstractMetadataProviderTest extends AbstractIntegrationTest
         $this->markTestIncomplete('TODO');
     }
 
+    /** @test */
+    function it_can_handle_duplicate_type_declarations()
+    {
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/duplicate-typenames.wsdl');
+
+        $metadata = $this->getMetadataProvider()->getMetadata();
+        $types = $metadata->getTypes();
+
+        $this->assertCount(2, $types);
+        $this->assertTypeExists(
+            $types,
+            'Store',
+            [
+                new Property('Attribute1', 'string')
+            ]
+        );
+
+        $type2 = $types->getIterator()[1];
+        $this->assertSame('Store', $type2->getName());
+        $this->assertEquals([new Property('Attribute2', 'string')], $type2->getProperties());
+    }
+    
     private function assertMethodExists(MethodCollection $methods, string $name, array $parameters, string $returnType)
     {
         $method = $methods->fetchByName($name);

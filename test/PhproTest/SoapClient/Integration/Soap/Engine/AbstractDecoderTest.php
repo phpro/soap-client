@@ -12,23 +12,6 @@ abstract class AbstractDecoderTest extends AbstractIntegrationTest
     abstract protected function getDecoder(): DecoderInterface;
 
     /** @test */
-    public function it_decodes_base64_binary()
-    {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/base64Binary.wsdl');
-        $output = base64_encode($expectedOutput = 'decodedoutput');
-        $response = $this->createResponse(<<<EOB
-<application:validate>
-    <output xsi:type="xsd:base64Binary">$output</output>
-</application:validate>
-EOB
-        );
-
-        $decoded = $this->getDecoder()->decode('validate', $response);
-
-        $this->assertEquals($expectedOutput, $decoded);
-    }
-
-    /** @test */
     public function it_handles_simple_content()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/simpleContent.wsdl');
@@ -50,9 +33,15 @@ EOB
     }
 
     /** @test */
+    public function it_handles_complex_types()
+    {
+        $this->markTestIncomplete('TODO...');
+    }
+
+    /** @test */
     public function it_handles_xml_entities()
     {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/stringContent.wsdl');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/string.wsdl');
         $output = htmlspecialchars($expectedOutput = '&lt;\'"ïnpüt"\'&gt;', ENT_NOQUOTES);
         $response = $this->createResponse(<<<EOB
 <application:validate>
@@ -79,6 +68,12 @@ EOB
 
     /** @test */
     function it_decodes_string()
+    {
+        $this->markTestIncomplete('TODO...');
+    }
+
+    /** @test */
+    function it_decodes_enum()
     {
         $this->markTestIncomplete('TODO...');
     }
@@ -134,7 +129,17 @@ EOB
     /** @test */
     function it_decodes_xsd_string()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/string.wsdl');
+        $output = 'output';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:string">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
@@ -146,37 +151,97 @@ EOB
     /** @test */
     function it_decodes_xsd_decimal()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/decimal.wsdl');
+        $output = '12345.67890';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:decimal">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_float()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/float.wsdl');
+        $output = 123.45;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:float">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_double()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/double.wsdl');
+        $output = 123.45;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:double">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_long()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/long.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:long">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_int()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/int.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:int">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_short()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/short.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:int">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
@@ -302,8 +367,20 @@ EOB
     /** @test */
     function it_decodes_base64binary()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/base64Binary.wsdl');
+        $output = base64_encode($expectedOutput = 'decodedoutput');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:base64Binary">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+
+        $this->assertEquals($expectedOutput, $decoded);
     }
+
 
     /** @test */
     function it_decodes_xsd_any_type_by_guessing()

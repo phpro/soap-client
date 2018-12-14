@@ -13,20 +13,6 @@ abstract class AbstractEncoderTest extends AbstractIntegrationTest
     abstract protected function getEncoder(): EncoderInterface;
 
     /** @test */
-    public function it_encodes_base64_binary()
-    {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/base64Binary.wsdl');
-        $input = 'myinput';
-        $encoded = $this->getEncoder()->encode($method = 'validate', [$input]);
-
-        $xml = SoapXml::fromString($encoded->getRequest());
-        $result = $this->runSingleElementXpathOnBody($xml, './application:validate/input');
-
-        $this->assertSoapRequest($encoded, $xml, $method);
-        $this->assertEquals(base64_encode($input), $result->nodeValue);
-    }
-
-    /** @test */
     public function it_handles_simple_content()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/simpleContent.wsdl');
@@ -42,9 +28,15 @@ abstract class AbstractEncoderTest extends AbstractIntegrationTest
     }
 
     /** @test */
+    public function it_handles_complex_types()
+    {
+        $this->markTestIncomplete('TODO...');
+    }
+
+    /** @test */
     public function it_handles_xml_entities()
     {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/stringContent.wsdl');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/string.wsdl');
         $input = '<\'"ïnpüt"\'>';
         $encoded = $this->getEncoder()->encode($method = 'validate', [$input]);
 
@@ -70,6 +62,12 @@ abstract class AbstractEncoderTest extends AbstractIntegrationTest
 
     /** @test */
     function it_encodes_string()
+    {
+        $this->markTestIncomplete('TODO...');
+    }
+
+    /** @test */
+    function it_encodes_enum()
     {
         $this->markTestIncomplete('TODO...');
     }
@@ -125,7 +123,14 @@ abstract class AbstractEncoderTest extends AbstractIntegrationTest
     /** @test */
     function it_encodes_xsd_string()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/string.wsdl');
+
+        $encoded = $this->getEncoder()->encode($method = 'validate', ['input']);
+        $xml = SoapXml::fromString($encoded->getRequest());
+        $result = $this->runSingleElementXpathOnBody($xml, './application:validate/input');
+
+        $this->assertSoapRequest($encoded, $xml, $method);
+        $this->assertEquals('input', $result->nodeValue);
     }
 
     /** @test */
@@ -161,7 +166,14 @@ abstract class AbstractEncoderTest extends AbstractIntegrationTest
     /** @test */
     function it_encodes_xsd_int()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/string.wsdl');
+
+        $encoded = $this->getEncoder()->encode($method = 'validate', [$input = 123]);
+        $xml = SoapXml::fromString($encoded->getRequest());
+        $result = $this->runSingleElementXpathOnBody($xml, './application:validate/input');
+
+        $this->assertSoapRequest($encoded, $xml, $method);
+        $this->assertEquals($input, $result->nodeValue);
     }
 
     /** @test */
@@ -293,7 +305,15 @@ abstract class AbstractEncoderTest extends AbstractIntegrationTest
     /** @test */
     function it_encodes_base64binary()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/base64Binary.wsdl');
+        $input = 'myinput';
+        $encoded = $this->getEncoder()->encode($method = 'validate', [$input]);
+
+        $xml = SoapXml::fromString($encoded->getRequest());
+        $result = $this->runSingleElementXpathOnBody($xml, './application:validate/input');
+
+        $this->assertSoapRequest($encoded, $xml, $method);
+        $this->assertEquals(base64_encode($input), $result->nodeValue);
     }
 
     /** @test */
