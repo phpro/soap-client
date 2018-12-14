@@ -52,6 +52,12 @@ abstract class AbstractMetadataProviderTest extends AbstractIntegrationTest
         );
     }
 
+    /** @test */
+    function it_can_load_complex_types()
+    {
+        $this->markTestIncomplete('TODO');
+    }
+
     private function assertMethodExists(MethodCollection $methods, string $name, array $parameters, string $returnType)
     {
         $method = $methods->fetchByName($name);
