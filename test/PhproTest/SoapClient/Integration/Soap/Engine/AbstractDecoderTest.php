@@ -145,7 +145,17 @@ EOB
     /** @test */
     function it_decodes_xsd_boolean()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/boolean.wsdl');
+        $output = true;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:float">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
@@ -247,61 +257,161 @@ EOB
     /** @test */
     function it_decodes_xsd_byte()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/byte.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:byte">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_nonpositive_integer()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/nonPositiveInteger.wsdl');
+        $output = -123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:nonPositiveInteger">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_positive_integer()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/positiveInteger.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:positiveInteger">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_nonnegative_integer()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/nonNegativeInteger.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:nonNegativeInteger">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_negative_integer()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/negativeInteger.wsdl');
+        $output = -123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:negativeInteger">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_unsigned_byte()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/unsignedByte.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:unsignedByte">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_unsigned_short()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/unsignedShort.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:unsignedShort">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_unsigned_int()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/unsignedInt.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:unsignedInt">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_unsigned_long()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/unsignedLong.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:unsignedInt">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_integer()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/integer.wsdl');
+        $output = 123;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:integer">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
@@ -319,7 +429,18 @@ EOB
     /** @test */
     function it_decodes_xsd_date()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/date.wsdl');
+        $output = '2018-12-25';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:date">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertInstanceOf(\DateTimeInterface::class, $decoded);
+        $this->assertEquals($output, $decoded->format('Y-m-d'));
     }
 
     /** @test */
@@ -385,7 +506,17 @@ EOB
     /** @test */
     function it_decodes_xsd_any_type_by_guessing()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/nonPositiveInteger.wsdl');
+        $output = 12243.223;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:any">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */

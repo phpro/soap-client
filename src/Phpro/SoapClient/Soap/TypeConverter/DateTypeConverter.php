@@ -43,9 +43,7 @@ class DateTypeConverter implements TypeConverterInterface
             return null;
         }
 
-        $dateTime = new DateTime($doc->textContent);
-
-        return $dateTime;
+        return new DateTime($doc->textContent);
     }
 
     /**

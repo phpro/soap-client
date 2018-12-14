@@ -118,21 +118,16 @@ class ExtSoapOptionsResolverFactory
         $resolver->setDefault('phpro_soapclient_typemap', new TypeConverterCollection());
         $resolver->setAllowedTypes('phpro_soapclient_typemap', [TypeConverterCollection::class]);
         $resolver->setAllowedTypes('typemap', ['array']);
-        $resolver->setNormalizer('typemap', function (Options $options, $value): array {
-            // When the typemap is manually set to an array : continue using that one...
-            if ($value) {
-                return $value;
-            }
-
+        $resolver->setDefault('typemap', function (Options $options): array {
             return array_values(array_map(
                 function (TypeConverterInterface $converter) {
                     return [
                         'type_name' => $converter->getTypeName(),
-                        'type_ns'   => $converter->getTypeNamespace(),
-                        'from_xml'  => function ($input) use ($converter) {
+                        'type_ns' => $converter->getTypeNamespace(),
+                        'from_xml' => function ($input) use ($converter)  {
                             return $converter->convertXmlToPhp($input);
                         },
-                        'to_xml'    => function ($input) use ($converter) {
+                        'to_xml' => function ($input) use ($converter)  {
                             return $converter->convertPhpToXml($input);
                         },
                     ];
