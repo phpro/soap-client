@@ -46,7 +46,7 @@ class ExtSoapOptions
                     'keep_alive' => true,
                     'cache_wsdl' => WSDL_CACHE_DISK, // Avoid memory cache: this causes SegFaults from time to time.
                     'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
-                    'typemap' => new TypeConverterCollection([
+                    'phpro_soapclient_typemap' => new TypeConverterCollection([
                         new TypeConverter\DateTimeTypeConverter(),
                         new TypeConverter\DateTypeConverter(),
                         new TypeConverter\DecimalTypeConverter(),
@@ -94,7 +94,7 @@ class ExtSoapOptions
     public function getTypeMap(): TypeConverterCollection
     {
         return $this->fetchOptionOfTypeWithDefault(
-            'typemap',
+            'phpro_soapclient_typemap',
             TypeConverterCollection::class,
             new TypeConverterCollection()
         );
@@ -102,7 +102,7 @@ class ExtSoapOptions
 
     public function withTypeMap(TypeConverterCollection $typeConverterCollection): self
     {
-        $this->options['typemap'] = $typeConverterCollection;
+        $this->options['phpro_soapclient_typemap'] = $typeConverterCollection;
 
         return $this;
     }
