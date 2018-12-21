@@ -1,5 +1,7 @@
 <?php
 
+namespace PhproTest\SoapClient\Unit\CodeGenerator;
+
 use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use PHPUnit\Framework\TestCase;

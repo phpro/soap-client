@@ -1,5 +1,6 @@
 <?php
 
+namespace PhproTest\SoapClient\Unit\CodeGenerator;
 
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
@@ -18,7 +19,7 @@ class ClientFactoryGeneratorTest extends TestCase
 namespace App\Client;
 
 use App\Client\Myclient;
-use App\Classmap\Myclassmap;
+use App\Classmap\SomeClassmap;
 use Phpro\SoapClient\ClientFactory as PhproClientFactory;
 use Phpro\SoapClient\ClientBuilder;
 
@@ -31,7 +32,7 @@ class MyclientFactory
         \$clientBuilder = ClientBuilder::fromExtSoap(
             \$clientFactory,
             ExtSoapOptions::defaults(\$wsdl, [])
-                ->withClassMap(Myclassmap::getCollection())
+                ->withClassMap(SomeClassmap::getCollection())
         );
 
         return \$clientBuilder->build();
@@ -46,7 +47,7 @@ BODY;
         $classMapContext = new ClassMapContext(
             new FileGenerator(),
             new \Phpro\SoapClient\CodeGenerator\Model\TypeMap('App\\Types', []),
-            'Myclassmap',
+            'SomeClassmap',
             'App\\Classmap'
         );
         $context = new ClientFactoryContext($clientContext, $classMapContext);

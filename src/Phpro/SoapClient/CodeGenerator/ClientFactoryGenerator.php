@@ -21,7 +21,7 @@ class ClientFactoryGenerator implements GeneratorInterface
 \$clientBuilder = ClientBuilder::fromExtSoap(
     \$clientFactory,
     ExtSoapOptions::defaults(\$wsdl, [])
-        ->withClassMap(Myclassmap::getCollection())
+        ->withClassMap(%2\$s::getCollection())
 );
 
 return \$clientBuilder->build();
