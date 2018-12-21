@@ -4,6 +4,9 @@ namespace Phpro\SoapClient\CodeGenerator;
 
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapClientHandle;
 use Phpro\SoapClient\Soap\Engine\Engine;
 use Zend\Code\Generator\FileGenerator;
 
@@ -92,6 +95,9 @@ EOENGINE;
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Rules');
         $file->setUse(Config::class);
         $file->setUse(Engine::class);
+        $file->setUse(ExtSoapDriver::class);
+        $file->setUse(ExtSoapOptions::class);
+        $file->setUse(ExtSoapClientHandle::class);
 
         $body .= $this->parseEngine($file, $context->getWsdl());
         foreach ($context->getSetters() as $name => $value) {
