@@ -47,8 +47,8 @@ RULESET;
 
     const ENGINE_BOILERPLATE = <<<EOENGINE
 ->setEngine(new Engine(
-        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('%s', []));
-        \$handler = new ExtSoapClientHandle(\$driver->getClient());
+        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('%s', [])),
+        \$handler = new ExtSoapClientHandle(\$driver->getClient())
     ))
 EOENGINE;
 

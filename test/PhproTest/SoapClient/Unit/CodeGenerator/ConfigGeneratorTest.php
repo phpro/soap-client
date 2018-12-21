@@ -19,8 +19,8 @@ use Phpro\SoapClient\Soap\Engine\Engine;
 
 return Config::create()
     ->setEngine(new Engine(
-        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('wsdl.xml', []));
-        \$handler = new ExtSoapClientHandle(\$driver->getClient());
+        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('wsdl.xml', [])),
+        \$handler = new ExtSoapClientHandle(\$driver->getClient())
     ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')
@@ -83,8 +83,8 @@ use Phpro\SoapClient\Soap\Engine\Engine;
 
 return Config::create()
     ->setEngine(new Engine(
-        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('wsdl.xml', []));
-        \$handler = new ExtSoapClientHandle(\$driver->getClient());
+        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('wsdl.xml', [])),
+        \$handler = new ExtSoapClientHandle(\$driver->getClient())
     ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')
