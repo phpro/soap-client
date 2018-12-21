@@ -9,7 +9,7 @@ class Method
     /**
      * @var Parameter[]
      */
-    private $parameters;
+    private $parameters = [];
 
     /**
      * @var string

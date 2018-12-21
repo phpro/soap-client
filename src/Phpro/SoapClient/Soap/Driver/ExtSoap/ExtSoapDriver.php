@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Driver\ExtSoap;
 
+use Phpro\SoapClient\Soap\Driver\ExtSoap\Generator\DummyMethodArgumentsGenerator;
 use Phpro\SoapClient\Soap\Engine\DecoderInterface;
 use Phpro\SoapClient\Soap\Engine\DriverInterface;
 use Phpro\SoapClient\Soap\Engine\EncoderInterface;
+use Phpro\SoapClient\Soap\Engine\Metadata\LazyInMemoryMetadata;
 use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
@@ -55,11 +57,13 @@ class ExtSoapDriver implements DriverInterface
 
     public static function createFromClient(AbusedClient $client): self
     {
+        $metadata = new LazyInMemoryMetadata(new ExtSoapMetadata($client));
+
         return new self(
             $client,
             new ExtSoapEncoder($client),
-            new ExtSoapDecoder($client),
-            new ExtSoapMetadata($client)
+            new ExtSoapDecoder($client, new DummyMethodArgumentsGenerator($metadata)),
+            $metadata
         );
     }
 

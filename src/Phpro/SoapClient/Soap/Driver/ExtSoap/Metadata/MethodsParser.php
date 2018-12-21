@@ -23,11 +23,17 @@ class MethodsParser
 
     private function parseMethodFromString(string $methodString): Method
     {
+        $methodString = $this->transformListResponseToArray($methodString);
         return new Method(
             $this->parseName($methodString),
             $this->parseParameters($methodString),
             $this->parseReturnType($methodString)
         );
+    }
+
+    private function transformListResponseToArray(string $methodString): string
+    {
+        return preg_replace('/^list\(([^\)]*)\)(.*)/i', 'array$2', $methodString);
     }
 
     /**
@@ -36,6 +42,10 @@ class MethodsParser
     private function parseParameters(string $methodString): array
     {
         preg_match('/\((.*)\)/', $methodString, $properties);
+        if (!$properties[1]) {
+            return [];
+        }
+
         $parameters = preg_split('/,\s?/', $properties[1]);
 
         return array_map(
