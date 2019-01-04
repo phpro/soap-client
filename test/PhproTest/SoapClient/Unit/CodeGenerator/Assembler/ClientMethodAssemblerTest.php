@@ -154,7 +154,7 @@ CODE;
         $class = new ClassGenerator();
         $class->setNamespaceName('Vendor\\MyNamespace');
         $method = ClientMethod::createFromExtSoapFunctionString(
-            'return_type function_name(param_type $param)',
+            'return_type Function_name(param_type $param)',
             'Vendor\\MyTypeNamespace'
         );
 
@@ -180,7 +180,7 @@ class  extends \Phpro\SoapClient\Client
      */
     public function function_name(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return \$this->call('function_name', \$param);
+        return \$this->call('Function_name', \$param);
     }
 
 
