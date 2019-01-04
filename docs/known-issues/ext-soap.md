@@ -44,39 +44,41 @@ More information:
 
 When there are 2 types with the same name in different XML namespaces,
 ext-soap is not able to link those types to 2 different PHP objects.
-This package will generate the code for the last detected type in the WSDL.
+This package will generate the code for the both of them if they are defined as DuplicateType.
+Those 2 types can be properly attached to his namespace only if namespace is explicitly defined based on properties names.
 
 Suggested workaround:
-
-- Manually create the missing classes.
-- Determine which is the most important type and use that one in the classmap.
-- You can use the type converters for the other type(s) with the same name.
-- You'll need to manually parse the XML and link it to an object.
-
 ```php
-$soapOptions = [
-    'classmap' => [
-        'Store' => MostImportantStore::class,
-    ],
-    'typemap' => [
-        [
-            'type_name' => 'Store',
-            'type_ns' => 'http://......lessimportantsotre',
-            'from_xml' => function($xml) {
-                $data = simplexml_load_string($xml);
-    
-                return LessImportantStore::fromXml($data);
-            },
-        ],
-    ],
-];
+<?php
+// my-soap-config.php
+
+use Phpro\SoapClient\CodeGenerator\Config\Config;
+
+return Config::create()
+    ->setWsdl('http://localhost/path/to/soap.wsdl')
+    /* OTHER OPTIONS ... */
+    ->setDuplicateTypes([
+        new \Phpro\SoapClient\CodeGenerator\Model\DuplicateType('MySpecialType', 'http://localhost/path/to/Datatypes/Namespace1', [
+            'Attr1',
+            'Attr2'
+        ]),
+        new \Phpro\SoapClient\CodeGenerator\Model\DuplicateType('MySpecialType', 'http://localhost/path/to/Datatypes/Namespace2', [
+            'Attr1',
+            'Attr2',
+            'AnotherSpecialAttribute'
+        ])
+    ]);
+;
 ```
 
-Alternative workaround:
+This configuration create proper class maps and define typemap option for SoapClient inside generated ClientFactory.
+Namespace is automatically suffixed in generated class. After generation must be applied proper namespaces for type hints by hand.
 
-- Merge all properties of all types in one big class.
-- Map the master class to the xsd type in the classmap
-- This might be a bad idea of the objects are not very similar.
+Unfortunately you must manually parse recieved XML from response inside static method **fromXml** which is generated in every duplicate type.
+This method use SimpleXML by default but you can change it by your own.
+
+If same type exists in both namespace with exact same properties than only one class will be generated. 
+It's up to user to create another class for proper usage.
 
 More information:
 
