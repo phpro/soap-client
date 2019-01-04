@@ -2,6 +2,8 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\Model\DuplicateType;
+
 class ClientFactoryContext implements ContextInterface
 {
     /**
@@ -14,12 +16,26 @@ class ClientFactoryContext implements ContextInterface
      */
     private $clientContext;
 
+    /**
+     * @var string
+     */
+    private $typeNamespace;
+
+    /**
+     * @var DuplicateType[]|array
+     */
+    private $duplicateTypes;
+
     public function __construct(
         ClientContext $clientContext,
-        ClassMapContext $classMapContext
+        ClassMapContext $classMapContext,
+        string $typeNamespace,
+        array $duplicateTypes = []
     ) {
         $this->classMapContext = $classMapContext;
         $this->clientContext = $clientContext;
+        $this->typeNamespace = $typeNamespace;
+        $this->duplicateTypes = $duplicateTypes;
     }
 
     public function getClientName(): string
@@ -50,5 +66,21 @@ class ClientFactoryContext implements ContextInterface
     public function getClassmapFqcn(): string
     {
         return $this->classMapContext->getFqcn();
+    }
+
+    /**
+     * @return array|DuplicateType[]
+     */
+    public function getDuplicateTypes()
+    {
+        return $this->duplicateTypes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeNamespace(): string
+    {
+        return $this->typeNamespace;
     }
 }

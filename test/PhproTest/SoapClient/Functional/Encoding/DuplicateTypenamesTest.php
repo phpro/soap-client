@@ -29,14 +29,20 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
     }
 
     /** @test */
-    function it_does_only_register_the_last_type()
+    function it_does_register_all_types()
     {
         $types = $this->client->getSoapTypes();
-        $this->assertCount(1, $types);
+        $this->assertCount(2, $types);
 
-        $type = $types['Store'];
+        $duplicateTypes = [];
+        foreach ($types as $type) {
+            if ($type['typeName'] === 'Store') {
+                $duplicateTypes[] = $type;
+            }
+        }
 
-        $this->assertEquals($type['Attribute2'], 'string');
+        $this->assertEquals($duplicateTypes[0]['properties']['Attribute1'], 'string');
+        $this->assertEquals($duplicateTypes[1]['properties']['Attribute2'], 'string');
     }
 
     /**

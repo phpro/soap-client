@@ -53,7 +53,7 @@ RULESET;
      */
     private function generateSetter(string $name, string $value, FileGenerator $file): string
     {
-        return sprintf("%s->%s('%s')".PHP_EOL, $file->getIndentation(), $name, $value);
+        return sprintf("%s->%s('%s')".FileGenerator::LINE_FEED, $file->getIndentation(), $name, $value);
     }
 
     /**
@@ -63,7 +63,9 @@ RULESET;
      */
     private function parseIndentedRuleSet(FileGenerator $file, string $ruleset): string
     {
-        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $ruleset).PHP_EOL;
+        return $file->getIndentation()
+            .preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $ruleset)
+            .FileGenerator::LINE_FEED;
     }
 
     /**
@@ -89,7 +91,7 @@ RULESET;
             $body .= sprintf($rules, $context->getRequestRegex(), $context->getResponseRegex());
         }
 
-        $file->setBody($body.';'.PHP_EOL);
+        $file->setBody($body.';'.FileGenerator::LINE_FEED);
 
         return $file->generate();
     }

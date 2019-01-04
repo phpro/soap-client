@@ -18,9 +18,13 @@ class TypeMapSpec extends ObjectBehavior
     function let()
     {
         $this->beConstructedWith('MyNamespace', [
-            'type1' => [
-                'prop1' => 'string',
-            ],
+            [
+                'typeName' => 'type1',
+                'properties' => [
+                    'prop1' => 'string',
+                ],
+                'duplicate' => false
+            ]
         ]);
     }
 

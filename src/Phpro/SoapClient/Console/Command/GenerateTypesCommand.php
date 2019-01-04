@@ -79,11 +79,21 @@ class GenerateTypesCommand extends Command
 
         $config = $this->getConfigHelper()->load($input);
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
+        $duplicateTypes = $config->getDuplicateTypes();
+        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient, $duplicateTypes);
         $generator = new TypeGenerator($config->getRuleSet());
 
         foreach ($typeMap->getTypes() as $type) {
-            $fileInfo = $type->getFileInfo($config->getTypeDestination());
+            $destination = $config->getTypeDestination();
+            // Set proper file destination for duplicate typenames
+            foreach ($duplicateTypes as $duplicateType) {
+                if ($duplicateType->matchType($type)) {
+                    $destination .= DIRECTORY_SEPARATOR.$duplicateType->getNamespaceSuffix();
+                    break;
+                }
+            }
+
+            $fileInfo = $type->getFileInfo($destination);
             if ($this->handleType($generator, $type, $fileInfo)) {
                 $this->output->writeln(
                     sprintf('Generated class %s to %s', $type->getFullName(), $fileInfo->getPathname())

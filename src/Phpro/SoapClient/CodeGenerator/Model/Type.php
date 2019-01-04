@@ -33,22 +33,34 @@ class Type
      */
     private $properties = [];
 
+    /**
+     * @var DuplicateType
+     */
+    private $duplicateType;
 
     /**
-     * TypeModel constructor.
+     * Type constructor.
      *
-     * @param string     $namespace
-     * @param string     $xsdName
-     * @param Property[] $properties
+     * @param string $namespace
+     * @param string $xsdName
+     * @param array $properties
+     * @param DuplicateType|null $duplicateType
      */
-    public function __construct(string $namespace, string $xsdName, array $properties)
+    public function __construct(string $namespace, string $xsdName, array $properties, $duplicateType = null)
     {
         $this->namespace = Normalizer::normalizeNamespace($namespace);
         $this->xsdName = $xsdName;
         $this->name = Normalizer::normalizeClassname($xsdName);
+        $this->duplicateType = $duplicateType;
 
+        // Properties will always have default namespace(user must change it manually)
         foreach ($properties as $property => $type) {
             $this->properties[] = new Property($property, $type, $this->namespace);
+        }
+
+        // Append namespace suffix for duplicates
+        if ($duplicateType !== null) {
+            $this->namespace .= '\\'.$duplicateType->getNamespaceSuffix();
         }
     }
 
@@ -84,7 +96,7 @@ class Type
     public function getFileInfo(string $destination): SplFileInfo
     {
         $name = Normalizer::normalizeClassname($this->getName());
-        $path = rtrim($destination, '/\\').DIRECTORY_SEPARATOR.$name.'.php';
+        $path = rtrim($destination, '/\\').'/'.$name.'.php';
 
         return new SplFileInfo($path);
     }
@@ -116,5 +128,21 @@ class Type
     public function getProperties(): array
     {
         return $this->properties;
+    }
+
+    /**
+     * @return DuplicateType
+     */
+    public function getDuplicateType()
+    {
+        return $this->duplicateType;
+    }
+
+    /**
+     * @param DuplicateType $duplicateType
+     */
+    public function setDuplicateType(DuplicateType $duplicateType)
+    {
+        $this->duplicateType = $duplicateType;
     }
 }

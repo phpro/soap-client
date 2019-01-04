@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Soap;
 
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Handler\HandlerInterface;
 use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
 use Phpro\SoapClient\Soap\Handler\SoapHandle;
@@ -91,6 +92,29 @@ class SoapClient extends \SoapClient
         }
 
         $soapTypes = $this->__getTypes();
+        $simpleTypes = [];
+        foreach ($soapTypes as $soapType) {
+            $lines = explode("\n", $soapType);
+            $pattern = '/^('
+                .'long'
+                .'|short'
+                .'|datetime'
+                .'|date'
+                .'|boolean'
+                .'|decimal'
+                .'|double'
+                .'|string'
+                .'|self'
+                .'|callable'
+                .'|iterable'
+                .'|array'
+                .')([0-9]*) (.*)$/i';
+            if (!preg_match($pattern, $lines[0], $matches)) {
+                continue;
+            }
+            $simpleTypes[$matches[3]] = Normalizer::normalizeDataType($matches[1]);
+        }
+
         foreach ($soapTypes as $soapType) {
             $properties = [];
             $lines = explode("\n", $soapType);
@@ -104,10 +128,24 @@ class SoapClient extends \SoapClient
                     continue;
                 }
                 preg_match('/\s* (.*) (.*);/', $line, $matches);
-                $properties[$matches[2]] = $matches[1];
+                // Resolve simple types
+                $properties[$matches[2]] = isset($simpleTypes[$matches[1]]) ? $simpleTypes[$matches[1]] : $matches[1];
             }
 
-            $this->types[$typeName] = $properties;
+            $this->types[] = [
+                'properties' => $properties,
+                'typeName' => $typeName,
+                'duplicate' => false
+            ];
+        }
+
+        // Tag duplicate types
+        foreach ($this->types as $key => &$type) {
+            foreach ($this->types as $key2 => $type2) {
+                if ($key !== $key2 && $type['typeName'] === $type2['typeName']) {
+                    $type['duplicate'] = true;
+                }
+            }
         }
 
         return $this->types;

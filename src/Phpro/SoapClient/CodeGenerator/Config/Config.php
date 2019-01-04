@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator\Config;
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\ClientMethodAssembler;
+use Phpro\SoapClient\CodeGenerator\Model\DuplicateType;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
@@ -85,6 +86,12 @@ class Config implements ConfigInterface
      * @var string
      */
     protected $classMapDestination;
+
+
+    /**
+     * @var DuplicateType[]
+     */
+    protected $duplicateTypes;
 
     /**
      * Config constructor.
@@ -400,6 +407,24 @@ class Config implements ConfigInterface
     public function setClassMapDestination(string $classMapDestination): self
     {
         $this->classMapDestination = $classMapDestination;
+
+        return $this;
+    }
+
+    /**
+     * @return DuplicateType[]
+     */
+    public function getDuplicateTypes(): array
+    {
+        return $this->duplicateTypes;
+    }
+
+    /**
+     * @param DuplicateType[] $duplicateTypes
+     */
+    public function setDuplicateTypes(array $duplicateTypes)
+    {
+        $this->duplicateTypes = $duplicateTypes;
 
         return $this;
     }

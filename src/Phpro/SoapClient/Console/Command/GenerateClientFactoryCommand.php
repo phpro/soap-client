@@ -66,7 +66,13 @@ class GenerateClientFactoryCommand extends Command
             $config->getClassMapNamespace()
         );
         $clientContext = new ClientContext($config->getClientName(), $config->getClientNamespace());
-        $context = new ClientFactoryContext($clientContext, $classmapContext);
+        $duplicateTypes = $config->getDuplicateTypes();
+        $context = new ClientFactoryContext(
+            $clientContext,
+            $classmapContext,
+            $config->getTypeNamespace(),
+            $duplicateTypes
+        );
         $generator = new ClientFactoryGenerator();
         $dest = $config->getClientDestination().DIRECTORY_SEPARATOR.$config->getClientName().'Factory.php';
         $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));

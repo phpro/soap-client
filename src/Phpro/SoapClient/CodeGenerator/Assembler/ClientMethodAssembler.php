@@ -11,6 +11,7 @@ use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\MultiArgumentRequest;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
+use Zend\Code\Generator\AbstractGenerator;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
@@ -97,14 +98,14 @@ class ClientMethodAssembler implements AssemblerInterface
     {
         $class = $context->getClass();
         $method = $context->getMethod();
-        $description = ['MultiArgumentRequest with following params:'.PHP_EOL];
+        $description = ['MultiArgumentRequest with following params:'.AbstractGenerator::LINE_FEED];
         foreach ($context->getMethod()->getParameters() as $parameter) {
             $description[] = $parameter->getType().' $'.$parameter->getName();
         }
 
         return DocBlockGenerator::fromArray(
             [
-                'longdescription' => implode(PHP_EOL, $description),
+                'longdescription' => implode(AbstractGenerator::LINE_FEED, $description),
                 'tags' => [
                     ['name' => 'param', 'description' => MultiArgumentRequest::class],
                     [

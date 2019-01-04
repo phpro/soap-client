@@ -8,6 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\FileGenerator;
+use Zend\Code\Generator\MethodGenerator;
 
 /**
  * Class TypeGenerator
@@ -42,6 +43,36 @@ class TypeGenerator implements GeneratorInterface
         $class = $file->getClass() ?: new ClassGenerator();
         $class->setNamespaceName($type->getNamespace());
         $class->setName($type->getName());
+
+        if ($duplicateType = $type->getDuplicateType()) {
+            if (!$class->hasConstant('XSD_NAMESPACE')) {
+                $class->addConstant('XSD_NAMESPACE', $duplicateType->getXsdNamespace());
+            }
+
+            if (!$class->hasMethod('fromXml')) {
+                $class->addMethodFromGenerator(
+                    MethodGenerator::fromArray(
+                        [
+                            'name'       => 'fromXml',
+                            'parameters' => [
+                                [
+                                    'name' => 'xml',
+                                    'type' => 'string',
+                                ],
+                            ],
+                            'static'     => true,
+                            'body'       => <<<BODY
+\$simpleXml = simplexml_load_string(\$xml);
+\$root = \$simpleXml->children(self::XSD_NAMESPACE);
+\$root->registerXPathNamespace('default', self::XSD_NAMESPACE);
+
+return \$root;
+BODY
+                        ]
+                    )
+                );
+            }
+        }
 
         $this->ruleSet->applyRules(new TypeContext($class, $type));
 

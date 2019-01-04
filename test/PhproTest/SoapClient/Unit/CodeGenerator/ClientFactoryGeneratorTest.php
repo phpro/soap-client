@@ -28,7 +28,8 @@ class MyclientFactory
     public static function factory(string \$wsdl) : \App\Client\Myclient
     {
         \$clientFactory = new PhproClientFactory(Myclient::class);
-        \$clientBuilder = new ClientBuilder(\$clientFactory, \$wsdl, []);
+        \$clientBuilder = new ClientBuilder(\$clientFactory, \$wsdl, array (
+        ));
         \$clientBuilder->withClassMaps(Myclassmap::getCollection());
 
         return \$clientBuilder->build();
@@ -46,7 +47,7 @@ BODY;
             'Myclassmap',
             'App\\Classmap'
         );
-        $context = new ClientFactoryContext($clientContext, $classMapContext);
+        $context = new ClientFactoryContext($clientContext, $classMapContext, '', []);
         $generator = new ClientFactoryGenerator();
         self::assertEquals($expected, $generator->generate(new FileGenerator(), $context));
     }

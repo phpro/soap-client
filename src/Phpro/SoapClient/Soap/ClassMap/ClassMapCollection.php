@@ -60,7 +60,13 @@ class ClassMapCollection
      */
     public function has(ClassMapInterface $classMap): bool
     {
-        return array_key_exists($classMap->getWsdlType(), $this->classMaps);
+        foreach ($this->classMaps as $existingClassMap) {
+            if ($existingClassMap->getPhpClassName() === $classMap->getPhpClassName()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

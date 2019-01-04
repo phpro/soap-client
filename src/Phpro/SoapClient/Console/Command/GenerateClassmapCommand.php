@@ -80,7 +80,8 @@ class GenerateClassmapCommand extends Command
 
         $config = $this->getConfigHelper()->load($input);
         $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
+        $duplicateTypes = $config->getDuplicateTypes();
+        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient, $duplicateTypes);
 
         $generator = new ClassMapGenerator(
             $config->getRuleSet(),

@@ -34,6 +34,9 @@ class ClassMapCollectionSpec extends ObjectBehavior
 
     function it_should_add_a_classmap(ClassMap $classMap2)
     {
+        $classMap2->getWsdlType()->willReturn('WsdlType2');
+        $classMap2->getPhpClassName()->willReturn('PhpClass2');
+
         $this->has($classMap2)->shouldBe(false);
         $this->add($classMap2);
         $this->has($classMap2)->shouldBe(true);

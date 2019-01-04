@@ -50,7 +50,6 @@ class ClassMapAssemblerTest extends TestCase
 
 namespace ClassMapNamespace;
 
-use MyNamespace as Type;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\ClassMap\ClassMap;
 
@@ -60,7 +59,7 @@ class ClassMap
     public static function getCollection() : \Phpro\SoapClient\Soap\ClassMap\ClassMapCollection
     {
         return new ClassMapCollection([
-            new ClassMap('MyType', Type\MyType::class),
+            new ClassMap('MyType', \MyNamespace\MyType::class),
         ]);
     }
 
@@ -79,8 +78,12 @@ CODE;
     {
         $file = new FileGenerator();
         $typeMap = new TypeMap('MyNamespace', [
-            'MyType' => [
-                'myProperty' => 'string',
+            [
+                'typeName' => 'MyType',
+                'properties' => [
+                    'myProperty' => 'string',
+                ],
+                'duplicate' => false
             ]
         ]);
 

@@ -39,8 +39,15 @@ class SoapClientTest extends TestCase
     {
         $types = $this->client->getSoapTypes();
 
-        $this->assertTrue(array_key_exists('GetCityForecastByZIP', $types));
-        $this->assertEquals('string', $types['GetCityForecastByZIP']['ZIP']);
+        $type = null;
+        foreach ($types as $type) {
+            if ($type['typeName'] === 'GetCityForecastByZIP') {
+                break;
+            }
+        }
+
+        $this->assertNotNull($type);
+        $this->assertEquals('string', $type['properties']['ZIP']);
     }
 
     /**

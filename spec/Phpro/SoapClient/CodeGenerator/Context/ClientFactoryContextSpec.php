@@ -26,7 +26,7 @@ class ClientFactoryContextSpec extends ObjectBehavior
             'Myclassmap',
             'App\\Classmap'
         );
-        $this->beConstructedWith($clientContext, $classMapContext);
+        $this->beConstructedWith($clientContext, $classMapContext, 'App\\SoapTypes');
     }
 
     function it_is_initializable()

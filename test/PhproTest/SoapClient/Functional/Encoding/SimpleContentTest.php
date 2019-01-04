@@ -32,10 +32,15 @@ class SimpleContentTest extends AbstractSoapTestCase
     function it_can_parse_simple_content_types()
     {
         $types = $this->client->getSoapTypes();
-        $type = $types['SimpleContent'];
+        $type = null;
+        foreach ($types as $type) {
+            if ($type['typeName'] === 'SimpleContent') {
+                break;
+            }
+        }
 
-        $this->assertEquals($type['country'], 'string');
-        $this->assertEquals($type['_'], 'integer');
+        $this->assertEquals($type['properties']['country'], 'string');
+        $this->assertEquals($type['properties']['_'], 'integer');
     }
 
     /**
