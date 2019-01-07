@@ -61,7 +61,7 @@ $soapOptions = [
     'typemap' => [
         [
             'type_name' => 'Store',
-            'type_ns' => 'http://......lessimportantsotre',
+            'type_ns' => 'http://......lessimportantstore',
             'from_xml' => function($xml) {
                 $data = simplexml_load_string($xml);
     
