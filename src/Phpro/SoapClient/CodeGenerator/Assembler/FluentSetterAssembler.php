@@ -26,11 +26,11 @@ class FluentSetterAssembler implements AssemblerInterface
     /**
      * FluentSetterAssembler constructor.
      *
-     * @param FluentSetterAssemblerOptions $options
+     * @param FluentSetterAssemblerOptions|null $options
      */
-    public function __construct(FluentSetterAssemblerOptions $options)
+    public function __construct(FluentSetterAssemblerOptions $options = null)
     {
-        $this->options = $options;
+        $this->options = $options ?? new FluentSetterAssemblerOptions();
     }
 
     /**

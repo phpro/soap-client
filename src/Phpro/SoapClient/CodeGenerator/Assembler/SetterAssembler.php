@@ -2,7 +2,6 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
-use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
@@ -24,11 +23,12 @@ class SetterAssembler implements AssemblerInterface
 
     /**
      * SetterAssembler constructor.
-     * @param SetterAssemblerOptions $options
+     *
+     * @param SetterAssemblerOptions|null $options
      */
-    public function __construct(SetterAssemblerOptions $options)
+    public function __construct(SetterAssemblerOptions $options = null)
     {
-        $this->options = $options;
+        $this->options = $options ?? new SetterAssemblerOptions();
     }
 
     /**

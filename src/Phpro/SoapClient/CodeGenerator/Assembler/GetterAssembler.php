@@ -25,11 +25,11 @@ class GetterAssembler implements AssemblerInterface
     /**
      * GetterAssembler constructor.
      *
-     * @param GetterAssemblerOptions $options
+     * @param GetterAssemblerOptions|null $options
      */
-    public function __construct(GetterAssemblerOptions $options)
+    public function __construct(GetterAssemblerOptions $options = null)
     {
-        $this->options = $options;
+        $this->options = $options ?? new GetterAssemblerOptions();
     }
 
     /**
