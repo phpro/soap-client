@@ -11,6 +11,7 @@ class Normalizer
 {
 
     private static $normalizations = [
+        'int' => 'int',
         'long' => 'int',
         'short' => 'int',
         'datetime' => '\\DateTime',

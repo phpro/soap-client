@@ -91,6 +91,16 @@ class SoapClient extends \SoapClient
         }
 
         $soapTypes = $this->__getTypes();
+
+        $simpleTypes = [
+            'base64Binary' => 'string',
+        ];
+        foreach ($soapTypes as $soapType) {
+            if (preg_match('/^(.*) (.*)$/', $soapType, $matches) === 1) {
+                $simpleTypes[$matches[2]] = $matches[1];
+            }
+        }
+
         foreach ($soapTypes as $soapType) {
             $properties = [];
             $lines = explode("\n", $soapType);
@@ -104,7 +114,12 @@ class SoapClient extends \SoapClient
                     continue;
                 }
                 preg_match('/\s* (.*) (.*);/', $line, $matches);
-                $properties[$matches[2]] = $matches[1];
+                if (isset($simpleTypes[$matches[1]])) {
+                    $properties[$matches[2]] = $simpleTypes[$matches[1]];
+                }
+                else {
+                    $properties[$matches[2]] = $matches[1];
+                }
             }
 
             $this->types[$typeName] = $properties;
