@@ -114,12 +114,8 @@ class SoapClient extends \SoapClient
                     continue;
                 }
                 preg_match('/\s* (.*) (.*);/', $line, $matches);
-                if (isset($simpleTypes[$matches[1]])) {
-                    $properties[$matches[2]] = $simpleTypes[$matches[1]];
-                }
-                else {
-                    $properties[$matches[2]] = $matches[1];
-                }
+
+                $properties[$matches[2]] = $simpleTypes[$matches[1]] ?? $matches[1];
             }
 
             $this->types[$typeName] = $properties;
