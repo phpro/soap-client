@@ -486,7 +486,7 @@ EOB
     /** @test */
     function it_decodes_xsd_datetime()
     {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/dateTime.wsdl');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/datetime.wsdl');
         $output = '2018-01-25T21:32:52';
         $response = $this->createResponse(<<<EOB
 <application:validate>
