@@ -55,7 +55,26 @@ abstract class AbstractMetadataProviderTest extends AbstractIntegrationTest
     /** @test */
     function it_can_load_complex_types()
     {
-        $this->markTestIncomplete('TODO');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/complex-type-request-response.wsdl');
+
+        $metadata = $this->getMetadataProvider()->getMetadata();
+        $types = $metadata->getTypes();
+
+        $this->assertCount(2, $types);
+        $this->assertTypeExists(
+            $types,
+            'ValidateRequest',
+            [
+                new Property('input', 'string')
+            ]
+        );
+        $this->assertTypeExists(
+            $types,
+            'ValidateResponse',
+            [
+                new Property('output', 'string')
+            ]
+        );
     }
 
     /** @test */
