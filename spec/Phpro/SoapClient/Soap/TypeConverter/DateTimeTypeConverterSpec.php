@@ -27,7 +27,7 @@ class DateTimeTypeConverterSpec extends ObjectBehavior
         $result = $this->convertXmlToPhp('<datetime>'.$date.'</datetime>');
         $result->shouldBeAnInstanceOf(\DateTimeImmutable::class);
         $result->getTimezone()->shouldMatchWithCurrentTimeZone();
-        $result->format(\DateTimeInterface::ATOM)->shouldBe($date);
+        $result->format(\DateTime::ATOM)->shouldBe($date);
     }
 
     function it_returns_empty_string_on_null_passed()
