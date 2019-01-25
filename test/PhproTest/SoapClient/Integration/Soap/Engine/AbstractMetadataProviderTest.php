@@ -34,6 +34,25 @@ abstract class AbstractMetadataProviderTest extends AbstractIntegrationTest
     }
 
     /** @test */
+    function it_can_load_wsdl_method_with_multiple_response_arguments()
+    {
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/multiArgumentResponse.wsdl');
+
+        $metadata = $this->getMetadataProvider()->getMetadata();
+        $methods = $metadata->getMethods();
+
+        $this->assertCount(1, $methods);
+        $this->assertMethodExists(
+            $methods,
+            'validate',
+            [
+                new Parameter('input', 'string')
+            ],
+            'array'
+        );
+    }
+
+    /** @test */
     function it_can_load_simple_content_types()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/simpleContent.wsdl');
