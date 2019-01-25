@@ -79,7 +79,7 @@ class ClientMethod
      */
     public function getMethodName(): string
     {
-        return lcfirst($this->methodName);
+        return $this->methodName;
     }
 
     /**

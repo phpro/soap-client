@@ -6,7 +6,6 @@ use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\FluentSetterAssembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\FluentSetterAssemblerOptions;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +35,7 @@ class FluentSetterAssemblerTest extends TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new FluentSetterAssembler(new FluentSetterAssemblerOptions());
+        $assembler = new FluentSetterAssembler();
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
 
@@ -45,7 +44,7 @@ class FluentSetterAssemblerTest extends TestCase
      */
     function it_can_assemble_property_context()
     {
-        $assembler = new FluentSetterAssembler(new FluentSetterAssemblerOptions());
+        $assembler = new FluentSetterAssembler();
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }

@@ -38,8 +38,9 @@ class ClientMethodAssembler implements AssemblerInterface
         $class->setExtendedClass(Client::class);
         $method = $context->getMethod();
         try {
+            $phpMethodName = Normalizer::normalizeMethodName($method->getMethodName());
             $param = $this->createParamsFromContext($context);
-            $class->removeMethod($method->getMethodName());
+            $class->removeMethod($phpMethodName);
             $docblock = $context->isMultiArgument() ?
                 $this->generateMultiArgumentDocblock($context) :
                 $this->generateSingleArgumentDocblock($context);
@@ -47,7 +48,7 @@ class ClientMethodAssembler implements AssemblerInterface
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [
-                        'name' => Normalizer::normalizeMethodName($method->getMethodName()),
+                        'name' => $phpMethodName,
                         'parameters' => [$param],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                         'body' => sprintf(

@@ -6,7 +6,6 @@ use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\SetterAssembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\SetterAssemblerOptions;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +24,7 @@ class SetterAssemblerTest extends TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new SetterAssembler(new SetterAssemblerOptions());
+        $assembler = new SetterAssembler();
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
 
@@ -34,7 +33,7 @@ class SetterAssemblerTest extends TestCase
      */
     function it_can_assemble_property_context()
     {
-        $assembler = new SetterAssembler(new SetterAssemblerOptions());
+        $assembler = new SetterAssembler();
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }

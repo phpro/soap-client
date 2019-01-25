@@ -35,7 +35,7 @@ class GetterAssemblerTest extends TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new GetterAssembler(new GetterAssemblerOptions());
+        $assembler = new GetterAssembler();
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
 
@@ -44,7 +44,7 @@ class GetterAssemblerTest extends TestCase
      */
     function it_can_assemble_property_context()
     {
-        $assembler = new GetterAssembler(new GetterAssemblerOptions());
+        $assembler = new GetterAssembler();
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }
@@ -54,7 +54,7 @@ class GetterAssemblerTest extends TestCase
      */
     function it_assembles_a_property()
     {
-        $assembler = new GetterAssembler(new GetterAssemblerOptions());
+        $assembler = new GetterAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
 

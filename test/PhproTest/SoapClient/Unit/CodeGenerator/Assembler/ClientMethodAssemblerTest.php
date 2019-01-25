@@ -167,7 +167,7 @@ CODE;
         $class->setNamespaceName('Vendor\\MyNamespace');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
         $method = new ClientMethod(
-            'function_name',
+            'Function_name',
             [
                 new Parameter('param', $typeNamespace.'\\param_type'),
             ],
@@ -197,7 +197,7 @@ class  extends \Phpro\SoapClient\Client
      */
     public function function_name(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return \$this->call('function_name', \$param);
+        return \$this->call('Function_name', \$param);
     }
 
 

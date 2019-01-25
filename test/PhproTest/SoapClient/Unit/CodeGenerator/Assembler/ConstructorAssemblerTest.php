@@ -23,7 +23,7 @@ class ConstructorAssemblerTest extends TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new ConstructorAssembler(new ConstructorAssemblerOptions());
+        $assembler = new ConstructorAssembler();
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
     
@@ -32,7 +32,7 @@ class ConstructorAssemblerTest extends TestCase
      */
     function it_can_assemble_type_context()
     {
-        $assembler = new ConstructorAssembler(new ConstructorAssemblerOptions());
+        $assembler = new ConstructorAssembler();
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }
@@ -42,7 +42,7 @@ class ConstructorAssemblerTest extends TestCase
      */
     function it_assembles_a_type()
     {
-        $assembler = new ConstructorAssembler(new ConstructorAssemblerOptions());
+        $assembler = new ConstructorAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
 
