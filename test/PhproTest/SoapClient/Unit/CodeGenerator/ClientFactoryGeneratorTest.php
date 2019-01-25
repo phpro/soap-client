@@ -20,22 +20,22 @@ namespace App\Client;
 
 use App\Client\Myclient;
 use App\Classmap\SomeClassmap;
-use Phpro\SoapClient\ClientFactory as PhproClientFactory;
-use Phpro\SoapClient\ClientBuilder;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
 
 class MyclientFactory
 {
 
     public static function factory(string \$wsdl) : \App\Client\Myclient
     {
-        \$clientFactory = new PhproClientFactory(Myclient::class);
-        \$clientBuilder = ClientBuilder::fromExtSoap(
-            \$clientFactory,
+        \$engine = ExtSoapEngineFactory::fromOptions(
             ExtSoapOptions::defaults(\$wsdl, [])
                 ->withClassMap(SomeClassmap::getCollection())
         );
+        \$eventDispatcher = new EventDispatcher();
 
-        return \$clientBuilder->build();
+        return new Myclient(\$engine, \$eventDispatcher);
     }
 
 

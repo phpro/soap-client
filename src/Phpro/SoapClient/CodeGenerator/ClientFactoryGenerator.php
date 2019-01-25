@@ -2,9 +2,10 @@
 
 namespace Phpro\SoapClient\CodeGenerator;
 
-use Phpro\SoapClient\ClientBuilder;
-use Phpro\SoapClient\ClientFactory;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\FileGenerator;
 use Zend\Code\Generator\MethodGenerator;
@@ -17,14 +18,13 @@ use Zend\Code\Generator\MethodGenerator;
 class ClientFactoryGenerator implements GeneratorInterface
 {
     const BODY = <<<BODY
-\$clientFactory = new PhproClientFactory(%1\$s::class);
-\$clientBuilder = ClientBuilder::fromExtSoap(
-    \$clientFactory,
+\$engine = ExtSoapEngineFactory::fromOptions(
     ExtSoapOptions::defaults(\$wsdl, [])
         ->withClassMap(%2\$s::getCollection())
 );
+\$eventDispatcher = new EventDispatcher();
 
-return \$clientBuilder->build();
+return new %1\$s(\$engine, \$eventDispatcher);
 
 BODY;
 
@@ -40,8 +40,9 @@ BODY;
         $class->setNamespaceName($context->getClientNamespace());
         $class->addUse($context->getClientFqcn());
         $class->addUse($context->getClassmapFqcn());
-        $class->addUse(ClientFactory::class, 'PhproClientFactory');
-        $class->addUse(ClientBuilder::class);
+        $class->addUse(EventDispatcher::class);
+        $class->addUse(ExtSoapEngineFactory::class);
+        $class->addUse(ExtSoapOptions::class);
         $class->addMethodFromGenerator(
             MethodGenerator::fromArray(
                 [
