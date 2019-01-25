@@ -47,7 +47,7 @@ class ExtSoapOptionsResolverFactory
         $resolver->setDefined(['login', 'password', 'authentication']);
         $resolver->setAllowedTypes('login', ['string']);
         $resolver->setAllowedTypes('password', ['string']);
-        $resolver->setAllowedTypes('authentication', ['string']);
+        $resolver->setAllowedTypes('authentication', ['int']);
         $resolver->setAllowedValues('authentication', [SOAP_AUTHENTICATION_BASIC, SOAP_AUTHENTICATION_DIGEST]);
 
         // HTTP Proxy
