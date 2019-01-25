@@ -6,6 +6,7 @@ namespace PhproTest\SoapClient\Integration\Soap\Engine;
 
 use Phpro\SoapClient\Soap\Engine\DecoderInterface;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
+use PhproTest\SoapClient\Integration\Soap\Type\ValidateResponse;
 
 abstract class AbstractDecoderTest extends AbstractIntegrationTest
 {
@@ -35,7 +36,55 @@ EOB
     /** @test */
     public function it_handles_complex_types()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/complex-type-request-response.wsdl');
+        $output = 'hello';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <Response>
+        <output>$output</output>
+    </Response>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertInstanceOf(\stdClass::class, $decoded);
+        $this->assertEquals($output, $decoded->output);
+    }
+
+    /** @test */
+    public function it_handles_complex_types_with_classmap()
+    {
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/complex-type-mapped-request-response.wsdl');
+        $output = 'hello';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <Response>
+        <output>$output</output>
+    </Response>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertInstanceOf(ValidateResponse::class, $decoded);
+        $this->assertEquals($output, $decoded->output);
+    }
+
+    /** @test */
+    public function it_handles_enum_types()
+    {
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/enum.wsdl');
+        $output = 'Home';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="ns2:PhoneTypeEnum">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
@@ -55,75 +104,96 @@ EOB
     }
 
     /** @test */
-    function it_decodes_unknwon_types_by_guessing()
-    {
-        $this->markTestIncomplete('TODO...');
-    }
-
-    /** @test */
     function it_decodes_null()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/guess.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output />
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals(null, $decoded);
     }
 
     /** @test */
     function it_decodes_string()
     {
-        $this->markTestIncomplete('TODO...');
-    }
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/guess.wsdl');
+        $output = 'string';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output>$output</output>
+</application:validate>
+EOB
+        );
 
-    /** @test */
-    function it_decodes_enum()
-    {
-        $this->markTestIncomplete('TODO...');
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_long()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/guess.wsdl');
+        $output = 132;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output>$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_double()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/guess.wsdl');
+        $output = 132.00;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output>$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_false()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/guess.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:boolean">false</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals(false, $decoded);
     }
 
     /** @test */
     function it_decodes_true()
     {
-        $this->markTestIncomplete('TODO...');
-    }
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/guess.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:boolean">true</output>
+</application:validate>
+EOB
+        );
 
-    /** @test */
-    function it_decodes_array_soap11()
-    {
-        $this->markTestIncomplete('TODO...');
-    }
-
-    /** @test */
-    function it_decodes_array_soap12()
-    {
-        $this->markTestIncomplete('TODO...');
-    }
-
-    /** @test */
-    function it_decodes_object_soap11()
-    {
-        $this->markTestIncomplete('TODO...');
-    }
-
-    /** @test */
-    function it_decodes_object_soap12()
-    {
-        $this->markTestIncomplete('TODO...');
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals(true, $decoded);
     }
 
     /** @test */
@@ -146,16 +216,15 @@ EOB
     function it_decodes_xsd_boolean()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/boolean.wsdl');
-        $output = true;
         $response = $this->createResponse(<<<EOB
 <application:validate>
-    <output xsi:type="xsd:float">$output</output>
+    <output xsi:type="xsd:boolean">true</output>
 </application:validate>
 EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertEquals(true, $decoded);
     }
 
     /** @test */
@@ -417,20 +486,41 @@ EOB
     /** @test */
     function it_decodes_xsd_datetime()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/dateTime.wsdl');
+        $output = '2018-01-25T21:32:52';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:dateTime">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertInstanceOf(\DateTimeInterface::class, $decoded);
+        $this->assertEquals($output, $decoded->format('Y-m-d\TH:i:s'));
     }
 
     /** @test */
     function it_decodes_xsd_time()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/time.wsdl');
+        $output = '21:32:52';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:time">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_date()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/date.wsdl');
-        $output = '2018-12-25';
+        $output = '2019-01-25';
         $response = $this->createResponse(<<<EOB
 <application:validate>
     <output xsi:type="xsd:date">$output</output>
@@ -446,43 +536,114 @@ EOB
     /** @test */
     function it_decodes_xsd_gyearmonth()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/gYearMonth.wsdl');
+        $output = '2019-01';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:gYearMonth">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_gyear()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/gYear.wsdl');
+        $output = '2019';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:gYear">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_gmonthday()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/gMonthDay.wsdl');
+        $output = '--01-25';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:gMonthDay">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_gday()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/gDay.wsdl');
+        $output = '---25';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:gDay">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_gmonth()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/gMonth.wsdl');
+        $output = '--01';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:gMonth">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_duration()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/duration.wsdl');
+        $output = 'PT2M10S';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:duration">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_hexbinary()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/hexBinary.wsdl');
+        $output = bin2hex($expectedOutput = 'decodedoutput');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:hexBinary">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+
+        $this->assertEquals($expectedOutput, $decoded);
     }
 
     /** @test */
@@ -520,189 +681,498 @@ EOB
     }
 
     /** @test */
-    function it_decodes_xsd_ur_type_by_guessing()
-    {
-        $this->markTestIncomplete('TODO...');
-    }
-
-    /** @test */
     function it_decodes_xsd_any_uri()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/anyURI.wsdl');
+        $output = 'http://www.w3.org/TR/xmlschema-0/';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:anyURI">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_qname()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/qname.wsdl');
+        $output = 'xsd:someElement';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:qname">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_notation()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/notation.wsdl');
+        $output = 'xsd:NOTATION';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:notation">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_normalized_string()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/normalizedString.wsdl');
+        $output = ' Being a Dog Is 
+ a Full-Time Job';
+        $expected = ' Being a Dog Is   a Full-Time Job';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:normalizedString">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($expected, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_token()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/token.wsdl');
+        $output = '  Being a Dog Is 
+  a Full-Time Job';
+        $expected = 'Being a Dog Is a Full-Time Job';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:token">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($expected, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_language()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/token.wsdl');
+        $output = 'nl-BE';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:language">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_nmtoken()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/nmtoken.wsdl');
+        $output = 'noSpaces-Or-SpecialChars-allowed-1234';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:nmtoken">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_nmtokens()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/nmtokens.wsdl');
+        $output = 'token-1 token-2 token-3';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:nmtokens">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_name()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/name.wsdl');
+        $output = 'Cannot-start-with-number-134';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:name">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_ncname()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/ncname.wsdl');
+        $output = 'Cannot-contain-colon-134';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:ncname">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
+    }
+
+    /** @test */
+    function it_decodes_xsd_ncnames()
+    {
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/ncnames.wsdl');
+        $output = 'Cannot-contain-colon-134 ncname2';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:ncnames">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_id()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/id.wsdl');
+        $output = 'IDField';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:ID">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_idref()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/idref.wsdl');
+        $output = 'IDField';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:IDREF">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_idrefs()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/idrefs.wsdl');
+        $output = 'IDField1 IDField2';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:IDREFS">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_entity()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/entity.wsdl');
+        $output = 'Entity';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:entity">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_entities()
     {
-        $this->markTestIncomplete('TODO...');
-    }
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/entities.wsdl');
+        $output = 'Entity1 Entity2';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd:entities">$output</output>
+</application:validate>
+EOB
+        );
 
-    /** @test */
-    function it_decodes_apache_map()
-    {
-        $this->markTestIncomplete('TODO...');
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_soap_11_enc_object()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/soap11-enc-object.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output type="SOAP-ENC:Struct">
+        <Sku>50</Sku>
+        <Description>Description</Description>
+    </output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertInstanceOf(\stdClass::class, $decoded);
+        $this->assertEquals($decoded->Sku, 50);
+        $this->assertEquals($decoded->Description, 'Description');
     }
 
     /** @test */
     function it_decodes_soap_11_enc_array()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/soap11-enc-array.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output type="SOAP-ENC:array" SOAP-ENC:arrayType="string[]">
+        <item>string1</item>
+        <item>string2</item>
+    </output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals(['string1', 'string2'], $decoded);
     }
 
     /** @test */
     function it_decodes_soap_12_enc_object()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/soap12-enc-object.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output type="enc:Struct">
+        <Sku>50</Sku>
+        <Description>Description</Description>
+    </output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertInstanceOf(\stdClass::class, $decoded);
+        $this->assertEquals($decoded->Sku, 50);
+        $this->assertEquals($decoded->Description, 'Description');
     }
 
     /** @test */
     function it_decodes_soap_12_enc_array()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/soap12-enc-array.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output type="enc:array" enc:arrayType="string[]">
+        <item>string1</item>
+        <item>string2</item>
+    </output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals(['string1', 'string2'], $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_string()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999string.wsdl');
+        $output = 'output';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:string">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_boolean()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999boolean.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:boolean">true</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals(true, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_decimal()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999decimal.wsdl');
+        $output = 20.2;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:decimal">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_float()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999float.wsdl');
+        $output = 20.2;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:float">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_double()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999double.wsdl');
+        $output = 20.2;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:double">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_long()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999long.wsdl');
+        $output = 20;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:long">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_int()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999int.wsdl');
+        $output = 20;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:int">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_short()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999short.wsdl');
+        $output = 2;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:short">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_byte()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999byte.wsdl');
+        $output = 1;
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:byte">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_1999_timeinstant()
     {
-        $this->markTestIncomplete('TODO...');
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999timeinstant.wsdl');
+        $output = '20190125T083100.001';
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="xsd1999:timeinstant">$output</output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals($output, $decoded);
     }
 
     protected function createResponse(string $applicationBodyXml): SoapResponse
@@ -713,8 +1183,10 @@ EOB
     xmlns:application="http://soapinterop.org/"
     xmlns:s="http://soapinterop.org/xsd"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd1999="http://www.w3.org/1999/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:enc="http://www.w3.org/2003/05/soap-encoding"
     SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
     <SOAP-ENV:Body>
         $applicationBodyXml

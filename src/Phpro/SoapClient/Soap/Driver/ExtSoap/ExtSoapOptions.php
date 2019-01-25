@@ -109,7 +109,7 @@ class ExtSoapOptions
 
     public function disableWsdlCache(): self
     {
-        $this->options['wsdl_cache'] = WSDL_CACHE_NONE;
+        $this->options['cache_wsdl'] = WSDL_CACHE_NONE;
 
         return $this;
     }
