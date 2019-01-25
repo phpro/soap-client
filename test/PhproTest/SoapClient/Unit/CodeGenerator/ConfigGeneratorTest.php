@@ -17,15 +17,12 @@ class ConfigGeneratorTest extends TestCase
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
-use Phpro\SoapClient\Soap\Engine\Engine;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapClientHandle;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 
 return Config::create()
-    ->setEngine(new Engine(
-        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('wsdl.xml', [])),
-        \$handler = new ExtSoapClientHandle(\$driver->getClient())
+    ->setEngine(ExtSoapEngineFactory::fromOptions(
+        ExtSoapOptions::defaults('wsdl.xml', [])
     ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')
@@ -84,15 +81,12 @@ CONTENT;
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
-use Phpro\SoapClient\Soap\Engine\Engine;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapClientHandle;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 
 return Config::create()
-    ->setEngine(new Engine(
-        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('wsdl.xml', [])),
-        \$handler = new ExtSoapClientHandle(\$driver->getClient())
+    ->setEngine(ExtSoapEngineFactory::fromOptions(
+        ExtSoapOptions::defaults('wsdl.xml', [])
     ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')

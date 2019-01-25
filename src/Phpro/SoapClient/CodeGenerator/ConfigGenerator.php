@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapClientHandle;
 use Phpro\SoapClient\Soap\Engine\Engine;
@@ -49,9 +50,8 @@ RULESET;
 RULESET;
 
     const ENGINE_BOILERPLATE = <<<EOENGINE
-->setEngine(new Engine(
-        \$driver = ExtSoapDriver::createFromOptions(ExtSoapOptions::defaults('%s', [])),
-        \$handler = new ExtSoapClientHandle(\$driver->getClient())
+->setEngine(ExtSoapEngineFactory::fromOptions(
+        ExtSoapOptions::defaults('%s', [])
     ))
 EOENGINE;
 
@@ -94,10 +94,8 @@ EOENGINE;
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Assembler');
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Rules');
         $file->setUse(Config::class);
-        $file->setUse(Engine::class);
-        $file->setUse(ExtSoapDriver::class);
         $file->setUse(ExtSoapOptions::class);
-        $file->setUse(ExtSoapClientHandle::class);
+        $file->setUse(ExtSoapEngineFactory::class);
 
         $body .= $this->parseEngine($file, $context->getWsdl());
         foreach ($context->getSetters() as $name => $value) {
