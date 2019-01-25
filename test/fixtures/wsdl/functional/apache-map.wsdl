@@ -5,24 +5,14 @@
     xmlns:s="http://soapinterop.org/xsd"
     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
     xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:apache="http://xml.apache.org/xml-soap"
     targetNamespace="http://soapinterop.org/">
-    <types>
-        <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://soapinterop.org/xsd">
-            <xsd:simpleType name="PhoneTypeEnum">
-                <xsd:restriction base="xsd:string">
-                    <xsd:enumeration value="Home"/>
-                    <xsd:enumeration value="Office"/>
-                    <xsd:enumeration value="Gsm"/>
-                </xsd:restriction>
-            </xsd:simpleType>
-        </schema>
-    </types>
 
     <message name="validateRequest">
-        <part name="input" type="s:PhoneTypeEnum" />
+        <part name="request" type="apache:Map" />
     </message>
     <message name="validateResponse">
-        <part name="output" type="s:PhoneTypeEnum" />
+        <part name="response" type="apache:Map" />
     </message>
 
     <portType name="InteropTestPortType">
@@ -51,5 +41,3 @@
         </port>
     </service>
 </definitions>
-
-

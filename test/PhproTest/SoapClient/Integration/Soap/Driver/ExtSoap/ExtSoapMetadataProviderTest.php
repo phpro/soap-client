@@ -26,9 +26,8 @@ class ExtSoapMetadataProviderTest extends AbstractMetadataProviderTest
     {
         $this->metadataProvider = ExtSoapDriver::createFromClient(
             $client = AbusedClient::createFromOptions(
-                ExtSoapOptions::defaults($wsdl, [
-                    'cache_wsdl' => WSDL_CACHE_NONE,
-                ])
+                ExtSoapOptions::defaults($wsdl)
+                    ->disableWsdlCache()
             )
         );
     }

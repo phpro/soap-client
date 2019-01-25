@@ -49,7 +49,7 @@ EOB
 
         $decoded = $this->getDecoder()->decode('validate', $response);
         $this->assertInstanceOf(\stdClass::class, $decoded);
-        $this->assertEquals($output, $decoded->output);
+        $this->assertSame($output, $decoded->output);
     }
 
     /** @test */
@@ -68,7 +68,7 @@ EOB
 
         $decoded = $this->getDecoder()->decode('validate', $response);
         $this->assertInstanceOf(ValidateResponse::class, $decoded);
-        $this->assertEquals($output, $decoded->output);
+        $this->assertSame($output, $decoded->output);
     }
 
     /** @test */
@@ -84,7 +84,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -100,7 +100,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($expectedOutput, $decoded);
+        $this->assertSame($expectedOutput, $decoded);
     }
 
     /** @test */
@@ -109,13 +109,13 @@ EOB
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/guess.wsdl');
         $response = $this->createResponse(<<<EOB
 <application:validate>
-    <output />
+    <output xsi:nil="true" />
 </application:validate>
 EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals(null, $decoded);
+        $this->assertSame(null, $decoded);
     }
 
     /** @test */
@@ -131,7 +131,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -141,29 +141,29 @@ EOB
         $output = 132;
         $response = $this->createResponse(<<<EOB
 <application:validate>
-    <output>$output</output>
+    <output xsi:type="xsd:long">$output</output>
 </application:validate>
 EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
     function it_decodes_double()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/guess.wsdl');
-        $output = 132.00;
+        $output = 132.12;
         $response = $this->createResponse(<<<EOB
 <application:validate>
-    <output>$output</output>
+    <output xsi:type="xsd:double">$output</output>
 </application:validate>
 EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -178,7 +178,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals(false, $decoded);
+        $this->assertSame(false, $decoded);
     }
 
     /** @test */
@@ -193,7 +193,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals(true, $decoded);
+        $this->assertSame(true, $decoded);
     }
 
     /** @test */
@@ -209,7 +209,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -224,14 +224,14 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals(true, $decoded);
+        $this->assertSame(true, $decoded);
     }
 
     /** @test */
     function it_decodes_xsd_decimal()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/decimal.wsdl');
-        $output = '12345.67890';
+        $output = 12345.67890;
         $response = $this->createResponse(<<<EOB
 <application:validate>
     <output xsi:type="xsd:decimal">$output</output>
@@ -240,7 +240,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -256,7 +256,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -272,7 +272,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -288,7 +288,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -304,7 +304,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -320,7 +320,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -336,7 +336,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -352,7 +352,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -368,7 +368,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -384,7 +384,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -400,7 +400,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -416,7 +416,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -432,7 +432,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -448,7 +448,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -464,7 +464,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -480,7 +480,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -497,7 +497,7 @@ EOB
 
         $decoded = $this->getDecoder()->decode('validate', $response);
         $this->assertInstanceOf(\DateTimeInterface::class, $decoded);
-        $this->assertEquals($output, $decoded->format('Y-m-d\TH:i:s'));
+        $this->assertSame($output, $decoded->format('Y-m-d\TH:i:s'));
     }
 
     /** @test */
@@ -513,7 +513,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -530,7 +530,7 @@ EOB
 
         $decoded = $this->getDecoder()->decode('validate', $response);
         $this->assertInstanceOf(\DateTimeInterface::class, $decoded);
-        $this->assertEquals($output, $decoded->format('Y-m-d'));
+        $this->assertSame($output, $decoded->format('Y-m-d'));
     }
 
     /** @test */
@@ -546,7 +546,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -562,7 +562,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -578,7 +578,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -594,7 +594,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -610,7 +610,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -626,7 +626,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -643,7 +643,7 @@ EOB
 
         $decoded = $this->getDecoder()->decode('validate', $response);
 
-        $this->assertEquals($expectedOutput, $decoded);
+        $this->assertSame($expectedOutput, $decoded);
     }
 
     /** @test */
@@ -660,15 +660,14 @@ EOB
 
         $decoded = $this->getDecoder()->decode('validate', $response);
 
-        $this->assertEquals($expectedOutput, $decoded);
+        $this->assertSame($expectedOutput, $decoded);
     }
 
-
     /** @test */
-    function it_decodes_xsd_any_type_by_guessing()
+    function it_decodes_xsd_any_type()
     {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/nonPositiveInteger.wsdl');
-        $output = 12243.223;
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/any.wsdl');
+        $output = '12243.223';
         $response = $this->createResponse(<<<EOB
 <application:validate>
     <output xsi:type="xsd:any">$output</output>
@@ -677,7 +676,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -693,7 +692,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -709,7 +708,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -725,7 +724,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -743,7 +742,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($expected, $decoded);
+        $this->assertSame($expected, $decoded);
     }
 
     /** @test */
@@ -761,7 +760,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($expected, $decoded);
+        $this->assertSame($expected, $decoded);
     }
 
     /** @test */
@@ -777,7 +776,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -793,7 +792,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -809,7 +808,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -825,7 +824,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -841,7 +840,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -857,7 +856,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -873,7 +872,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -889,7 +888,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -905,7 +904,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -921,7 +920,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -937,7 +936,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -947,7 +946,7 @@ EOB
         $response = $this->createResponse(<<<EOB
 <application:validate>
     <output type="SOAP-ENC:Struct">
-        <Sku>50</Sku>
+        <Sku xsi:type="xsd:int">50</Sku>
         <Description>Description</Description>
     </output>
 </application:validate>
@@ -956,8 +955,8 @@ EOB
 
         $decoded = $this->getDecoder()->decode('validate', $response);
         $this->assertInstanceOf(\stdClass::class, $decoded);
-        $this->assertEquals($decoded->Sku, 50);
-        $this->assertEquals($decoded->Description, 'Description');
+        $this->assertSame($decoded->Sku, 50);
+        $this->assertSame($decoded->Description, 'Description');
     }
 
     /** @test */
@@ -985,7 +984,7 @@ EOB
         $response = $this->createResponse(<<<EOB
 <application:validate>
     <output type="enc:Struct">
-        <Sku>50</Sku>
+        <Sku xsi:type="xsd:int">50</Sku>
         <Description>Description</Description>
     </output>
 </application:validate>
@@ -994,8 +993,8 @@ EOB
 
         $decoded = $this->getDecoder()->decode('validate', $response);
         $this->assertInstanceOf(\stdClass::class, $decoded);
-        $this->assertEquals($decoded->Sku, 50);
-        $this->assertEquals($decoded->Description, 'Description');
+        $this->assertSame($decoded->Sku, 50);
+        $this->assertSame($decoded->Description, 'Description');
     }
 
     /** @test */
@@ -1017,6 +1016,26 @@ EOB
     }
 
     /** @test */
+    function it_decodes_apache_map_array()
+    {
+        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/apache-map.wsdl');
+        $response = $this->createResponse(<<<EOB
+<application:validate>
+    <output xsi:type="apache:Map">
+        <item>
+            <key xsi:type="xsd:string">Key1</key>
+            <value xsi:type="xsd:string">Value1</value>
+        </item>
+    </output>
+</application:validate>
+EOB
+        );
+
+        $decoded = $this->getDecoder()->decode('validate', $response);
+        $this->assertEquals(['Key1' => 'Value1'], $decoded);
+    }
+
+    /** @test */
     function it_decodes_xsd_1999_string()
     {
         $this->configureForWsdl(FIXTURE_DIR . '/wsdl/functional/1999string.wsdl');
@@ -1029,7 +1048,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -1044,7 +1063,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals(true, $decoded);
+        $this->assertSame(true, $decoded);
     }
 
     /** @test */
@@ -1060,7 +1079,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame((string) $output, $decoded);
     }
 
     /** @test */
@@ -1076,7 +1095,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -1092,7 +1111,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -1108,7 +1127,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -1124,7 +1143,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -1140,7 +1159,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -1156,7 +1175,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     /** @test */
@@ -1172,7 +1191,7 @@ EOB
         );
 
         $decoded = $this->getDecoder()->decode('validate', $response);
-        $this->assertEquals($output, $decoded);
+        $this->assertSame($output, $decoded);
     }
 
     protected function createResponse(string $applicationBodyXml): SoapResponse
@@ -1187,6 +1206,7 @@ EOB
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
     xmlns:enc="http://www.w3.org/2003/05/soap-encoding"
+    xmlns:apache="http://xml.apache.org/xml-soap"
     SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
     <SOAP-ENV:Body>
         $applicationBodyXml
