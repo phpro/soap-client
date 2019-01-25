@@ -79,13 +79,13 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeDataType('Iterator')->shouldReturn('Iterator');
         $this->normalizeDataType('long')->shouldReturn('int');
         $this->normalizeDataType('short')->shouldReturn('int');
-        $this->normalizeDataType('dateTime')->shouldReturn('\\DateTime');
-        $this->normalizeDataType('date')->shouldReturn('\\DateTime');
+        $this->normalizeDataType('dateTime')->shouldReturn('\\DateTimeInterface');
+        $this->normalizeDataType('date')->shouldReturn('\\DateTimeInterface');
         $this->normalizeDataType('boolean')->shouldReturn('bool');
         $this->normalizeDataType('decimal')->shouldReturn('float');
 
         // Special cases:
-        $this->normalizeDataType('DATE')->shouldReturn('\\DateTime');
+        $this->normalizeDataType('DATE')->shouldReturn('\\DateTimeInterface');
         $this->normalizeDataType('SomeCustomDateType')->shouldReturn('SomeCustomDateType');
         $this->normalizeDataType('ArrayOfConsolidatedAgreement')->shouldReturn('ArrayOfConsolidatedAgreement');
     }

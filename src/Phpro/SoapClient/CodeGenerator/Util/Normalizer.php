@@ -13,8 +13,8 @@ class Normalizer
     private static $normalizations = [
         'long' => 'int',
         'short' => 'int',
-        'datetime' => '\\DateTime',
-        'date' => '\\DateTime',
+        'datetime' => '\\DateTimeInterface',
+        'date' => '\\DateTimeInterface',
         'boolean' => 'bool',
         'decimal' => 'float',
         'double' => 'float',
