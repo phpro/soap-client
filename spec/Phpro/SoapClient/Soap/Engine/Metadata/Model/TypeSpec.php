@@ -3,6 +3,7 @@
 namespace spec\Phpro\SoapClient\Soap\Engine\Metadata\Model;
 
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Property;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
@@ -14,8 +15,8 @@ class TypeSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('name', [
-            new Property('name', 'type')
+        $this->beConstructedWith(XsdType::create('name'), [
+            new Property('name', XsdType::create('type'))
         ]);
     }
 
@@ -29,12 +30,17 @@ class TypeSpec extends ObjectBehavior
         $this->getName()->shouldBe('name');
     }
 
+    function it_contains_a_xsd_type()
+    {
+        $this->getXsdType()->shouldBeLike(XsdType::create('name'));
+    }
+
     function it_contains_properties()
     {
         $properties = $this->getProperties();
         $properties->shouldHaveCount(1);
         $properties[0]->shouldHaveType(Property::class);
         $properties[0]->getName()->shouldBe('name');
-        $properties[0]->getType()->shouldBe('type');
+        $properties[0]->getType()->shouldBeLike(XsdType::create('type'));
     }
 }

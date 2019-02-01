@@ -25,7 +25,7 @@ class DummyMethodArgumentsGenerator
     public function generateForSoapCall(string $method): array
     {
         $methods = $this->metadata->getMethods();
-        $method = $methods->fetchByName($method);
+        $method = $methods->fetchOneByName($method);
 
         return array_fill(0, \count($method->getParameters()), null);
     }

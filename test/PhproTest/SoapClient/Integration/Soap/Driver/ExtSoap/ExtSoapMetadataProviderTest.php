@@ -17,6 +17,11 @@ class ExtSoapMetadataProviderTest extends AbstractMetadataProviderTest
      */
     private $metadataProvider;
 
+    /**
+     * @var AbusedClient
+     */
+    protected $client;
+
     protected function getMetadataProvider(): MetadataProviderInterface
     {
         return $this->metadataProvider;
@@ -25,7 +30,7 @@ class ExtSoapMetadataProviderTest extends AbstractMetadataProviderTest
     protected function configureForWsdl(string $wsdl)
     {
         $this->metadataProvider = ExtSoapDriver::createFromClient(
-            $client = AbusedClient::createFromOptions(
+            $this->client = AbusedClient::createFromOptions(
                 ExtSoapOptions::defaults($wsdl)
                     ->disableWsdlCache()
             )

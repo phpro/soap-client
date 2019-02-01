@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\Soap\Engine\Metadata\Model;
 
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter;
@@ -13,7 +14,7 @@ class ParameterSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('name', 'type');
+        $this->beConstructedWith('name', XsdType::create('type'));
     }
 
     function it_is_initializable()
@@ -28,6 +29,6 @@ class ParameterSpec extends ObjectBehavior
 
     function it_contains_a_type()
     {
-        $this->getType()->shouldBe('type');
+        $this->getType()->shouldBeLike(XsdType::create('type'));
     }
 }

@@ -61,7 +61,7 @@ class ClientMethod
                 },
                 $method->getParameters()
             ),
-            $method->getReturnType(),
+            $method->getReturnType()->getBaseTypeOrFallbackToName(),
             $parameterNamespace
         );
     }

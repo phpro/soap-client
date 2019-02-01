@@ -4,11 +4,12 @@ namespace spec\Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata;
 
 use Phpro\SoapClient\Soap\Driver\ExtSoap\AbusedClient;
 use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
+use Phpro\SoapClient\Soap\Engine\Metadata\Collection\XsdTypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PhpSpec\ObjectBehavior;
 use PHPUnit\Framework\Assert;
-use Prophecy\Argument;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\MethodsParser;
 
 /**
@@ -16,6 +17,14 @@ use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\MethodsParser;
  */
 class MethodsParserSpec extends ObjectBehavior
 {
+    function let()
+    {
+        $this->beConstructedWith(new XsdTypeCollection(
+            XsdType::create('simpleType')
+                ->withBaseType('string')
+        ));
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType(MethodsParser::class);
@@ -29,57 +38,67 @@ class MethodsParserSpec extends ObjectBehavior
             'TestResponse Test2Param(Test1 $parameter1, Test2 $parameter2)',
             'list(Response1 $response1, Response2 $response2) TestReturnList()',
             'list(Response1 $response1, Response2 $response2) TestReturnListWithParams(Test1 $parameter1, Test2 $parameter2)',
+            'simpleType TestSimpleType(simpleType $parameter1)',
         ]);
 
         $result = $this->parse($abusedClient);
         $result->shouldHaveType(MethodCollection::class);
         $result->shouldHaveCount(\count($methods));
 
-        $result->fetchByName('Test0Param')->shouldHaveMethod(
+        $result->fetchOneByName('Test0Param')->shouldHaveMethod(
             'Test0Param',
             [],
-            'TestResponse'
+            XsdType::create('TestResponse')
         );
-        $result->fetchByName('Test1Param')->shouldHaveMethod(
+        $result->fetchOneByName('Test1Param')->shouldHaveMethod(
             'Test1Param',
             [
-                new Parameter('parameter1', 'Test1'),
+                new Parameter('parameter1', XsdType::create('Test1')),
             ],
-            'TestResponse'
+            XsdType::create('TestResponse')
         );
-        $result->fetchByName('Test2Param')->shouldHaveMethod(
+        $result->fetchOneByName('Test2Param')->shouldHaveMethod(
             'Test2Param',
             [
-                new Parameter('parameter1', 'Test1'),
-                new Parameter('parameter2', 'Test2'),
+                new Parameter('parameter1', XsdType::create('Test1')),
+                new Parameter('parameter2', XsdType::create('Test2')),
             ],
-            'TestResponse'
+            XsdType::create('TestResponse')
         );
-        $result->fetchByName('TestReturnList')->shouldHaveMethod(
+        $result->fetchOneByName('TestReturnList')->shouldHaveMethod(
             'TestReturnList',
             [],
-            'array'
+            XsdType::create('array')
         );
-        $result->fetchByName('TestReturnListWithParams')->shouldHaveMethod(
+        $result->fetchOneByName('TestReturnListWithParams')->shouldHaveMethod(
             'TestReturnListWithParams',
             [
-                new Parameter('parameter1', 'Test1'),
-                new Parameter('parameter2', 'Test2'),
+                new Parameter('parameter1', XsdType::create('Test1')),
+                new Parameter('parameter2', XsdType::create('Test2')),
             ],
-            'array'
+            XsdType::create('array')
+        );
+
+        $simpleType = XsdType::create('simpleType')->withBaseType('string');
+        $result->fetchOneByName('TestSimpleType')->shouldHaveMethod(
+            'TestSimpleType',
+            [
+                new Parameter('parameter1', $simpleType)
+            ],
+            $simpleType
         );
     }
 
     public function getMatchers(): array
     {
         return [
-            'haveMethod' => function (Method $subject, string $name, array $parameters, string $returnType) {
+            'haveMethod' => function (Method $subject, string $name, array $parameters, XsdType $returnType) {
                 $prefix = 'Expected method '.$name;
 
                 Assert::assertInstanceOf(Method::class, $subject, $prefix.' is not of type Method');
                 Assert::assertSame($name, $subject->getName(), $prefix. ' has unexpected name '.$subject->getName());
                 Assert::assertEquals($parameters, $subject->getParameters(), $prefix. ' has invalid parameters.');
-                Assert::assertSame($returnType, $subject->getReturnType(), $prefix. ' has unexpected return type.'.$subject->getReturnType());
+                Assert::assertEquals($returnType, $subject->getReturnType(), $prefix. ' has unexpected return type.'.$subject->getReturnType()->getName());
 
                 return true;
             },

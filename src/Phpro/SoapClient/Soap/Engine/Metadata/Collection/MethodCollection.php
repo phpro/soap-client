@@ -42,7 +42,7 @@ class MethodCollection implements \IteratorAggregate, \Countable
         return array_map($callback, $this->methods);
     }
 
-    public function fetchByName(string $name): Method
+    public function fetchOneByName(string $name): Method
     {
         foreach ($this->methods as $method) {
             if ($name === $method->getName()) {

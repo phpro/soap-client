@@ -17,11 +17,11 @@ class Method
     private $name;
 
     /**
-     * @var string
+     * @var XsdType
      */
     private $returnType;
 
-    public function __construct(string $name, array $parameters, string $returnType)
+    public function __construct(string $name, array $parameters, XsdType $returnType)
     {
         $this->name = $name;
         $this->returnType = $returnType;
@@ -43,7 +43,7 @@ class Method
         return $this->name;
     }
 
-    public function getReturnType(): string
+    public function getReturnType(): XsdType
     {
         return $this->returnType;
     }

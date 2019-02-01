@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine\Metadata\Collection;
 
-use Phpro\SoapClient\Exception\MetadataException;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 
-class TypeCollection implements \IteratorAggregate, \Countable
+class XsdTypeCollection implements \IteratorAggregate, \Countable
 {
     /**
-     * @var Type[]
+     * @var XsdType[]
      */
     private $types;
 
-    public function __construct(Type ...$types)
+    public function __construct(XsdType ...$types)
     {
         $this->types = $types;
     }
 
     /**
-     * @return \ArrayIterator|Type[]
+     * @return \ArrayIterator|XsdType[]
      */
     public function getIterator(): \ArrayIterator
     {
@@ -32,16 +31,9 @@ class TypeCollection implements \IteratorAggregate, \Countable
         return count($this->types);
     }
 
-    public function add(Type $type)
+    public function add(XsdType $type)
     {
         $this->types[] = $type;
-    }
-
-    public function addMany(TypeCollection $types)
-    {
-        foreach ($types as $type) {
-            $this->add($type);
-        }
     }
 
     public function map(callable  $callback): array
@@ -49,7 +41,7 @@ class TypeCollection implements \IteratorAggregate, \Countable
         return array_map($callback, $this->types);
     }
 
-    public function fetchOneByName(string $name): Type
+    public function fetchByNameWithFallback(string $name): XsdType
     {
         foreach ($this->types as $type) {
             if ($name === $type->getName()) {
@@ -57,6 +49,6 @@ class TypeCollection implements \IteratorAggregate, \Countable
             }
         }
 
-        throw MetadataException::typeNotFound($name);
+        return XsdType::guess($name);
     }
 }

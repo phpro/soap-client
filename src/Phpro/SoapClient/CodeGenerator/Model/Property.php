@@ -45,7 +45,7 @@ class Property
     {
         return new self(
             $property->getName(),
-            $property->getType(),
+            $property->getType()->getBaseTypeOrFallbackToName(),
             $namespace
         );
     }

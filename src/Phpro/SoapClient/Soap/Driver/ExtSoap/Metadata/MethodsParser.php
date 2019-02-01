@@ -6,11 +6,23 @@ namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata;
 
 use Phpro\SoapClient\Soap\Driver\ExtSoap\AbusedClient;
 use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
+use Phpro\SoapClient\Soap\Engine\Metadata\Collection\XsdTypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 
 class MethodsParser
 {
+    /**
+     * @var XsdTypeCollection
+     */
+    private $xsdTypes;
+
+    public function __construct(XsdTypeCollection $xsdTypes)
+    {
+        $this->xsdTypes = $xsdTypes;
+    }
+
     public function parse(AbusedClient $abusedClient): MethodCollection
     {
         return new MethodCollection(...array_map(
@@ -54,7 +66,7 @@ class MethodsParser
 
                 return new Parameter(
                     ltrim($name, '$'),
-                    $type
+                    $this->xsdTypes->fetchByNameWithFallback($type)
                 );
             },
             $parameters
@@ -63,15 +75,15 @@ class MethodsParser
 
     private function parseName(string $methodString): string
     {
-        preg_match('/^\w+ (\w+)/', $methodString, $matches);
+        preg_match('/^\w+ (?P<name>\w+)/', $methodString, $matches);
 
-        return (string) $matches[1];
+        return (string) $matches['name'];
     }
 
-    private function parseReturnType(string $methodString): string
+    private function parseReturnType(string $methodString): XsdType
     {
-        preg_match('/^(\w+)/', $methodString, $matches);
+        preg_match('/^(?P<returnType>\w+)/', $methodString, $matches);
 
-        return (string) $matches[1];
+        return $this->xsdTypes->fetchByNameWithFallback((string) $matches['returnType']);
     }
 }

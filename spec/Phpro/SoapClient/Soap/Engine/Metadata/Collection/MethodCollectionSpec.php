@@ -61,12 +61,12 @@ class MethodCollectionSpec extends ObjectBehavior
     function it_can_find_method_by_name(Method $method)
     {
         $method->getName()->willReturn($name = 'name');
-        $this->fetchByName($name)->shouldBe($method);
+        $this->fetchOneByName($name)->shouldBe($method);
     }
 
     function it_throws_exception_when_a_method_could_not_be_found_by_name(Method $method)
     {
         $method->getName()->willReturn($name = 'name');
-        $this->shouldthrow(MetadataException::class)->duringFetchByName('invalid');
+        $this->shouldthrow(MetadataException::class)->duringFetchOneByName('invalid');
     }
 }

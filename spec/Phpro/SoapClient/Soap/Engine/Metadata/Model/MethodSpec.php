@@ -3,6 +3,7 @@
 namespace spec\Phpro\SoapClient\Soap\Engine\Metadata\Model;
 
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
@@ -17,9 +18,9 @@ class MethodSpec extends ObjectBehavior
         $this->beConstructedWith(
             'name',
             [
-                new Parameter('name', 'type')
+                new Parameter('name', XsdType::create('type'))
             ],
-            'returnType'
+            XsdType::create('returnType')
         );
     }
 
@@ -39,11 +40,11 @@ class MethodSpec extends ObjectBehavior
         $parameters->shouldHaveCount(1);
         $parameters[0]->shouldHaveType(Parameter::class);
         $parameters[0]->getName()->shouldBe('name');
-        $parameters[0]->getType()->shouldBe('type');
+        $parameters[0]->getType()->shouldBeLike(XsdType::create('type'));
     }
 
     function it_contains_a_return_type()
     {
-        $this->getReturnType()->shouldBe('returnType');
+        $this->getReturnType()->shouldBeLike(XsdType::create('returnType'));
     }
 }

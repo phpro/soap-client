@@ -61,12 +61,12 @@ class TypeCollectionSpec extends ObjectBehavior
     function it_can_find_type_by_name(Type $type)
     {
         $type->getName()->willReturn($name = 'name');
-        $this->fetchByName($name)->shouldBe($type);
+        $this->fetchOneByName($name)->shouldBe($type);
     }
 
     function it_throws_exception_when_a_type_could_not_be_found_by_name(Type $type)
     {
         $type->getName()->willReturn($name = 'name');
-        $this->shouldthrow(MetadataException::class)->duringFetchByName('invalid');
+        $this->shouldthrow(MetadataException::class)->duringFetchOneByName('invalid');
     }
 }

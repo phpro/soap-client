@@ -31,11 +31,13 @@ class Parameter
 
     public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter)
     {
+        $type = $parameter->getType()->getBaseTypeOrFallbackToName();
+
         return new self(
             $parameter->getName(),
-            Normalizer::isKnownType($parameter->getType())
-                ? $parameter->getType()
-                : $parameterNamespace.'\\'.$parameter->getType()
+            Normalizer::isKnownType($type)
+                ? $type
+                : $parameterNamespace.'\\'.$type
         );
     }
 

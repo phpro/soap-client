@@ -11,6 +11,8 @@ class Normalizer
 {
 
     private static $normalizations = [
+        'any' => 'mixed',
+        'anytype' => 'mixed',
         'long' => 'int',
         'short' => 'int',
         'datetime' => '\\DateTimeInterface',
@@ -18,6 +20,7 @@ class Normalizer
         'boolean' => 'bool',
         'decimal' => 'float',
         'double' => 'float',
+        'integer' => 'int',
         'string' => 'string',
         'self' => 'self',
         'callable' => 'callable',

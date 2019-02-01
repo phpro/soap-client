@@ -7,18 +7,18 @@ namespace Phpro\SoapClient\Soap\Engine\Metadata\Model;
 class Type
 {
     /**
-     * @var string
+     * @var XsdType
      */
-    private $name;
+    private $xsdType;
 
     /**
      * @var Property[]
      */
     private $properties = [];
 
-    public function __construct(string $name, array $properties)
+    public function __construct(XsdType $xsdType, array $properties)
     {
-        $this->name = $name;
+        $this->xsdType = $xsdType;
         foreach ($properties as $property) {
             $this->addProperty($property);
         }
@@ -26,7 +26,12 @@ class Type
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->xsdType->getName();
+    }
+
+    public function getXsdType(): XsdType
+    {
+        return $this->xsdType;
     }
 
     /**

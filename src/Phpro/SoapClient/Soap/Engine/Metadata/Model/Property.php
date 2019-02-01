@@ -12,11 +12,11 @@ class Property
     private $name;
 
     /**
-     * @var string
+     * @var XsdType
      */
     private $type;
 
-    public function __construct(string $name, string $type)
+    public function __construct(string $name, XsdType $type)
     {
         $this->name = $name;
         $this->type = $type;
@@ -27,7 +27,7 @@ class Property
         return $this->name;
     }
 
-    public function getType(): string
+    public function getType(): XsdType
     {
         return $this->type;
     }

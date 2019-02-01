@@ -16,7 +16,7 @@ class Parameter
      */
     private $type;
 
-    public function __construct(string $name, string $type)
+    public function __construct(string $name, XsdType $type)
     {
         $this->name = $name;
         $this->type = $type;
@@ -27,7 +27,7 @@ class Parameter
         return $this->name;
     }
 
-    public function getType(): string
+    public function getType(): XsdType
     {
         return $this->type;
     }

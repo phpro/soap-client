@@ -6,6 +6,7 @@ use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\Generator\DummyMethodArgumentsGenerator;
@@ -29,10 +30,14 @@ class DummyMethodArgumentsGeneratorSpec extends ObjectBehavior
     {
         $metadata->getMethods()->willReturn(
             new MethodCollection(
-                new Method('method', [
-                    new Parameter('param1', 'string'),
-                    new Parameter('param1', 'int'),
-                ], 'string')
+                new Method(
+                    'method',
+                    [
+                        new Parameter('param1', XsdType::create('string')),
+                        new Parameter('param1', XsdType::create('integer')),
+                    ],
+                    XsdType::create('string')
+                )
             )
         );
 
