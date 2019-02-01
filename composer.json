@@ -45,7 +45,7 @@
     "psr/http-message": "^1.0",
     "robrichards/wse-php": "^2.0.2",
     "robrichards/xmlseclibs": "^3.0",
-    "squizlabs/php_codesniffer": "~2.7",
+    "squizlabs/php_codesniffer": "~2.9",
     "zendframework/zend-code": "^3.3.1"
   },
   "suggest": {
