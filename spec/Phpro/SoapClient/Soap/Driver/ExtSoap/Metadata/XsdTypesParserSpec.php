@@ -71,6 +71,24 @@ class XsdTypesParserSpec extends ObjectBehavior
         $iterator[4]->getName()->shouldBe('simpleType');
     }
 
+    function it_can_handle_double_typenames_in_separate_namespaces()
+    {
+        $this->beConstructedThrough('default', []);
+        $abusedClient = $this->mockAbusedClient([
+            $typeString1 = 'string simpleType',
+            $typeString2 = 'integer simpleType',
+        ]);
+
+        $result = $this->parse($abusedClient);
+        $result->shouldHaveCount(2);
+        $iterator = $result->getIterator();
+        $iterator[0]->getName()->shouldBe('simpleType');
+        $iterator[0]->getBaseType()->shouldBe('string');
+        $iterator[1]->getName()->shouldBe('simpleType');
+        $iterator[1]->getBaseType()->shouldBe('integer');
+        $result->fetchByNameWithFallback('simpleType')->getBaseType()->shouldBe('string');
+    }
+
     /**
      * Phpspec cant mock the __getTypes()
      */
