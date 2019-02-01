@@ -52,6 +52,7 @@ RULESET;
     const ENGINE_BOILERPLATE = <<<EOENGINE
 ->setEngine(ExtSoapEngineFactory::fromOptions(
         ExtSoapOptions::defaults('%s', [])
+            ->disableWsdlCache()
     ))
 EOENGINE;
 

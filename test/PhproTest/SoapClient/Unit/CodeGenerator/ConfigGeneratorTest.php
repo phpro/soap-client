@@ -23,6 +23,7 @@ use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 return Config::create()
     ->setEngine(ExtSoapEngineFactory::fromOptions(
         ExtSoapOptions::defaults('wsdl.xml', [])
+            ->disableWsdlCache()
     ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')
@@ -87,6 +88,7 @@ use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 return Config::create()
     ->setEngine(ExtSoapEngineFactory::fromOptions(
         ExtSoapOptions::defaults('wsdl.xml', [])
+            ->disableWsdlCache()
     ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')
