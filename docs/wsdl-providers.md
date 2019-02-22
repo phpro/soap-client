@@ -4,13 +4,24 @@ The built-in SOAP client does not give you control on how the WSDL is downloaded
  Therefor we've created a `WsdlProvider` mechanism that can be customized to your demands.
 
 
-General configuration:
+**Example usage**
 
 ```php
-$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
-$clientBuilder->withWsdlProvider($provider);
-$client = $clientBuilder->build();
+/** @var \Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface $provider */
+$wsdl = $provider->provide('my.wsdl');
 ```
+
+
+**Example usage with SoapOptions**
+```php
+<?php
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+
+/** @var \Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface $provider */
+$options = ExtSoapOptions::defaults('my.wsdl')
+    ->withWsdlProvider($provider);
+```
+
 
 Here is a list of built-in providers:
 
@@ -46,8 +57,11 @@ http://docs.php-http.org/en/latest/clients.html#clients-adapters
 composer require php-http/client-implementation:^1.0
 ```
 
-**Configuration**
+**Usage**
 ```php
+<?php
+use Phpro\SoapClient\Wsdl\Provider\HttPlugWsdlProvider;
+
 $provider = HttPlugWsdlProvider::createForClient($client);
 
 // Optional location:
@@ -55,21 +69,9 @@ $provider->setLocation('/some/destination/file.wsdl');
 
 // Middlewares support:
 $provider->addMiddleware($middleware);
-
-
-// Register to the client builder
-$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
-$clientBuilder->withWsdlProvider($provider);
-$client = $clientBuilder->build();
 ```
 
-*Note:* If you want to cache the WSDL so that you don't have to download it on every request, you can use the built-in caching options:
-
-```php
-$clientBuilder = new ClientBuilder($clientFactory, $wsdl, [
-    'cache_wsdl' => WSDL_CACHE_BOTH,
-]);
-```
+*Note:* If you want to cache the WSDL so that you don't have to download it on every request, you can use ext-soap `cache_wsdl` option.
 
 To change the TTL of the cache, you can adjust following `php.ini` setting:
 
@@ -84,12 +86,13 @@ soap.wsdl_cache_ttl: 86400
 By using the in-memory WSDL provider, you can just use a complete XML version of the WSDL as source.
 This one might come in handy during tests, but probably shouldn't be used in production.
 
-**Configuration**
+**Usage**
 ```php
-$wsdl = '<definitions ..... />'
-$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
-$clientBuilder->withWsdlProvider(new InMemoryWsdlProvider());
-$client = $clientBuilder->build();
+<?php
+use Phpro\SoapClient\Wsdl\Provider\InMemoryWsdlProvider;
+
+$provider = new InMemoryWsdlProvider();
+$wsdl = $provider->provide('<definitions ..... />');
 ```
 
 
@@ -98,11 +101,12 @@ $client = $clientBuilder->build();
 The local WSDL provider can be used to load a local file.
 It contains an additional check to make sure that the WSDL file exists and throws a `WsdlException` if it does not exist.
 
-**Configuration**
+**Usage**
 ```php
-$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
-$clientBuilder->withWsdlProvider(LocalWsdlProvider::create());
-$client = $clientBuilder->build();
+<?php
+use Phpro\SoapClient\Wsdl\Provider\LocalWsdlProvider;
+
+$provider = LocalWsdlProvider::create();
 ```
 
 
@@ -112,11 +116,12 @@ The mixed WSDL provider is used by default.
 You can pass every string you would normally pass to the built-in SOAP client's wsdl option.
 No additional checks are executed, the loading of the file will be handled by the internal `SoapClient` class.
 
-**Configuration**
+**Usage**
 ```php
-$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
-$clientBuilder->withWsdlProvider(new MixedWsdlProvider());
-$client = $clientBuilder->build();
+<?php
+use Phpro\SoapClient\Wsdl\Provider\MixedWsdlProvider;
+
+$provider = new MixedWsdlProvider();
 ```
 
 

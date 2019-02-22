@@ -9,9 +9,14 @@ The code generation commands require a configuration file to determine how the S
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 
 return Config::create()
-    ->setWsdl('http://localhost/path/to/soap.wsdl')
+    ->setEngine(ExtSoapEngineFactory::fromOptions(
+        ExtSoapOptions::defaults('wsdl.xml', [])
+            ->disableWsdlCache()
+    ))
     ->setTypeDestination('src/SoapTypes')
     ->setTypeNamespace('SoapTypes')
     ->setClientDestination('src/SoapClient')
@@ -20,7 +25,6 @@ return Config::create()
     ->setClassMapNamespace('Acme\\Classmap')
     ->setClassMapDestination('src/acme/classmap')
     ->setClassMapName('AcmeClassmap')
-    ->addSoapOption('features', SOAP_SINGLE_ELEMENT_ARRAYS)
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(
         (new Assembler\GetterAssemblerOptions())
             ->withReturnType()
@@ -40,12 +44,15 @@ return Config::create()
 Luckily a command is provided to generate this for you in an interactive manner.
 Execute `vendor/bin/soap-client generate:config` to start the interactive config generator.
 
-**wsdl**
+**engine**
 
-String - REQUIRED
+`Phpro\SoapClient\Soap\Engine\Engine` - REQUIRED
 
-The full path the the WSDL file you want to parse
+Specify how the code generation tool can talk to SOAP.
+By default, we push PHP's built-in ext-soap engine by code generation.
+However, it is possible to change this to any other engine you want to use.
 
+[Read more about engines.](../engine.md)
 
 **type destination**
 
@@ -58,25 +65,6 @@ The destination of the generated PHP classes.
 String - REQUIRED
 
 The destination of the generated soap client. 
-
-
-**soapOptions**
-
-Array - OPTIONAL
-
-The soap options you want to add to the SoapClient during code generation.
-Default values:
-
-
-```php
-[
-    'trace' => false,
-    'exceptions' => true,
-    'keep_alive' => true,
-    'cache_wsdl' => WSDL_CACHE_NONE,
-]
-```
-
 
 **type namespace**
 

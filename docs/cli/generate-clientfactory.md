@@ -34,25 +34,35 @@ Example output:
 
 namespace App\Client;
 
-use App\Client\Client;
+use App\Client\MyClient;
 use App\Order\OrderClassmap;
-use Phpro\SoapClient\ClientFactory as PhproClientFactory;
-use Phpro\SoapClient\ClientBuilder;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
 
 class ClientFactory
 {
 
-    public static function factory(string $wsdl) : \App\Client
+    public static function factory(string $wsdl) : \App\Client\MyClient
     {
-        $clientFactory = new PhproClientFactory(Client::class);
-        $clientBuilder = new ClientBuilder($clientFactory, $wsdl, []);
-        $clientBuilder->withClassMaps(OrderClassmap::getCollection());
+        $engine = ExtSoapEngineFactory::fromOptions(
+            ExtSoapOptions::defaults($wsdl, [])
+                ->withClassMap(OrderClassmap::getCollection())
+        );
+        $eventDispatcher = new EventDispatcher();
 
-        return $clientBuilder->build();
+        return new MyClient($engine, $eventDispatcher);
     }
+
 }
 
 
 ```
 
 You can then tweak this class to fit your needs.
+
+Here you can find some bookmarks for changing the factory:
+
+- [Configuring ExtSoapOptions](../drivers/ext-soap.md#extsoapoptions)
+- [Listening to events](../events.md)
+- [Configuring the engine](../engine.md)
+- [Using HTTP middleware](../middlewares.md) 

@@ -1,6 +1,6 @@
-# Caching plugin
+# Caching Subscriber
 
-This repository does not contain a caching plugin.
+This repository does not contain a caching subscriber.
  If you want to be able to cache the methods in your SOAP client, you could use our 
  [annotated-cache](https://github.com/phpro/annotated-cache) package.
  

@@ -1,6 +1,6 @@
 # Hooking in with events
 
-The `Client` class has a build-in EventDispatcher.
+The `Client` class uses an EventDispatcher which can be configured inside the [generated client factory](cli/generate-clientfactory.md).
  It will trigger events at all important phases of the SOAP call: 
 
 - Events::REQUEST (RequestEvent)
@@ -20,6 +20,7 @@ $dispatcher->addSubscriber(new ResponseFailedSubscriber());
 
 This package ships with some default subscriber plugins:
 
-- [Logger plugin](plugins/logger.md)
-- [Validator plugin](plugins/validator.md)
-- [Caching plugin](plugins/caching.md)
+- [Logger subscriber](event-subscriber/logger.md)
+- [Validator subscriber](event-subscriber/validator.md)
+- [Caching subscriber](event-subscriber/caching.md)
+
