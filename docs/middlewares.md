@@ -1,12 +1,12 @@
 # Get control of the HTTP layer with middlewares
 
-If the SOAP server has some extensions enabled, it is hard to get them working with the built-in SOAP client.
+If the SOAP server has some extensions enabled, it is hard to get them working with the ext-soap client.
 In many cases, you'll have to transform the XML request before sending it to the server 
 or normalize the response XML before converting it back to objects.
 It is also possible to specify some custom HTTP headers to make sure you can authenticate on the remote server.
 
 To make sure your soap-client can work with middlewares, 
-you'll have to check if your [data transfer handler](handlers.md) supports middlewares.
+you'll have to check if your [data transfer handler](engine.md#handler) supports middlewares.
 You can take a look to the list of handlers and check if your handler has the feature "MiddlewareSupporting".
 
 Next, you can use one of the built-in middlewares:
@@ -31,7 +31,7 @@ This basic authentication middleware provides the features you need to add a use
 
 **Usage**
 ```php
-$clientBuilder->addMiddleware(new BasicAuthMiddleware('username', 'password'));
+$handler->addMiddleware(new BasicAuthMiddleware('username', 'password'));
 ```
 
 
@@ -58,7 +58,7 @@ composer require robrichards/wse-php:^2.0
 
 **Usage**
 ```php
-$clientBuilder->addMiddleware(new WsaMiddleware());
+$handler->addMiddleware(new WsaMiddleware());
 ```
 
 
@@ -102,8 +102,8 @@ $wsse = new WsseMiddleware('privatekey.pem', 'publickey.pyb');
 $wsse->withEncryption('client-x509.pem');
 $wsse->withServerCertificateHasSubjectKeyIdentifier(true);
 
-// Add it to the clientbuilder
-$clientBuilder->addMiddleware($wsse);
+// Add it to the handler
+$handler->addMiddleware($wsse);
 ```
 
 
@@ -114,7 +114,7 @@ If you need to remove all empty nodes from the request xml, you can simply add t
 
 **Usage**
 ```php
-$clientBuilder->addMiddleware(new RemoveEmptyNodesMiddleware());
+$handler->addMiddleware(new RemoveEmptyNodesMiddleware());
 ```
 
 
@@ -131,7 +131,6 @@ property to false on the fly so that you don't have to change the WSDL on the se
 ```php
 $wsdlProvier = HttPlugWsdlProvider::create($client);
 $wsdlProvider->addMiddleware(new DisableExtensionsMiddleware());
-$clientBuilder->withWsdlProvider($wsdlProvider);
 ```
 
 

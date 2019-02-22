@@ -194,10 +194,9 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'string',
+        $type = new Type($namespace = 'MyNamespace', 'MyType', [
+            $property = new Property('prop1', 'string', 'ns1'),
         ]);
-        $property = new Property('prop1', 'string', 'ns1');
 
         return new PropertyContext($class, $type, $property);
     }
@@ -208,10 +207,9 @@ CODE;
     private function createContextWithAnUnknownType()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'foobar',
+        $type = new Type($namespace = 'MyNamespace', 'MyType', [
+            $property = new Property('prop1', 'foobar', $namespace),
         ]);
-        $property = new Property('prop1', 'foobar', 'MyNamespace');
 
         return new PropertyContext($class, $type, $property);
     }

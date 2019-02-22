@@ -1,44 +1,9 @@
 # Known issues in ext-soap
 
-- [Base64 binary](#base64-binary)
 - [Duplicate typenames](#duplicate-typenames)
 - [Enumerations](#enumerations)
-- [SimpleContent](#simplecontent)
 
 Isn't your issue listed below? Feel free to provide additional issues in a functional test.
-
-
-## Base64 binary
-
-By default, ext-soap will encode / decode `xsd:base64Binary` types.
-This means that you will always be working with the decoded values when using ext-soap.
-When you do require the raw values, you can create a custom typemap:
-
-```php
-$soapOptions = [
-    'typemap' => [
-        [
-            'type_name' => 'base64Binary',
-            'type_ns' => 'http://www.w3.org/2001/XMLSchema',
-            'from_xml' => function($xml) {
-                $doc = new \DOMDocument();
-                $doc->loadXML($xml);
-
-                return $doc->textContent;
-            },
-            'to_xml' => function($raw) {
-                return sprintf('<base64Binary>%s</base64Binary>', $raw);
-            },
-        ],
-    ],
-];
-```
-
-More information:
-
-- [Code in php-src](https://github.com/php/php-src/blob/php-7.2.10/ext/soap/php_encoding.c#L175)
-- [Functional test](../../test/PhproTest/SoapClient/Functional/Encoding/Base64BinaryTest.php)
-
 
 ## Duplicate typenames
 
@@ -81,7 +46,7 @@ Alternative workaround:
 More information:
 
 - [Code in php-src](https://github.com/php/php-src/blob/php-7.2.10/ext/soap/php_encoding.c#L468)
-- [Functional test](../../test/PhproTest/SoapClient/Functional/Encoding/DuplicateTypenamesTest.php)
+- [Functional test](../../test/PhproTest/SoapClient/Functional/ExtSoap/Encoding/DuplicateTypenamesTest.php)
 
 ## Enumerations
 
@@ -102,7 +67,7 @@ For example:
 ``` 
 
 - It is perfectly possible to pass a value of "InvalidData" to the server through the soap-client.
-- Internally, ext-soap will not register any types, since it converts the value to a string.
+- Internally, ext-soap will typehint this enum as a string so there is no complex type available.
 - You won't be able to access the available options without manually parsing the WSDL file.
 - If you do want to use a custom class for the enumerations type, you can create a type converter like this:
 
@@ -127,34 +92,5 @@ $soapOptions = [
 ```
 
 More information:
-- [Functional test](../../test/PhproTest/SoapClient/Functional/Encoding/EnumTest.php)
+- [Functional test](../../test/PhproTest/SoapClient/Functional/ExtSoap/Encoding/EnumTest.php)
 - [Lack of validation in php-src](https://github.com/php/php-src/blob/php-7.2.10/ext/soap/php_encoding.c#L3172-L3200)
-
-
-## SimpleContent
-
-Ext-soap does support `xsd:simpleContent` types. The implementation is a bit strange.
-
-Example:
-
-```xml
-<xsd:complexType name="SimpleContent">
-    <xsd:simpleContent>
-        <xsd:extension base="integer">
-            <xsd:attribute name="country" type="string" />
-        </xsd:extension>
-    </xsd:simpleContent>
-</xsd:complexType>
-```
-
-- The `SimpleContent` complexType will be registered as a type.
-- Code will be generated for this type.
-- The fields are:
-  - country : string
-  - _ : int
-- As you can see, the `_` field is being used as the xml textContent.
-
-
-More information:
-- [Functional test](../../test/PhproTest/SoapClient/Functional/Encoding/SimpleContentTest.php)
-

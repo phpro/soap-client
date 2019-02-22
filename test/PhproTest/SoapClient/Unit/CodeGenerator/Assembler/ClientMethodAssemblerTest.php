@@ -5,6 +5,7 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\ClientMethodAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
+use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\ClassGenerator;
 
@@ -41,10 +42,15 @@ class ClientMethodAssemblerTest extends TestCase
     {
         // ClassGenerator $class, ClientMethod $method
         $class = new ClassGenerator();
-        $class->setNamespaceName('Vendor\\MyNamespace');
-        $method = ClientMethod::createFromExtSoapFunctionString(
-            'ReturnType functionName(ParamType $param)',
-            'Vendor\\MyTypeNamespace'
+        $class->setNamespaceName($namespace = 'Vendor\\MyNamespace');
+        $typeNamespace = 'Vendor\\MyTypeNamespace';
+        $method = new ClientMethod(
+            'functionName',
+            [
+                new Parameter('param', $typeNamespace.'\\ParamType'),
+            ],
+            'ReturnType',
+            $typeNamespace
         );
 
         return new ClientMethodContext($class, $method);
@@ -57,10 +63,16 @@ class ClientMethodAssemblerTest extends TestCase
     {
         // ClassGenerator $class, ClientMethod $method
         $class = new ClassGenerator();
-        $class->setNamespaceName('Vendor\\MyNamespace');
-        $method = ClientMethod::createFromExtSoapFunctionString(
-            'ReturnType functionName(ParamType $param, OtherParamType $param2)',
-            'Vendor\\MyTypeNamespace'
+        $class->setNamespaceName($namespace = 'Vendor\\MyNamespace');
+        $typeNamespace = 'Vendor\\MyTypeNamespace';
+        $method = new ClientMethod(
+            'functionName',
+            [
+                new Parameter('param', $typeNamespace.'\\ParamType'),
+                new Parameter('param2', $typeNamespace.'\\OtherParamType'),
+            ],
+            'ReturnType',
+            $typeNamespace
         );
 
         return new ClientMethodContext($class, $method);
@@ -153,9 +165,14 @@ CODE;
         $assembler = new ClientMethodAssembler();
         $class = new ClassGenerator();
         $class->setNamespaceName('Vendor\\MyNamespace');
-        $method = ClientMethod::createFromExtSoapFunctionString(
-            'return_type Function_name(param_type $param)',
-            'Vendor\\MyTypeNamespace'
+        $typeNamespace = 'Vendor\\MyTypeNamespace';
+        $method = new ClientMethod(
+            'Function_name',
+            [
+                new Parameter('param', $typeNamespace.'\\param_type'),
+            ],
+            'return_type',
+            $typeNamespace
         );
 
         $context = new ClientMethodContext($class, $method);

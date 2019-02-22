@@ -5,6 +5,7 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ExtendAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Zend\Code\Generator\ClassGenerator;
@@ -92,9 +93,9 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'string',
-            'prop2' => 'int'
+        $type = new Type($namespace = 'MyNamespace', 'MyType', [
+            new Property('prop1', 'string', $namespace),
+            new Property('prop2', 'int', $namespace),
         ]);
 
         return new TypeContext($class, $type);

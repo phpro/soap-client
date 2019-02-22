@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<definitions name="InteropTest"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="http://soapinterop.org/"
+    xmlns:s="http://soapinterop.org/xsd"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    targetNamespace="http://soapinterop.org/">
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://soapinterop.org/xsd">
+            <xsd:complexType name="ValidateRequest">
+                <xsd:sequence>
+                    <xsd:element name="input" type="string" />
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ValidateResponse">
+                <xsd:sequence>
+                    <xsd:element name="output" type="string" />
+                </xsd:sequence>
+            </xsd:complexType>
+        </schema>
+    </types>
+
+    <message name="validateRequest">
+        <part name="request" type="s:ValidateRequest" />
+    </message>
+    <message name="validateResponse">
+        <part name="response" type="s:ValidateResponse" />
+    </message>
+
+    <portType name="InteropTestPortType">
+        <operation name="validate">
+            <input message="tns:validateRequest"/>
+            <output message="tns:validateResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="InteropTestBinding" type="tns:InteropTestPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="validate">
+            <soap:operation soapAction="http://soapinterop.org/validate" style="rpc"/>
+            <input>
+                <soap:body use="encoded" namespace="http://soapinterop.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="http://soapinterop.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="InteropTest">
+        <port name="InteropTestPort" binding="tns:InteropTestBinding">
+            <soap:address location="http://soapinterop.org/"/>
+        </port>
+    </service>
+</definitions>

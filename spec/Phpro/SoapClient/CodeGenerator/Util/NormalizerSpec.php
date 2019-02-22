@@ -36,6 +36,19 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeClassname('my-./final*type_123')->shouldReturn('MyFinalType123');
     }
 
+    function it_can_normalize_fqn_classnames()
+    {
+        $this->normalizeClassnameInFQN('ns1\\myType')->shouldReturn('ns1\\MyType');
+        $this->normalizeClassnameInFQN('ns1\\final')->shouldReturn('ns1\\FinalType');
+        $this->normalizeClassnameInFQN('ns1\\Final')->shouldReturn('ns1\\FinalType');
+        $this->normalizeClassnameInFQN('ns1\\UpperCased')->shouldReturn('ns1\\UpperCased');
+        $this->normalizeClassnameInFQN('ns1\\my-./*type_123')->shouldReturn('ns1\\MyType123');
+        $this->normalizeClassnameInFQN('ns1\\my-./final*type_123')->shouldReturn('ns1\\MyFinalType123');
+
+        $this->normalizeClassnameInFQN('string')->shouldReturn('string');
+        $this->normalizeClassnameInFQN('NoNamespace')->shouldReturn('NoNamespace');
+    }
+
     function it_can_normalize_method_names()
     {
         $this->normalizeMethodName('myMethod')->shouldReturn('myMethod');
@@ -66,13 +79,13 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeDataType('Iterator')->shouldReturn('Iterator');
         $this->normalizeDataType('long')->shouldReturn('int');
         $this->normalizeDataType('short')->shouldReturn('int');
-        $this->normalizeDataType('dateTime')->shouldReturn('\\DateTime');
-        $this->normalizeDataType('date')->shouldReturn('\\DateTime');
+        $this->normalizeDataType('dateTime')->shouldReturn('\\DateTimeInterface');
+        $this->normalizeDataType('date')->shouldReturn('\\DateTimeInterface');
         $this->normalizeDataType('boolean')->shouldReturn('bool');
         $this->normalizeDataType('decimal')->shouldReturn('float');
 
         // Special cases:
-        $this->normalizeDataType('DATE')->shouldReturn('\\DateTime');
+        $this->normalizeDataType('DATE')->shouldReturn('\\DateTimeInterface');
         $this->normalizeDataType('SomeCustomDateType')->shouldReturn('SomeCustomDateType');
         $this->normalizeDataType('ArrayOfConsolidatedAgreement')->shouldReturn('ArrayOfConsolidatedAgreement');
     }

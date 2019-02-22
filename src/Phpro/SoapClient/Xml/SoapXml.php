@@ -25,6 +25,10 @@ class SoapXml extends Xml
 
         // Register some default namespaces for easy access:
         $this->registerNamespace('soap', $this->getSoapNamespaceUri());
+
+        if ($bodyNamespace = $this->detectBodyContentsNamespace()) {
+            $this->registerNamespace('application', $bodyNamespace);
+        }
     }
 
     /**
@@ -33,6 +37,15 @@ class SoapXml extends Xml
     public function getSoapNamespaceUri(): string
     {
         return $this->getEnvelope()->namespaceURI;
+    }
+
+    public function detectBodyContentsNamespace(): ?string
+    {
+        if (!$body = $this->getBody()) {
+            return null;
+        }
+
+        return $body->firstChild ? $body->firstChild->namespaceURI : null;
     }
 
     /**
@@ -81,7 +94,7 @@ class SoapXml extends Xml
     /**
      * @return DOMElement|null
      */
-    public function getBody(): DOMElement
+    public function getBody(): ?DOMElement
     {
         $list = $this->xpath('//soap:Envelope/soap:Body');
 

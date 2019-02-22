@@ -64,7 +64,7 @@ CONFIRMATION;
             );
         }
 
-        $context->addSetter('setWsdl', $io->ask('Wsdl location (URL or path to file)'));
+        $context->setWsdl($io->ask('Wsdl location (URL or path to file)'));
         $name = $io->ask('Generic name used to name this client (Results in <name>Client <name>Classmap etc.)');
         $baseDir = $io->ask('Directory where the client should be generated in');
         $namespace = $io->ask('Namespace for your client');

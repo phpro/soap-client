@@ -4,33 +4,13 @@ Now that we explained all parts of your new SoapClient, it is time to interact w
  Look at following snippet:
 
 ```php
-$wsdl = 'http://path.to/your.wsdl';
-$clientFactory = new ClientFactory(YourClient::class);
-$soapOptions = [
-    'cache_wsdl' => WSDL_CACHE_NONE
-];
-
-$clientBuilder = new ClientBuilder($clientFactory, $wsdl, $soapOptions);
-$clientBuilder->withLogger(new Logger());
-$clientBuilder->withEventDispatcher(new EventDispatcher());
-$clientBuilder->addClassMap(new ClassMap('WsdlType', PhpType::class));
-$clientBuilder->addTypeConverter(new DateTimeTypeConverter());
-$client = $clientBuilder->build();
-
+$client = MyclientFactory::factory($wsdl = 'http://path.to/your.wsdl');
 $response = $client->helloWorld(new HelloWorldRequest('name'));
 echo $response->getGreeting();
 ```
 
-<sub>Note: The `Logger` class is not provided by this package, use any PSR-3 compatible logger here (i.e. monolog).</sub>
-
-In the first part of the snippet you can see the global configuration of your own SOAP client.
- The `YourClient` class will be instantiated by a `ClientFactory`, which is responsible for injecting the client dependencies.
- It is possible to use the same Client with different WSDL endpoints and SOAP options.
- This makes it easy for changing between environments.
- 
-Next, the client will be configured by the `ClientBuilder`.
- As you can see it is possible to add a Logger, EventDispatcher, Classmaps and TypeConverters.
- This makes the Soap client fully configurable.
+The client will be initialized inside your generated client factory.
+ More information about the [generated client factory can be found here](cli/generate-clientfactory.md).
 
 In the last part of the snippet you can see how the client works.
  It will use the generated value-objects to call the `RequestInterface` on the SoapClient.

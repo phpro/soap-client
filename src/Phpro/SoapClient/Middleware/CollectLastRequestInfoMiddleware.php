@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\Middleware;
 
 use Http\Promise\Promise;
 use Phpro\SoapClient\Soap\Handler\LastRequestInfoCollectorInterface;
+use Phpro\SoapClient\Soap\HttpBinding\Converter\Psr7ToLastRequestInfoConverter;
 use Phpro\SoapClient\Soap\HttpBinding\LastRequestInfo;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -46,6 +47,6 @@ class CollectLastRequestInfoMiddleware extends Middleware implements LastRequest
             return LastRequestInfo::createEmpty();
         }
 
-        return LastRequestInfo::createFromPsr7RequestAndResponse($this->lastRequest, $this->lastResponse);
+        return (new Psr7ToLastRequestInfoConverter())->convert($this->lastRequest, $this->lastResponse);
     }
 }

@@ -46,18 +46,24 @@ You can customize the generated code based on the manual installation pages in t
 
 - [Add type converters.](docs/type-converter.md)
 - [Listen to events.](docs/events.md)
-  - [Logger plugin](docs/plugins/logger.md)
-  - [Validator plugin](docs/plugins/validator.md)
-  - [Caching plugin](docs/plugins/caching.md)
-- [Specify your data transfer handler.](docs/handlers.md)
-  - [SoapHandle](docs/handlers.md#soaphandle)
-  - [HTTPlugHandle](docs/handlers.md#httplughandle)
-  - [LocalSoapServerHandle](docs/handlers.md#localsoapserverhandle)
+  - [Logger Subscriber](docs/event-subscribers/logger.md)
+  - [Validator Subscriber](docs/event-subscribers/validator.md)
+  - [Caching Subscriber](docs/event-subscribers/caching.md)
+- [Get in control of the soap-client](docs/engine.md)
+  - [Choose a driver](docs/engine.md#driver)
+    - [ExtSoapDriver](docs/drivers/ext-soap.md)
+    - [Create your own driver](docs/drivers/new.md)
+  - [Specify your HTTP handler.](docs/engine.md#handler)
+    - [HttPlugHandle](docs/handlers/httplug.md) (Supports [middlewares](docs/middlewares.md))
+    - [ExtSoapClientHandle](docs/handlers/ext-soap/client.md)
+    - [ExtSoapServerHandle](docs/handlers/ext-soap/local-server.md)
+    - [Create your own handler](docs/handlers/new.md)
 - [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
   - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
   - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
   - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
   - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
+  - [Create your own middleware](docs/middlewares.md#creating-your-own-middleware)
 - [Select a WSDL Provider](docs/wsdl-providers.md)
 
 
@@ -119,12 +125,17 @@ Implementing SOAP extensions is a real pain in the ass.
  You can specify which data transfer handler like e.g. Guzzle you want to use.
  Depending on the selected handler, 
  you can easily add support for SOAP extensions or advanced authentication through HTTP middlewares.
+
+Dealing with ext-soap is not for all developers. There are some nasty quirks you need to know about.
+ Therefor, we made it possible for you to use which ever driver you want to use.
+ By default we will still ship an ext-soap driver, but it is completely opt-in.
+ You can use any user-land SoapClient implementation if you wrap it in our own driver interfaces.
  
 Testing webservices is hard! 
  That is Why this package is fully compatible with [php-vcr](http://php-vcr.github.io/).
  Testing your SOAP client will be very fast and without any errors at the 3th party side of the integration. 
  
 Last but not least, we want to make it easy for you to configure your SoapClient.
- That is why we included a ClientBuilder on which you can configure your custom Client.
+ That is why we included a generated ClientFactory on which you can configure your custom Client.
  You want some other settings during development and in production? 
- No problem! Sit back and let the ClientBuilder handle your Client initialisation.
+ No problem! Sit back and let the factory handle your Client initialisation.

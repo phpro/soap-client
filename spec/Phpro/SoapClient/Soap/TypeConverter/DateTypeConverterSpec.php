@@ -20,6 +20,15 @@ class DateTypeConverterSpec extends ObjectBehavior
         $this->shouldImplement(TypeConverterInterface::class);
     }
 
+    function it_creates_datetime_interface_from_xml()
+    {
+        $date = '2019-01-25';
+
+        $result = $this->convertXmlToPhp('<date>'.$date.'</date>');
+        $result->shouldBeAnInstanceOf(\DateTimeImmutable::class);
+        $result->format('Y-m-d')->shouldBe($date);
+    }
+
     function it_returns_empty_string_on_null_passed()
     {
         $this->convertPhpToXml(null)->shouldReturn('');

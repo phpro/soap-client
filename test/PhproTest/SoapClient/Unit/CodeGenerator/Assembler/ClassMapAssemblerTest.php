@@ -5,6 +5,8 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ClassMapAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
+use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Zend\Code\Generator\FileGenerator;
 use PHPUnit\Framework\TestCase;
@@ -78,10 +80,14 @@ CODE;
     private function createContext()
     {
         $file = new FileGenerator();
-        $typeMap = new TypeMap('MyNamespace', [
-            'MyType' => [
-                'myProperty' => 'string',
-            ]
+        $typeMap = new TypeMap($namespace = 'MyNamespace', [
+            new Type(
+                $namespace,
+                'MyType',
+                [
+                    new Property('myProperty', 'string', $namespace)
+                ]
+            ),
         ]);
 
         return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace');

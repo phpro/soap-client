@@ -6,7 +6,6 @@ use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
-use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
@@ -78,8 +77,10 @@ class GenerateTypesCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $config = $this->getConfigHelper()->load($input);
-        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
+        $typeMap = TypeMap::fromMetadata(
+            $config->getTypeNamespace(),
+            $config->getEngine()->getMetadata()->getTypes()
+        );
         $generator = new TypeGenerator($config->getRuleSet());
 
         foreach ($typeMap->getTypes() as $type) {

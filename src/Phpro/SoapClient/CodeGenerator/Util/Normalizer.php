@@ -11,13 +11,16 @@ class Normalizer
 {
 
     private static $normalizations = [
+        'any' => 'mixed',
+        'anytype' => 'mixed',
         'long' => 'int',
         'short' => 'int',
-        'datetime' => '\\DateTime',
-        'date' => '\\DateTime',
+        'datetime' => '\\DateTimeInterface',
+        'date' => '\\DateTimeInterface',
         'boolean' => 'bool',
         'decimal' => 'float',
         'double' => 'float',
+        'integer' => 'int',
         'string' => 'string',
         'self' => 'self',
         'callable' => 'callable',
@@ -171,6 +174,17 @@ class Normalizer
         $name = self::normalizeReservedKeywords($name, 'Type');
 
         return ucfirst(self::camelCase($name, '{[^a-z0-9]+}i'));
+    }
+
+    public static function normalizeClassnameInFQN(string $fqn): string
+    {
+        if (self::isKnownType($fqn)) {
+            return $fqn;
+        }
+
+        $className = self::getClassNameFromFQN($fqn);
+
+        return substr($fqn, 0, -1 * \strlen($className)).self::normalizeClassname($className);
     }
 
     /**

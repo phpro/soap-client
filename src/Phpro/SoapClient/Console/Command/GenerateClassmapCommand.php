@@ -5,7 +5,6 @@ namespace Phpro\SoapClient\Console\Command;
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
-use Phpro\SoapClient\Soap\SoapClient;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -79,8 +78,10 @@ class GenerateClassmapCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $config = $this->getConfigHelper()->load($input);
-        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $typeMap = TypeMap::fromSoapClient($config->getTypeNamespace(), $soapClient);
+        $typeMap = TypeMap::fromMetadata(
+            $config->getTypeNamespace(),
+            $config->getEngine()->getMetadata()->getTypes()
+        );
 
         $generator = new ClassMapGenerator(
             $config->getRuleSet(),

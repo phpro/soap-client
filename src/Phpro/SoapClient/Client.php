@@ -4,14 +4,12 @@ namespace Phpro\SoapClient;
 
 use Phpro\SoapClient\Event;
 use Phpro\SoapClient\Exception\SoapException;
+use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Type\MixedResult;
 use Phpro\SoapClient\Type\MultiArgumentRequestInterface;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
-use SoapClient;
-
-use SoapHeader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -22,33 +20,19 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class Client implements ClientInterface
 {
     /**
-     * @var SoapClient
+     * @var EngineInterface
      */
-    protected $soapClient;
+    protected $engine;
 
     /**
      * @var EventDispatcherInterface
      */
     protected $dispatcher;
 
-    /**
-     * @param SoapClient      $soapClient
-     * @param EventDispatcherInterface $dispatcher
-     */
-    public function __construct(SoapClient $soapClient, EventDispatcherInterface $dispatcher)
+    public function __construct(EngineInterface $engine, EventDispatcherInterface $dispatcher)
     {
-        $this->soapClient = $soapClient;
+        $this->engine = $engine;
         $this->dispatcher = $dispatcher;
-    }
-
-    /**
-     * @param SoapHeader|SoapHeader[] $soapHeaders
-     * @return $this
-     */
-    public function applySoapHeaders($soapHeaders): self
-    {
-        $this->soapClient->__setSoapHeaders($soapHeaders);
-        return $this;
     }
 
     /**
@@ -58,24 +42,17 @@ class Client implements ClientInterface
      */
     public function debugLastSoapRequest(): array
     {
+        $lastRequestInfo = $this->engine->collectLastRequestInfo();
         return [
             'request'  => [
-                'headers' => $this->soapClient->__getLastRequestHeaders(),
-                'body'    => $this->soapClient->__getLastRequest(),
+                'headers' => $lastRequestInfo->getLastRequestHeaders(),
+                'body' => $lastRequestInfo->getLastRequest(),
             ],
             'response' => [
-                'headers' => $this->soapClient->__getLastResponseHeaders(),
-                'body'    => $this->soapClient->__getLastResponse(),
+                'headers' => $lastRequestInfo->getLastResponseHeaders(),
+                'body' => $lastRequestInfo->getLastResponse(),
             ],
         ];
-    }
-
-    /**
-     * @param string $location
-     */
-    public function changeSoapLocation(string $location)
-    {
-        $this->soapClient->__setLocation($location);
     }
 
     /**
@@ -92,7 +69,7 @@ class Client implements ClientInterface
 
         try {
             $arguments = ($request instanceof MultiArgumentRequestInterface) ? $request->getArguments() : [$request];
-            $result = call_user_func_array([$this->soapClient, $method], $arguments);
+            $result = $this->engine->request($method, $arguments);
 
             if ($result instanceof ResultProviderInterface) {
                 $result = $result->getResult();

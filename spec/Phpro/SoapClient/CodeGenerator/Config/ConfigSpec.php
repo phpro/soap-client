@@ -7,6 +7,7 @@ use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Exception\WsdlException;
+use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Util\Filesystem;
 use Phpro\SoapClient\Wsdl\Provider\LocalWsdlProvider;
 use Phpro\SoapClient\Wsdl\Provider\MixedWsdlProvider;
@@ -31,34 +32,15 @@ class ConfigSpec extends ObjectBehavior
         $this->shouldImplement(ConfigInterface::class);
     }
 
-    function it_has_a_wsdl()
+    function it_has_an_engine(EngineInterface $engine)
     {
-        $this->setWsdl($value = 'http://myservice/some.wsdl');
-        $this->getWsdl()->shouldReturn($value);
+        $this->setEngine($engine);
+        $this->getEngine()->shouldReturn($engine);
     }
 
-    function it_has_a_wsdl_provider()
+    function it_requires_an_engine()
     {
-        $this->getWsdlProvider()->shouldImplement(MixedWsdlProvider::class);
-    }
-
-    function it_can_overwrite_wsdl_prover()
-    {
-        $this->setWsdlProvider($value = new LocalWsdlProvider(new Filesystem()));
-        $this->getWsdlProvider()->shouldReturn($value);
-    }
-
-    function it_requires_a_wsdl()
-    {
-        $this->shouldThrow(InvalidArgumentException::class)->duringGetWsdl();
-    }
-
-    function it_requires_a_valid_wsdl_provider(WsdlProviderInterface $wsdlProvider)
-    {
-        $this->setWsdl($wsdl = 'some.wsdl');
-        $wsdlProvider->provide($wsdl)->willThrow(WsdlException::class);
-        $this->setWsdlProvider($wsdlProvider);
-        $this->shouldThrow(InvalidArgumentException::class)->duringGetWsdl();
+        $this->shouldThrow(InvalidArgumentException::class)->duringGetEngine();
     }
 
     function it_requires_a_typedestination()
@@ -70,24 +52,6 @@ class ConfigSpec extends ObjectBehavior
     {
         $this->setRuleSet($value = new RuleSet([]));
         $this->getRuleSet()->shouldBe($value);
-    }
-
-    function it_had_soap_options()
-    {
-        $this->getSoapOptions()->shouldBe(
-            [
-                'trace' => false,
-                'exceptions' => true,
-                'keep_alive' => true,
-                'cache_wsdl' => WSDL_CACHE_NONE,
-            ]
-        );
-
-        $this->setSoapOptions($value = []);
-        $this->getSoapOptions()->shouldBe($value);
-
-        $this->addSoapOption('key', 'value');
-        $this->getSoapOptions()->shouldBe(['key' => 'value']);
     }
 
     public function it_has_a_type_destination()

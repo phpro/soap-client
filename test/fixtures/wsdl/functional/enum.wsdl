@@ -35,7 +35,7 @@
     <binding name="InteropTestBinding" type="tns:InteropTestPortType">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
         <operation name="validate">
-            <soap:operation soapAction="http://" style="rpc"/>
+            <soap:operation soapAction="http://soapinterop.org/validate" style="rpc"/>
             <input>
                 <soap:body use="encoded" namespace="http://soapinterop.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </input>
@@ -51,3 +51,5 @@
         </port>
     </service>
 </definitions>
+
+

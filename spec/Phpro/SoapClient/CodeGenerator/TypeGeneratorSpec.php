@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
@@ -40,7 +41,11 @@ class TypeGeneratorSpec extends ObjectBehavior
 
     function it_generates_types(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
     {
-        $type = new Type('MyNamespace', 'MyType', ['prop1' => 'string']);
+        $type = new Type(
+            $namespace = 'MyNamespace',
+            'MyType',
+            [new Property('prop1', 'string', $namespace)]
+        );
         $property = $type->getProperties()[0];
 
         $file->generate()->willReturn('code');

@@ -9,6 +9,11 @@ class ConfigContext implements ContextInterface
     /**
      * @var string
      */
+    private $wsdl;
+
+    /**
+     * @var string
+     */
     private $requestRegex = '';
 
     /**
@@ -29,6 +34,25 @@ class ConfigContext implements ContextInterface
     public function getSetters(): array
     {
         return $this->setters;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWsdl(): string
+    {
+        return $this->wsdl;
+    }
+
+    /**
+     * @param string $wsdl
+     * @return ConfigContext
+     */
+    public function setWsdl(string $wsdl): self
+    {
+        $this->wsdl = $wsdl;
+
+        return $this;
     }
 
     /**

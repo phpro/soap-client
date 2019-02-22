@@ -10,9 +10,8 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
  *
  * @package Phpro\SoapClient\Soap\Handler
  */
-interface HandlerInterface
+interface HandlerInterface extends LastRequestInfoCollectorInterface
 {
-
     /**
      * @param SoapRequest $request
      *

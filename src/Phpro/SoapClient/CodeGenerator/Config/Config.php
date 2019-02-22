@@ -10,9 +10,7 @@ use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
-use Phpro\SoapClient\Exception\WsdlException;
-use Phpro\SoapClient\Wsdl\Provider\MixedWsdlProvider;
-use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
+use Phpro\SoapClient\Soap\Engine\EngineInterface;
 
 /**
  * Class Config
@@ -32,24 +30,14 @@ class Config implements ConfigInterface
     protected $typeNamespace = '';
 
     /**
-     * @var
+     * @var string
      */
     protected $clientNamespace = '';
 
     /**
-     * @var string
+     * @var EngineInterface
      */
-    protected $wsdl = '';
-
-    /**
-     * @var array
-     */
-    protected $soapOptions = [
-        'trace' => false,
-        'exceptions' => true,
-        'keep_alive' => true,
-        'cache_wsdl' => WSDL_CACHE_NONE,
-    ];
+    protected $engine;
 
     /**
      * @var string
@@ -67,11 +55,6 @@ class Config implements ConfigInterface
     protected $ruleSet;
 
     /**
-     * @var WsdlProviderInterface
-     */
-    protected $wsdlProvider;
-
-    /**
      * @var string
      */
     protected $classMapName;
@@ -86,22 +69,13 @@ class Config implements ConfigInterface
      */
     protected $classMapDestination;
 
-    /**
-     * Config constructor.
-     *
-     * @param string $wsdl
-     * @param string $destination
-     */
-    public function __construct(string $wsdl = '', string $destination = '')
+    public function __construct()
     {
-        $this->setWsdl($wsdl);
-        $this->setTypeDestination($destination);
         $this->ruleSet = new RuleSet([
             new Rules\AssembleRule(new Assembler\PropertyAssembler()),
             new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
             new Rules\AssembleRule(new ClientMethodAssembler())
         ]);
-        $this->wsdlProvider = new MixedWsdlProvider();
     }
 
     /**
@@ -133,65 +107,24 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @return string
-     * @throws InvalidArgumentException
+     * @return EngineInterface
      */
-    public function getWsdl(): string
+    public function getEngine(): EngineInterface
     {
-        if (!$this->wsdl) {
-            throw InvalidArgumentException::wsdlConfigurationIsMissing();
+        if (!$this->engine instanceof EngineInterface) {
+            throw InvalidArgumentException::engineNotConfigured();
         }
-
-        try {
-            $wsdl = $this->wsdlProvider->provide($this->wsdl);
-        } catch (WsdlException $e) {
-            throw InvalidArgumentException::wsdlCouldNotBeProvided($e);
-        }
-
-        return $wsdl;
+        return $this->engine;
     }
 
     /**
-     * @param string $wsdl
+     * @param EngineInterface $engine
      *
      * @return Config
      */
-    public function setWsdl($wsdl): self
+    public function setEngine(EngineInterface $engine): self
     {
-        $this->wsdl = $wsdl;
-
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function addSoapOption(string $key, $value): self
-    {
-        $this->soapOptions[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getSoapOptions(): array
-    {
-        return $this->soapOptions;
-    }
-
-    /**
-     * @param array $soapOptions
-     *
-     * @return $this
-     */
-    public function setSoapOptions(array $soapOptions)
-    {
-        $this->soapOptions = $soapOptions;
+        $this->engine = $engine;
 
         return $this;
     }
@@ -312,25 +245,6 @@ class Config implements ConfigInterface
     public function setTypeDestination($typeDestination): self
     {
         $this->typeDestination = $typeDestination;
-
-        return $this;
-    }
-
-    /**
-     * @return WsdlProviderInterface
-     */
-    public function getWsdlProvider(): WsdlProviderInterface
-    {
-        return $this->wsdlProvider;
-    }
-
-    /**
-     * @param WsdlProviderInterface $wsdlProvider
-     * @return Config
-     */
-    public function setWsdlProvider(WsdlProviderInterface $wsdlProvider): self
-    {
-        $this->wsdlProvider = $wsdlProvider;
 
         return $this;
     }

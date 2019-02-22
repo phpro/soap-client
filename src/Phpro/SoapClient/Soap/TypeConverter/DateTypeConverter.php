@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\Soap\TypeConverter;
 
-use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DOMDocument;
 
@@ -43,9 +43,7 @@ class DateTypeConverter implements TypeConverterInterface
             return null;
         }
 
-        $dateTime = new DateTime($doc->textContent);
-
-        return $dateTime;
+        return new DateTimeImmutable($doc->textContent);
     }
 
     /**
