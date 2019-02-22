@@ -9,11 +9,6 @@ use Phpro\SoapClient\Events;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Class LogSubscriber
- *
- * @package Phpro\SoapClient\Plugin
- */
 class LogSubscriber implements EventSubscriberInterface
 {
     /**

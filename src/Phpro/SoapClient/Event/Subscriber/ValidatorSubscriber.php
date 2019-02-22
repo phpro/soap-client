@@ -8,11 +8,6 @@ use Phpro\SoapClient\Exception\RequestException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-/**
- * Class ValidatorSubscriber
- *
- * @package Phpro\SoapClient\Plugin
- */
 class ValidatorSubscriber implements EventSubscriberInterface
 {
     /**
