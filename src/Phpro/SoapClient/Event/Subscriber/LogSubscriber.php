@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\Plugin;
+namespace Phpro\SoapClient\Event\Subscriber;
 
 use Phpro\SoapClient\Event\RequestEvent;
 use Phpro\SoapClient\Event\ResponseEvent;
@@ -10,11 +10,11 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class LogPlugin
+ * Class LogSubscriber
  *
  * @package Phpro\SoapClient\Plugin
  */
-class LogPlugin implements EventSubscriberInterface
+class LogSubscriber implements EventSubscriberInterface
 {
     /**
      * @var LoggerInterface

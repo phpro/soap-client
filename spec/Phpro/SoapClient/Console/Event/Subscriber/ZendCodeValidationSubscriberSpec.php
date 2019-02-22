@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\Phpro\SoapClient\Event\Subscriber;
+namespace spec\Phpro\SoapClient\Console\Event\Subscriber;
 
-use Phpro\SoapClient\Event\Subscriber\ZendCodeValidationSubscriber;
+use Phpro\SoapClient\Console\Event\Subscriber\ZendCodeValidationSubscriber;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

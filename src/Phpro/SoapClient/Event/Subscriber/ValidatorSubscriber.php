@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\Plugin;
+namespace Phpro\SoapClient\Event\Subscriber;
 
 use Phpro\SoapClient\Event\RequestEvent;
 use Phpro\SoapClient\Events;
@@ -9,11 +9,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Class ValidatorPlugin
+ * Class ValidatorSubscriber
  *
  * @package Phpro\SoapClient\Plugin
  */
-class ValidatorPlugin implements EventSubscriberInterface
+class ValidatorSubscriber implements EventSubscriberInterface
 {
     /**
      * @var ValidatorInterface

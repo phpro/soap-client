@@ -1,13 +1,14 @@
 <?php
 
-namespace spec\Phpro\SoapClient\Plugin;
+namespace spec\Phpro\SoapClient\Event\Subscriber;
 
+use Phpro\SoapClient\Event\Subscriber\LogSubscriber;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class LogPluginSpec extends ObjectBehavior
+class LogSubscriberSpec extends ObjectBehavior
 {
     function let(LoggerInterface $logger)
     {
@@ -16,7 +17,7 @@ class LogPluginSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Phpro\SoapClient\Plugin\LogPlugin');
+        $this->shouldHaveType(LogSubscriber::class);
     }
 
     function it_should_be_an_event_subscriber()

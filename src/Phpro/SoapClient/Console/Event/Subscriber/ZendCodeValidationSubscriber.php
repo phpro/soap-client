@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\Event\Subscriber;
+namespace Phpro\SoapClient\Console\Event\Subscriber;
 
 use Phpro\SoapClient\CodeGenerator\Util\Validator;
 use Symfony\Component\Console\ConsoleEvents;

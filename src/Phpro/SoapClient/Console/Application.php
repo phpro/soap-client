@@ -4,8 +4,8 @@
 namespace Phpro\SoapClient\Console;
 
 use Phpro\SoapClient\Console\Command;
+use Phpro\SoapClient\Console\Event\Subscriber\ZendCodeValidationSubscriber;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
-use Phpro\SoapClient\Event\Subscriber\ZendCodeValidationSubscriber;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Helper\HelperSet;

@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Phpro\SoapClient\Plugin;
+namespace spec\Phpro\SoapClient\Event\Subscriber;
 
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Event\RequestEvent;
@@ -11,9 +11,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Phpro\SoapClient\Plugin\ValidatorPlugin;
+use Phpro\SoapClient\Event\Subscriber\ValidatorSubscriber;
 
-class ValidatorPluginSpec extends ObjectBehavior
+class ValidatorSubscriberSpec extends ObjectBehavior
 {
     function let(ValidatorInterface $validator)
     {
@@ -22,7 +22,7 @@ class ValidatorPluginSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(ValidatorPlugin::class);
+        $this->shouldHaveType(ValidatorSubscriber::class);
     }
 
     function it_should_be_an_event_subscriber()
