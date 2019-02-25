@@ -17,7 +17,7 @@
     "symfony/console": "~2.8|~3.0|~4.0",
     "symfony/event-dispatcher": "~2.8|~3.0|~4.0",
     "symfony/filesystem": "~2.8|~3.0|~4.0",
-    "symfony/options-resolver": "^4.1"
+    "symfony/options-resolver": "~2.8|~3.0|~4.0"
   },
   "require-dev": {
     "ext-soap": "*",
