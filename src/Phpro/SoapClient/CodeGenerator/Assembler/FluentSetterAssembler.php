@@ -52,6 +52,19 @@ class FluentSetterAssembler implements AssemblerInterface
         try {
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
+            $docBlockGenerator = DocBlockGenerator::fromArray([
+                'tags' => [
+                    [
+                        'name' => 'param',
+                        'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                    ],
+                    [
+                        'name' => 'return',
+                        'description' => '$this',
+                    ],
+                ],
+            ]);
+            $docBlockGenerator->setWordWrap(false);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
                     'name'       => $methodName,
@@ -65,18 +78,7 @@ class FluentSetterAssembler implements AssemblerInterface
                     'returntype' => $this->options->useReturnType()
                         ? $class->getNamespaceName().'\\'.$class->getName()
                         : null,
-                    'docblock'   => DocBlockGenerator::fromArray([
-                        'tags' => [
-                            [
-                                'name'        => 'param',
-                                'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
-                            ],
-                            [
-                                'name'        => 'return',
-                                'description' => '$this',
-                            ],
-                        ],
-                    ]),
+                    'docblock'   => $docBlockGenerator,
                 ])
             );
         } catch (\Exception $e) {

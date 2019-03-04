@@ -52,19 +52,21 @@ class PropertyAssembler implements AssemblerInterface
                 return;
             }
 
+            $docBlockGenerator = DocBlockGenerator::fromArray([
+                'tags' => [
+                    [
+                        'name' => 'var',
+                        'description' => $property->getType(),
+                    ],
+                ]
+            ]);
+            $docBlockGenerator->setWordWrap(false);
             $class->addPropertyFromGenerator(
                 PropertyGenerator::fromArray([
                     'name' => $property->getName(),
                     'visibility' => $this->visibility,
                     'omitdefaultvalue' => true,
-                    'docblock' => DocBlockGenerator::fromArray([
-                        'tags' => [
-                            [
-                                'name'        => 'var',
-                                'description' => $property->getType(),
-                            ],
-                        ]
-                    ])
+                    'docblock' => $docBlockGenerator
                 ])
             );
         } catch (\Exception $e) {

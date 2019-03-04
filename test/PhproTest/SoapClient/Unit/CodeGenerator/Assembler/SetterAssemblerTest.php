@@ -71,6 +71,38 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_a_doc_block_that_does_not_wrap()
+    {
+        $assembler = new SetterAssembler();
+        $context = $this->createContextWithLongType();
+
+        $assembler->assemble($context);
+
+        $generated = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @param \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap \$prop1
+     */
+    public function setProp1(\$prop1)
+    {
+        \$this->prop1 = \$prop1;
+    }
+
+
+}
+
+CODE;
+        $this->assertEquals($expected, $generated);
+    }
+
+    /**
      * @return PropertyContext
      */
     private function createContext()
@@ -81,6 +113,24 @@ CODE;
         ]);
 
 
+        return new PropertyContext($class, $type, $property);
+    }
+
+    /**
+     * @return PropertyContext
+     */
+    private function createContextWithLongType()
+    {
+        $properties = [
+            'prop1' => new Property(
+                'prop1',
+                'Wrap',
+                'This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever'
+            ),
+        ];
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $type = new Type('MyNamespace', 'MyType', array_values($properties));
+        $property = $properties['prop1'];
         return new PropertyContext($class, $type, $property);
     }
 }

@@ -53,6 +53,15 @@ class GetterAssembler implements AssemblerInterface
             $prefix = $this->getPrefix($property);
             $methodName = Normalizer::generatePropertyMethod($prefix, $property->getName());
             $class->removeMethod($methodName);
+            $docBlockGenerator = DocBlockGenerator::fromArray([
+                'tags' => [
+                    [
+                        'name' => 'return',
+                        'description' => $property->getType(),
+                    ],
+                ],
+            ]);
+            $docBlockGenerator->setWordWrap(false);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
                     'name'       => $methodName,
@@ -60,14 +69,7 @@ class GetterAssembler implements AssemblerInterface
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                     'body'       => sprintf('return $this->%s;', $property->getName()),
                     'returntype' => $this->options->useReturnType() ? $property->getType() : null,
-                    'docblock'   => DocBlockGenerator::fromArray([
-                        'tags' => [
-                            [
-                                'name'        => 'return',
-                                'description' => $property->getType(),
-                            ],
-                        ],
-                    ]),
+                    'docblock'   => $docBlockGenerator,
                 ])
             );
         } catch (\Exception $e) {
