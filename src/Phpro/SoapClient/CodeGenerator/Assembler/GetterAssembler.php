@@ -7,7 +7,6 @@ use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -53,15 +52,6 @@ class GetterAssembler implements AssemblerInterface
             $prefix = $this->getPrefix($property);
             $methodName = Normalizer::generatePropertyMethod($prefix, $property->getName());
             $class->removeMethod($methodName);
-            $docBlockGenerator = DocBlockGenerator::fromArray([
-                'tags' => [
-                    [
-                        'name' => 'return',
-                        'description' => $property->getType(),
-                    ],
-                ],
-            ]);
-            $docBlockGenerator->setWordWrap(false);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
                     'name'       => $methodName,
@@ -69,7 +59,14 @@ class GetterAssembler implements AssemblerInterface
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                     'body'       => sprintf('return $this->%s;', $property->getName()),
                     'returntype' => $this->options->useReturnType() ? $property->getType() : null,
-                    'docblock'   => $docBlockGenerator,
+                    'docblock'   => DocBlockGeneratorFactory::fromArray([
+                        'tags' => [
+                            [
+                                'name' => 'return',
+                                'description' => $property->getType(),
+                            ],
+                        ],
+                    ]),
                 ])
             );
         } catch (\Exception $e) {

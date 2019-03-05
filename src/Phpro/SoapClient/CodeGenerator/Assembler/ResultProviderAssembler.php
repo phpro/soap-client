@@ -10,7 +10,6 @@ use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
 use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -91,7 +90,7 @@ class ResultProviderAssembler implements AssemblerInterface
                 'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                 'returntype' => ResultInterface::class,
                 'body' => $this->generateGetResultBody($property),
-                'docblock' => DocBlockGenerator::fromArray([
+                'docblock' => DocBlockGeneratorFactory::fromArray([
                     'tags' => [
                         [
                             'name' => 'return',

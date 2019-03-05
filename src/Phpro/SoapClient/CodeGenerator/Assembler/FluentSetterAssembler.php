@@ -8,7 +8,6 @@ use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\CodeGenerator\Util\TypeChecker;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -52,19 +51,6 @@ class FluentSetterAssembler implements AssemblerInterface
         try {
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
-            $docBlockGenerator = DocBlockGenerator::fromArray([
-                'tags' => [
-                    [
-                        'name' => 'param',
-                        'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
-                    ],
-                    [
-                        'name' => 'return',
-                        'description' => '$this',
-                    ],
-                ],
-            ]);
-            $docBlockGenerator->setWordWrap(false);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
                     'name'       => $methodName,
@@ -78,7 +64,18 @@ class FluentSetterAssembler implements AssemblerInterface
                     'returntype' => $this->options->useReturnType()
                         ? $class->getNamespaceName().'\\'.$class->getName()
                         : null,
-                    'docblock'   => $docBlockGenerator,
+                    'docblock'   => DocBlockGeneratorFactory::fromArray([
+                        'tags' => [
+                            [
+                                'name' => 'param',
+                                'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                            ],
+                            [
+                                'name' => 'return',
+                                'description' => '$this',
+                            ],
+                        ],
+                    ]),
                 ])
             );
         } catch (\Exception $e) {

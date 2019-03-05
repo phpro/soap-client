@@ -6,7 +6,6 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Zend\Code\Generator\PropertyGenerator;
-use Zend\Code\Generator\DocBlockGenerator;
 
 /**
  * Class PropertyAssembler
@@ -52,21 +51,19 @@ class PropertyAssembler implements AssemblerInterface
                 return;
             }
 
-            $docBlockGenerator = DocBlockGenerator::fromArray([
-                'tags' => [
-                    [
-                        'name' => 'var',
-                        'description' => $property->getType(),
-                    ],
-                ]
-            ]);
-            $docBlockGenerator->setWordWrap(false);
             $class->addPropertyFromGenerator(
                 PropertyGenerator::fromArray([
                     'name' => $property->getName(),
                     'visibility' => $this->visibility,
                     'omitdefaultvalue' => true,
-                    'docblock' => $docBlockGenerator
+                    'docblock' => DocBlockGeneratorFactory::fromArray([
+                        'tags' => [
+                            [
+                                'name' => 'var',
+                                'description' => $property->getType(),
+                            ],
+                        ]
+                    ])
                 ])
             );
         } catch (\Exception $e) {

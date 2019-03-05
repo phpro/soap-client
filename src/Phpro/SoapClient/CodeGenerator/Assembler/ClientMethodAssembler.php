@@ -103,7 +103,7 @@ class ClientMethodAssembler implements AssemblerInterface
             $description[] = $parameter->getType().' $'.$parameter->getName();
         }
 
-        return DocBlockGenerator::fromArray(
+        return DocBlockGeneratorFactory::fromArray(
             [
                 'longdescription' => implode(PHP_EOL, $description),
                 'tags' => [
@@ -136,7 +136,7 @@ class ClientMethodAssembler implements AssemblerInterface
         $class = $context->getClass();
         $param = current($method->getParameters());
 
-        return DocBlockGenerator::fromArray(
+        return DocBlockGeneratorFactory::fromArray(
             [
                 'tags' => [
                     [

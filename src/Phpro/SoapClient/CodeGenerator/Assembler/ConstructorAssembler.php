@@ -6,7 +6,6 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -71,7 +70,7 @@ class ConstructorAssembler implements AssemblerInterface
             'name' => '__construct',
             'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
         ]);
-        $docblock = DocBlockGenerator::fromArray([
+        $docblock = DocBlockGeneratorFactory::fromArray([
             'shortdescription' => 'Constructor'
         ]);
 

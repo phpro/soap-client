@@ -8,7 +8,6 @@ use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -61,7 +60,7 @@ class JsonSerializableAssembler implements AssemblerInterface
                 'parameters' => [],
                 'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                 'body' => $this->generateJsonSerializeBody($type, $class),
-                'docblock' => DocBlockGenerator::fromArray([
+                'docblock' => DocBlockGeneratorFactory::fromArray([
                     'tags' => [
                         [
                             'name' => 'return',
