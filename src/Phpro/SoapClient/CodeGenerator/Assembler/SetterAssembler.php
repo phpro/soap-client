@@ -54,16 +54,6 @@ class SetterAssembler implements AssemblerInterface
             }
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
-            DocBlockGeneratorFactory::fromArray(
-                [
-                    'tags' => [
-                        [
-                            'name' => 'param',
-                            'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
-                        ],
-                    ],
-                ]
-            )->setWordWrap(false);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [

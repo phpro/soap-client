@@ -67,11 +67,11 @@ class FluentSetterAssembler implements AssemblerInterface
                     'docblock'   => DocBlockGeneratorFactory::fromArray([
                         'tags' => [
                             [
-                                'name' => 'param',
+                                'name'        => 'param',
                                 'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
                             ],
                             [
-                                'name' => 'return',
+                                'name'        => 'return',
                                 'description' => '$this',
                             ],
                         ],

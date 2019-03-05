@@ -62,7 +62,7 @@ class GetterAssembler implements AssemblerInterface
                     'docblock'   => DocBlockGeneratorFactory::fromArray([
                         'tags' => [
                             [
-                                'name' => 'return',
+                                'name'        => 'return',
                                 'description' => $property->getType(),
                             ],
                         ],

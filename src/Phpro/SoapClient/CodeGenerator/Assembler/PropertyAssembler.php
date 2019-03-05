@@ -59,7 +59,7 @@ class PropertyAssembler implements AssemblerInterface
                     'docblock' => DocBlockGeneratorFactory::fromArray([
                         'tags' => [
                             [
-                                'name' => 'var',
+                                'name'        => 'var',
                                 'description' => $property->getType(),
                             ],
                         ]
