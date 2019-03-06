@@ -6,6 +6,7 @@ use JsonSerializable;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\MethodGenerator;

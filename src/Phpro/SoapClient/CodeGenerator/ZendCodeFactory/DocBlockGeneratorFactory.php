@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Phpro\SoapClient\CodeGenerator\Assembler;
+namespace Phpro\SoapClient\CodeGenerator\ZendCodeFactory;
 
 use Zend\Code\Generator\DocBlockGenerator;
 
