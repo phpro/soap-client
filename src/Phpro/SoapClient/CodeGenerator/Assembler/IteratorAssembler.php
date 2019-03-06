@@ -5,9 +5,9 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
+use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -71,7 +71,7 @@ class IteratorAssembler implements AssemblerInterface
                     'return new \\ArrayIterator(is_array($this->%1$s) ? $this->%1$s : []);',
                     $firstProperty->getName()
                 ),
-                'docblock' => DocBlockGenerator::fromArray([
+                'docblock' => DocBlockGeneratorFactory::fromArray([
                     'tags' => [
                         [
                             'name' => 'return',

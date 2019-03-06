@@ -6,6 +6,7 @@ use Phpro\SoapClient\Client;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\MultiArgumentRequest;
@@ -103,7 +104,7 @@ class ClientMethodAssembler implements AssemblerInterface
             $description[] = $parameter->getType().' $'.$parameter->getName();
         }
 
-        return DocBlockGenerator::fromArray(
+        return DocBlockGeneratorFactory::fromArray(
             [
                 'longdescription' => implode(PHP_EOL, $description),
                 'tags' => [
@@ -136,7 +137,7 @@ class ClientMethodAssembler implements AssemblerInterface
         $class = $context->getClass();
         $param = current($method->getParameters());
 
-        return DocBlockGenerator::fromArray(
+        return DocBlockGeneratorFactory::fromArray(
             [
                 'tags' => [
                     [
