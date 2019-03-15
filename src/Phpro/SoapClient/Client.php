@@ -10,6 +10,7 @@ use Phpro\SoapClient\Type\MultiArgumentRequestInterface;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
+use Phpro\SoapClient\Util\XmlFormatter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -44,14 +45,14 @@ class Client implements ClientInterface
     {
         $lastRequestInfo = $this->engine->collectLastRequestInfo();
         return [
-            'request'  => [
-                'headers' => $lastRequestInfo->getLastRequestHeaders(),
-                'body' => $lastRequestInfo->getLastRequest(),
+            'request' => [
+                'headers' => trim($this->soapClient->__getLastRequestHeaders()),
+                'body'    => XmlFormatter::format($this->soapClient->__getLastRequest()),
             ],
             'response' => [
-                'headers' => $lastRequestInfo->getLastResponseHeaders(),
-                'body' => $lastRequestInfo->getLastResponse(),
-            ],
+                'headers' => trim($this->soapClient->__getLastResponseHeaders()),
+                'body'    => XmlFormatter::format($this->soapClient->__getLastResponse()),
+            ]
         ];
     }
 
