@@ -3,19 +3,17 @@
 namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ClientGenerator;
-use Phpro\SoapClient\CodeGenerator\Config\Config;
-use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
-use Phpro\SoapClient\Exception\InvalidArgumentException;
-use Phpro\SoapClient\Soap\SoapClient;
+use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Zend\Code\Generator\FileGenerator;
 
 /**
@@ -76,22 +74,16 @@ class GenerateClientCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
+        $io = new SymfonyStyle($input, $output);
 
-        $configFile = $this->input->getOption('config');
-        if (!$configFile || !$this->filesystem->fileExists($configFile)) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
+        $config = $this->getConfigHelper()->load($input);
 
-        $config = include $configFile;
-        if (!$config instanceof ConfigInterface) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
-        if (!$config instanceof Config) {
-            throw InvalidArgumentException::invalidConfigFile();
-        }
+        $destination = $config->getClientDestination().'/'.$config->getClientName().'.php';
+        $methodMap = ClientMethodMap::fromMetadata(
+            $config->getTypeNamespace(),
+            $config->getEngine()->getMetadata()->getMethods()
+        );
 
-        $soapClient = new SoapClient($config->getWsdl(), $config->getSoapOptions());
-        $methodMap = ClientMethodMap::fromSoapClient($soapClient, $config->getTypeNamespace());
         $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
         $generator = new ClientGenerator($config->getRuleSet());
         $fileGenerator = new FileGenerator();
@@ -99,9 +91,10 @@ class GenerateClientCommand extends Command
             $fileGenerator,
             $generator,
             $client,
-            $config->getClientDestination().'/'.$config->getClientName().'.php'
+            $destination
         );
-        $this->output->writeln('Done');
+
+        $io->success('Generated client at ' . $destination);
     }
 
     /**
@@ -121,12 +114,12 @@ class GenerateClientCommand extends Command
     /**
      * Try to create a class for a type.
      * When a class exists: try to patch
-     * If patching the old class does not wor: ask for an overwrite
+     * If patching the old class does not work: ask for an overwrite
      * Create a class from an empty file
      *
      * @param ClientGenerator|TypeGenerator $generator
      * @param Client $client
-     * @param $path
+     * @param string $path
      * @return bool
      */
     protected function handleClient(ClientGenerator $generator, Client $client, $path)
@@ -216,5 +209,14 @@ class GenerateClientCommand extends Command
         $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
 
         return $this->getHelper('question')->ask($this->input, $this->output, $question);
+    }
+
+    /**
+     * Function for added type hint
+     * @return ConfigHelper
+     */
+    public function getConfigHelper(): ConfigHelper
+    {
+        return $this->getHelper('config');
     }
 }

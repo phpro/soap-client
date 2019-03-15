@@ -7,8 +7,8 @@ use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\CodeGenerator\Util\TypeChecker;
+use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -26,11 +26,11 @@ class FluentSetterAssembler implements AssemblerInterface
     /**
      * FluentSetterAssembler constructor.
      *
-     * @param FluentSetterAssemblerOptions $options
+     * @param FluentSetterAssemblerOptions|null $options
      */
-    public function __construct(FluentSetterAssemblerOptions $options)
+    public function __construct(FluentSetterAssemblerOptions $options = null)
     {
-        $this->options = $options;
+        $this->options = $options ?? new FluentSetterAssemblerOptions();
     }
 
     /**
@@ -65,7 +65,7 @@ class FluentSetterAssembler implements AssemblerInterface
                     'returntype' => $this->options->useReturnType()
                         ? $class->getNamespaceName().'\\'.$class->getName()
                         : null,
-                    'docblock'   => DocBlockGenerator::fromArray([
+                    'docblock'   => DocBlockGeneratorFactory::fromArray([
                         'tags' => [
                             [
                                 'name'        => 'param',
@@ -92,7 +92,7 @@ class FluentSetterAssembler implements AssemblerInterface
     private function getParameter(Property $property): array
     {
         $type = $property->getType();
-        if (TypeChecker::isKnownType($type)) {
+        if (TypeChecker::isKnownType($type) && $this->options->useTypeHints()) {
             return [
                 [
                     'name' => $property->getName(),

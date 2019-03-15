@@ -20,7 +20,7 @@ interface MiddlewareInterface extends Plugin
 
     public function afterResponse(ResponseInterface $response): ResponseInterface;
 
-    public function onError(Exception $exception): void;
+    public function onError(Exception $exception);
 
     public function getName(): string;
 }

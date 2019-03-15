@@ -5,6 +5,7 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ResultProviderAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\Type\MixedResult;
 use PHPUnit\Framework\TestCase;
@@ -147,8 +148,8 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'SomeClass',
+        $type = new Type($namespace = 'MyNamespace', 'MyType', [
+            new Property('prop1', 'SomeClass', $namespace)
         ]);
 
         return new TypeContext($class, $type);

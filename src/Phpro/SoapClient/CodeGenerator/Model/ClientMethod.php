@@ -2,7 +2,9 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Parser\FunctionStringParser;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method as MetadataMethod;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 
 /**
  * Class ClientMethod
@@ -30,20 +32,12 @@ class ClientMethod
      * @var string
      */
     private $parameterNamespace;
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $params;
 
     /**
      * TypeModel constructor.
      *
      * @param string $name
-     * @param array  $params
+     * @param array $params
      * @param string $returnType
      * @param string $parameterNamespace
      */
@@ -55,25 +49,27 @@ class ClientMethod
         $this->returnType = $returnType;
     }
 
-    public static function createFromExtSoapFunctionString(
-        string $functionString,
-        string $parameterNamespace
-    ): ClientMethod {
-        $parser = new FunctionStringParser($functionString, $parameterNamespace);
-
+    public static function fromMetadata(
+        string $parameterNamespace,
+        MetadataMethod $method
+    ): self {
         return new self(
-            $parser->parseName(),
-            $parser->parseParameters(),
-            $parser->parseReturnType(),
+            $method->getName(),
+            array_map(
+                function (MetadataParameter $parameter) use ($parameterNamespace) {
+                    return Parameter::fromMetadata($parameterNamespace, $parameter);
+                },
+                $method->getParameters()
+            ),
+            $method->getReturnType()->getBaseTypeOrFallbackToName(),
             $parameterNamespace
         );
     }
 
-
     /**
      * @return array|Parameter[]
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
@@ -81,24 +77,32 @@ class ClientMethod
     /**
      * @return string
      */
-    public function getMethodName()
+    public function getMethodName(): string
     {
-        return lcfirst($this->methodName);
+        return $this->methodName;
     }
 
     /**
      * @return string
      */
-    public function getReturnType()
+    public function getNamespacedReturnType(): string
     {
-        return $this->returnType;
+        return '\\'.Normalizer::normalizeNamespace($this->getParameterNamespace().'\\'.$this->getReturnType());
     }
 
     /**
      * @return string
      */
-    public function getParameterNamespace()
+    public function getParameterNamespace(): string
     {
         return $this->parameterNamespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReturnType(): string
+    {
+        return Normalizer::normalizeClassname($this->returnType);
     }
 }

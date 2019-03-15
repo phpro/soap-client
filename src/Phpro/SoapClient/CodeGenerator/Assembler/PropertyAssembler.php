@@ -4,9 +4,9 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
+use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Zend\Code\Generator\PropertyGenerator;
-use Zend\Code\Generator\DocBlockGenerator;
 
 /**
  * Class PropertyAssembler
@@ -57,7 +57,7 @@ class PropertyAssembler implements AssemblerInterface
                     'name' => $property->getName(),
                     'visibility' => $this->visibility,
                     'omitdefaultvalue' => true,
-                    'docblock' => DocBlockGenerator::fromArray([
+                    'docblock' => DocBlockGeneratorFactory::fromArray([
                         'tags' => [
                             [
                                 'name'        => 'var',

@@ -5,6 +5,8 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ClassMapAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
+use Phpro\SoapClient\CodeGenerator\Model\Property;
+use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Zend\Code\Generator\FileGenerator;
 use PHPUnit\Framework\TestCase;
@@ -48,15 +50,27 @@ class ClassMapAssemblerTest extends TestCase
         $expected = <<<CODE
 <?php
 
+namespace ClassMapNamespace;
+
+use MyNamespace as Type;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\ClassMap\ClassMap;
 
-new ClassMapCollection([
-    new ClassMap('MyType', \MyNamespace\MyType::class),
-]);
+class ClassMap
+{
+
+    public static function getCollection() : \Phpro\SoapClient\Soap\ClassMap\ClassMapCollection
+    {
+        return new ClassMapCollection([
+            new ClassMap('MyType', Type\MyType::class),
+        ]);
+    }
+
+
+}
+
 
 CODE;
-
         $this->assertEquals($expected, $code);
     }
 
@@ -66,12 +80,16 @@ CODE;
     private function createContext()
     {
         $file = new FileGenerator();
-        $typeMap = new TypeMap('MyNamespace', [
-            'MyType' => [
-                'myProperty' => 'string',
-            ]
+        $typeMap = new TypeMap($namespace = 'MyNamespace', [
+            new Type(
+                $namespace,
+                'MyType',
+                [
+                    new Property('myProperty', 'string', $namespace)
+                ]
+            ),
         ]);
 
-        return new ClassMapContext($file, $typeMap);
+        return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace');
     }
 }

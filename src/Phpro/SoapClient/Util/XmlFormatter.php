@@ -9,7 +9,7 @@ class XmlFormatter
             return '';
         }
 
-        $type = (strpos(strtolower($xml), '<html') !== false)? 'HTML' : 'XML';
+        $type = stripos($xml, '<html') !== false ? 'HTML' : 'XML';
 
         $doc = new \DOMDocument('1.0');
         $doc->formatOutput = true;

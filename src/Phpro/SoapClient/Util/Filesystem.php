@@ -59,6 +59,7 @@ class Filesystem
      */
     public function putFileContents(string $path, $content)
     {
+        $this->ensureDirectoryExists(\dirname($path));
         file_put_contents($path, $content);
     }
 
@@ -68,10 +69,10 @@ class Filesystem
     public function createBackup(string $file)
     {
         if (!$this->fileExists($file)) {
-            throw new RuntimeException('Could not create a backup from a non existing file: ' . $file);
+            throw new RuntimeException('Could not create a backup from a non existing file: '.$file);
         }
 
-        $backupFile = preg_replace('{\.backup$}', '', $file) . '.backup';
+        $backupFile = preg_replace('{\.backup$}', '', $file).'.backup';
         copy($file, $backupFile);
     }
 
@@ -80,7 +81,7 @@ class Filesystem
      */
     public function removeBackup(string $file)
     {
-        $backupFile = preg_replace('{\.backup$}', '', $file) . '.backup';
+        $backupFile = preg_replace('{\.backup$}', '', $file).'.backup';
         if (!$this->fileExists($backupFile)) {
             return;
         }

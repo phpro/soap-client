@@ -5,7 +5,6 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
@@ -132,7 +131,6 @@ CODE;
         $this->assertEquals($expected, $code);
     }
 
-
     /**
      * @test
      */
@@ -166,17 +164,60 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_a_doc_block_that_does_not_wrap()
+    {
+        $assembler = new PropertyAssembler();
+        $context = $this->createContextWithLongType();
+
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @var \\This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever\\Wrap
+     */
+    private \$prop1;
+
+
+}
+
+CODE;
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @return PropertyContext
      */
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
-            'prop1' => 'string',
-            'prop2' => 'int',
+            $property = new Property('prop1', 'string', 'ns1'),
         ]);
-        $property = new Property('prop1', 'string', 'ns1');
 
+        return new PropertyContext($class, $type, $property);
+    }
+
+    /**
+     * @return PropertyContext
+     */
+    private function createContextWithLongType()
+    {
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $type = new Type('MyNamespace', 'MyType', [
+            $property = new Property(
+                'prop1',
+                'Wrap',
+                'This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever'
+            ),
+        ]);
         return new PropertyContext($class, $type, $property);
     }
 }

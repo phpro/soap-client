@@ -2,35 +2,71 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Zend\Code\Generator\ParameterGenerator;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 
-/**
- * Class Parameter
- * @package Phpro\SoapClient\CodeGenerator\Model
- */
-class Parameter extends ParameterGenerator
+class Parameter
 {
     /**
      * @var string
      */
-    private $originalType;
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $type;
 
     /**
      * Parameter constructor.
+     *
      * @param string $name
      * @param string $type
      */
-    public function __construct($name, $type)
+    public function __construct(string $name, string $type)
     {
-        parent::__construct($name, $type);
-        $this->originalType = $type;
+        $this->name = Normalizer::normalizeProperty($name);
+        $this->type = Normalizer::normalizeClassnameInFQN($type);
+    }
+
+    public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter)
+    {
+        $type = $parameter->getType()->getBaseTypeOrFallbackToName();
+
+        return new self(
+            $parameter->getName(),
+            Normalizer::isKnownType($type)
+                ? $type
+                : $parameterNamespace.'\\'.$type
+        );
     }
 
     /**
      * @return string
      */
-    public function getOriginalType()
+    public function getName(): string
     {
-        return $this->originalType;
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * Get an array representation for creating a Generator
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'type' => $this->type,
+        ];
     }
 }

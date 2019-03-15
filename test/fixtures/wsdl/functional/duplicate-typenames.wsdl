@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<definitions name="InteropTest"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="http://soapinterop.org/"
+    xmlns:s1="http://soapinterop.org/xsd1"
+    xmlns:s2="http://soapinterop.org/xsd2"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    targetNamespace="http://soapinterop.org/">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://soapinterop.org/xsd1">
+            <xsd:complexType name="Store">
+                <xsd:sequence>
+                    <element minOccurs="1" maxOccurs="1" name="Attribute1" type="string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </schema>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://soapinterop.org/xsd2">
+            <xsd:complexType name="Store">
+                <xsd:sequence>
+                    <element minOccurs="1" maxOccurs="1" name="Attribute2" type="string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </schema>
+    </types>
+
+    <message name="validateRequest">
+        <part name="input1" type="s1:Store" />
+        <part name="input2" type="s2:Store" />
+    </message>
+    <message name="validateResponse">
+        <part name="output1" type="s1:Store" />
+        <part name="output2" type="s2:Store" />
+    </message>
+
+    <portType name="InteropTestPortType">
+        <operation name="validate">
+            <input message="tns:validateRequest"/>
+            <output message="tns:validateResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="InteropTestBinding" type="tns:InteropTestPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="validate">
+            <soap:operation soapAction="http://" style="rpc"/>
+            <input>
+                <soap:body use="encoded" namespace="http://soapinterop.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="http://soapinterop.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="InteropTest">
+        <port name="InteropTestPort" binding="tns:InteropTestBinding">
+            <soap:address location="http://soapinterop.org/"/>
+        </port>
+    </service>
+</definitions>

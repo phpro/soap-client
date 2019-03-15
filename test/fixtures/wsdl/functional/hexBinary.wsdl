@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<definitions name="InteropTest"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="http://soapinterop.org/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    targetNamespace="http://soapinterop.org/">
+    <message name="validateRequest">
+        <part name="input" type="xsd:hexBinary" />
+    </message>
+    <message name="validateResponse">
+        <part name="output" type="xsd:hexBinary" />
+    </message>
+
+    <portType name="InteropTestPortType">
+        <operation name="validate">
+            <input message="tns:validateRequest"/>
+            <output message="tns:validateResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="InteropTestBinding" type="tns:InteropTestPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="validate">
+            <soap:operation soapAction="http://soapinterop.org/validate" style="rpc"/>
+            <input>
+                <soap:body use="encoded" namespace="http://soapinterop.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="http://soapinterop.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="InteropTest">
+        <port name="InteropTestPort" binding="tns:InteropTestBinding">
+            <soap:address location="http://soapinterop.org/"/>
+        </port>
+    </service>
+</definitions>

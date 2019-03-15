@@ -42,7 +42,7 @@ class Middleware implements MiddlewareInterface
         return $response;
     }
 
-    public function onError(Exception $exception): void
+    public function onError(Exception $exception)
     {
         throw $exception;
     }

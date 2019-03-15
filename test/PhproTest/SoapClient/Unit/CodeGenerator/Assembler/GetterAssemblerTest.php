@@ -35,7 +35,7 @@ class GetterAssemblerTest extends TestCase
      */
     function it_is_an_assembler()
     {
-        $assembler = new GetterAssembler(new GetterAssemblerOptions());
+        $assembler = new GetterAssembler();
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
     }
 
@@ -44,7 +44,7 @@ class GetterAssemblerTest extends TestCase
      */
     function it_can_assemble_property_context()
     {
-        $assembler = new GetterAssembler(new GetterAssemblerOptions());
+        $assembler = new GetterAssembler();
         $context = $this->createContext();
         $this->assertTrue($assembler->canAssemble($context));
     }
@@ -54,7 +54,7 @@ class GetterAssemblerTest extends TestCase
      */
     function it_assembles_a_property()
     {
-        $assembler = new GetterAssembler(new GetterAssemblerOptions());
+        $assembler = new GetterAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
 
@@ -154,21 +154,106 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_with_normalised_class_name()
+    {
+        $options = (new GetterAssemblerOptions())->withReturnType();
+        $assembler = new GetterAssembler($options);
+
+        $context = $this->createContext('prop4');
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @return \\ns1\\MyResponse
+     */
+    public function getProp4() : \\ns1\\MyResponse
+    {
+        return \$this->prop4;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_a_doc_block_that_does_not_wrap()
+    {
+        $assembler = new GetterAssembler();
+        $context = $this->createContextWithLongType();
+
+        $assembler->assemble($context);
+
+        $generated = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    /**
+     * @return \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap
+     */
+    public function getProp1()
+    {
+        return \$this->prop1;
+    }
+
+
+}
+
+CODE;
+        $this->assertEquals($expected, $generated);
+    }
+
+    /**
      * @param string $propertyName
      * @return PropertyContext
      */
     private function createContext($propertyName = 'prop1')
     {
         $properties = [
-            'prop1' => 'string',
-            'prop2' => 'int',
-            'prop3' => 'boolean',
+            'prop1' => new Property('prop1', 'string', 'ns1'),
+            'prop2' => new Property('prop2', 'int', 'ns1'),
+            'prop3' => new Property('prop3', 'boolean', 'ns1'),
+            'prop4' => new Property('prop4', 'My_Response', 'ns1'),
         ];
 
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', $properties);
-        $property = new Property($propertyName, $properties[$propertyName], 'ns1');
+        $type = new Type('MyNamespace', 'MyType', array_values($properties));
+        $property = $properties[$propertyName];
 
+        return new PropertyContext($class, $type, $property);
+    }
+
+    /**
+     * @return PropertyContext
+     */
+    private function createContextWithLongType()
+    {
+        $properties = [
+            'prop1' => new Property(
+                'prop1',
+                'Wrap',
+                'This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever'
+            ),
+        ];
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $type = new Type('MyNamespace', 'MyType', array_values($properties));
+        $property = $properties['prop1'];
         return new PropertyContext($class, $type, $property);
     }
 }

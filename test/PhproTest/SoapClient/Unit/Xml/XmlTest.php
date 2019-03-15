@@ -68,6 +68,18 @@ class XmlTest extends TestCase
     /**
      * @test
      */
+    function it_is_possible_to_run_xpath_queries_with_node_context()
+    {
+        $xml = new Xml($this->xml);
+        $documentElement = $xml->xpath('/soap:Envelope')->item(0);
+        $header = $xml->xpath('./soap:Header', $documentElement)->item(0);
+
+        $this->assertEquals('soap:Header', $header->nodeName);
+    }
+
+    /**
+     * @test
+     */
     function it_can_access_the_xml_document()
     {
         $xml = new Xml($this->xml);

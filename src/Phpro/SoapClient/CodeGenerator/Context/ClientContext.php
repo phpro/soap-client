@@ -13,40 +13,48 @@ use Zend\Code\Generator\ClassGenerator;
 class ClientContext implements ContextInterface
 {
     /**
-     * @var ClassGenerator
+     * @var string
      */
-    private $class;
+    private $name;
 
     /**
-     * @var Type
+     * @var string
      */
-    private $type;
+    private $namespace;
 
     /**
      * PropertyContext constructor.
      *
-     * @param ClassGenerator $class
-     * @param Type           $type
+     * @param string $name
+     * @param string $namespace
      */
-    public function __construct(ClassGenerator $class, Type $type)
+    public function __construct(string $name, string $namespace)
     {
-        $this->class = $class;
-        $this->type = $type;
+        $this->name = $name;
+        $this->namespace = $namespace;
     }
 
     /**
-     * @return ClassGenerator
+     * @return string
      */
-    public function getClass()
+    public function getName(): string
     {
-        return $this->class;
+        return $this->name;
     }
 
     /**
-     * @return Type
+     * @return string
      */
-    public function getType()
+    public function getNamespace(): string
     {
-        return $this->type;
+        return $this->namespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFqcn(): string
+    {
+        return $this->namespace.'\\'.$this->name;
     }
 }

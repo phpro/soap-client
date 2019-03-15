@@ -5,11 +5,6 @@ namespace Phpro\SoapClient\CodeGenerator\Context;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Zend\Code\Generator\ClassGenerator;
 
-/**
- * Class ClientMethodContext
- *
- * @package Phpro\SoapClient\CodeGenerator\Context
- */
 class ClientMethodContext implements ContextInterface
 {
     /**
@@ -37,7 +32,7 @@ class ClientMethodContext implements ContextInterface
     /**
      * @return ClassGenerator
      */
-    public function getClass()
+    public function getClass(): ClassGenerator
     {
         return $this->class;
     }
@@ -45,8 +40,16 @@ class ClientMethodContext implements ContextInterface
     /**
      * @return ClientMethod
      */
-    public function getMethod()
+    public function getMethod(): ClientMethod
     {
         return $this->method;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultiArgument(): bool
+    {
+        return \count($this->method->getParameters()) > 1;
     }
 }

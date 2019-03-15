@@ -17,7 +17,11 @@ class TypeSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('MyNamespace', 'myType', ['prop1' => 'string']);
+        $this->beConstructedWith(
+            $namespace = 'MyNamespace',
+            'myType',
+            [new Property('prop1', 'string', $namespace)]
+        );
     }
 
     function it_is_initializable()
@@ -50,10 +54,23 @@ class TypeSpec extends ObjectBehavior
         $this->getPathname('my/dir')->shouldReturn('my/dir/MyType.php');
     }
 
-    function it_should_replace_underscores_in_paths()
+    function it_should_not_replace_underscores_in_paths()
     {
-        $this->beConstructedWith('MyNamespace', 'myType_3_2', ['prop1' => 'string']);
-        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/MyType/3/2.php');
+        $this->beConstructedWith('MyNamespace', 'my_type_3_2', ['prop1' => 'string']);
+        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/MyType32.php');
+    }
+
+    function it_should_prefix_reserved_keywords()
+    {
+        $this->beConstructedWith(
+            $namespace = 'MyNamespace',
+            'Final',
+            [new Property('xor', 'string', $namespace)]
+        );
+
+        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/FinalType.php');
+        $this->getName()->shouldReturn('FinalType');
+        $this->getProperties()[0]->getName()->shouldReturn('xor');
     }
 
     function it_has_properties()

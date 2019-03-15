@@ -2,12 +2,11 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
-use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
@@ -17,6 +16,21 @@ use Zend\Code\Generator\MethodGenerator;
  */
 class SetterAssembler implements AssemblerInterface
 {
+    /**
+     * @var SetterAssemblerOptions
+     */
+    private $options;
+
+    /**
+     * SetterAssembler constructor.
+     *
+     * @param SetterAssemblerOptions|null $options
+     */
+    public function __construct(SetterAssemblerOptions $options = null)
+    {
+        $this->options = $options ?? new SetterAssemblerOptions();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -35,23 +49,29 @@ class SetterAssembler implements AssemblerInterface
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
+            $parameterOptions = ['name' => $property->getName()];
+            if ($this->options->useTypeHints()) {
+                $parameterOptions['type'] = $property->getType();
+            }
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
             $class->addMethodFromGenerator(
-                MethodGenerator::fromArray([
-                    'name' => $methodName,
-                    'parameters' => [$property->getName()],
-                    'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                    'body' => sprintf('$this->%1$s = $%1$s;', $property->getName()),
-                    'docblock' => DocBlockGenerator::fromArray([
-                        'tags' => [
-                            [
-                                'name' => 'param',
-                                'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
-                            ]
-                        ]
-                    ])
-                ])
+                MethodGenerator::fromArray(
+                    [
+                        'name' => $methodName,
+                        'parameters' => [$parameterOptions],
+                        'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
+                        'body' => sprintf('$this->%1$s = $%1$s;', $property->getName()),
+                        'docblock' => DocBlockGeneratorFactory::fromArray([
+                            'tags' => [
+                                [
+                                    'name' => 'param',
+                                    'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                                ],
+                            ],
+                        ]),
+                    ]
+                )
             );
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);

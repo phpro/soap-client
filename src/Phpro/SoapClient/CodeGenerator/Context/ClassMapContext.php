@@ -23,15 +23,29 @@ class ClassMapContext implements ContextInterface
     private $typeMap;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    /**
      * TypeContext constructor.
      *
      * @param FileGenerator $file
      * @param TypeMap       $typeMap
+     * @param string        $name
+     * @param string        $namespace
      */
-    public function __construct(FileGenerator $file, TypeMap $typeMap)
+    public function __construct(FileGenerator $file, TypeMap $typeMap, string $name, string $namespace)
     {
         $this->file = $file;
         $this->typeMap = $typeMap;
+        $this->name = $name;
+        $this->namespace = $namespace;
     }
 
     /**
@@ -48,5 +62,29 @@ class ClassMapContext implements ContextInterface
     public function getTypeMap(): TypeMap
     {
         return $this->typeMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFqcn(): string
+    {
+        return $this->namespace.'\\'.$this->name;
     }
 }

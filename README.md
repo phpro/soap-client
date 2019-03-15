@@ -8,7 +8,77 @@ Sick and tired of building crappy SOAP implementations?
  This package aims to help you with some common SOAP integration pains in PHP.
  Its goal is to make integrating with SOAP fun again!
  Let's inspect some of the pains that are solved by this package:
+
+# Demo
+<img src="https://raw.githubusercontent.com/wiki/phpro/soap-client/soap-client-demo-fast.gif" alt="Soap Client demo" width="100%"/> 
  
+## Installation
+
+```sh
+$ composer require phpro/soap-client
+```
+
+## Scafolding Wizard
+
+Since life is too short to read documentation,
+ we've added a scafolding wizard which will get you communicating with your SOAP server in no time!
+All you need to do is:
+
+```sh
+composer require --dev zendframework/zend-code:^3.1.0
+./vendor/bin/soap-client wizard
+```
+
+You can customize the generated code based on the manual installation pages in the next chapter.
+
+## Getting your SOAP integration up and running
+
+1. [Create your own SOAP client.](docs/client.md)
+2. [Generate PHP classes based on SOAP types.](docs/cli/generate-types.md)
+3. [Generate a class map](docs/cli/generate-classmap.md)
+4. [Generate your own SOAP client.](docs/cli/generate-client.md)
+5. [Generate a client factory.](docs/cli/generate-clientfactory.md)
+6. [Use your SOAP client.](docs/usage.md)
+7. [Test your SOAP client.](docs/testing.md)
+
+
+## Advanced configuration
+
+- [Add type converters.](docs/type-converter.md)
+- [Listen to events.](docs/events.md)
+  - [Logger Subscriber](docs/event-subscribers/logger.md)
+  - [Validator Subscriber](docs/event-subscribers/validator.md)
+  - [Caching Subscriber](docs/event-subscribers/caching.md)
+- [Get in control of the soap-client](docs/engine.md)
+  - [Choose a driver](docs/engine.md#driver)
+    - [ExtSoapDriver](docs/drivers/ext-soap.md)
+    - [Create your own driver](docs/drivers/new.md)
+  - [Specify your HTTP handler.](docs/engine.md#handler)
+    - [HttPlugHandle](docs/handlers/httplug.md) (Supports [middlewares](docs/middlewares.md))
+    - [ExtSoapClientHandle](docs/handlers/ext-soap/client.md)
+    - [ExtSoapServerHandle](docs/handlers/ext-soap/local-server.md)
+    - [Create your own handler](docs/handlers/new.md)
+- [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
+  - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
+  - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
+  - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
+  - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
+  - [Create your own middleware](docs/middlewares.md#creating-your-own-middleware)
+- [Select a WSDL Provider](docs/wsdl-providers.md)
+
+
+## Customize the code generation
+
+- [Configuration](docs/code-generation/configuration.md)
+- [Specify generation `Rules`](docs/code-generation/rules.md)
+- [Generate code through `Assemblers`](docs/code-generation/assemblers.md)
+
+## Known issues
+
+- [ext-soap](docs/known-issues/ext-soap.md)
+
+# Why this soap client was made
+
 By default, the SoapClient works with a mix of arrays, stdClasses and other scalar types. 
  This is not a good practice in a modern OOP world because:
  
@@ -55,55 +125,17 @@ Implementing SOAP extensions is a real pain in the ass.
  You can specify which data transfer handler like e.g. Guzzle you want to use.
  Depending on the selected handler, 
  you can easily add support for SOAP extensions or advanced authentication through HTTP middlewares.
+
+Dealing with ext-soap is not for all developers. There are some nasty quirks you need to know about.
+ Therefor, we made it possible for you to use which ever driver you want to use.
+ By default we will still ship an ext-soap driver, but it is completely opt-in.
+ You can use any user-land SoapClient implementation if you wrap it in our own driver interfaces.
  
 Testing webservices is hard! 
  That is Why this package is fully compatible with [php-vcr](http://php-vcr.github.io/).
  Testing your SOAP client will be very fast and without any errors at the 3th party side of the integration. 
  
 Last but not least, we want to make it easy for you to configure your SoapClient.
- That is why we included a ClientBuilder on which you can configure your custom Client.
+ That is why we included a generated ClientFactory on which you can configure your custom Client.
  You want some other settings during development and in production? 
- No problem! Sit back and let the ClientBuilder handle your Client initialisation.
- 
-Great, you made it so far! Let's find out how this module works:
- 
-## Installation
-
-```sh
-$ composer require phpro/soap-client
-```
-
-## Getting your SOAP integration up and running
-
-1. [Create your own SOAP client.](docs/client.md)
-2. [Generate PHP classes based on SOAP types.](docs/cli/generate-types.md)
-3. [Generate a class map](docs/cli/generate-classmap.md)
-4. [Generate your own SOAP client.](docs/cli/generate-client.md)
-5. [Use your SOAP client.](docs/usage.md)
-6. [Test your SOAP client.](docs/testing.md)
-
-
-## Advanced configuration
-
-- [Add type converters.](docs/type-converter.md)
-- [Listen to events.](docs/events.md)
-  - [Logger plugin](docs/plugins/logger.md)
-  - [Validator plugin](docs/plugins/validator.md)
-  - [Caching plugin](docs/plugins/caching.md)
-- [Specify your data transfer handler.](docs/handlers.md)
-  - [SoapHandle](docs/handlers.md#soaphandle)
-  - [HTTPlugHandle](docs/handlers.md#httplughandle)
-- [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
-  - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
-  - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
-  - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
-  - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
-- [Select a WSDL Provider](docs/wsdl-providers.md)
-
-
-## Customize the code generation
-
-- [Configuration](docs/code-generation/configuration.md)
-- [Specify generation `Rules`](docs/code-generation/rules.md)
-- [Generate code through `Assemblers`](docs/code-generation/assemblers.md)
-
+ No problem! Sit back and let the factory handle your Client initialisation.

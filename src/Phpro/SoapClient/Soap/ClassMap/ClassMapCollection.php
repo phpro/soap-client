@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Soap\ClassMap;
 
+use IteratorAggregate;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 
 /**
@@ -9,7 +10,7 @@ use Phpro\SoapClient\Exception\InvalidArgumentException;
  *
  * @package Phpro\SoapClient\Soap\ClassMap
  */
-class ClassMapCollection
+class ClassMapCollection implements IteratorAggregate
 {
 
     /**
@@ -64,15 +65,10 @@ class ClassMapCollection
     }
 
     /**
-     * @return array
+     * @return \ArrayIterator|ClassMapInterface[]
      */
-    public function toSoapClassMap(): array
+    public function getIterator(): \ArrayIterator
     {
-        $map = [];
-        foreach ($this->classMaps as $classMap) {
-            $map[$classMap->getWsdlType()] = $classMap->getPhpClassName();
-        }
-
-        return $map;
+        return new \ArrayIterator($this->classMaps);
     }
 }

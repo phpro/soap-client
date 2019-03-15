@@ -27,7 +27,7 @@ to generate the code you want to add to the generated SOAP types.
 
 ## ClassMapAssembler
 
-The `ClassMapAssembler` is activaded by default and is used during the `generate:classmap` command.
+The `ClassMapAssembler` is activated by default and is used during the `generate:classmap` command.
 
 Example output:
 
@@ -65,6 +65,41 @@ Example output:
     }
 ```
 
+Generating type-hints is disabled by default, but can be enabled by passing `ConstructorAssemblerOptions` instance to the constructor with the option `withTypeHints` set to true.
+
+Example
+```php
+new ConstructorAssembler((new ConstructorAssemblerOptions())->withTypeHints())
+```
+
+```php
+    /**
+     * Constructor
+     *
+     * @var string $prop1
+     * @var int $prop2
+     */
+    public function __construct(string $prop1, int $prop2)
+    {
+        $this->prop1 = $prop1;
+        $this->prop2 = $prop2;
+    }
+```
+
+Generating doc blocks is enabled by default, but can be disabled by passing `ConstructorAssemblerOptions` instance to the constructor with the option `withDocBlocks` set to false. This is normally used in conjunction with `withTypeHints`
+
+Example
+```php
+new ConstructorAssembler((new ConstructorAssemblerOptions())->withDocBlocks(false)->withTypeHints())
+```
+
+```php
+    public function __construct(string $prop1, int $prop2)
+    {
+        $this->prop1 = $prop1;
+        $this->prop2 = $prop2;
+    }
+```
 
 ## FluentSetterAssembler
 
@@ -78,6 +113,25 @@ Example output:
      * @return $this
      */
     public function setProp1($prop1)
+    {
+        $this->prop1 = $prop1;
+        return $this;
+    }
+```
+
+Generating type-hints is disabled by default, but can be enabled by passing `FluentSetterAssemblerOption` instance to the constructor with the option withTypeHints set to true.
+
+Example
+```php
+new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints())
+```
+
+```php
+    /**
+     * @param string $prop1
+     * @return $this
+     */
+    public function setProp1(string $prop1)
     {
         $this->prop1 = $prop1;
         return $this;
@@ -130,6 +184,8 @@ Example output:
         return $this->prop1;
     }
 ```
+
+This assembler needs to be constructed with an instance of `GetterAssemblerOptions`
 
 ## InterfaceAssembler
 
@@ -318,6 +374,8 @@ Example output:
         $this->prop1 = $prop1;
     }
 ```
+
+This assembler needs to be constructed with an instance of `SetterAssemblerOptions`.
 
 
 ## TraitAssembler

@@ -28,10 +28,4 @@ class TypeConverterCollectionSpec extends ObjectBehavior
     {
         $this->has(new DateTypeConverter())->shouldBe(true);
     }
-
-    function it_should_convert_to_soap_type_map()
-    {
-        $result = $this->toSoapTypeMap();
-        $result[0]['type_name']->shouldBe('date');
-    }
 }

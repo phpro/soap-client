@@ -11,21 +11,9 @@ use Throwable;
  */
 class InvalidArgumentException extends \InvalidArgumentException
 {
-    /**
-     * @return InvalidArgumentException
-     */
-    public static function wsdlConfigurationIsMissing(): self
+    public static function engineNotConfigured(): self
     {
-        return new static('You did not configure a WSDL file.');
-    }
-
-    /**
-     * @param Throwable $e
-     * @return InvalidArgumentException
-     */
-    public static function wsdlCouldNotBeProvided(Throwable $e): self
-    {
-        return new static('The WSDL could not be loaded: ' . $e->getMessage(), 0, $e);
+        return new static('You did not configure a soap engine');
     }
 
     /**
@@ -74,5 +62,28 @@ class InvalidArgumentException extends \InvalidArgumentException
     public static function typeDestinationIsMissing()
     {
         return new static('You did not configure a type destination.');
+    }
+
+    /**
+     * @return InvalidArgumentException
+     */
+    public static function classmapNameMissing()
+    {
+        return new static('You did not configure a classmap name.');
+    }
+
+    /**
+     * @return InvalidArgumentException
+     */
+    public static function classmapNamespaceMissing()
+    {
+        return new static('You did not configure a classmap namespace.');
+    }
+    /**
+     * @return InvalidArgumentException
+     */
+    public static function classmapDestinationMissing()
+    {
+        return new static('You did not configure a classmap destination.');
     }
 }

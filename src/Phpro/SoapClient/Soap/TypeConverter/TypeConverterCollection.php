@@ -2,16 +2,11 @@
 
 namespace Phpro\SoapClient\Soap\TypeConverter;
 
+use IteratorAggregate;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
+use Traversable;
 
-/**
- * Class TypeConverterCollection
- *
- *  A collection of type converters
- *
- * @package Phpro\SoapClient\Soap\TypeConverter
- */
-class TypeConverterCollection
+class TypeConverterCollection implements IteratorAggregate
 {
     /**
      * @var array|TypeConverterInterface[]
@@ -93,27 +88,10 @@ class TypeConverterCollection
     }
 
     /**
-     * Get this collection as a typemap that can be used in PHP's \SoapClient
-     *
-     * @return array
+     * @return \ArrayIterator|TypeConverterInterface[]
      */
-    public function toSoapTypeMap(): array
+    public function getIterator(): \ArrayIterator
     {
-        $typemap = [];
-
-        foreach ($this->converters as $converter) {
-            $typemap[] = [
-                'type_name' => $converter->getTypeName(),
-                'type_ns'   => $converter->getTypeNamespace(),
-                'from_xml'  => function ($input) use ($converter) {
-                    return $converter->convertXmlToPhp($input);
-                },
-                'to_xml'    => function ($input) use ($converter) {
-                    return $converter->convertPhpToXml($input);
-                },
-            ];
-        }
-
-        return $typemap;
+        return new \ArrayIterator($this->converters);
     }
 }
