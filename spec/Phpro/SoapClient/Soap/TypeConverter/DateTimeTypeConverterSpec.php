@@ -22,8 +22,7 @@ class DateTimeTypeConverterSpec extends ObjectBehavior
 
     function it_creates_datetime_interface_from_xml()
     {
-        $date = '2019-01-25T13:55:00+00:00';
-
+        $date = '2019-01-25T13:55:00'.date('P');
         $result = $this->convertXmlToPhp('<datetime>'.$date.'</datetime>');
         $result->shouldBeAnInstanceOf(\DateTimeImmutable::class);
         $result->getTimezone()->shouldMatchWithCurrentTimeZone();
