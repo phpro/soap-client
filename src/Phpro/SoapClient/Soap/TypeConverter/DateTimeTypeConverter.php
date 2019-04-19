@@ -45,9 +45,8 @@ class DateTimeTypeConverter implements TypeConverterInterface
         }
 
         $dateTime = new DateTimeImmutable($doc->textContent);
-        $dateTime->setTimezone(new DateTimeZone(date_default_timezone_get()));
 
-        return $dateTime;
+        return $dateTime->setTimezone(new DateTimeZone(date_default_timezone_get()));
     }
 
     /**
