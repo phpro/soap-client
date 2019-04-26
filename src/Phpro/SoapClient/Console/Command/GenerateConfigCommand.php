@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
+use Phpro\SoapClient\Console\Validator\NotBlankValidator;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,6 +55,7 @@ CONFIRMATION;
     {
         $context = new ConfigContext();
         $io = new SymfonyStyle($input, $output);
+        $required = new NotBlankValidator();
 
         // Ask for config location:
         $destination = $input->getOption('config');
@@ -64,10 +66,14 @@ CONFIRMATION;
             );
         }
 
-        $context->setWsdl($io->ask('Wsdl location (URL or path to file)'));
-        $name = $io->ask('Generic name used to name this client (Results in <name>Client <name>Classmap etc.)');
-        $baseDir = $io->ask('Directory where the client should be generated in');
-        $namespace = $io->ask('Namespace for your client');
+        $context->setWsdl($io->ask('Wsdl location (URL or path to file)', null, $required));
+        $name = $io->ask(
+            'Generic name used to name this client (Results in <name>Client <name>Classmap etc.)',
+            null,
+            $required
+        );
+        $baseDir = $io->ask('Directory where the client should be generated in', null, $required);
+        $namespace = $io->ask('Namespace for your client', null, $required);
 
         // Type
         $context->addSetter('setTypeDestination', $baseDir.DIRECTORY_SEPARATOR.'Type');

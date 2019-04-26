@@ -22,11 +22,12 @@ class DateTimeTypeConverterSpec extends ObjectBehavior
 
     function it_creates_datetime_interface_from_xml()
     {
-        $date = '2019-01-25T13:55:00'.date('P');
+        date_default_timezone_set('Europe/Brussels');
+        $date = '2019-01-25T12:55:00+00:00';
         $result = $this->convertXmlToPhp('<datetime>'.$date.'</datetime>');
         $result->shouldBeAnInstanceOf(\DateTimeImmutable::class);
         $result->getTimezone()->shouldMatchWithCurrentTimeZone();
-        $result->format(\DateTime::ATOM)->shouldBe($date);
+        $result->format(\DateTime::ATOM)->shouldBe('2019-01-25T13:55:00+01:00');
     }
 
     function it_returns_empty_string_on_null_passed()
@@ -47,7 +48,7 @@ class DateTimeTypeConverterSpec extends ObjectBehavior
         );
     }
 
-    public function getMatchers()
+    public function getMatchers(): array
     {
         return [
             'matchWithCurrentTimeZone' => function (\DateTimeZone $dateTimeZone) {
