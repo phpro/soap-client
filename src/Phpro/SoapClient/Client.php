@@ -46,12 +46,12 @@ class Client implements ClientInterface
         $lastRequestInfo = $this->engine->collectLastRequestInfo();
         return [
             'request' => [
-                'headers' => trim($this->soapClient->__getLastRequestHeaders()),
-                'body'    => XmlFormatter::format($this->soapClient->__getLastRequest()),
+                'headers' => trim($lastRequestInfo->getLastRequestHeaders()),
+                'body'    => XmlFormatter::format($lastRequestInfo->getLastRequest()),
             ],
             'response' => [
-                'headers' => trim($this->soapClient->__getLastResponseHeaders()),
-                'body'    => XmlFormatter::format($this->soapClient->__getLastResponse()),
+                'headers' => trim($lastRequestInfo->getLastResponseHeaders()),
+                'body'    => XmlFormatter::format($lastRequestInfo->getLastResponse()),
             ]
         ];
     }
