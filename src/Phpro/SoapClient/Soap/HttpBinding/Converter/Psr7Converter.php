@@ -4,13 +4,14 @@ namespace Phpro\SoapClient\Soap\HttpBinding\Converter;
 
 use Http\Message\MessageFactory;
 use Http\Message\StreamFactory;
-use Interop\Http\Factory\RequestFactoryInterface;
-use Interop\Http\Factory\StreamFactoryInterface;
+use Phpro\SoapClient\Exception\RequestException;
 use Phpro\SoapClient\Soap\HttpBinding\Builder\Psr7RequestBuilder;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Class Psr7Converter
@@ -38,7 +39,7 @@ class Psr7Converter
     /**
      * @param SoapRequest $request
      *
-     * @throws \Phpro\SoapClient\Exception\RequestException
+     * @throws RequestException
      * @return RequestInterface
      */
     public function convertSoapRequest(SoapRequest $request): RequestInterface
