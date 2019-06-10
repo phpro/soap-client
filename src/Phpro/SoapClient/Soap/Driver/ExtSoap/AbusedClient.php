@@ -44,7 +44,8 @@ class AbusedClient extends \SoapClient
         int $version,
         int $oneWay = 0
     ): string {
-        return (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
+        $this->__last_response = (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
+        return $this->__getLastResponse();
     }
 
     public function collectRequest(): SoapRequest
