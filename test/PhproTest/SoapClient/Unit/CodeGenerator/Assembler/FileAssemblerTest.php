@@ -26,7 +26,7 @@ class FileAssemblerTest extends TestCase
     /**
      * @test
      */
-    function it_is_an_assembler()
+    function it_is_an_assembler(): void
     {
         $assembler = new FileAssembler();
         $this->assertInstanceOf(AssemblerInterface::class, $assembler);
@@ -35,7 +35,7 @@ class FileAssemblerTest extends TestCase
     /**
      * @test
      */
-    function it_can_assemble_file_context()
+    function it_can_assemble_file_context(): void
     {
         $assembler = new FileAssembler();
         $context = $this->createContext();
@@ -45,7 +45,7 @@ class FileAssemblerTest extends TestCase
     /**
      * @test
      */
-    function it_assembles_a_file()
+    function it_assembles_a_file(): void
     {
         $assembler = new FileAssembler();
         $context = $this->createContext();
@@ -77,7 +77,7 @@ CODE;
     /**
      * @test
      */
-    public function it_assembles_with_strict_types()
+    public function it_assembles_with_strict_types(): void
     {
         $options = (new FileAssemblerOptions())->withStrictTypes();
         $assembler = new FileAssembler($options);
@@ -108,14 +108,10 @@ CODE;
     }
 
     /**
-     * @param string $propertyName
      * @return FileContext
      */
-    private function createContext($propertyName = 'prop1')
+    private function createContext(): FileContext
     {
-        $fileGenerator = new FileGenerator();
-        $fileGenerator->setFilename(sys_get_temp_dir() . '/result_file.php');
-
-        return new FileContext($fileGenerator);
+        return new FileContext(new FileGenerator());
     }
 }
