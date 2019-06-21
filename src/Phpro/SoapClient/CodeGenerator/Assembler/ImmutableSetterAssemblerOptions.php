@@ -14,6 +14,11 @@ class ImmutableSetterAssemblerOptions
     private $typeHints = false;
 
     /**
+     * @var bool
+     */
+    private $returnTypes = false;
+
+    /**
      * @return ImmutableSetterAssemblerOptions
      */
     public function withTypeHints(): ImmutableSetterAssemblerOptions
@@ -25,11 +30,30 @@ class ImmutableSetterAssemblerOptions
     }
 
     /**
+     * @return ImmutableSetterAssemblerOptions
+     */
+    public function withReturnTypes(): ImmutableSetterAssemblerOptions
+    {
+        $new = clone $this;
+        $new->returnTypes = true;
+
+        return $new;
+    }
+
+    /**
      * @return bool
      */
     public function useTypeHints(): bool
     {
         return $this->typeHints;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useReturnTypes(): bool
+    {
+        return $this->returnTypes;
     }
 
     /**

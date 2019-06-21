@@ -13,3 +13,8 @@ parameters:
         phpspec: ~
         phpunit: ~
         phplint: ~
+        phpstan:
+            configuration: "phpstan.neon"
+            ignore_patterns:
+                - "spec/"
+                - "vendor/"

@@ -39,12 +39,14 @@
     "phpro/grumphp": "~0.15",
     "phpspec/phpspec": "~5.1",
     "phpspec/prophecy": "~1.8",
+    "phpstan/phpstan": "^0.11.8",
     "phpunit/phpunit": "~6.0",
+    "psr/http-factory": "^1.0",
     "psr/http-message": "^1.0",
     "robrichards/wse-php": "^2.0.2",
     "robrichards/xmlseclibs": "^3.0",
-    "symfony/validator": "~2.8|~3.0|~4.0",
     "squizlabs/php_codesniffer": "~2.9",
+    "symfony/validator": "~2.8|~3.0|~4.0",
     "zendframework/zend-code": "^3.4"
   },
   "suggest": {
