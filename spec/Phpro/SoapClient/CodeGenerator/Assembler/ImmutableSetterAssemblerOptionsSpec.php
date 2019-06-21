@@ -32,4 +32,10 @@ class ImmutableSetterAssemblerOptionsSpec extends ObjectBehavior
         $options = $this::create()->withTypeHints();
         $options->useTypeHints()->shouldBe(true);
     }
+
+    function it_shout_set_return_types()
+    {
+        $options = $this::create()->withReturnTypes();
+        $options->useReturnTypes()->shouldBe(true);
+    }
 }

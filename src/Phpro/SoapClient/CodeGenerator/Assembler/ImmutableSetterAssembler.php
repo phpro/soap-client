@@ -66,6 +66,9 @@ class ImmutableSetterAssembler implements AssemblerInterface
             if ($this->options->useTypeHints()) {
                 $parameterOptions['type'] = $property->getType();
             }
+            $returnType = $this->options->useReturnTypes()
+                ? $class->getNamespaceName() . '\\' . $class->getName()
+                : null;
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [
@@ -73,6 +76,7 @@ class ImmutableSetterAssembler implements AssemblerInterface
                         'parameters' => [$parameterOptions],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                         'body' => implode($class::LINE_FEED, $lines),
+                        'returntype' => $returnType,
                         'docblock' => DocBlockGeneratorFactory::fromArray([
                             'tags' => [
                                 [
