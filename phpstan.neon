@@ -1,3 +1,5 @@
 parameters:
-  ignoreErrors:
-    - '#Call to an undefined static method SoapClient::__construct().#'
+    ignoreErrors:
+        - '#Call to an undefined static method SoapClient::__construct().#'
+        - '#Call to an undefined method Phpro\\.*Interface.*$#'
+        - '#Invalid type Http\\Client\\Exception to throw.#'

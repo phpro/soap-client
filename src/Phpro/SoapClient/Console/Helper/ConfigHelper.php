@@ -33,7 +33,7 @@ class ConfigHelper extends Helper
     /**
      * Attempts to load the configuration file, returns it on success
      * @param InputInterface $input
-     * @return Config
+     * @return ConfigInterface
      */
     public function load(InputInterface $input): ConfigInterface
     {

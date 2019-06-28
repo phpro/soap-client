@@ -12,7 +12,7 @@ class Parameter
     private $name;
 
     /**
-     * @var string
+     * @var XsdType
      */
     private $type;
 

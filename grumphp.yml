@@ -1,4 +1,7 @@
 parameters:
+    testsuites:
+        phpstan:
+            tasks: [phpstan]
     git_dir: .
     bin_dir: ./vendor/bin
     tasks:
@@ -14,7 +17,9 @@ parameters:
         phpunit: ~
         phplint: ~
         phpstan:
+            level: 4
             configuration: "phpstan.neon"
             ignore_patterns:
                 - "spec/"
                 - "vendor/"
+                - "test"

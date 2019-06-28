@@ -41,7 +41,7 @@ class ClientGenerator implements GeneratorInterface
      */
     public function generate(FileGenerator $file, $client): string
     {
-        $class = $file->getClass() ?: new ClassGenerator();
+        $class = $file->getClass() ?? new ClassGenerator();
         $class->setNamespaceName($client->getNamespace());
         $class->setName($client->getName());
         $methods = $client->getMethodMap();

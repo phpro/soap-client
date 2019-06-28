@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\Middleware;
 
 use Http\Promise\Promise;
 use Phpro\SoapClient\Xml\SoapXml;
+use Phpro\SoapClient\Xml\Xml;
 use Psr\Http\Message\RequestInterface;
 
 class RemoveEmptyNodesMiddleware extends Middleware
@@ -18,7 +19,7 @@ class RemoveEmptyNodesMiddleware extends Middleware
         $xml = SoapXml::fromStream($request->getBody());
 
         // remove all empty nodes
-        while (($notNodes = $xml->xpath('//*[not(node())]')) && ($notNodes->length)) {
+        while ($notNodes = $this->getNotNodes($xml)) {
             foreach ($notNodes as $node) {
                 $node->parentNode->removeChild($node);
             }
@@ -27,5 +28,15 @@ class RemoveEmptyNodesMiddleware extends Middleware
         $request = $request->withBody($xml->toStream());
 
         return $handler($request);
+    }
+
+    private function getNotNodes(Xml $xml): ?\DOMNodeList
+    {
+        $notNodes = $xml->xpath('//*[not(node())]');
+        if (!$notNodes->length) {
+            return null;
+        }
+
+        return $notNodes;
     }
 }

@@ -28,9 +28,9 @@ class ResultProviderAssembler implements AssemblerInterface
     /**
      * ResultProviderAssembler constructor.
      *
-     * @param null $wrapperClass
+     * @param string $wrapperClass
      */
-    public function __construct($wrapperClass = null)
+    public function __construct(string $wrapperClass = null)
     {
         $this->wrapperClass = ($wrapperClass !== null) ? ltrim($wrapperClass, '\\') : null;
     }

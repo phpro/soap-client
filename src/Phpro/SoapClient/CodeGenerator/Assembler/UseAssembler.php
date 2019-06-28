@@ -20,6 +20,7 @@ class UseAssembler implements AssemblerInterface
      * @var string
      */
     private $useName;
+
     /**
      * @var string
      */
@@ -27,10 +28,10 @@ class UseAssembler implements AssemblerInterface
 
     /**
      * UseAssembler constructor.
-     * @param $useName
-     * @param $useAlias
+     * @param string $useName
+     * @param string $useAlias
      */
-    public function __construct(string $useName, $useAlias = null)
+    public function __construct(string $useName, string $useAlias = null)
     {
         $this->useName = $useName;
         $this->useAlias = $useAlias;

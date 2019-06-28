@@ -54,6 +54,7 @@ class TypeMapRule implements RuleInterface
         }
 
         // It's possible to define a null rule, which means that no code will be generated.
+        /** @var RuleInterface|null $rule */
         $rule = $this->typeMap[$type->getName()];
         if ($rule  === null) {
             return false;
