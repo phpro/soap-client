@@ -1,5 +1,6 @@
 parameters:
     ignoreErrors:
+        # Soapclient reflection is quite broken
         - '#Call to an undefined static method SoapClient::__construct().#'
-        - '#Call to an undefined method Phpro\\.*Interface.*$#'
-        - '#Invalid type Http\\Client\\Exception to throw.#'
+        # This is something we hope to fix in later PHP versions
+        - '#Call to an undefined method Phpro\\.*(Context|RuleSet)Interface.*$#'

@@ -1,7 +1,4 @@
 parameters:
-    testsuites:
-        phpstan:
-            tasks: [phpstan]
     git_dir: .
     bin_dir: ./vendor/bin
     tasks:
