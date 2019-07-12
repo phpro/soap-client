@@ -29,7 +29,7 @@ class Parameter
         $this->type = Normalizer::normalizeClassnameInFQN($type);
     }
 
-    public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter)
+    public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter): Parameter
     {
         $type = $parameter->getType()->getBaseTypeOrFallbackToName();
 

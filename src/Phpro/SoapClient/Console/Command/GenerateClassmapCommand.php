@@ -98,13 +98,17 @@ class GenerateClassmapCommand extends Command
     /**
      * Generates one type class
      *
-     * @param FileGenerator     $file
+     * @param FileGenerator $file
      * @param ClassMapGenerator $generator
-     * @param TypeMap           $typeMap
-     * @param                   $path
+     * @param TypeMap $typeMap
+     * @param string $path
      */
-    protected function generateClassmap(FileGenerator $file, ClassMapGenerator $generator, TypeMap $typeMap, $path)
-    {
+    protected function generateClassmap(
+        FileGenerator $file,
+        ClassMapGenerator $generator,
+        TypeMap $typeMap,
+        string $path
+    ) {
         $code = $generator->generate($file, $typeMap);
         $this->filesystem->putFileContents($path, $code);
     }
@@ -117,10 +121,11 @@ class GenerateClassmapCommand extends Command
      *
      * @param ClassMapGenerator $generator
      * @param TypeMap           $typeMap
-     * @param                   $path
+     * @param string            $path
+     *
      * @return bool
      */
-    protected function handleClassmap(ClassMapGenerator $generator, TypeMap $typeMap, $path): bool
+    protected function handleClassmap(ClassMapGenerator $generator, TypeMap $typeMap, string $path): bool
     {
         // Handle existing class:
         if ($this->filesystem->fileExists($path)) {

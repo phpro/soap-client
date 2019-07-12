@@ -15,16 +15,16 @@ use Phpro\SoapClient\Exception\AssemblerException;
 class InterfaceAssembler implements AssemblerInterface
 {
     /**
-     * @var
+     * @var string
      */
     private $interfaceName;
 
     /**
      * InterfaceAssembler constructor.
      *
-     * @param $interfaceName
+     * @param string $interfaceName
      */
-    public function __construct($interfaceName)
+    public function __construct(string $interfaceName)
     {
         $this->interfaceName = $interfaceName;
     }

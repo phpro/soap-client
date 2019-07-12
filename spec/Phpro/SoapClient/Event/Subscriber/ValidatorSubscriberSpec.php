@@ -4,6 +4,7 @@ namespace spec\Phpro\SoapClient\Event\Subscriber;
 
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Event\RequestEvent;
+use Phpro\SoapClient\Event\Subscriber\ValidatorSubscriber;
 use Phpro\SoapClient\Exception\RequestException;
 use Phpro\SoapClient\Type\RequestInterface;
 use PhpSpec\ObjectBehavior;
@@ -11,7 +12,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Phpro\SoapClient\Event\Subscriber\ValidatorSubscriber;
 
 class ValidatorSubscriberSpec extends ObjectBehavior
 {
@@ -34,11 +34,16 @@ class ValidatorSubscriberSpec extends ObjectBehavior
         ValidatorInterface $validator,
         Client $client,
         RequestInterface $request,
-        ConstraintViolation $violation
+        ConstraintViolation $violation1,
+        ConstraintViolation $violation2
     ) {
         $event = new RequestEvent($client->getWrappedObject(), 'method', $request->getWrappedObject());
-        $violation->__toString()->willReturn('error');
-        $validator->validate($request)->willReturn(new ConstraintViolationList([$violation->getWrappedObject()]));
+        $violation1->getMessage()->willReturn('error 1');
+        $violation2->getMessage()->willReturn('error 2');
+        $validator->validate($request)->willReturn(new ConstraintViolationList([
+            $violation1->getWrappedObject(),
+            $violation2->getWrappedObject(),
+        ]));
         $this->shouldThrow(RequestException::class)->duringOnClientRequest($event);
     }
 

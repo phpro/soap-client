@@ -21,12 +21,12 @@ use Psr\Http\Message\StreamFactoryInterface;
 class Psr7Converter
 {
     /**
-     * @var RequestFactoryInterface
+     * @var MessageFactory
      */
     private $messageFactory;
 
     /**
-     * @var StreamFactoryInterface
+     * @var StreamFactory
      */
     private $streamFactory;
 

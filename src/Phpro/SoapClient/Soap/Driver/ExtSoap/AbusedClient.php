@@ -10,12 +10,12 @@ use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 class AbusedClient extends \SoapClient
 {
     /**
-     * @var SoapRequest
+     * @var SoapRequest|null
      */
     protected $storedRequest;
 
     /**
-     * @var SoapResponse
+     * @var SoapResponse|null
      */
     protected $storedResponse;
 

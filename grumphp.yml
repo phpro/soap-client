@@ -14,7 +14,9 @@ parameters:
         phpunit: ~
         phplint: ~
         phpstan:
+            level: 4
             configuration: "phpstan.neon"
             ignore_patterns:
                 - "spec/"
                 - "vendor/"
+                - "test"

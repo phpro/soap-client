@@ -19,7 +19,7 @@ class TypeChecker
     private static $internalPhpTypes = ['void', 'int', 'float', 'string', 'bool', 'array', 'callable', 'iterable'];
 
     /**
-     * @param $type
+     * @param string $type
      *
      * @return bool
      */

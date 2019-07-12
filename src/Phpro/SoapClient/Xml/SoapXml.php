@@ -44,8 +44,11 @@ class SoapXml extends Xml
         if (!$body = $this->getBody()) {
             return null;
         }
+        if ($body->firstChild === null) {
+            return null;
+        }
 
-        return $body->firstChild ? $body->firstChild->namespaceURI : null;
+        return $body->firstChild->namespaceURI;
     }
 
     /**
@@ -92,9 +95,9 @@ class SoapXml extends Xml
     }
 
     /**
-     * @return DOMElement|null
+     * @return \DOMNode|null
      */
-    public function getBody(): ?DOMElement
+    public function getBody(): ?\DOMNode
     {
         $list = $this->xpath('//soap:Envelope/soap:Body');
 

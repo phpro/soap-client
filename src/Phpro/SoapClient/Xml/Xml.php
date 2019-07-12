@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\Xml;
 
 use DOMDocument;
 use DOMElement;
+use DOMNode;
 use DOMXPath;
 use Http\Discovery\StreamFactoryDiscovery;
 use Psr\Http\Message\StreamInterface;
@@ -75,7 +76,7 @@ class Xml
      *
      * @return \DOMNodeList
      */
-    public function xpath(string $expression, \DOMNode $contextNode = null): \DOMNodeList
+    public function xpath(string $expression, DOMNode $contextNode = null): \DOMNodeList
     {
         return $this->xpath->query($expression, $contextNode);
     }
