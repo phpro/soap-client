@@ -4,9 +4,9 @@ namespace Phpro\SoapClient\Middleware;
 
 use Http\Client\Exception;
 use Http\Promise\Promise;
+use Phpro\SoapClient\Exception\MiddlewareException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 
 /**
  * Class Middleware
@@ -45,10 +45,6 @@ class Middleware implements MiddlewareInterface
 
     public function onError(Exception $exception)
     {
-        if (!$exception instanceof Throwable) {
-            return;
-        }
-
-        throw $exception;
+        throw MiddlewareException::fromHttPlugException($exception);
     }
 }

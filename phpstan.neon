@@ -2,5 +2,6 @@ parameters:
     ignoreErrors:
         # Soapclient reflection is quite broken
         - '#Call to an undefined static method SoapClient::__construct().#'
-        # This is something we hope to fix in later PHP versions
+        # This is something we hope to fix in PHP 7.4
+        # https://wiki.php.net/rfc/covariant-returns-and-contravariant-parameters
         - '#Call to an undefined method Phpro\\.*(Context|RuleSet)Interface.*$#'
