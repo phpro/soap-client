@@ -29,7 +29,12 @@ class ExtSoapDecoder implements DecoderInterface
     public function decode(string $method, SoapResponse $response)
     {
         $this->client->registerResponse($response);
-        $decoded =  $this->client->__soapCall($method, $this->argumentsGenerator->generateForSoapCall($method));
+        try {
+            $decoded = $this->client->__soapCall($method, $this->argumentsGenerator->generateForSoapCall($method));
+        } catch (\Exception $e) {
+            $this->client->cleanUpTemporaryState();
+            throw $e;
+        }
         $this->client->cleanUpTemporaryState();
 
         return $decoded;
