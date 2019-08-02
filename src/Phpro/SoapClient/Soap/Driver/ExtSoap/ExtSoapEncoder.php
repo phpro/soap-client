@@ -21,9 +21,12 @@ class ExtSoapEncoder implements EncoderInterface
 
     public function encode(string $method, array $arguments): SoapRequest
     {
-        $this->client->__soapCall($method, $arguments);
-        $encoded = $this->client->collectRequest();
-        $this->client->cleanUpTemporaryState();
+        try {
+            $this->client->__soapCall($method, $arguments);
+            $encoded = $this->client->collectRequest();
+        } finally {
+            $this->client->cleanUpTemporaryState();
+        }
 
         return $encoded;
     }
