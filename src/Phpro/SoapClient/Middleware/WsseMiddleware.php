@@ -143,13 +143,15 @@ class WsseMiddleware extends Middleware
             $wsse->addUserToken($this->userTokenName, $this->userTokenPassword, $this->userTokenDigest);
         }
 
+        //  Add certificate (BinarySecurityToken) to the message
+        $token = $wsse->addBinaryToken(file_get_contents($this->publicKeyFile));
+
         // Create new XMLSec Key using the dsigType and type is private key
         $key = new XMLSecurityKey($this->digitalSignMethod, ['type' => 'private']);
         $key->loadKey($this->privateKeyFile, true);
         $wsse->signSoapDoc($key);
 
-        //  Add certificate (BinarySecurityToken) to the message and attach pointer to Signature:
-        $token = $wsse->addBinaryToken(file_get_contents($this->publicKeyFile));
+        //  Attach token pointer to Signature:
         $wsse->attachTokentoSig($token);
 
         // Add end-to-end encryption if configured:
