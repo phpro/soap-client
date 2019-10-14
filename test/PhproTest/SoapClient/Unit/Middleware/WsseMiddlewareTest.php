@@ -85,10 +85,10 @@ class WsseMiddlewareTest extends TestCase
         $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo')->length, 1, 'No DS SignedInfo Signature tag');
         $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:CanonicalizationMethod')->length, 1, 'No DS SignedInfo CanonicalizationMethod Signature tag');
         $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:SignatureMethod')->length, 1, 'No DS SignedInfo SignatureMethod Signature tag');
-        $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference')->length, 1, 'No DS SignedInfo Reference Signature tag');
-        $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference/ds:Transforms/ds:Transform')->length, 1, 'No DS SignedInfo Reference Transform Signature tag');
-        $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestMethod')->length, 1, 'No DS SignedInfo Reference DigestMethod Signature tag');
-        $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestValue')->length, 1, 'No DS SignedInfo Reference DigestValue Signature tag');
+        $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference')->length, 2, 'No DS SignedInfo Reference Signature tags');
+        $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference/ds:Transforms/ds:Transform')->length, 2, 'No DS SignedInfo Reference Transform Signature tag');
+        $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestMethod')->length, 2, 'No DS SignedInfo Reference DigestMethod Signature tag');
+        $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestValue')->length, 2, 'No DS SignedInfo Reference DigestValue Signature tag');
         $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:SignatureValue')->length, 1, 'No DS SignatureValue Signature tag');
         $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:KeyInfo')->length, 1, 'No DS KeyInfo Signature tag');
         $this->assertEquals($xml->xpath('//wsse:Security/ds:Signature/ds:KeyInfo/wsse:SecurityTokenReference/wsse:Reference')->length, 1, 'No DS KeyInfo SecurityTokenReference Signature tag');
@@ -140,7 +140,7 @@ class WsseMiddlewareTest extends TestCase
         $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xml = $this->fetchSoapXml($soapBody);
 
-        $this->assertEquals(5, $xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference')->length, 'Not all headers are signed!');
+        $this->assertEquals(6, $xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference')->length, 'Not all headers are signed!');
         $this->assertEquals(1, $xml->xpath('//wsa:Action[@wsu:Id]')->length, 'No signed WSA:Action.');
         $this->assertEquals(1, $xml->xpath('//wsa:To[@wsu:Id]')->length, 'No signed WSA:To.');
         $this->assertEquals(1, $xml->xpath('//wsa:MessageID[@wsu:Id]')->length, 'No signed WSA:MessageID.');
@@ -181,7 +181,7 @@ class WsseMiddlewareTest extends TestCase
         $xml = $this->fetchSoapXml($soapBody);
 
         // Check defaults:
-        $this->assertEquals(2, $xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference')->length, 'UserToken not signed!');
+        $this->assertEquals(3, $xml->xpath('//wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference')->length, 'UserToken not signed!');
         $this->assertEquals($xml->xpath('//soap:Header/wsse:Security/wsse:UsernameToken')->length, 1, 'No WSSE UsernameToken tag');
         $this->assertEquals(1, $xml->xpath('//wsse:Security/wsse:UsernameToken[@wsu:Id]')->length, 'UserToken not signed!');
         $this->assertEquals($xml->xpath('//wsse:Security/wsse:UsernameToken/wsse:Username')->length, 1, 'No WSSE UserName tag');
