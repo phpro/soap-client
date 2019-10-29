@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator;
 
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
+use Phpro\SoapClient\CodeGenerator\Context\FileContext;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
