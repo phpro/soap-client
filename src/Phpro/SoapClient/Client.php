@@ -65,7 +65,8 @@ class Client implements ClientInterface
      */
     private function dispatch(string $eventName, SymfonyEvent $event = null): void
     {
-        if (interface_exists('\Symfony\Contracts\EventDispatcher\EventDispatcherInterface') && $this->dispatcher instanceof \Symfony\Contracts\EventDispatcher\EventDispatcherInterface) {
+        if (interface_exists('\Symfony\Contracts\EventDispatcher\EventDispatcherInterface')
+            && $this->dispatcher instanceof \Symfony\Contracts\EventDispatcher\EventDispatcherInterface) {
             $this->dispatcher->dispatch($event, $eventName);
         } else {
             $this->dispatcher->dispatch($eventName, $event);
