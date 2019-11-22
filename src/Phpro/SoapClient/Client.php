@@ -12,6 +12,7 @@ use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
 use Phpro\SoapClient\Util\XmlFormatter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\Event as SymfonyEvent;
 
 /**
  * Class Client
@@ -57,6 +58,21 @@ class Client implements ClientInterface
     }
 
     /**
+     * For backward compatibility with Symfony 4
+     *
+     * @param string            $eventName
+     * @param SymfonyEvent|null $event
+     */
+    private function dispatch(string $eventName, SymfonyEvent $event = null): void
+    {
+        if (interface_exists('\Symfony\Contracts\EventDispatcher\EventDispatcherInterface') && $this->dispatcher instanceof \Symfony\Contracts\EventDispatcher\EventDispatcherInterface) {
+            $this->dispatcher->dispatch($event, $eventName);
+        } else {
+            $this->dispatcher->dispatch($eventName, $event);
+        }
+    }
+
+    /**
      * @param string            $method
      * @param RequestInterface  $request
      *
@@ -66,7 +82,8 @@ class Client implements ClientInterface
     protected function call(string $method, RequestInterface $request): ResultInterface
     {
         $requestEvent = new Event\RequestEvent($this, $method, $request);
-        $this->dispatcher->dispatch(Events::REQUEST, $requestEvent);
+
+        $this->dispatch(Events::REQUEST, $requestEvent);
 
         try {
             $arguments = ($request instanceof MultiArgumentRequestInterface) ? $request->getArguments() : [$request];
@@ -81,11 +98,12 @@ class Client implements ClientInterface
             }
         } catch (\Exception $exception) {
             $soapException = SoapException::fromThrowable($exception);
-            $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($this, $soapException, $requestEvent));
+            $this->dispatch(Events::FAULT, new Event\FaultEvent($this, $soapException, $requestEvent));
             throw $soapException;
         }
 
-        $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($this, $requestEvent, $result));
+        $this->dispatch(Events::RESPONSE, new Event\ResponseEvent($this, $requestEvent, $result));
+
         return $result;
     }
 }
