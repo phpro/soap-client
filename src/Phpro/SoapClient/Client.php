@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient;
 
+use Phpro\SoapClient\Adapter\EventDispatcherAdapter;
 use Phpro\SoapClient\Event;
 use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Soap\Engine\EngineInterface;
@@ -11,7 +12,7 @@ use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
 use Phpro\SoapClient\Util\XmlFormatter;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class Client
@@ -30,10 +31,15 @@ class Client implements ClientInterface
      */
     protected $dispatcher;
 
-    public function __construct(EngineInterface $engine, EventDispatcherInterface $dispatcher)
+    public function __construct(EngineInterface $engine, $dispatcher)
     {
         $this->engine = $engine;
         $this->dispatcher = $dispatcher;
+
+        // Backward compatibility
+        if ($dispatcher instanceof \Symfony\Component\EventDispatcher\EventDispatcherInterface) {
+            $this->dispatcher = new EventDispatcherAdapter($dispatcher);
+        }
     }
 
     /**
@@ -66,7 +72,7 @@ class Client implements ClientInterface
     protected function call(string $method, RequestInterface $request): ResultInterface
     {
         $requestEvent = new Event\RequestEvent($this, $method, $request);
-        $this->dispatcher->dispatch(Events::REQUEST, $requestEvent);
+        $this->dispatcher->dispatch($requestEvent, Events::REQUEST);
 
         try {
             $arguments = ($request instanceof MultiArgumentRequestInterface) ? $request->getArguments() : [$request];
@@ -81,11 +87,11 @@ class Client implements ClientInterface
             }
         } catch (\Exception $exception) {
             $soapException = SoapException::fromThrowable($exception);
-            $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($this, $soapException, $requestEvent));
+            $this->dispatcher->dispatch(new Event\FaultEvent($this, $soapException, $requestEvent), Events::FAULT);
             throw $soapException;
         }
 
-        $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($this, $requestEvent, $result));
+        $this->dispatcher->dispatch(new Event\ResponseEvent($this, $requestEvent, $result), Events::RESPONSE);
         return $result;
     }
 }
