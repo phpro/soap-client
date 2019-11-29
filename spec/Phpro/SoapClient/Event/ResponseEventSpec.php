@@ -3,12 +3,11 @@
 namespace spec\Phpro\SoapClient\Event;
 
 use Phpro\SoapClient\Client;
+use Phpro\SoapClient\Event\AbstractEvent;
 use Phpro\SoapClient\Event\RequestEvent;
 use Phpro\SoapClient\Event\ResponseEvent;
 use Phpro\SoapClient\Type\ResultInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use Symfony\Component\EventDispatcher\Event;
 
 class ResponseEventSpec extends ObjectBehavior
 {
@@ -24,7 +23,7 @@ class ResponseEventSpec extends ObjectBehavior
 
     function it_is_an_event()
     {
-        $this->shouldHaveType(Event::class);
+        $this->shouldHaveType(AbstractEvent::class);
     }
 
     function it_should_know_the_request_event(RequestEvent $requestEvent)

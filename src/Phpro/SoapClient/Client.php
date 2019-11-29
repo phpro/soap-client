@@ -12,7 +12,6 @@ use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
 use Phpro\SoapClient\Util\XmlFormatter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\Event as SymfonyEvent;
 
 /**
  * Class Client
@@ -60,14 +59,14 @@ class Client implements ClientInterface
     /**
      * For backward compatibility with Symfony 4
      *
-     * @param string            $eventName
-     * @param SymfonyEvent|null $event
+     * @param string $eventName
+     * @param Event\AbstractEvent  $event
      */
-    private function dispatch(string $eventName, SymfonyEvent $event = null): void
+    private function dispatch(string $eventName, Event\AbstractEvent $event = null): void
     {
         $interfacesImplemented = class_implements($this->dispatcher);
         if (in_array('Symfony\Contracts\EventDispatcher\EventDispatcherInterface', $interfacesImplemented)) {
-            $this->dispatcher->dispatch($event, $eventName);
+            $this->dispatcher->dispatch($event);
         } else {
             $this->dispatcher->dispatch($eventName, $event);
         }

@@ -4,14 +4,13 @@ namespace Phpro\SoapClient\Event;
 
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Type\RequestInterface;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Class RequestEvent
  *
  * @package Phpro\SoapClient\Event
  */
-class RequestEvent extends Event
+class RequestEvent extends AbstractEvent
 {
     /**
      * @var string

@@ -4,14 +4,13 @@ namespace Phpro\SoapClient\Event;
 
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Exception\SoapException;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Class FaultEvent
  *
  * @package Phpro\SoapClient\Event
  */
-class FaultEvent extends Event
+class FaultEvent extends AbstractEvent
 {
 
     /**
