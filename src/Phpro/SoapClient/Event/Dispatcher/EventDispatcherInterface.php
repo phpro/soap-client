@@ -15,7 +15,7 @@ interface EventDispatcherInterface
 {
     /**
      * @param SoapEvent   $event
-     * @param string|null $name Deprecated : will be removed in the future!
+     * @param string|null $name Deprecated : will be removed  in v2.0!
      *
      * @return SoapEvent
      */

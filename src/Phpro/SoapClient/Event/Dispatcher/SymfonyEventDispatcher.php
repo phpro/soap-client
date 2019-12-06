@@ -10,7 +10,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as SymfonyEventDi
 
 /**
  * @deprecated This one is added for BC compatibility between Symfony 3, 4 and 5.
- * It will be removed in the next version. We recommend using the PsrEventDispatcher.
+ * It will be removed  in v2.0. We recommend using the PsrEventDispatcher.
  * Since Symfony EventDispatcher is compatible with PSR-14, you can still use the Symfony dispatcher.
  */
 class SymfonyEventDispatcher implements EventDispatcherInterface

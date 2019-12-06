@@ -28,19 +28,24 @@ class Client implements ClientInterface
     protected $engine;
 
     /**
-     * @deprecated We will be using our own EventDispatcherInterface which is in line with Symfony 5 and PSR14.
+     * @deprecated We will be using our own EventDispatcherInterface in v2.0 which is in line with Symfony 5 and PSR14.
      * @var SymfonyEventDispatcher|EventDispatcherInterface
      */
     protected $dispatcher;
 
     /**
-     * @deprecated : In the future, we will only support our internal EventDispatcherInterface.
+     * @deprecated : In v2.0, we will only support our internal EventDispatcherInterface.
      */
     public function __construct(EngineInterface $engine, $dispatcher)
     {
         assert(
             $dispatcher instanceof SymfonyEventDispatcher || $dispatcher instanceof EventDispatcherInterface,
-            new RuntimeException('Expected event dispatcher to be of type')
+            new RuntimeException(sprintf(
+                'Expected event dispatcher to be of type %s or %s, got "%s".',
+                SymfonyEventDispatcher::class,
+                EventDispatcherInterface::class,
+                get_class($dispatcher)
+            ))
         );
 
         $this->engine = $engine;
@@ -70,7 +75,7 @@ class Client implements ClientInterface
     /**
      * For backward compatibility with Symfony 4
      *
-     * @deprecated : We will remove this method in the future in favour of injecting the internal dispatcher directly.
+     * @deprecated : We will remove this method  in v2.0 in favour of injecting the internal dispatcher directly.
      */
     private function dispatch(Event\SoapEvent $event, string $name = null): Event\SoapEvent
     {
