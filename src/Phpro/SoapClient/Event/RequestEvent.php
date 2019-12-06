@@ -10,7 +10,7 @@ use Phpro\SoapClient\Type\RequestInterface;
  *
  * @package Phpro\SoapClient\Event
  */
-class RequestEvent extends AbstractEvent
+class RequestEvent extends SoapEvent
 {
     /**
      * @var string

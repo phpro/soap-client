@@ -6,6 +6,7 @@ namespace Phpro\SoapClient;
  * Class Events
  *
  * @package Phpro\SoapClient
+ * @deprecated This class will be removed in the future. Listen to the FQCN of the events instead!
  */
 final class Events
 {

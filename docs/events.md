@@ -3,9 +3,9 @@
 The `Client` class uses an EventDispatcher which can be configured inside the [generated client factory](cli/generate-clientfactory.md).
  It will trigger events at all important phases of the SOAP call: 
 
-- Events::REQUEST (RequestEvent)
-- Events::RESPONSE (ResponseEvent)
-- Events::FAULT (FaultEvent)
+- `\Phpro\SoapClient\Event\RequestEvent`: (Name : Events::REQUEST)
+- `\Phpro\SoapClient\Event\ResponseEvent`: (Name : Events::RESPONSE)
+- `\Phpro\SoapClient\Event\FaultEvent`: (Name : Events::FAULT)
 
 You can subscribe your own listeners to the configured `EventDispatcher`. For example:
 

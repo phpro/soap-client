@@ -10,7 +10,7 @@ use Phpro\SoapClient\Exception\SoapException;
  *
  * @package Phpro\SoapClient\Event
  */
-class FaultEvent extends AbstractEvent
+class FaultEvent extends SoapEvent
 {
 
     /**

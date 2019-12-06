@@ -9,7 +9,7 @@ use Phpro\SoapClient\Type\ResultInterface;
  *
  * @package Phpro\SoapClient\Event
  */
-class ResponseEvent extends AbstractEvent
+class ResponseEvent extends SoapEvent
 {
     /**
      * @var RequestEvent
