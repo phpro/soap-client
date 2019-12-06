@@ -38,7 +38,7 @@
     "php-vcr/php-vcr": "~1.4.4",
     "phpro/grumphp": "~0.17",
     "phpspec/phpspec": "~6.1",
-    "phpstan/phpstan": "^0.11.19",
+    "phpstan/phpstan": "^0.11.8",
     "phpunit/phpunit": "~8.5",
     "psr/http-factory": "^1.0",
     "psr/http-message": "^1.0.1",
