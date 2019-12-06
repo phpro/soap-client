@@ -2,8 +2,8 @@
 
 namespace Phpro\SoapClient;
 
-use GrumPHP\Event\Dispatcher\EventDispatcherInterface;
 use Phpro\SoapClient\Event;
+use Phpro\SoapClient\Event\Dispatcher\EventDispatcherInterface;
 use Phpro\SoapClient\Exception\RuntimeException;
 use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Soap\Engine\EngineInterface;
