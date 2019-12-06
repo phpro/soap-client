@@ -36,7 +36,7 @@ class MiddlewareTest extends TestCase
     /***
      * Initialize all basic objects
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->middleware = new Middleware();
         $this->mockClient = new Client(new GuzzleMessageFactory());

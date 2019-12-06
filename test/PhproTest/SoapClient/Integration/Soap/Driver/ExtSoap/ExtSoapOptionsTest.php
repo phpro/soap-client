@@ -26,7 +26,7 @@ class ExtSoapOptionsTest extends TestCase
      */
     private $resolver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->wsdl = FIXTURE_DIR.'/wsdl/functional/string.wsdl';
         $this->resolver = ExtSoapOptionsResolverFactory::createForWsdl($this->wsdl);
@@ -58,7 +58,7 @@ class ExtSoapOptionsTest extends TestCase
         $this->assertTrue($options['exceptions']);
         $this->assertSame(WSDL_CACHE_DISK, $options['cache_wsdl']);
         $this->assertSame(SOAP_SINGLE_ELEMENT_ARRAYS, $options['features']);
-        $this->assertInternalType('array', $options['typemap']);
+        $this->assertIsArray($options['typemap']);
     }
 
     /** @test */
@@ -107,7 +107,7 @@ class ExtSoapOptionsTest extends TestCase
         $this->assertCount(4, $typeMap->getIterator());
 
         $resolved = $this->resolver->resolve($options->getOptions());
-        $this->assertInternalType('array', $resolved['typemap']);
+        $this->assertIsArray($resolved['typemap']);
         $this->assertCount(4, $resolved['typemap']);
         $this->assertSame('dateTime', $resolved['typemap'][0]['type_name']);
         $this->assertSame('date', $resolved['typemap'][1]['type_name']);
@@ -124,7 +124,7 @@ class ExtSoapOptionsTest extends TestCase
         $this->assertSame($typeMap, $options->getTypeMap());
 
         $resolved = $this->resolver->resolve($options->getOptions());
-        $this->assertInternalType('array', $resolved['typemap']);
+        $this->assertIsArray($resolved['typemap']);
         $this->assertCount(0, $resolved['typemap']);
     }
 
@@ -147,7 +147,7 @@ class ExtSoapOptionsTest extends TestCase
         ]);
 
         $resolved = $this->resolver->resolve($options->getOptions());
-        $this->assertInternalType('array', $resolved['typemap']);
+        $this->assertIsArray($resolved['typemap']);
         $this->assertCount(1, $resolved['typemap']);
         $this->assertSame($typeName, $resolved['typemap'][0]['type_name']);
         $this->assertSame($typeNs, $resolved['typemap'][0]['type_ns']);
@@ -166,7 +166,7 @@ class ExtSoapOptionsTest extends TestCase
         $this->assertCount(0, $classMap->getIterator());
 
         $resolved = $this->resolver->resolve($options->getOptions());
-        $this->assertInternalType('array', $resolved['classmap']);
+        $this->assertIsArray($resolved['classmap']);
         $this->assertCount(0, $resolved['classmap']);
     }
 
@@ -181,7 +181,7 @@ class ExtSoapOptionsTest extends TestCase
         $this->assertSame($classMap, $options->getClassMap());
 
         $resolved = $this->resolver->resolve($options->getOptions());
-        $this->assertInternalType('array', $resolved['classmap']);
+        $this->assertIsArray($resolved['classmap']);
         $this->assertCount(1, $resolved['classmap']);
         $this->assertSame('PhpClass', $resolved['classmap']['wsdlType']);
     }
@@ -196,7 +196,7 @@ class ExtSoapOptionsTest extends TestCase
         ]);
 
         $resolved = $this->resolver->resolve($options->getOptions());
-        $this->assertInternalType('array', $resolved['classmap']);
+        $this->assertIsArray($resolved['classmap']);
         $this->assertCount(1, $resolved['classmap']);
         $this->assertSame('PhpClass', $resolved['classmap']['wsdlType']);
 

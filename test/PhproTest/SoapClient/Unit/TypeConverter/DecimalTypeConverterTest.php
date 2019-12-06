@@ -17,7 +17,7 @@ class DecimalTypeConverterTest extends TestCase
      */
     protected $converter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->converter = new DecimalTypeConverter();
     }
@@ -50,7 +50,7 @@ class DecimalTypeConverterTest extends TestCase
 
         $php = $this->converter->convertXmlToPhp($xml);
 
-        $this->assertInternalType('float', $php);
+        $this->assertIsFloat($php);
     }
 
     /**
@@ -63,7 +63,7 @@ class DecimalTypeConverterTest extends TestCase
 
         $php = $this->converter->convertXmlToPhp($xml);
 
-        $this->assertInternalType('null', $php);
+        $this->assertNull($php);
     }
 
     /**

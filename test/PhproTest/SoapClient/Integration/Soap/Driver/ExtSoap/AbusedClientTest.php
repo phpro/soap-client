@@ -33,8 +33,8 @@ class AbusedClientTest extends TestCase
         $this->client->__soapCall('validate', ['goodbye']);
         $encoded = $this->client->collectRequest();
 
-        $this->assertContains('hello', $encoded->getRequest());
-        $this->assertNotContains('goodbye', $encoded->getRequest());
+        $this->assertStringContainsString('hello', $encoded->getRequest());
+        $this->assertStringNotContainsString('goodbye', $encoded->getRequest());
     }
 
     /** @test */

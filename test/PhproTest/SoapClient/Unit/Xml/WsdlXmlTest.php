@@ -22,7 +22,7 @@ class WsdlXmlTest extends TestCase
     /**
      * Load basic soap XML on startup
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->xml = new \DOMDocument();
         $this->xml->load(FIXTURE_DIR . '/wsdl/weather-ws.wsdl');

@@ -37,7 +37,7 @@ class WsaMiddlewareTest extends TestCase
     /***
      * Initialize all basic objects
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->middleware = new WsaMiddleware();
         $this->mockClient = new Client(new GuzzleMessageFactory());

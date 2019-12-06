@@ -26,7 +26,7 @@ class EnumTest extends AbstractSoapTestCase
      */
     private $handler;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->wsdl = FIXTURE_DIR . '/wsdl/functional/enum.wsdl';
         $this->driver = $this->configureSoapDriver($this->wsdl, []);

@@ -17,7 +17,7 @@ class DoubleTypeConverterTest extends TestCase
      */
     protected $converter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->converter = new DoubleTypeConverter();
     }
@@ -50,7 +50,7 @@ class DoubleTypeConverterTest extends TestCase
 
         $php = $this->converter->convertXmlToPhp($xml);
 
-        $this->assertInternalType('float', $php);
+        $this->assertIsFloat($php);
     }
 
     /**
@@ -63,7 +63,7 @@ class DoubleTypeConverterTest extends TestCase
 
         $php = $this->converter->convertXmlToPhp($xml);
 
-        $this->assertInternalType('null', $php);
+        $this->assertNull($php);
     }
 
     /**

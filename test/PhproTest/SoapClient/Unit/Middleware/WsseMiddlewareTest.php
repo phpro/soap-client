@@ -38,7 +38,7 @@ class WsseMiddlewareTest extends TestCase
     /***
      * Initialize all basic objects
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->middleware = new WsseMiddleware(
             FIXTURE_DIR . '/certificates/wsse-client-private-key.pem',
