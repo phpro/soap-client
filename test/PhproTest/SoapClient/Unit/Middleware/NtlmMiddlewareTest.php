@@ -37,7 +37,7 @@ class NtlmMiddlewareTest extends TestCase
     /***
      * Initialize all basic objects
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->middleware = new NtlmMiddleware('username', 'password');
         $this->mockClient = new Client(new GuzzleMessageFactory());

@@ -3,14 +3,13 @@ namespace Phpro\SoapClient\Event;
 
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Type\ResultInterface;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Class ResponseEvent
  *
  * @package Phpro\SoapClient\Event
  */
-class ResponseEvent extends Event
+class ResponseEvent extends SoapEvent
 {
     /**
      * @var RequestEvent
@@ -28,8 +27,8 @@ class ResponseEvent extends Event
     protected $client;
 
     /**
-     * @param Client $client
-     * @param RequestEvent $requestEvent
+     * @param Client          $client
+     * @param RequestEvent    $requestEvent
      * @param ResultInterface $response
      */
     public function __construct(Client $client, RequestEvent $requestEvent, ResultInterface $response)

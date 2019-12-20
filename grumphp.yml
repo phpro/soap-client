@@ -7,9 +7,6 @@ parameters:
             ignore_patterns:
                 - "spec/*Spec.php"
                 - "test/*.php"
-        git_blacklist:
-            keywords:
-                - "\\)\\s?:\\s?void"
         phpspec: ~
         phpunit: ~
         phplint: ~

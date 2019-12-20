@@ -84,7 +84,7 @@ abstract class AbstractEncoderTest extends AbstractIntegrationTest
         $result = $this->runSingleElementXpathOnBody($xml, './application:validate/input');
 
         $this->assertSoapRequest($encoded, $xml, $method);
-        $this->assertContains(htmlspecialchars($input, ENT_NOQUOTES), $encoded->getRequest());
+        $this->assertStringContainsString(htmlspecialchars($input, ENT_NOQUOTES), $encoded->getRequest());
         $this->assertEquals($input, $result->nodeValue);
     }
 
@@ -868,7 +868,7 @@ abstract class AbstractEncoderTest extends AbstractIntegrationTest
         $this->assertSoapRequest($encoded, $xml, $method);
 
         $requestItem = $this->runSingleElementXpathOnBody($xml, './application:validate/request');
-        $this->assertContains(':Map', $requestItem->getAttributeNS(self::XML_XSI_NS, 'type'));
+        $this->assertStringContainsString(':Map', $requestItem->getAttributeNS(self::XML_XSI_NS, 'type'));
 
         $item1Key = $this->runSingleElementXpathOnBody($xml, './application:validate/request/item[1]/key');
         $this->assertEquals('key1', $item1Key->nodeValue);

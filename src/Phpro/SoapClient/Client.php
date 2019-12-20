@@ -3,6 +3,8 @@
 namespace Phpro\SoapClient;
 
 use Phpro\SoapClient\Event;
+use Phpro\SoapClient\Event\Dispatcher\EventDispatcherInterface;
+use Phpro\SoapClient\Exception\RuntimeException;
 use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Type\MixedResult;
@@ -11,7 +13,7 @@ use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
 use Phpro\SoapClient\Util\XmlFormatter;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as SymfonyEventDispatcher;
 
 /**
  * Class Client
@@ -26,12 +28,26 @@ class Client implements ClientInterface
     protected $engine;
 
     /**
-     * @var EventDispatcherInterface
+     * @deprecated We will be using our own EventDispatcherInterface in v2.0 which is in line with Symfony 5 and PSR14.
+     * @var SymfonyEventDispatcher|EventDispatcherInterface
      */
     protected $dispatcher;
 
-    public function __construct(EngineInterface $engine, EventDispatcherInterface $dispatcher)
+    /**
+     * @deprecated : In v2.0, we will only support our internal EventDispatcherInterface.
+     */
+    public function __construct(EngineInterface $engine, $dispatcher)
     {
+        assert(
+            $dispatcher instanceof SymfonyEventDispatcher || $dispatcher instanceof EventDispatcherInterface,
+            new RuntimeException(sprintf(
+                'Expected event dispatcher to be of type %s or %s, got "%s".',
+                SymfonyEventDispatcher::class,
+                EventDispatcherInterface::class,
+                get_class($dispatcher)
+            ))
+        );
+
         $this->engine = $engine;
         $this->dispatcher = $dispatcher;
     }
@@ -57,6 +73,20 @@ class Client implements ClientInterface
     }
 
     /**
+     * For backward compatibility with Symfony 4
+     *
+     * @deprecated : We will remove this method  in v2.0 in favour of injecting the internal dispatcher directly.
+     */
+    private function dispatch(Event\SoapEvent $event, string $name = null): Event\SoapEvent
+    {
+        $dispatcher = $this->dispatcher instanceof EventDispatcherInterface
+            ? $this->dispatcher
+            : new Event\Dispatcher\SymfonyEventDispatcher($this->dispatcher);
+
+        return $dispatcher->dispatch($event, $name);
+    }
+
+    /**
      * @param string            $method
      * @param RequestInterface  $request
      *
@@ -66,7 +96,7 @@ class Client implements ClientInterface
     protected function call(string $method, RequestInterface $request): ResultInterface
     {
         $requestEvent = new Event\RequestEvent($this, $method, $request);
-        $this->dispatcher->dispatch(Events::REQUEST, $requestEvent);
+        $this->dispatch($requestEvent, Events::REQUEST);
 
         try {
             $arguments = ($request instanceof MultiArgumentRequestInterface) ? $request->getArguments() : [$request];
@@ -81,11 +111,12 @@ class Client implements ClientInterface
             }
         } catch (\Exception $exception) {
             $soapException = SoapException::fromThrowable($exception);
-            $this->dispatcher->dispatch(Events::FAULT, new Event\FaultEvent($this, $soapException, $requestEvent));
+            $this->dispatch(new Event\FaultEvent($this, $soapException, $requestEvent), Events::FAULT);
             throw $soapException;
         }
 
-        $this->dispatcher->dispatch(Events::RESPONSE, new Event\ResponseEvent($this, $requestEvent, $result));
+        $this->dispatch(new Event\ResponseEvent($this, $requestEvent, $result), Events::RESPONSE);
+
         return $result;
     }
 }

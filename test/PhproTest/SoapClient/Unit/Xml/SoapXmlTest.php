@@ -23,7 +23,7 @@ class SoapXmlTest extends TestCase
     /**
      * Load basic soap XML on startup
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->xml = new \DOMDocument();
         $this->xml->load(FIXTURE_DIR . '/soap/empty-request-with-head-and-body.xml');
