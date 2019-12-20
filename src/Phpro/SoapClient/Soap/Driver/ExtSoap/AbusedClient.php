@@ -19,6 +19,24 @@ class AbusedClient extends \SoapClient
      */
     protected $storedResponse;
 
+    // @codingStandardsIgnoreStart
+    /**
+     * Internal SoapClient property for storing last request.
+     *
+     * @var string
+     */
+    protected $__last_request = '';
+    // @codingStandardsIgnoreEnd
+
+    // @codingStandardsIgnoreStart
+    /**
+     * Internal SoapClient property for storing last response.
+     *
+     * @var string
+     */
+    protected $__last_response = '';
+    // @codingStandardsIgnoreEnd
+
     public function __construct($wsdl, array $options = [])
     {
         $options = ExtSoapOptionsResolverFactory::createForWsdl($wsdl)->resolve($options);
@@ -44,7 +62,10 @@ class AbusedClient extends \SoapClient
         int $version,
         int $oneWay = 0
     ): string {
-        return (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
+        $this->__last_request = $request;
+        $this->__last_response = (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
+
+        return $this->__last_response;
     }
 
     public function collectRequest(): SoapRequest
