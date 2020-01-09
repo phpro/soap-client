@@ -93,6 +93,8 @@ class GenerateTypesCommand extends Command
         }
 
         $io->success('All SOAP types generated');
+
+        return 0;
     }
 
     /**

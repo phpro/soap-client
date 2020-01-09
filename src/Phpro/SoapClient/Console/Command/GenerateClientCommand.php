@@ -96,6 +96,8 @@ class GenerateClientCommand extends Command
         );
 
         $io->success('Generated client at ' . $destination);
+        
+        return 0;
     }
 
     /**
