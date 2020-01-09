@@ -72,6 +72,8 @@ class GenerateClientFactoryCommand extends Command
         $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));
 
         $io->success('Generated client factory at ' . $dest);
+
+        return 0;
     }
 
     /**

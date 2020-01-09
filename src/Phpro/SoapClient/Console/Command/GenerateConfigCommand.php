@@ -101,6 +101,8 @@ CONFIRMATION;
         $generator = new ConfigGenerator();
         $this->filesystem->putFileContents($destination, $generator->generate(new FileGenerator(), $context));
         $io->success('Config has been written to ' . $destination);
+
+        return 0;
     }
 
     private function addNonEmptySetter(ConfigContext $context, string $key, string $value)

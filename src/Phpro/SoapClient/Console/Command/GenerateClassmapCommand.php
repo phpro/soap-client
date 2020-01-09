@@ -92,6 +92,8 @@ class GenerateClassmapCommand extends Command
         $this->handleClassmap($generator, $typeMap, $path);
 
         $io->success('Generated classmap at ' . $path);
+        
+        return 0;
     }
 
 
