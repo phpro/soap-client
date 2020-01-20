@@ -87,4 +87,14 @@ class AbusedClient extends \SoapClient
         $this->storedRequest = null;
         $this->storedResponse = null;
     }
+
+    public function __getLastRequest() : string
+    {
+        return $this->__last_request;
+    }
+
+    public function __getLastResponse() : string
+    {
+        return $this->__last_response;
+    }
 }
