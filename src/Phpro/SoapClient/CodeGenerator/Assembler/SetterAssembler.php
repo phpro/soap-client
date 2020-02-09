@@ -20,7 +20,12 @@ class SetterAssembler implements AssemblerInterface
      * @var SetterAssemblerOptions
      */
     private $options;
-
+    
+    /**
+     * @var array PHP types
+     */
+    private $phpTypes = ['bool', 'int', 'float', 'string', 'array'];
+    
     /**
      * SetterAssembler constructor.
      *
@@ -50,8 +55,11 @@ class SetterAssembler implements AssemblerInterface
         $property = $context->getProperty();
         try {
             $parameterOptions = ['name' => $property->getName()];
+            $body = '$this->%1$s = $%1$s;';
             if ($this->options->useTypeHints()) {
                 $parameterOptions['type'] = $property->getType();
+            } elseif (in_array($property->getType(), $this->phpTypes)) {
+                $body = '$this->%1$s = (%2$s) $%1$s;';
             }
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
@@ -61,7 +69,7 @@ class SetterAssembler implements AssemblerInterface
                         'name' => $methodName,
                         'parameters' => [$parameterOptions],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                        'body' => sprintf('$this->%1$s = $%1$s;', $property->getName()),
+                        'body' => sprintf($body, $property->getName(), $property->getType()),
                         'docblock' => DocBlockGeneratorFactory::fromArray([
                             'tags' => [
                                 [
