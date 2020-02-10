@@ -13,7 +13,7 @@ The goal of a rule is to run a code assembler.
 - [AssemblerRule](#assemblerrule)
 - [ClientMethodMatchesRule](#clientmethodmatchesrule)
 - [MultiRule](#multirule)
-- [PopertynameMatchesRule](#propertynamematchesrule)
+- [PropertynameMatchesRule](#propertynamematchesrule)
 - [TypeMapRule](#TypeMapRule)
 - [TypenameMatchesRule](#typenamematchesrule)
 
