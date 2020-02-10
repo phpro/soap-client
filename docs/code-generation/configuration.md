@@ -108,12 +108,14 @@ The pre-defined rules are override-able by calling `setRuleSet` on the constucte
 
 For example, to make all your properties protected:
 ```php
+use Laminas\Code\Generator\PropertyGenerator;
+
 Config::create()
     ->setRuleSet(
         new Rules\RuleSet(
             [
                 new Rules\AssembleRule(
-                    new Assembler\PropertyAssembler(\Zend\Code\Generator\PropertyGenerator::VISIBILITY_PROTECTED)
+                    new Assembler\PropertyAssembler(PropertyGenerator::VISIBILITY_PROTECTED)
                 ),
                 new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
             ]
