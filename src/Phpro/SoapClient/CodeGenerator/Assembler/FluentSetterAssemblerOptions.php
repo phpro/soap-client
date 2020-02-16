@@ -43,7 +43,7 @@ class FluentSetterAssemblerOptions
     {
         $new = clone $this;
         $new->typeHints = $typeHints;
-        
+
         return $new;
     }
 
@@ -61,7 +61,7 @@ class FluentSetterAssemblerOptions
     }
 
     /**
-     * @param bool $normalize
+     * @param bool $normalizeValue
      *
      * @return FluentSetterAssemblerOptions
      */

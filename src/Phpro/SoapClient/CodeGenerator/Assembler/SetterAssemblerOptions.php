@@ -42,7 +42,7 @@ class SetterAssemblerOptions
     }
 
     /**
-     * @param bool $normalize
+     * @param bool $normalizeValue
      *
      * @return SetterAssemblerOptions
      */
