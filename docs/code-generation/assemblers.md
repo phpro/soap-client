@@ -1,9 +1,9 @@
 # Code assemblers
 
 Code assemblers are a thin layer above [zend-code](https://github.com/zendframework/zend-code).
-There are a lot of built-in assemblers but it is also possible to create your own assembler 
+There are a lot of built-in assemblers but it is also possible to create your own assembler
 to generate the code you want to add to the generated SOAP types.
- 
+
 # Built-in assemblers
 
 - [ClassMapAssembler](#classmapassembler)
@@ -119,24 +119,30 @@ Example output:
     }
 ```
 
-Generating type-hints is disabled by default, but can be enabled by passing `FluentSetterAssemblerOption` instance to the constructor with the option withTypeHints set to true.
+Generating type-hints is disabled by default, but can be enabled by passing `FluentSetterAssemblerOption` instance to the constructor with the option `typeHints`(`withTypeHints()`) set to true.
 
-Example
+Example:
+
 ```php
 new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints())
 ```
 
 ```php
     /**
-     * @param string $prop1
+     * @param int $prop1
      * @return $this
      */
-    public function setProp1(string $prop1)
+    public function setProp1(int $prop1)
     {
         $this->prop1 = $prop1;
         return $this;
     }
 ```
+
+Other options:
+
+- `returnType`(`withReturnType()`) - append return type
+- `normalizeValue`(`withNormalizeValue()`) - normalize property value by type
 
 ## FinalClassAssembler
 
@@ -231,7 +237,7 @@ class MyType implements IteratorAggregate
 
 ## JsonSerializableAssembler
 
-The `JsonSerializableAssembler` can be used if you want to JSON serialize your SOAP objects. 
+The `JsonSerializableAssembler` can be used if you want to JSON serialize your SOAP objects.
 This could be handy for logging JSON serialized request / response data which makes your logs smaller.
 
 Example output:
@@ -377,6 +383,19 @@ Example output:
 
 This assembler needs to be constructed with an instance of `SetterAssemblerOptions`.
 
+Generating type-hints is disabled by default, but can be enabled by passing `SetterAssemblerOption` instance to the constructor with the option `typeHints`(`withTypeHints()`) set to true. Or you can enable option `normalizeValue`(`withNormalizeValue()`) to normalize type of value (ignored at enable `typeHints`).
+
+Example output with enabled `normalizeValue`:
+
+```php
+    /**
+     * @param string $prop1
+     */
+    public function setProp1($prop1)
+    {
+        $this->prop1 = (string) $prop1;
+    }
+```
 
 ## TraitAssembler
 
@@ -438,7 +457,7 @@ Example output:
 
 # Creating your own Assembler
 
-Creating your own Assembler is pretty easy. 
+Creating your own Assembler is pretty easy.
 The only thing you'll need to do is implementing the `AssemblerInterface`.
 You can use the [zend-code](https://github.com/zendframework/zend-code) `ClassGenerator` and `FileGenerator` to manipulate your code.
 

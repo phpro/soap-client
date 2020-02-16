@@ -24,6 +24,11 @@ class FluentSetterAssembler implements AssemblerInterface
     private $options;
 
     /**
+     * @var array PHP types
+     */
+    private $phpTypes = ['bool', 'int', 'float', 'string', 'array'];
+
+    /**
      * FluentSetterAssembler constructor.
      *
      * @param FluentSetterAssemblerOptions|null $options
@@ -52,15 +57,25 @@ class FluentSetterAssembler implements AssemblerInterface
         try {
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
+            if (
+                $this->options->useNormalizeValue()
+                && ! $this->options->useTypeHints()
+                && in_array($property->getType(), $this->phpTypes)
+            ) {
+                $body = '$this->%1$s = (%3$s) $%1$s;%2$sreturn $this;';
+            } else {
+                $body = '$this->%1$s = $%1$s;%2$sreturn $this;';
+            }
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
                     'name'       => $methodName,
                     'parameters' => $this->getParameter($property),
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                     'body'       => sprintf(
-                        '$this->%1$s = $%1$s;%2$sreturn $this;',
+                        $body,
                         $property->getName(),
-                        $class::LINE_FEED
+                        $class::LINE_FEED,
+                        $property->getType()
                     ),
                     'returntype' => $this->options->useReturnType()
                         ? $class->getNamespaceName().'\\'.$class->getName()

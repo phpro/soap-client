@@ -22,6 +22,11 @@ class SetterAssembler implements AssemblerInterface
     private $options;
 
     /**
+     * @var array PHP types
+     */
+    private $phpTypes = ['bool', 'int', 'float', 'string', 'array'];
+
+    /**
      * SetterAssembler constructor.
      *
      * @param SetterAssemblerOptions|null $options
@@ -50,23 +55,30 @@ class SetterAssembler implements AssemblerInterface
         $property = $context->getProperty();
         try {
             $parameterOptions = ['name' => $property->getName()];
+            $body = '$this->%1$s = $%1$s;';
             if ($this->options->useTypeHints()) {
                 $parameterOptions['type'] = $property->getType();
+            } elseif ($this->options->useNormalizeValue() && in_array($property->getType(), $this->phpTypes)) {
+                $body = '$this->%1$s = (%2$s) $%1$s;';
             }
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [
-                        'name' => $methodName,
+                        'name'       => $methodName,
                         'parameters' => [$parameterOptions],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                        'body' => sprintf('$this->%1$s = $%1$s;', $property->getName()),
-                        'docblock' => DocBlockGeneratorFactory::fromArray([
+                        'body'       => sprintf($body, $property->getName(), $property->getType()),
+                        'docblock'   => DocBlockGeneratorFactory::fromArray([
                             'tags' => [
                                 [
-                                    'name' => 'param',
+                                    'name'        => 'param',
                                     'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                                ],
+                                [
+                                    'name'        => 'return',
+                                    'description' => 'void',
                                 ],
                             ],
                         ]),
