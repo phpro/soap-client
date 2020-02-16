@@ -76,10 +76,6 @@ class SetterAssembler implements AssemblerInterface
                                     'name'        => 'param',
                                     'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
                                 ],
-                                [
-                                    'name'        => 'return',
-                                    'description' => 'void',
-                                ],
                             ],
                         ]),
                     ]
