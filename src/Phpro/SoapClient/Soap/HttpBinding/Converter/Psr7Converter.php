@@ -62,7 +62,7 @@ class Psr7Converter
     public function convertSoapResponse(ResponseInterface $response): SoapResponse
     {
         return new SoapResponse(
-            $response->getBody()->getContents()
+            (string) $response->getBody()
         );
     }
 }
