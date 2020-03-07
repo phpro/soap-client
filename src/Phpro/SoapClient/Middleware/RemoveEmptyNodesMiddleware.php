@@ -32,7 +32,7 @@ class RemoveEmptyNodesMiddleware extends Middleware
 
     private function getNotNodes(Xml $xml): ?\DOMNodeList
     {
-        $notNodes = $xml->xpath('//*[not(node())]');
+        $notNodes = $xml->xpath('//soap:Envelope/*//*[not(node())]');
         if (!$notNodes->length) {
             return null;
         }
