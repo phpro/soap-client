@@ -8,10 +8,8 @@ use Phpro\SoapClient\Exception\RequestException;
 use Phpro\SoapClient\Soap\HttpBinding\Builder\Psr7RequestBuilder;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
-use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Class Psr7Converter
@@ -62,7 +60,7 @@ class Psr7Converter
     public function convertSoapResponse(ResponseInterface $response): SoapResponse
     {
         return new SoapResponse(
-            $response->getBody()->getContents()
+            (string) $response->getBody()
         );
     }
 }
