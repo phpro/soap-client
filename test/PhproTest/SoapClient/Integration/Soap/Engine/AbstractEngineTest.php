@@ -84,12 +84,10 @@ abstract class AbstractEngineTest extends AbstractIntegrationTest
         }
 
         try {
-            VCR::turnOn();
             VCR::insertCassette($this->getVcrPrefix().$cassete);
             $test();
         } finally {
             Vcr::eject();
-            VCR::turnOff();
         }
     }
 }
