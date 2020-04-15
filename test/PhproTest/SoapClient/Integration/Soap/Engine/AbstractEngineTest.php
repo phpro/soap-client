@@ -32,8 +32,8 @@ abstract class AbstractEngineTest extends AbstractIntegrationTest
      */
     function it_should_be_possible_to_hook_php_vcr_for_testing()
     {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/weather-ws.wsdl');
         $this->runWithCasette('get-city-weather-by-zip-10013.yml', function() {
+            $this->configureForWsdl(FIXTURE_DIR . '/wsdl/weather-ws.wsdl');
             $result = $this->getEngine()->request('GetCityWeatherByZIP', [['ZIP' => '10013']]);
             $this->assertTrue($result->GetCityWeatherByZIPResult->Success);
         });
@@ -45,8 +45,8 @@ abstract class AbstractEngineTest extends AbstractIntegrationTest
      */
     function it_should_know_the_last_request_and_response()
     {
-        $this->configureForWsdl(FIXTURE_DIR . '/wsdl/weather-ws.wsdl');
         $this->runWithCasette('get-city-weather-by-zip-10013.yml', function() {
+            $this->configureForWsdl(FIXTURE_DIR . '/wsdl/weather-ws.wsdl');
             $handler = $this->getHandler();
             $lastInfo = $handler->collectLastRequestInfo();
             $this->assertEquals(0, strlen($lastInfo->getLastRequest()));
