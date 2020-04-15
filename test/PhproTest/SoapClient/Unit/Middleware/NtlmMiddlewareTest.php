@@ -66,8 +66,8 @@ class NtlmMiddlewareTest extends TestCase
     function it_adds_ntlm_auth_to_the_request()
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageRegExp('/CURLOPT_HTTPAUTH \= CURLAUTH_NTLM/i');
-        $this->expectExceptionMessageRegExp('/CURLOPT_USERPWD \= "username\:password"/i');
+        $this->expectExceptionMessageMatches('/CURLOPT_HTTPAUTH \= CURLAUTH_NTLM/i');
+        $this->expectExceptionMessageMatches('/CURLOPT_USERPWD \= "username\:password"/i');
 
         $this->mockClient->addResponse(new Response());
         $this->client->sendRequest(new Request('POST', '/'));
