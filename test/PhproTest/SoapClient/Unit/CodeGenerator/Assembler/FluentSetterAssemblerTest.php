@@ -22,12 +22,12 @@ class FluentSetterAssemblerTest extends TestCase
      * @param string $version
      * @return bool
      */
-    function zendOlderOrEqual($version)
+    function laminasOlderOrEqual($version)
     {
-        $zendCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
-        $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
+        $laminasCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
+        $laminasCodeVersion = substr($laminasCodeVersion, 0, strpos($laminasCodeVersion, '@'));
 
-        return version_compare($zendCodeVersion, $version, '>=');
+        return version_compare($laminasCodeVersion, $version, '>=');
     }
 
     /**
@@ -156,8 +156,8 @@ CODE;
      */
     public function it_generates_return_types()
     {
-        if (!$this->zendOlderOrEqual('3.3.0')) {
-            $this->markTestSkipped('zend-code not new enough');
+        if (!$this->laminasOlderOrEqual('3.3.0')) {
+            $this->markTestSkipped('laminas-code not new enough');
         }
         $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withReturnType());
         $context = $this->createContextWithAnUnknownType();

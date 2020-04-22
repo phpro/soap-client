@@ -18,16 +18,16 @@ class ValidatorSpec extends ObjectBehavior
         $this->shouldHaveType(Validator::class);
     }
 
-    function it_can_tell_what_commands_need_zend_code()
+    function it_can_tell_what_commands_need_laminas_code()
     {
-        $this->commandRequiresZendCode('wizard')->shouldBe(true);
-        $this->commandRequiresZendCode('generate')->shouldBe(true);
-        $this->commandRequiresZendCode('generate:something')->shouldBe(true);
-        $this->commandRequiresZendCode('list')->shouldBe(false);
+        $this->commandRequiresLaminasCode('wizard')->shouldBe(true);
+        $this->commandRequiresLaminasCode('generate')->shouldBe(true);
+        $this->commandRequiresLaminasCode('generate:something')->shouldBe(true);
+        $this->commandRequiresLaminasCode('list')->shouldBe(false);
     }
 
-    function it_can_tell_if_zend_code_is_installed()
+    function it_can_tell_if_laminas_code_is_installed()
     {
-        $this->zendCodeIsInstalled()->shouldBe(true);
+        $this->laminasCodeIsInstalled()->shouldBe(true);
     }
 }

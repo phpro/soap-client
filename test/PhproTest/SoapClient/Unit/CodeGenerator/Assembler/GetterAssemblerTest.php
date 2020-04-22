@@ -22,12 +22,12 @@ class GetterAssemblerTest extends TestCase
      * @param string $version
      * @return bool
      */
-    function zendOlderOrEqual($version)
+    function laminasOlderOrEqual($version)
     {
-        $zendCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
-        $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
+        $laminasCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
+        $laminasCodeVersion = substr($laminasCodeVersion, 0, strpos($laminasCodeVersion, '@'));
 
-        return version_compare($zendCodeVersion, $version, '>=');
+        return version_compare($laminasCodeVersion, $version, '>=');
     }
 
     /**
@@ -86,7 +86,7 @@ CODE;
      */
     public function it_assembles_with_return_type()
     {
-        if (!$this->zendOlderOrEqual('3.3.0')) {
+        if (!$this->laminasOlderOrEqual('3.3.0')) {
             $this->markTestSkipped('laminas/laminas-code 3.3.0 required');
         }
         $options = (new GetterAssemblerOptions())

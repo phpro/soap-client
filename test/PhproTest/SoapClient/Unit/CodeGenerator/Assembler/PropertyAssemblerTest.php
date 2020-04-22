@@ -18,12 +18,12 @@ use Laminas\Code\Generator\PropertyGenerator;
  */
 class PropertyAssemblerTest extends TestCase
 {
-    function zendCodeCompare($version, $operator)
+    function laminasCodeCompare($version, $operator)
     {
-        $zendCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
-        $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
+        $laminasCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
+        $laminasCodeVersion = substr($laminasCodeVersion, 0, strpos($laminasCodeVersion, '@'));
 
-        return version_compare($zendCodeVersion, $version, $operator);
+        return version_compare($laminasCodeVersion, $version, $operator);
     }
 
     /**
@@ -40,7 +40,7 @@ class PropertyAssemblerTest extends TestCase
      */
     function it_assembles_property_without_default_value()
     {
-        if ($this->zendCodeCompare('3.3.0', '<')) {
+        if ($this->laminasCodeCompare('3.3.0', '<')) {
             $this->markTestSkipped('Running it_assembles_property_with_default_value instead');
         }
 
@@ -72,7 +72,7 @@ CODE;
      */
     function it_assembles_property_with_default_value()
     {
-        if ($this->zendCodeCompare('3.3.0', '>=')) {
+        if ($this->laminasCodeCompare('3.3.0', '>=')) {
             $this->markTestSkipped('Running it_assembles_property_without_default_value instead');
         }
 
@@ -104,7 +104,7 @@ CODE;
      */
     function it_assembles_with_visibility_without_default_value()
     {
-        if ($this->zendCodeCompare('3.3.0', '<')) {
+        if ($this->laminasCodeCompare('3.3.0', '<')) {
             $this->markTestSkipped('Running it_assembles_with_visibility_with_default_value instead');
         }
 
@@ -136,7 +136,7 @@ CODE;
      */
     function it_assembles_with_visibility_with_default_value()
     {
-        if ($this->zendCodeCompare('3.3.0', '>=')) {
+        if ($this->laminasCodeCompare('3.3.0', '>=')) {
             $this->markTestSkipped('Running it_assembles_with_visibility_without_default_value instead');
         }
 
