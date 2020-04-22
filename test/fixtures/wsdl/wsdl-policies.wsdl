@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+                  xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" 
+                  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" >
+    <wsp:UsingPolicy wsdl:required="true" />
+    <wsp:Policy wsu:Id="PolicySampleService" />
+    <wsdl:portType name="SampleService">
+        <wsdl:operation name="SampleService">
+            <wsp:Policy>
+                <wsp:PolicyReference URI="#PolicySampleService" />
+            </wsp:Policy>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>
