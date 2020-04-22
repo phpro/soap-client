@@ -8,8 +8,8 @@ use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\MethodGenerator;
+use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\MethodGenerator;
 
 /**
  * Class JsonSerializableAssembler
@@ -49,7 +49,7 @@ class JsonSerializableAssembler implements AssemblerInterface
      * @param Type $type
      * @param ClassGenerator $class
      *
-     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \Laminas\Code\Generator\Exception\InvalidArgumentException
      */
     private function implementJsonSerialize(Type $type, ClassGenerator $class)
     {

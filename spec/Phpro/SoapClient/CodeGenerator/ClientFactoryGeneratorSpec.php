@@ -7,7 +7,7 @@ use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 /**
  * Class ClientFactoryGeneratorSpec

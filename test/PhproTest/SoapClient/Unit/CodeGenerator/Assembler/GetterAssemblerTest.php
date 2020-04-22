@@ -9,7 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
-use Zend\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ClassGenerator;
 
 /**
  * Class GetterAssemblerTest
@@ -24,7 +24,7 @@ class GetterAssemblerTest extends TestCase
      */
     function zendOlderOrEqual($version)
     {
-        $zendCodeVersion = \PackageVersions\Versions::getVersion('zendframework/zend-code');
+        $zendCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
         $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
 
         return version_compare($zendCodeVersion, $version, '>=');
@@ -87,7 +87,7 @@ CODE;
     public function it_assembles_with_return_type()
     {
         if (!$this->zendOlderOrEqual('3.3.0')) {
-            $this->markTestSkipped('zendframework/zend-code 3.3.0 required');
+            $this->markTestSkipped('laminas/laminas-code 3.3.0 required');
         }
         $options = (new GetterAssemblerOptions())
             ->withReturnType();

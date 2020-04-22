@@ -3,7 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Util;
 
 use Phpro\SoapClient\Console\Command\WizardCommand;
-use Zend\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ClassGenerator;
 
 class Validator
 {

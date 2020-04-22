@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator;
 
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 /**
  * Interface GeneratorInterface

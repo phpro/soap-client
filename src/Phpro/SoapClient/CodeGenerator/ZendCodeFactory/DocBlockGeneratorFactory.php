@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\ZendCodeFactory;
 
-use Zend\Code\Generator\DocBlockGenerator;
+use Laminas\Code\Generator\DocBlockGenerator;
 
 final class DocBlockGeneratorFactory
 {

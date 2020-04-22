@@ -39,7 +39,7 @@ class ZendCodeValidationSubscriber implements EventSubscriberInterface
         $io->error(
             [
                 'zend-code not installed, require it with this command:',
-                'composer require --dev zendframework/zend-code:^3.1.0',
+                'composer require --dev laminas/laminas-code:^3.1.0',
             ]
         );
         $event->disableCommand();

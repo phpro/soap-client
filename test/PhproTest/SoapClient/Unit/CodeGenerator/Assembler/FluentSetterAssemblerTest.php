@@ -9,7 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
-use Zend\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ClassGenerator;
 
 /**
  * Class SetterAssemblerTest
@@ -24,7 +24,7 @@ class FluentSetterAssemblerTest extends TestCase
      */
     function zendOlderOrEqual($version)
     {
-        $zendCodeVersion = \PackageVersions\Versions::getVersion('zendframework/zend-code');
+        $zendCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
         $zendCodeVersion = substr($zendCodeVersion, 0, strpos($zendCodeVersion, '@'));
 
         return version_compare($zendCodeVersion, $version, '>=');
