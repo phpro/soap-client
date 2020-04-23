@@ -74,8 +74,9 @@ class DisablePoliciesMiddlewareTest extends TestCase
 
         $response = $this->client->sendRequest(new Request('POST', '/'));
         $xml = WsdlXml::fromStream($response->getBody());
+        $xml->registerNamespace('wsd', 'http://schemas.xmlsoap.org/ws/2004/09/policy');
 
-        $this->assertEquals(0, $xml->xpath('//wsdl:UsingPolicy')->length, 'Still got imports of WSDL policies (<UsingPolicy>).');
-        $this->assertEquals(0, $xml->xpath('//wsdl:Polocy')->length, 'Still got references to WSDL policies (<Policy>).');
+        $this->assertEquals(0, $xml->xpath('//wsd:Policy')->length, 'Still got policies in WSDL file.');
+        $this->assertEquals(0, $xml->xpath('//wsd:UsingPolicy')->length, 'Still got using statements for policies in WSDL file.');
     }
 }
