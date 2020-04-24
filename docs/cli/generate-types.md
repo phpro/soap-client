@@ -2,7 +2,7 @@
 
 Before you can generate code, you'll need to add some additional dev dependencies to your project:
 ```sh
-composer require --dev zendframework/zend-code:^3.1.0
+composer require --dev laminas/laminas-code:^3.1.0
 ```
 
 Basic value-objects can be generated automatically.

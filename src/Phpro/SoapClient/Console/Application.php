@@ -4,7 +4,7 @@
 namespace Phpro\SoapClient\Console;
 
 use Phpro\SoapClient\Console\Command;
-use Phpro\SoapClient\Console\Event\Subscriber\ZendCodeValidationSubscriber;
+use Phpro\SoapClient\Console\Event\Subscriber\LaminasCodeValidationSubscriber;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Application as SymfonyApplication;
@@ -59,7 +59,7 @@ class Application extends SymfonyApplication
     private function createEventDispatcher(): EventDispatcherInterface
     {
         $dispatcher = new EventDispatcher();
-        $dispatcher->addSubscriber(new ZendCodeValidationSubscriber());
+        $dispatcher->addSubscriber(new LaminasCodeValidationSubscriber());
 
         return $dispatcher;
     }

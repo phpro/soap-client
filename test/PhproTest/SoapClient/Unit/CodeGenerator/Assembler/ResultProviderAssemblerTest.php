@@ -9,7 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\Type\MixedResult;
 use PHPUnit\Framework\TestCase;
-use Zend\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ClassGenerator;
 
 /**
  * Class ResultProviderAssemblerTest

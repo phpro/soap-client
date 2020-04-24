@@ -9,7 +9,7 @@ use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapClientHandle;
 use Phpro\SoapClient\Soap\Engine\Engine;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 /**
  * Class ConfigGenerator

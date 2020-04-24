@@ -25,7 +25,7 @@ Since life is too short to read documentation,
 All you need to do is:
 
 ```sh
-composer require --dev zendframework/zend-code:^3.1.0
+composer require --dev laminas/laminas-code:^3.1.0
 ./vendor/bin/soap-client wizard
 ```
 

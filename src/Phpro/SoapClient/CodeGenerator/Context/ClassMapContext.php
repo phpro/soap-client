@@ -3,7 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 /**
  * Class ClassMapContext
