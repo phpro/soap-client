@@ -66,14 +66,14 @@ class SetterAssembler implements AssemblerInterface
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [
-                        'name'       => $methodName,
+                        'name' => $methodName,
                         'parameters' => [$parameterOptions],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                        'body'       => sprintf($body, $property->getName(), $property->getType()),
+                        'body' => sprintf($body, $property->getName(), $property->getType()),
                         'docblock'   => DocBlockGeneratorFactory::fromArray([
                             'tags' => [
                                 [
-                                    'name'        => 'param',
+                                    'name' => 'param',
                                     'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
                                 ],
                             ],
