@@ -30,6 +30,22 @@ class SetterAssemblerOptions
     }
 
     /**
+     * @return bool
+     */
+    public function useTypeHints(): bool
+    {
+        return $this->typeHints;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useNormalizeValue(): bool
+    {
+        return $this->normalizeValue;
+    }
+
+    /**
      * @param bool $typeHints
      *
      * @return SetterAssemblerOptions
@@ -52,21 +68,5 @@ class SetterAssemblerOptions
         $new->normalizeValue = $normalizeValue;
 
         return $new;
-    }
-
-    /**
-     * @return bool
-     */
-    public function useTypeHints(): bool
-    {
-        return $this->typeHints;
-    }
-
-    /**
-     * @return bool
-     */
-    public function useNormalizeValue(): bool
-    {
-        return $this->normalizeValue;
     }
 }
