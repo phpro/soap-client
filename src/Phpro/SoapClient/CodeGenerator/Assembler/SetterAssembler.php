@@ -70,7 +70,7 @@ class SetterAssembler implements AssemblerInterface
                         'parameters' => [$parameterOptions],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                         'body' => sprintf($body, $property->getName(), $property->getType()),
-                        'docblock'   => DocBlockGeneratorFactory::fromArray([
+                        'docblock' => DocBlockGeneratorFactory::fromArray([
                             'tags' => [
                                 [
                                     'name' => 'param',
