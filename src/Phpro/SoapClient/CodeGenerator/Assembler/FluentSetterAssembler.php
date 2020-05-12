@@ -57,21 +57,21 @@ class FluentSetterAssembler implements AssemblerInterface
         try {
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
+            $body = '$this->%1$s = ';
             if (
                 $this->options->useNormalizeValue()
                 && ! $this->options->useTypeHints()
                 && in_array($property->getType(), $this->phpTypes)
             ) {
-                $body = '$this->%1$s = (%3$s) $%1$s;%2$sreturn $this;';
-            } else {
-                $body = '$this->%1$s = $%1$s;%2$sreturn $this;';
+                $body .= '(%3$s) ';
             }
+            $body .= '$%1$s;%2$sreturn $this;';
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray([
-                    'name'       => $methodName,
+                    'name' => $methodName,
                     'parameters' => $this->getParameter($property),
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                    'body'       => sprintf(
+                    'body' => sprintf(
                         $body,
                         $property->getName(),
                         $class::LINE_FEED,
@@ -83,11 +83,11 @@ class FluentSetterAssembler implements AssemblerInterface
                     'docblock'   => DocBlockGeneratorFactory::fromArray([
                         'tags' => [
                             [
-                                'name'        => 'param',
+                                'name' => 'param',
                                 'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
                             ],
                             [
-                                'name'        => 'return',
+                                'name' => 'return',
                                 'description' => '$this',
                             ],
                         ],
