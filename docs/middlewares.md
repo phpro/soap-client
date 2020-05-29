@@ -17,6 +17,7 @@ Next, you can use one of the built-in middlewares:
 - [WsseMiddleware](#wssemiddleware)
 - [RemoveEmptyNodesMiddleware](#removeemptynodesmiddleware)
 - [Wsdl/DisableExtensionsMiddleware](#wsdldisableextensionsmiddleware)
+- [Wsdl/DisablePoliciesMiddleware](#wsdldisablepoliciesmiddleware)
 
 Can't find the middleware you were looking for?
 [It is always possible to create your own one!](#creating-your-own-middleware)
@@ -131,6 +132,21 @@ property to false on the fly so that you don't have to change the WSDL on the se
 ```php
 $wsdlProvier = HttPlugWsdlProvider::create($client);
 $wsdlProvider->addMiddleware(new DisableExtensionsMiddleware());
+```
+
+
+### Wsdl/DisablePoliciesMiddleware
+
+The default SOAP client does not support the [Web Services Policy Framework](http://schemas.xmlsoap.org/ws/2004/09/policy/) attributes since there is no such support in PHP.
+You will retrieve this exception: "[SoapFault] SOAP-ERROR: Parsing WSDL: Unknown required WSDL extension 'http://schemas.xmlsoap.org/ws/2004/09/policy'" 
+when the WSDL does contains WS policies.
+ 
+This middleware can be used to remove all UsingPolicy and Policy tags on the fly so that you don't have to change the WSDL on the server.
+
+**Usage**
+```php
+$wsdlProvier = HttPlugWsdlProvider::create($client);
+$wsdlProvider->addMiddleware(new DisablePoliciesMiddleware());
 ```
 
 
