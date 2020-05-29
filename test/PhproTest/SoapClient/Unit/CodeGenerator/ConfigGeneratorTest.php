@@ -5,7 +5,7 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator;
 use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use PHPUnit\Framework\TestCase;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 class ConfigGeneratorTest extends TestCase
 {

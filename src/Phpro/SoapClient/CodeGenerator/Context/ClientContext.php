@@ -3,7 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
 use Phpro\SoapClient\CodeGenerator\Model\Type;
-use Zend\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ClassGenerator;
 
 /**
  * Class ClientContext

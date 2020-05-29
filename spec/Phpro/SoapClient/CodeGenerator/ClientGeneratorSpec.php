@@ -13,8 +13,8 @@ use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 /**
  * Class ClientGeneratorSpec

@@ -2,7 +2,7 @@
 
 Before you can generate code, you'll need to add some additional dev dependencies to your project:
 ```sh
-composer require --dev zendframework/zend-code:^3.1.0
+composer require --dev laminas/laminas-code:^3.1.0
 ```
 
 Basic value-objects can be generated automatically.
@@ -28,7 +28,7 @@ This generator will read all XSD types from the provided WSDL and convert it to 
 Keep in mind that the WSDL must provide all XSD types for the generation of value-objects.
  Some exotic SOAP services don't provide much information. For example: they will return an XML string which needs to be parsed manually.
  These WSDLs can only be parsed as far as the XSD information goes.
- Al other information needs to be added manually, or by a custom class generator.
+ All other information needs to be added manually, or by a custom class generator.
 
 Options:
 

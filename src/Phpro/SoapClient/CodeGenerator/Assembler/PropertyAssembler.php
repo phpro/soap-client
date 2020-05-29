@@ -4,9 +4,9 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
+use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\PropertyGenerator;
+use Laminas\Code\Generator\PropertyGenerator;
 
 /**
  * Class PropertyAssembler
@@ -47,7 +47,7 @@ class PropertyAssembler implements AssemblerInterface
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
-            // It's not possible to overwrite a property in zend-code yet!
+            // It's not possible to overwrite a property in laminas-code yet!
             if ($class->hasProperty($property->getName())) {
                 return;
             }

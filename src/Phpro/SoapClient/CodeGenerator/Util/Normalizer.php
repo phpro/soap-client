@@ -100,6 +100,7 @@ class Normalizer
         'while',
         'xor',
         'yield',
+        'void'
     ];
 
     /**

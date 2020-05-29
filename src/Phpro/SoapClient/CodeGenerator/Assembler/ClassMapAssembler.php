@@ -8,8 +8,8 @@ use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Soap\ClassMap\ClassMap;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
-use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\MethodGenerator;
+use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\MethodGenerator;
 
 /**
  * Class ClassMapAssembler

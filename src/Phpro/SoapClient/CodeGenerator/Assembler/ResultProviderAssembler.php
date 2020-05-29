@@ -6,12 +6,12 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
+use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
-use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\MethodGenerator;
+use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\MethodGenerator;
 
 /**
  * Class ResultProviderAssembler
@@ -73,7 +73,7 @@ class ResultProviderAssembler implements AssemblerInterface
      * @param ClassGenerator   $class
      * @param Property         $property
      *
-     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \Laminas\Code\Generator\Exception\InvalidArgumentException
      */
     private function implementGetResult(ContextInterface $context, ClassGenerator $class, Property $property)
     {

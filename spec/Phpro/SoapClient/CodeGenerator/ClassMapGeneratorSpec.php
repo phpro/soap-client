@@ -9,7 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 /**
  * Class ClassMapGeneratorSpec

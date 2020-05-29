@@ -5,9 +5,9 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
-use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
+use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\MethodGenerator;
+use Laminas\Code\Generator\MethodGenerator;
 
 /**
  * Class ConstructorAssembler
@@ -62,7 +62,7 @@ class ConstructorAssembler implements AssemblerInterface
      * @param Type $type
      *
      * @return MethodGenerator
-     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \Laminas\Code\Generator\Exception\InvalidArgumentException
      */
     private function assembleConstructor(Type $type): MethodGenerator
     {

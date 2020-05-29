@@ -2,20 +2,20 @@
 
 namespace spec\Phpro\SoapClient\Console\Event\Subscriber;
 
-use Phpro\SoapClient\Console\Event\Subscriber\ZendCodeValidationSubscriber;
+use Phpro\SoapClient\Console\Event\Subscriber\LaminasCodeValidationSubscriber;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class ZendCodeValidationSubscriberSpec
+ * Class LaminasCodeValidationSubscriberSpec
  * @package spec\Phpro\SoapClient\Event
  */
-class ZendCodeValidationSubscriberSpec extends ObjectBehavior
+class LaminasCodeValidationSubscriberSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(ZendCodeValidationSubscriber::class);
+        $this->shouldHaveType(LaminasCodeValidationSubscriber::class);
     }
 
     function it_be_an_eventsubsciberinterface()

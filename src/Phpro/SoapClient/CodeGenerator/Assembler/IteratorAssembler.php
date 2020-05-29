@@ -5,10 +5,10 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
-use Phpro\SoapClient\CodeGenerator\ZendCodeFactory\DocBlockGeneratorFactory;
+use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\MethodGenerator;
+use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\MethodGenerator;
 
 /**
  * Class IteratorAssembler
@@ -56,7 +56,7 @@ class IteratorAssembler implements AssemblerInterface
      * @param ClassGenerator $class
      * @param Property       $firstProperty
      *
-     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
+     * @throws \Laminas\Code\Generator\Exception\InvalidArgumentException
      */
     private function implementGetIterator(ClassGenerator $class, Property $firstProperty)
     {
