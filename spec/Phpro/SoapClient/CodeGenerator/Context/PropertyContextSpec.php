@@ -8,7 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Zend\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ClassGenerator;
 
 /**
  * Class PropertyContextSpec

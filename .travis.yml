@@ -16,8 +16,6 @@ matrix:
     - php: 7.4
       env: DEPENDENCIES='low'
   fast_finish: true
-  allow_failures:
-    - php: 7.4
 
 before_install:
   - composer selfupdate

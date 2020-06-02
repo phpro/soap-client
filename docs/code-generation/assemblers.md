@@ -1,6 +1,6 @@
 # Code assemblers
 
-Code assemblers are a thin layer above [zend-code](https://github.com/zendframework/zend-code).
+Code assemblers are a thin layer above [laminas-code](https://github.com/laminas/laminas-code).
 There are a lot of built-in assemblers but it is also possible to create your own assembler
 to generate the code you want to add to the generated SOAP types.
 
@@ -459,7 +459,7 @@ Example output:
 
 Creating your own Assembler is pretty easy.
 The only thing you'll need to do is implementing the `AssemblerInterface`.
-You can use the [zend-code](https://github.com/zendframework/zend-code) `ClassGenerator` and `FileGenerator` to manipulate your code.
+You can use the [laminas-code](https://github.com/laminas/laminas-code) `ClassGenerator` and `FileGenerator` to manipulate your code.
 
 ```php
 /**

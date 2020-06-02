@@ -10,7 +10,7 @@ use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 /**
  * Class ClientFactoryContextSpec

@@ -7,7 +7,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use PHPUnit\Framework\TestCase;
-use Zend\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ClassGenerator;
 
 /**
  * Class GetterAssemblerTest

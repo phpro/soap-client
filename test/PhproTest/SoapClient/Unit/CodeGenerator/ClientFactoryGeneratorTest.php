@@ -7,7 +7,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
 use PHPUnit\Framework\TestCase;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 
 class ClientFactoryGeneratorTest extends TestCase
 {

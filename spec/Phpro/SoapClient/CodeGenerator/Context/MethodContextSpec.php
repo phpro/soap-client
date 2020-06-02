@@ -7,7 +7,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use PhpSpec\ObjectBehavior;
-use Zend\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ClassGenerator;
 
 /**
  * Class ClientMethodContextSpec

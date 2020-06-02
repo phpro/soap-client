@@ -8,7 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
-use Zend\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\FileGenerator;
 use PHPUnit\Framework\TestCase;
 
 /**
