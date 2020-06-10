@@ -15,7 +15,7 @@ This handler knows how to deal with HTTP middlewares if they are supported by yo
 Load HTTP plug core packages:
 
 ```sh
-composer require psr/http-message:^1.8 php-http/httplug:^2.1 php-http/message-factory:^1.0 php-http/discovery:^1.7 php-http/message:^1.8 php-http/client-common:^2.1
+composer require psr/http-message:^1.0 php-http/httplug:^2.1 php-http/message-factory:^1.0 php-http/discovery:^1.7 php-http/message:^1.8 php-http/client-common:^2.1
 ```
 
 
