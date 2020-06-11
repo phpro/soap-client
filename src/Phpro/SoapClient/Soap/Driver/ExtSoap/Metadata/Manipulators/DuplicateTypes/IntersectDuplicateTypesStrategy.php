@@ -34,10 +34,10 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
     private function intersectTypes(TypeCollection $duplicateTypes): Type
     {
         return new Type(
-            current($duplicateTypes)->getXsdType(),
+            current(iterator_to_array($duplicateTypes))->getXsdType(),
             iterator_to_array(
                 (new PropertyCollection(...array_merge(
-                    $duplicateTypes->map(static function (Type $type): array {
+                    ...$duplicateTypes->map(static function (Type $type): array {
                         return $type->getProperties();
                     })
                 )))->unique()
