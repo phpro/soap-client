@@ -9,7 +9,9 @@ use Phpro\SoapClient\Soap\Engine\DecoderInterface;
 use Phpro\SoapClient\Soap\Engine\DriverInterface;
 use Phpro\SoapClient\Soap\Engine\EncoderInterface;
 use Phpro\SoapClient\Soap\Engine\Metadata\LazyInMemoryMetadata;
+use Phpro\SoapClient\Soap\Engine\Metadata\ManipulatedMetadata;
 use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataOptions;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
 
@@ -52,12 +54,20 @@ class ExtSoapDriver implements DriverInterface
     {
         $client = AbusedClient::createFromOptions($options);
 
-        return self::createFromClient($client);
+        return self::createFromClient($client, $options->getMetadataOptions());
     }
 
-    public static function createFromClient(AbusedClient $client): self
+    public static function createFromClient(AbusedClient $client, MetadataOptions $metadataOptions = null): self
     {
-        $metadata = new LazyInMemoryMetadata(new ExtSoapMetadata($client));
+        $metadataOptions = $metadataOptions ?: new MetadataOptions();
+
+        $metadata = new LazyInMemoryMetadata(
+            new ManipulatedMetadata(
+                new ExtSoapMetadata($client),
+                $metadataOptions->getMethodsManipulator(),
+                $metadataOptions->getTypesManipulator()
+            )
+        );
 
         return new self(
             $client,

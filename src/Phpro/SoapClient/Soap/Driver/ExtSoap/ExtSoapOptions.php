@@ -6,6 +6,9 @@ namespace Phpro\SoapClient\Soap\Driver\ExtSoap;
 
 use Phpro\SoapClient\Exception\UnexpectedConfigurationException;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
+use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorChain;
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataOptions;
 use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Soap\TypeConverter\TypeConverterCollection;
 use Phpro\SoapClient\Wsdl\Provider\MixedWsdlProvider;
@@ -28,11 +31,25 @@ class ExtSoapOptions
      */
     private $wsdlProvider;
 
+    /**
+     * @var MetadataOptions
+     */
+    private $metadataOptions;
+
     public function __construct(string $wsdl, array $options = [])
     {
         $this->wsdl = $wsdl;
         $this->options = $options;
         $this->wsdlProvider = new MixedWsdlProvider();
+
+        // Ext-soap is not able to work with duplicate types (see FAQ)
+        // Therefore, we decided to combine all duplicate types into 1 big intersected type instead.
+        // Therefore it will always be usable, but might contain some empty properties.
+        // It has it's limitations but it is workable until ext-soap handles XSD namespaces properly.
+        $this->metadataOptions = (new MetadataOptions())
+            ->withTypesManipulator(new TypesManipulatorChain(
+                new IntersectDuplicateTypesStrategy()
+            ));
     }
 
     public static function defaults(string $wsdl, array $options = []): self
@@ -112,6 +129,18 @@ class ExtSoapOptions
         $this->options['cache_wsdl'] = WSDL_CACHE_NONE;
 
         return $this;
+    }
+
+    public function withMetaOptions(callable $manipulator): self
+    {
+        $this->metadataOptions = $manipulator($this->metadataOptions);
+
+        return $this;
+    }
+
+    public function getMetadataOptions(): MetadataOptions
+    {
+        return $this->metadataOptions;
     }
 
     private function fetchOptionOfTypeWithDefault(string $key, string $type, $default)
