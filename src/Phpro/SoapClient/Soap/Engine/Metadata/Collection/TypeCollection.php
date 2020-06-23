@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine\Metadata\Collection;
 
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\MetadataException;
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
 
@@ -77,10 +78,10 @@ class TypeCollection implements \IteratorAggregate, \Countable
         throw MetadataException::typeNotFound($name);
     }
 
-    public function fetchAllByName(string $name): TypeCollection
+    public function fetchAllByNormalizedName(string $name): TypeCollection
     {
         return $this->filter(static function (Type $type) use ($name): bool {
-            return $type->getName() === $name;
+            return Normalizer::normalizeClassname($type->getName()) === $name;
         });
     }
 }

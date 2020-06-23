@@ -24,7 +24,7 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
                 return array_merge(
                     $result,
                     [
-                        $name => $this->intersectTypes($allTypes->fetchAllByName($name))
+                        $name => $this->intersectTypes($allTypes->fetchAllByNormalizedName($name))
                     ]
                 );
             },
