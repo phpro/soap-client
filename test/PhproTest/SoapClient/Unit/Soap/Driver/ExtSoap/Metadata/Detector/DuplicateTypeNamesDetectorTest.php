@@ -25,7 +25,7 @@ class DuplicateTypeNamesDetectorTest extends TestCase
             new Type(XsdType::create('with*specialchar'), []),
             new Type(XsdType::create('not-duplicate'), []),
             new Type(XsdType::create('CASEISDIFFERENT'), []),
-            new Type(XsdType::create('Case-is-different'), []),
+            new Type(XsdType::create('Case-is-different'), [])
         );
 
         $duplicates = $detector($types);
