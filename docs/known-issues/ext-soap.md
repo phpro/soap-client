@@ -13,10 +13,12 @@ This package will generate the code for the last detected type in the WSDL.
 
 Suggested workaround:
 
-- Manually create the missing classes.
-- Determine which is the most important type and use that one in the classmap.
-- You can use the type converters for the other type(s) with the same name.
-- You'll need to manually parse the XML and link it to an object.
+1. Use one of [the built-in duplicate types strategies](../drivers/ext-soap.md)
+2. Manually determine type converters for the various classes:
+    - Manually create the missing classes.
+    - Determine which is the most important type and use that one in the classmap.
+    - You can use the type converters for the other type(s) with the same name.
+    - You'll need to manually parse the XML and link it to an object.
 
 ```php
 $soapOptions = [

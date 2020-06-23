@@ -106,6 +106,9 @@ class MyMetadataProvider implements MetadataProviderInterface
 }
 ```
 
+We provided some generic metadata tools that you can use to e.g. manipulate the metadata during code generation.
+You can find [more information about the metadata on this page](./metadata.md).
+
 Since detecting the metdata is a rather complex topic, you need to make sure it works the way we expect it to work.
 Therefor, you need to create a testcase for your implementation.
 We've provided the `PhproTest\SoapClient\Integration\Soap\Engine\AbstractMetadataProviderTest` to make sure all kinds of types are covered.

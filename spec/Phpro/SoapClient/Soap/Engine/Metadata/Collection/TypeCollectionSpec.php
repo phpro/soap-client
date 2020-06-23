@@ -69,4 +69,45 @@ class TypeCollectionSpec extends ObjectBehavior
         $type->getName()->willReturn($name = 'name');
         $this->shouldthrow(MetadataException::class)->duringFetchOneByName('invalid');
     }
+
+    public function it_can_filter_types(Type $type1, Type $type2): void
+    {
+        $this->beConstructedWith($type1, $type2);
+        $new = $this->filter(function (Type $type) use ($type1) {
+            return $type1->getWrappedObject() === $type;
+        });
+
+        $this->shouldNotBe($new);
+        $new->shouldBeAnInstanceOf(TypeCollection::class);
+        $new->shouldIterateAs([$type1]);
+    }
+
+    public function it_can_reduce(Type $type1, Type $type2): void
+    {
+        $this->beConstructedWith($type1, $type2);
+        $result = $this->reduce(
+            function (int $carry, Type $type) {
+                return $carry + 1;
+            },
+            0
+        );
+
+        $result->shouldBe(2);
+    }
+
+    public function it_can_fetch_multiple_by_normalized_name(Type $type1, Type $type2, Type $type3, Type $type4): void
+    {
+        $this->beConstructedWith($type1, $type2, $type3, $type4);
+
+        $type1->getName()->willReturn('file');
+        $type2->getName()->willReturn('File');
+        $type3->getName()->willReturn('-File');
+        $type4->getName()->willReturn('SomethingElse');
+
+        $result = $this->fetchAllByNormalizedName('File');
+
+        $this->shouldNotBe($result);
+        $result->shouldBeAnInstanceOf(TypeCollection::class);
+        $result->shouldIterateAs([$type1, $type2, $type3]);
+    }
 }

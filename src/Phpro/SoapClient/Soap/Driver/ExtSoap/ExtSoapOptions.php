@@ -41,38 +41,40 @@ class ExtSoapOptions
         $this->wsdl = $wsdl;
         $this->options = $options;
         $this->wsdlProvider = new MixedWsdlProvider();
-
-        // Ext-soap is not able to work with duplicate types (see FAQ)
-        // Therefore, we decided to combine all duplicate types into 1 big intersected type instead.
-        // Therefore it will always be usable, but might contain some empty properties.
-        // It has it's limitations but it is workable until ext-soap handles XSD namespaces properly.
-        $this->metadataOptions = (new MetadataOptions())
-            ->withTypesManipulator(new TypesManipulatorChain(
-                new IntersectDuplicateTypesStrategy()
-            ));
+        $this->metadataOptions = new MetadataOptions();
     }
 
     public static function defaults(string $wsdl, array $options = []): self
     {
-        return new self(
-            $wsdl,
-            array_merge(
-                [
-                    'trace' => true,
-                    'exceptions' => true,
-                    'keep_alive' => true,
-                    'cache_wsdl' => WSDL_CACHE_DISK, // Avoid memory cache: this causes SegFaults from time to time.
-                    'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
-                    'typemap' => new TypeConverterCollection([
-                        new TypeConverter\DateTimeTypeConverter(),
-                        new TypeConverter\DateTypeConverter(),
-                        new TypeConverter\DecimalTypeConverter(),
-                        new TypeConverter\DoubleTypeConverter()
-                    ]),
-                ],
-                $options
+        return (
+            new self(
+                $wsdl,
+                array_merge(
+                    [
+                        'trace' => true,
+                        'exceptions' => true,
+                        'keep_alive' => true,
+                        'cache_wsdl' => WSDL_CACHE_DISK, // Avoid memory cache: this causes SegFaults from time to time.
+                        'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
+                        'typemap' => new TypeConverterCollection([
+                            new TypeConverter\DateTimeTypeConverter(),
+                            new TypeConverter\DateTypeConverter(),
+                            new TypeConverter\DecimalTypeConverter(),
+                            new TypeConverter\DoubleTypeConverter()
+                        ]),
+                    ],
+                    $options
+                )
             )
-        );
+        )->withMetaOptions(static function (MetadataOptions $options): MetadataOptions {
+            // Ext-soap is not able to work with duplicate types (see FAQ)
+            // Therefore, we decided to combine all duplicate types into 1 big intersected type instead.
+            // Therefore it will always be usable, but might contain some empty properties.
+            // It has it's limitations but it is workable until ext-soap handles XSD namespaces properly.
+            return $options->withTypesManipulator(new TypesManipulatorChain(
+                new IntersectDuplicateTypesStrategy()
+            ));
+        });
     }
 
     public function getWsdl(): string
