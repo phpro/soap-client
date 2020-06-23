@@ -2,6 +2,7 @@
 
 - [Duplicate typenames](#duplicate-typenames)
 - [Enumerations](#enumerations)
+- [Occurs](#occurs)
 
 Isn't your issue listed below? Feel free to provide additional issues in a functional test.
 
@@ -13,7 +14,7 @@ This package will generate the code for the last detected type in the WSDL.
 
 Suggested workaround:
 
-1. Use one of [the built-in duplicate types strategies](../drivers/ext-soap.md)
+1. Use one of [the built-in duplicate types strategies](../drivers/ext-soap.md#duplicate-types)
 2. Manually determine type converters for the various classes:
     - Manually create the missing classes.
     - Determine which is the most important type and use that one in the classmap.
@@ -96,3 +97,14 @@ $soapOptions = [
 More information:
 - [Functional test](../../test/PhproTest/SoapClient/Functional/ExtSoap/Encoding/EnumTest.php)
 - [Lack of validation in php-src](https://github.com/php/php-src/blob/php-7.2.10/ext/soap/php_encoding.c#L3172-L3200)
+
+
+## Occurs
+
+It is possible that the WSDL file contains `minOccurs` and `maxOccurs` on XSD elements.
+Ext-soap will not make this information available through the public API of the SOAP client.
+Therefore, we cannot predict during code generation if a type will definitely be an array or possibly be nullable.
+
+Currently, this issue can be avoided by not generating too strict types in the soap-client and optionally by using the [IteratorAssembler](../code-generation/assemblers.md#iteratorassembler).
+A better solution would be to parse the WSDL manually and add that information to the metadata.
+From that point on we can take this information into consideration during code generation.

@@ -50,7 +50,7 @@ $typemap->add(new MyTypeConverter());
 ### Duplicate types
 
 Ext-soap does not add any namespace or unique identifier to the types it knows.
-You can read more about this in the [known ext-soap issues](../known-issues/ext-soap.md) section.
+You can read more about this in the [known ext-soap issues](../known-issues/ext-soap.md#duplicate-typenames) section.
 Therefore, we added some strategies to deal with duplicate types:
 
 **IntersectDuplicateTypesStrategy**
@@ -62,6 +62,7 @@ This duplicate types strategy will merge all duplicate types into one big type w
 **RemoveDuplicateTypesStrategy**
 
 This duplicate types strategy will remove all duplicate types it finds.
+
 
 
 You can overwrite the strategy on the `ExtSoapOptions` object:
