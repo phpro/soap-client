@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes;
 
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Detector\DuplicateTypeNamesDetector;
 use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorInterface;
@@ -16,7 +17,7 @@ final class RemoveDuplicateTypesStrategy implements TypesManipulatorInterface
         $duplicateNames = (new DuplicateTypeNamesDetector())($types);
 
         return $types->filter(static function (Type $type) use ($duplicateNames): bool {
-            return !in_array($type->getName(), $duplicateNames, true);
+            return !in_array(Normalizer::normalizeClassname($type->getName()), $duplicateNames, true);
         });
     }
 }

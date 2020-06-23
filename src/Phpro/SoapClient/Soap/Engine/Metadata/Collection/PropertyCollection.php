@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\Soap\Engine\Metadata\Collection;
 
 use Phpro\SoapClient\Soap\Engine\Metadata\Model\Property;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
 
 class PropertyCollection implements \IteratorAggregate, \Countable
 {

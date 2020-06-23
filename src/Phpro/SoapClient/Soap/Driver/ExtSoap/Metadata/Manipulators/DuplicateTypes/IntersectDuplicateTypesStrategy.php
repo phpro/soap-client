@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes;
 
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Engine\Metadata\Collection\PropertyCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorInterface;
@@ -15,7 +16,7 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
     {
         return new TypeCollection(...array_values($allTypes->reduce(
             function (array $result, Type $type) use ($allTypes) {
-                $name = $type->getName();
+                $name = Normalizer::normalizeClassname($type->getName());
                 if (array_key_exists($name, $result)) {
                     return $result;
                 }

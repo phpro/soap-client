@@ -49,13 +49,6 @@ class TypeCollection implements \IteratorAggregate, \Countable
         return array_map($callback, $this->types);
     }
 
-    public function mapNames(): array
-    {
-        return $this->map(static function (Type $type): string {
-            return $type->getName();
-        });
-    }
-
     public function filter(callable $filter): self
     {
         return new self(...array_filter(
