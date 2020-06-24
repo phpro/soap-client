@@ -15,7 +15,7 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
     public function __invoke(TypeCollection $allTypes): TypeCollection
     {
         return new TypeCollection(...array_values($allTypes->reduce(
-            function (array $result, Type $type) use ($allTypes) {
+            function (array $result, Type $type) use ($allTypes): array {
                 $name = Normalizer::normalizeClassname($type->getName());
                 if (array_key_exists($name, $result)) {
                     return $result;

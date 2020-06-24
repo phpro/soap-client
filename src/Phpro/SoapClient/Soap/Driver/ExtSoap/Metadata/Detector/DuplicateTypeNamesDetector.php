@@ -20,7 +20,7 @@ final class DuplicateTypeNamesDetector
         return array_keys(
             array_filter(
                 array_count_values($types->map(
-                    static function (Type $type) {
+                    static function (Type $type): string {
                         return Normalizer::normalizeClassname($type->getName());
                     }
                 )),
