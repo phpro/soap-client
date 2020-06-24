@@ -10,6 +10,10 @@ use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Middleware\MiddlewareSupportingInterface;
 use Phpro\SoapClient\Util\Filesystem;
 
+/**
+ * @deprecated Use the CachedWsdlProvider in combination with the HttpWsdlLoader instead!
+ * TODO : this class will be removed in v2.0
+ */
 class HttPlugWsdlProvider implements WsdlProviderInterface, MiddlewareSupportingInterface
 {
     /**
