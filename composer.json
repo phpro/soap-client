@@ -61,9 +61,7 @@
         "psr/log-implementation": "For logging SOAP requests, responses and errors",
         "robrichards/wse-php": "If you want to use the WSA or WSSE middleware",
         "symfony/validator": "If you easily want to validate SOAP requests / responses manually"
-  },
-  "repositories": [
-    ],
+    },
     "config": {
         "sort-packages": true
     },
