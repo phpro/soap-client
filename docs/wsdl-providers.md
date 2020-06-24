@@ -25,7 +25,7 @@ $options = ExtSoapOptions::defaults('my.wsdl')
 
 Here is a list of built-in providers:
 
-- [CachedWsdlProvider](#cached wsdl provider)
+- [CachedWsdlProvider](#cachedwsdlprovider)
 - [~~HttPlugWsdlProvider~~](#httplugwsdlprovider)
 - [InMemoryWsdlProvider](#inmemorywsdlprovider)
 - [LocalWsdlProvider](#localwsdlprovider)
@@ -57,12 +57,12 @@ use Symfony\Component\Filesystem\Filesystem;
 
 $loader = new HttpWsdlLoader(
     new PluginClient($httpClient, [
-        // You can add WSDL middlewares in here ...
+        // You can add WSDL middlewares in here. E.g.: authentication, manipulations, ...
     ]),
-    Psr17FactoryDiscovery::findRequestFactory
+    Psr17FactoryDiscovery::findRequestFactory()
 );
 $provider = new CachedWsdlProvider($loader, new Filesystem(), sys_get_temp_dir());
-$wsdl = $provider->provide('http://somehost/service.wsdl');
+$wsdl = $provider->provide('https://somehost/service.wsdl');
 ```
 
 **Download permanent cache**
