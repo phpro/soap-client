@@ -12,7 +12,7 @@ On top of that, we provide some generic tools that can be useful.
 
 ## LazyInMemoryMetadata
 
-This class will make sure that the metadata is only collected once and stores it in memory for a second access.
+This class will make sure that the metadata are only collected once and stores it in memory for a second access.
 
 Example output:
 
