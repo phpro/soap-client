@@ -21,10 +21,17 @@ final class MetadataOptions
      */
     private $typesManipulator;
 
-    public function __construct()
+    public function __construct(
+        MethodsManipulatorInterface $methodsManipulator,
+        TypesManipulatorInterface $typesManipulator
+    ) {
+        $this->methodsManipulator = $methodsManipulator;
+        $this->typesManipulator = $typesManipulator;
+    }
+
+    public static function empty(): self
     {
-        $this->methodsManipulator = new MethodsManipulatorChain();
-        $this->typesManipulator = new TypesManipulatorChain();
+        return new self(new MethodsManipulatorChain(), new TypesManipulatorChain());
     }
 
     public function withMethodsManipulator(MethodsManipulatorInterface $methodsManipulator): self

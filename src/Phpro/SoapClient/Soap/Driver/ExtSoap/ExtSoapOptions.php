@@ -41,7 +41,7 @@ class ExtSoapOptions
         $this->wsdl = $wsdl;
         $this->options = $options;
         $this->wsdlProvider = new MixedWsdlProvider();
-        $this->metadataOptions = new MetadataOptions();
+        $this->metadataOptions = MetadataOptions::empty();
     }
 
     public static function defaults(string $wsdl, array $options = []): self

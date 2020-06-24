@@ -20,7 +20,7 @@ class MetadataOptionsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->metaOptions = new MetadataOptions();
+        $this->metaOptions = MetadataOptions::empty();
     }
 
 
@@ -50,5 +50,15 @@ class MetadataOptionsTest extends TestCase
 
         self::assertNotSame($this->metaOptions, $new);
         self::assertSame($manipulator->reveal(), $new->getMethodsManipulator());
+    }
+
+    public function it_can_be_configured_from_constructor(): void
+    {
+        $methodsManipulator = $this->prophesize(MethodsManipulatorInterface::class);
+        $typesManipulator = $this->prophesize(TypesManipulatorInterface::class);
+        $metaOptions = new MetadataOptions($methodsManipulator->reveal(), $typesManipulator->reveal());
+
+        self::assertSame($typesManipulator->reveal(), $metaOptions->getTypesManipulator());
+        self::assertSame($methodsManipulator->reveal(), $metaOptions->getMethodsManipulator());
     }
 }

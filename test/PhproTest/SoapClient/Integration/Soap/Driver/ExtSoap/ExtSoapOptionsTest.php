@@ -255,7 +255,7 @@ class ExtSoapOptionsTest extends TestCase
         $options = new ExtSoapOptions($this->wsdl, []);
         $metadataOptions = $options->getMetadataOptions();
 
-        self::assertEquals(new MetadataOptions(), $metadataOptions);
+        self::assertEquals(MetadataOptions::empty(), $metadataOptions);
     }
 
     /** @test */
@@ -263,7 +263,7 @@ class ExtSoapOptionsTest extends TestCase
     {
         $options = ExtSoapOptions::defaults($this->wsdl);
         $metadataOptions = $options->getMetadataOptions();
-        $expectedMetadataOptions = (new MetadataOptions())->withTypesManipulator(
+        $expectedMetadataOptions = MetadataOptions::empty()->withTypesManipulator(
             new TypesManipulatorChain(new IntersectDuplicateTypesStrategy())
         );
 
@@ -275,7 +275,7 @@ class ExtSoapOptionsTest extends TestCase
     {
         $options = ExtSoapOptions::defaults($this->wsdl);
         $metadataOptions = $options->getMetadataOptions();
-        $expectedOptions = new MetadataOptions();
+        $expectedOptions = MetadataOptions::empty();
 
         $options->withMetaOptions(function ($options) use ($metadataOptions, $expectedOptions) {
             self::assertSame($metadataOptions, $options);

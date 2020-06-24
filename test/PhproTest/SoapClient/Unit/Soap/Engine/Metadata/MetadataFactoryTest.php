@@ -72,7 +72,7 @@ class MetadataFactoryTest extends TestCase
         MethodCollection $expectedMethods,
         TypeCollection $expectedTypes
     ) {
-        return (new MetadataOptions())
+        return MetadataOptions::empty()
             ->withTypesManipulator(new class ($expectedTypes) implements TypesManipulatorInterface {
                 /**
                  * @var TypeCollection
