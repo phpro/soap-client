@@ -3,7 +3,7 @@
 The metadata part of the driver knows what objects and functions are inside the soap service.
 This can be done by parsing the WSDL file.
 Every driver has its own way of collecting this information.
-On top of that, we provide some generic tools that can be usefull.
+On top of that, we provide some generic tools that can be useful.
 
 # Built-in metadata tools
 
