@@ -75,7 +75,7 @@ use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes\Re
 use Phpro\SoapClient\Soap\Engine\Metadata\MetadataOptions;
 
 $options = ExtSoapOptions::defaults($wsdl)
-    ->withMetaOptions(function (MetadataOptions $options): MetadataOptions {
+    ->withMetadataOptions(function (MetadataOptions $options): MetadataOptions {
         return $options->withTypesManipulator(
             new RemoveDuplicateTypesStrategy()
         );

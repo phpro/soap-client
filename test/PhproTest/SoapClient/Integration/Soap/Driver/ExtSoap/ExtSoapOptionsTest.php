@@ -277,7 +277,7 @@ class ExtSoapOptionsTest extends TestCase
         $metadataOptions = $options->getMetadataOptions();
         $expectedOptions = MetadataOptions::empty();
 
-        $options->withMetaOptions(function ($options) use ($metadataOptions, $expectedOptions) {
+        $options->withMetadataOptions(function ($options) use ($metadataOptions, $expectedOptions) {
             self::assertSame($metadataOptions, $options);
             return $expectedOptions;
         });

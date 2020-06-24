@@ -66,7 +66,7 @@ class ExtSoapOptions
                     $options
                 )
             )
-        )->withMetaOptions(static function (MetadataOptions $options): MetadataOptions {
+        )->withMetadataOptions(static function (MetadataOptions $options): MetadataOptions {
             // Ext-soap is not able to work with duplicate types (see FAQ)
             // Therefore, we decided to combine all duplicate types into 1 big intersected type instead.
             // Therefore it will always be usable, but might contain some empty properties.
@@ -133,7 +133,7 @@ class ExtSoapOptions
         return $this;
     }
 
-    public function withMetaOptions(callable $manipulator): self
+    public function withMetadataOptions(callable $manipulator): self
     {
         $this->metadataOptions = $manipulator($this->metadataOptions);
 
