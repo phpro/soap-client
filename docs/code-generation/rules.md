@@ -12,6 +12,8 @@ The goal of a rule is to run a code assembler.
 
 - [AssemblerRule](#assemblerrule)
 - [ClientMethodMatchesRule](#clientmethodmatchesrule)
+- [IsRequestRule](#isrequestrule)
+- [IsResultRule](#isresultrule)
 - [MultiRule](#multirule)
 - [PropertynameMatchesRule](#propertynamematchesrule)
 - [TypeMapRule](#TypeMapRule)
@@ -35,7 +37,6 @@ In the example above, a getter will be created for every property in the SOAP ty
 
 ```php
 use My\Project\CodeGenerator\Assembler as CustomAssembler;
-use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
 new Rules\ClientMethodMatchesRule(
@@ -50,6 +51,50 @@ The regular expression will be matched against the method name added to the gene
 If the regular expression matches and the subRule is accepted, the defined assembler will run.
  
 In the example above, a custom `RemoveClientMethodAssembler` is is used to remove the `demoSetup` method from the Client completely.
+
+## IsRequestRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
+
+assert($metadata instanceof MetadataInterface);
+
+new Rules\IsRequestRule(
+    $metadata,
+    new Rules\AssembleRule(new Assembler\RequestAssembler())
+)
+```
+
+The `IsRequestRule` can be used in the "types" generation command and contains the engine's metadata and a subRule.
+The rule will try to guess all request types based on the provided SOAP metadata.
+If the type matches a request type and the subRule is accepted, the defined assembler will run.
+
+This rule can be used to e.g. add the required `RequestInterface` to request objects.
+
+
+## IsResultRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
+
+assert($metadata instanceof MetadataInterface);
+
+new Rules\IsResultRule(
+    $metadata,
+    new Rules\AssembleRule(new Assembler\ResultAssembler())
+)
+```
+
+The `IsResultRule` can be used in the "types" generation command and contains the engine's metadata and a subRule.
+The rule will try to guess all response types based on the provided SOAP metadata.
+If the type matches a response type and the subRule is accepted, the defined assembler will run.
+
+This rule can be used to e.g. add the required `ResultInterface` to request objects.
+
 
 ## MultiRule
 
