@@ -16,7 +16,7 @@ Next, you can use one of the built-in middlewares:
 - [WsaMiddleware](#wsamiddleware)
 - [WsseMiddleware](#wssemiddleware)
 - [RemoveEmptyNodesMiddleware](#removeemptynodesmiddleware)
-- [WS-I Compliance/QuotedSoapActionMiddleware] (#wsicompliancequotedsoapactionmiddleware)
+- [WS-I Compliance/QuotedSoapActionMiddleware](#ws-i-compliancequotedsoapactionmiddleware)
 - [Wsdl/DisableExtensionsMiddleware](#wsdldisableextensionsmiddleware)
 - [Wsdl/DisablePoliciesMiddleware](#wsdldisablepoliciesmiddleware)
 
