@@ -6,7 +6,6 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\CodeGenerator\Util\TypeChecker;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\MethodGenerator;
@@ -92,7 +91,7 @@ class FluentSetterAssembler implements AssemblerInterface
     private function getParameter(Property $property): array
     {
         $type = $property->getType();
-        if (TypeChecker::isKnownType($type) && $this->options->useTypeHints()) {
+        if ($this->options->useTypeHints()) {
             return [
                 [
                     'name' => $property->getName(),
