@@ -16,6 +16,7 @@ Next, you can use one of the built-in middlewares:
 - [WsaMiddleware](#wsamiddleware)
 - [WsseMiddleware](#wssemiddleware)
 - [RemoveEmptyNodesMiddleware](#removeemptynodesmiddleware)
+- [WS-I Compliance/QuotedSoapActionMiddleware](#ws-i-compliancequotedsoapactionmiddleware)
 - [Wsdl/DisableExtensionsMiddleware](#wsdldisableextensionsmiddleware)
 - [Wsdl/DisablePoliciesMiddleware](#wsdldisablepoliciesmiddleware)
 
@@ -116,6 +117,20 @@ If you need to remove all empty nodes from the request xml, you can simply add t
 **Usage**
 ```php
 $handler->addMiddleware(new RemoveEmptyNodesMiddleware());
+```
+
+
+### WS-I Compliance/QuotedSoapActionMiddleware
+
+The default SOAP client does not guarantee compatibility with the [WS-I basic profile](http://www.ws-i.org/Profiles/BasicProfile-1.0-2004-04-16.html).
+This middleware ensures that the action inside the SOAPAction header is wrapped with double quotes [as specified in rule R2744](http://www.ws-i.org/Profiles/BasicProfile-1.0-2004-04-16.html#R2744). 
+
+**Usage**
+```php
+use \Phpro\SoapClient\Middleware\WSICompliance\QuotedSoapActionMiddleware;
+
+$wsdlProvier = HttPlugWsdlProvider::create($client);
+$wsdlProvider->addMiddleware(new QuotedSoapActionMiddleware());
 ```
 
 
