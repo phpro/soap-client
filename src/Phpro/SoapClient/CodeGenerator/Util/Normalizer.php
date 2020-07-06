@@ -31,6 +31,7 @@ class Normalizer
     /**
      * @var array
      * @see https://secure.php.net/manual/en/reserved.keywords.php
+     * @see https://www.php.net/manual/en/reserved.other-reserved-words.php
      */
     private static $reservedKeywords = [
         '__halt_compiler',
@@ -100,7 +101,21 @@ class Normalizer
         'while',
         'xor',
         'yield',
-        'void'
+        'void',
+
+        // Other reserved words:
+        'int',
+        'true',
+        'false',
+        'null',
+        'void',
+        'bool',
+        'float',
+        'string',
+        'object',
+        'resource',
+        'mixed',
+        'numeric'
     ];
 
     /**
