@@ -11,7 +11,7 @@ use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\MethodGenerator;
 
 /**
- * Class IteratorAssembler
+ * Class ArrayAssembler
  *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
@@ -40,9 +40,9 @@ class ArrayAssembler implements AssemblerInterface
 
         try {
 
-            $interfaceAssembler = new InterfaceAssembler(\IteratorAggregate::class);
-            if ($interfaceAssembler->canAssemble($context)) {
-                $interfaceAssembler->assemble($context);
+            $iteratorAssembler = new IteratorAssembler();
+            if ($iteratorAssembler->canAssemble($context)) {
+                $iteratorAssembler->assemble($context);
             }
 
             $interfaceAssembler = new InterfaceAssembler(\ArrayAccess::class);
@@ -57,7 +57,6 @@ class ArrayAssembler implements AssemblerInterface
 
             if ($firstProperty) {
 
-            	$this->implementConstruct($class, $firstProperty);
                 $this->implementOffsetExists($class, $firstProperty);
                 $this->implementOffsetGet($class, $firstProperty);
                 $this->implementOffsetSet($class, $firstProperty);
@@ -68,26 +67,6 @@ class ArrayAssembler implements AssemblerInterface
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
-    }
-
-    /**
-     * @param ClassGenerator $class
-     * @param Property       $firstProperty
-     *
-     * @throws \Laminas\Code\Generator\Exception\InvalidArgumentException
-     */
-    private function implementConstruct(ClassGenerator $class, Property $firstProperty)
-    {
-        $methodName = '__construct';
-        $class->removeMethod($methodName);
-        $class->addMethodFromGenerator(MethodGenerator::fromArray([
-            'name' => $methodName,
-            'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-    		'body' => sprintf('$this->%s = [];', $firstProperty->getName()),
-			'docblock' => DocBlockGeneratorFactory::fromArray([
-				'shortdescription' => 'Constructor'
-			])
-        ]));
     }
 
     /**
@@ -167,7 +146,7 @@ class ArrayAssembler implements AssemblerInterface
         $class->addMethodFromGenerator(MethodGenerator::fromArray([
             'name' => $methodName,
             'parameters' => [['name' => 'offset'], ['name' => 'value']],
-            'body' => sprintf("if(isset(\$this->%s[\$offset])) {\n\t\$this->%s[] = \$value;\n} else {\n\t\$this->%s[\$offset] = \$value; \n}", $firstProperty->getName(), $firstProperty->getName(), $firstProperty->getName()),
+            'body' => sprintf("if(!isset(\$offset)) {\n\t\$this->%s[] = \$value;\n} else {\n\t\$this->%s[\$offset] = \$value; \n}", $firstProperty->getName(), $firstProperty->getName(), $firstProperty->getName()),
             'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
             'docblock' => DocBlockGeneratorFactory::fromArray([
                 'tags' => [
@@ -194,7 +173,7 @@ class ArrayAssembler implements AssemblerInterface
         $class->addMethodFromGenerator(MethodGenerator::fromArray([
             'name' => $methodName,
             'parameters' => ['name' => 'offset'],
-            'body' => sprintf('unisset($this->%s[$offset]);', $firstProperty->getName()),
+            'body' => sprintf('unset($this->%s[$offset]);', $firstProperty->getName()),
             'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
             'docblock' => DocBlockGeneratorFactory::fromArray([
                 'tags' => [
