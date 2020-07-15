@@ -31,26 +31,26 @@ RULESET;
 
     const RULESET_REQUEST_RESPONSE = <<<RULESET
 ->addRule(
-    new Rules\TypenameMatchesRule(
+    new Rules\IsRequestRule(
+        \$engine->getMetadata(),
         new Rules\MultiRule([
             new Rules\AssembleRule(new Assembler\RequestAssembler()),
             new Rules\AssembleRule(new Assembler\ConstructorAssembler(new Assembler\ConstructorAssemblerOptions())),
-        ]),
-        '%s'
+        ])
     )
 )
 ->addRule(
-    new Rules\TypenameMatchesRule(
+    new Rules\IsResultRule(
+        \$engine->getMetadata(),
         new Rules\MultiRule([
             new Rules\AssembleRule(new Assembler\ResultAssembler()),
-        ]),
-        '%s'
+        ])
     )
 )
 RULESET;
 
     const ENGINE_BOILERPLATE = <<<EOENGINE
-->setEngine(ExtSoapEngineFactory::fromOptions(
+->setEngine(\$engine = ExtSoapEngineFactory::fromOptions(
         ExtSoapOptions::defaults('%s', [])
             ->disableWsdlCache()
     ))
@@ -104,11 +104,7 @@ EOENGINE;
         }
 
         $body .= $this->parseIndentedRuleSet($file, self::RULESET_DEFAULT);
-
-        if ($context->getRequestRegex() !== '' && $context->getResponseRegex() !== '') {
-            $rules = $this->parseIndentedRuleSet($file, self::RULESET_REQUEST_RESPONSE);
-            $body .= sprintf($rules, $context->getRequestRegex(), $context->getResponseRegex());
-        }
+        $body .= $this->parseIndentedRuleSet($file, self::RULESET_REQUEST_RESPONSE);
 
         $file->setBody($body.';'.PHP_EOL);
 
