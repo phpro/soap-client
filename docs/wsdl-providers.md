@@ -25,7 +25,8 @@ $options = ExtSoapOptions::defaults('my.wsdl')
 
 Here is a list of built-in providers:
 
-- [HttPlugWsdlProvider](#httplugwsdlprovider)
+- [CachedWsdlProvider](#cachedwsdlprovider)
+- [~~HttPlugWsdlProvider~~](#httplugwsdlprovider)
 - [InMemoryWsdlProvider](#inmemorywsdlprovider)
 - [LocalWsdlProvider](#localwsdlprovider)
 - [MixedWsdlProvider](#mixedwsdlprovider)
@@ -33,7 +34,57 @@ Here is a list of built-in providers:
 Can't find the wsdl provider you were looking for?
 [It is always possible to create your own one!](#creating-your-own-wsdl-provider)
 
-## HttPlugWsdlProvider
+## CachedWsdlProvider
+
+This provider can permanently or temporary cache a (remote) WSDL.
+This one is very useful to use in production, where the WSDL shouldn't change too much.
+You can force it to load to a permanent location in e.g. a cronjob.
+It will improve performance since the soap-client won't have to fetch the WSDL remotely.
+
+**Dependencies**
+
+If you want to use Httplug for loading the WSDL, [you need to follow these installation guidelines](./handlers/httplug.md).
+
+**Usage**
+
+```php
+<?php
+use Http\Client\Common\PluginClient;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Phpro\SoapClient\Wsdl\Loader\HttpWsdlLoader;
+use Phpro\SoapClient\Wsdl\Provider\CachedWsdlProvider;
+use Symfony\Component\Filesystem\Filesystem;
+
+$loader = new HttpWsdlLoader(
+    new PluginClient($httpClient, [
+        // You can add WSDL middlewares in here. E.g.: authentication, manipulations, ...
+    ]),
+    Psr17FactoryDiscovery::findRequestFactory()
+);
+$provider = new CachedWsdlProvider($loader, new Filesystem(), sys_get_temp_dir());
+$wsdl = $provider->provide('https://somehost/service.wsdl');
+```
+
+**Download permanent cache**
+
+```php
+$provider->forcePermanentDownloads()->provide('http://somehost/service.wsdl');
+```
+
+This will store the WSDL in a permanent location.
+From now on, the provider will always load the permanent file.
+Unless you re-enable the force permanent method or remove the cache manually.
+This is typically something you would want to create a CLI command or a cronjob for. 
+
+
+**Note**
+
+Only the main WSDL file is being downloaded at the moment. Ext-soap imports additional files internally.
+
+
+## ~~HttPlugWsdlProvider~~
+
+*Deprecated* : Will be removed in v2.0 - Use the `CachedWsdlProvider` in combination with the `HttpWsdlLoader` instead.
 
 [HTTPlug](http://httplug.io/) is a HTTP client abstraction that can be used with multiple client packages.
 The HTTPlug WSDL provider can be used for downloading remote WSDLs.
@@ -42,20 +93,7 @@ This way, you will always be able to download and manipulate the WSDL file even 
 
 **Dependencies**
 
-Load HTTP plug core packages:
-
-```sh
-composer require psr/http-message:^1.0 php-http/httplug:^1.1 php-http/message-factory:^1.0 php-http/discovery:^1.3 php-http/message:^1.6 php-http/client-common:^1.6
-```
-
-**Select HTTP Client**
-
-Select one of the many clients you want to use to perform the HTTP requests:
-http://docs.php-http.org/en/latest/clients.html#clients-adapters
-
-```sh
-composer require php-http/client-implementation:^1.0
-```
+If you want to use Httplug for loading the WSDL, [you need to follow these installation guidelines](./handlers/httplug.md).
 
 **Usage**
 ```php
