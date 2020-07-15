@@ -8,7 +8,7 @@ use Phpro\SoapClient\Soap\Driver\ExtSoap\Generator\DummyMethodArgumentsGenerator
 use Phpro\SoapClient\Soap\Engine\DecoderInterface;
 use Phpro\SoapClient\Soap\Engine\DriverInterface;
 use Phpro\SoapClient\Soap\Engine\EncoderInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\LazyInMemoryMetadata;
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataFactory;
 use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
 use Phpro\SoapClient\Soap\HttpBinding\SoapRequest;
 use Phpro\SoapClient\Soap\HttpBinding\SoapResponse;
@@ -52,12 +52,15 @@ class ExtSoapDriver implements DriverInterface
     {
         $client = AbusedClient::createFromOptions($options);
 
-        return self::createFromClient($client);
+        return self::createFromClient(
+            $client,
+            MetadataFactory::manipulated(new ExtSoapMetadata($client), $options->getMetadataOptions())
+        );
     }
 
-    public static function createFromClient(AbusedClient $client): self
+    public static function createFromClient(AbusedClient $client, MetadataInterface $metadata = null): self
     {
-        $metadata = new LazyInMemoryMetadata(new ExtSoapMetadata($client));
+        $metadata = $metadata ?? MetadataFactory::lazy(new ExtSoapMetadata($client));
 
         return new self(
             $client,

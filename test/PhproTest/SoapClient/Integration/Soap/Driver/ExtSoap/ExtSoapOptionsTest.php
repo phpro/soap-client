@@ -9,6 +9,9 @@ use Phpro\SoapClient\Soap\ClassMap\ClassMap;
 use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptionsResolverFactory;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
+use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorChain;
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataOptions;
 use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
 use PHPUnit\Framework\TestCase;
@@ -244,5 +247,41 @@ class ExtSoapOptionsTest extends TestCase
         foreach ($options as $key => $option) {
             $this->assertSame($expectedOptions[$key], $option);
         }
+    }
+
+    /** @test */
+    public function it_contains_empty_metadata_options(): void
+    {
+        $options = new ExtSoapOptions($this->wsdl, []);
+        $metadataOptions = $options->getMetadataOptions();
+
+        self::assertEquals(MetadataOptions::empty(), $metadataOptions);
+    }
+
+    /** @test */
+    public function it_adds_prefered_default_metadata_options(): void
+    {
+        $options = ExtSoapOptions::defaults($this->wsdl);
+        $metadataOptions = $options->getMetadataOptions();
+        $expectedMetadataOptions = MetadataOptions::empty()->withTypesManipulator(
+            new TypesManipulatorChain(new IntersectDuplicateTypesStrategy())
+        );
+
+        self::assertEquals($expectedMetadataOptions, $metadataOptions);
+    }
+
+    /** @test */
+    public function it_is_possible_to_change_metadata_options(): void
+    {
+        $options = ExtSoapOptions::defaults($this->wsdl);
+        $metadataOptions = $options->getMetadataOptions();
+        $expectedOptions = MetadataOptions::empty();
+
+        $options->withMetadataOptions(function ($options) use ($metadataOptions, $expectedOptions) {
+            self::assertSame($metadataOptions, $options);
+            return $expectedOptions;
+        });
+
+        self::assertEquals($expectedOptions, $options->getMetadataOptions());
     }
 }

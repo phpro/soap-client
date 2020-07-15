@@ -44,3 +44,40 @@ $options = ExtSoapOptions::defaults($wsdl, ['location' => 'http://somedifferents
 $typemap = $options->getTypeMap();
 $typemap->add(new MyTypeConverter());
 ```
+
+## Dealing with ext-soap issues
+
+### Duplicate types
+
+Ext-soap does not add any namespace or unique identifier to the types it knows.
+You can read more about this in the [known ext-soap issues](../known-issues/ext-soap.md#duplicate-typenames) section.
+Therefore, we added some strategies to deal with duplicate types:
+
+**IntersectDuplicateTypesStrategy**
+
+Enabled by default when using `ExtSoapOptions::defaults()`.
+
+This duplicate types strategy will merge all duplicate types into one big type which contains all properties.
+
+**RemoveDuplicateTypesStrategy**
+
+This duplicate types strategy will remove all duplicate types it finds.
+
+
+
+You can overwrite the strategy on the `ExtSoapOptions` object:
+
+```php
+<?php
+
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;
+use Phpro\SoapClient\Soap\Engine\Metadata\MetadataOptions;
+
+$options = ExtSoapOptions::defaults($wsdl)
+    ->withMetadataOptions(function (MetadataOptions $options): MetadataOptions {
+        return $options->withTypesManipulator(
+            new RemoveDuplicateTypesStrategy()
+        );
+    });
+```

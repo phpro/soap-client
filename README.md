@@ -53,6 +53,7 @@ You can customize the generated code based on the manual installation pages in t
   - [Choose a driver](docs/engine.md#driver)
     - [ExtSoapDriver](docs/drivers/ext-soap.md)
     - [Create your own driver](docs/drivers/new.md)
+        - [Manipulate the drivers metadata](docs/drivers/metadata.md)
   - [Specify your HTTP handler.](docs/engine.md#handler)
     - [HttPlugHandle](docs/handlers/httplug.md) (Supports [middlewares](docs/middlewares.md))
     - [ExtSoapClientHandle](docs/handlers/ext-soap/client.md)

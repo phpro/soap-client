@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine\Metadata\Model;
 
+/**
+ * @TODO V2.0 : Make properties instance of type PropertyCollection !
+ */
 class Type
 {
     /**
