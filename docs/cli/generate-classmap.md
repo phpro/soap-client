@@ -65,3 +65,5 @@ class OrderClassMap
     }
 }
 ```
+
+Next: [Generate your own SOAP client.](generate-client.md)
