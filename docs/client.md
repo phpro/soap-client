@@ -55,3 +55,5 @@ When the SOAP service is returning an internal PHP type, the result is being wra
 $result = $client->someMethodWithInternalTypeResult($request);
 $actualResponse = $response->getResponse();
 ```
+
+Next: [Generate PHP classes based on SOAP types.](docs/cli/generate-types.md)
