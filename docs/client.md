@@ -56,4 +56,4 @@ $result = $client->someMethodWithInternalTypeResult($request);
 $actualResponse = $response->getResponse();
 ```
 
-Next: [Generate PHP classes based on SOAP types.](docs/cli/generate-types.md)
+Next: [Generate PHP classes based on SOAP types.](cli/generate-types.md)
