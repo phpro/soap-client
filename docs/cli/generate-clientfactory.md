@@ -66,3 +66,5 @@ Here you can find some bookmarks for changing the factory:
 - [Listening to events](../events.md)
 - [Configuring the engine](../engine.md)
 - [Using HTTP middleware](../middlewares.md) 
+
+Next: [Use your SOAP client.](/docs/usage.md)
