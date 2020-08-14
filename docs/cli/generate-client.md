@@ -23,3 +23,5 @@ This client will contain all methods used to initiate calls and uses type hinted
 Options:
 
 - **config**: A [configuration file](../code-generation/configuration.md) is required to build the classmap. 
+
+Next: [Generate a client factory.](generate-clientfactory.md)
