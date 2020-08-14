@@ -72,3 +72,5 @@ class Greeting implements ResponseInterface
 ```
 
 This can be done by specifying some code generation [rules](../code-generation/rules.md) and [assemblers](../code-generation/assemblers.md).
+
+Next:  [Generate a class map](generate-classmap.md)
