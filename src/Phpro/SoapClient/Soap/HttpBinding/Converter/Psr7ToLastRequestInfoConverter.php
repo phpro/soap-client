@@ -36,7 +36,7 @@ class Psr7ToLastRequestInfoConverter
             );
 
             $requestHeaders = trim($requestParts[0] ?? '');
-            $requestBody = $requestParts[1] ?? '';
+            $requestBody = (string)$request->getBody();
         }
 
         if ($responseString) {
@@ -47,7 +47,7 @@ class Psr7ToLastRequestInfoConverter
             );
 
             $responseHeaders = trim($responseParts[0] ?? '');
-            $responseBody = $responseParts[1] ?? '';
+            $responseBody = (string)$response->getBody();
         }
 
         // Reset the bodies:
