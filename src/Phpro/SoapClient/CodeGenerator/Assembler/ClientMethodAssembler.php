@@ -173,15 +173,18 @@ class ClientMethodAssembler implements AssemblerInterface
         ];
 
         if ($param) {
-            $data['tags'][] = [
-                'name' => 'param',
-                'description' => sprintf(
-                    '%s|%s $%s',
-                    $this->generateClassNameAndAddImport(RequestInterface::class, $class),
-                    $this->generateClassNameAndAddImport($param->getType(), $class, true),
-                    $param->getName()
-                ),
-            ];
+            array_unshift(
+                $data['tags'],
+                [
+                    'name' => 'param',
+                    'description' => sprintf(
+                        '%s|%s $%s',
+                        $this->generateClassNameAndAddImport(RequestInterface::class, $class),
+                        $this->generateClassNameAndAddImport($param->getType(), $class, true),
+                        $param->getName()
+                    ),
+                ]
+            );
         }
 
         return DocBlockGeneratorFactory::fromArray($data)
