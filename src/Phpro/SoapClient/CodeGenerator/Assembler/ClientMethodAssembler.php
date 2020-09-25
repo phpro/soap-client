@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
@@ -45,16 +46,7 @@ class ClientMethodAssembler implements AssemblerInterface
             $docblock = $context->getArgumentCount() > 1 ?
                 $this->generateMultiArgumentDocblock($context) :
                 $this->generateSingleArgumentDocblock($context);
-            $methodBody = $param === null ?
-                sprintf(
-                    'return $this->call(\'%s\');',
-                    $method->getMethodName()
-                ) :
-                sprintf(
-                    'return $this->call(\'%s\', $%s);',
-                    $method->getMethodName(),
-                    $param->getName()
-                );
+            $methodBody = $this->generateMethodBody($param, $method);
 
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
@@ -73,6 +65,28 @@ class ClientMethodAssembler implements AssemblerInterface
         }
 
         return true;
+    }
+
+    /**
+     * @param ParameterGenerator|null $param
+     * @param ClientMethod $method
+     *
+     * @return string
+     */
+    private function generateMethodBody(?ParameterGenerator $param, ClientMethod $method): string
+    {
+        if ($param === null) {
+            return sprintf(
+                'return $this->call(\'%s\');',
+                $method->getMethodName()
+            );
+        }
+
+        return sprintf(
+            'return $this->call(\'%s\', $%s);',
+            $method->getMethodName(),
+            $param->getName()
+        );
     }
 
     /**
