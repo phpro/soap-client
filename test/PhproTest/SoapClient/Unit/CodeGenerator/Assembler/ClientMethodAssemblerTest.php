@@ -91,10 +91,10 @@ class ClientMethodAssemblerTest extends TestCase
         $expected = <<<CODE
 namespace Vendor\MyNamespace;
 
-use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
-use Vendor\MyTypeNamespace;
 use Phpro\SoapClient\Exception\SoapException;
+use Phpro\SoapClient\Type\RequestInterface;
+use Vendor\MyTypeNamespace;
 
 class  extends \Phpro\SoapClient\Client
 {
@@ -182,10 +182,10 @@ CODE;
         $expected = <<<CODE
 namespace Vendor\MyNamespace;
 
-use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
-use Vendor\MyTypeNamespace;
 use Phpro\SoapClient\Exception\SoapException;
+use Phpro\SoapClient\Type\RequestInterface;
+use Vendor\MyTypeNamespace;
 
 class  extends \Phpro\SoapClient\Client
 {

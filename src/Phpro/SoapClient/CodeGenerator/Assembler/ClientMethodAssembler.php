@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
@@ -42,21 +43,18 @@ class ClientMethodAssembler implements AssemblerInterface
             $phpMethodName = Normalizer::normalizeMethodName($method->getMethodName());
             $param = $this->createParamsFromContext($context);
             $class->removeMethod($phpMethodName);
-            $docblock = $context->isMultiArgument() ?
+            $docblock = $context->getArgumentCount() > 1 ?
                 $this->generateMultiArgumentDocblock($context) :
                 $this->generateSingleArgumentDocblock($context);
+            $methodBody = $this->generateMethodBody($param, $method);
 
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
                     [
                         'name' => $phpMethodName,
-                        'parameters' => [$param],
+                        'parameters' => $param === null ? [] : [$param],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                        'body' => sprintf(
-                            'return $this->call(\'%s\', $%s);',
-                            $method->getMethodName(),
-                            $param->getName()
-                        ),
+                        'body' => $methodBody,
                         'returntype' => $method->getNamespacedReturnType(),
                         'docblock' => $docblock,
                     ]
@@ -70,13 +68,39 @@ class ClientMethodAssembler implements AssemblerInterface
     }
 
     /**
+     * @param ParameterGenerator|null $param
+     * @param ClientMethod $method
+     *
+     * @return string
+     */
+    private function generateMethodBody(?ParameterGenerator $param, ClientMethod $method): string
+    {
+        if ($param === null) {
+            return sprintf(
+                'return $this->call(\'%s\');',
+                $method->getMethodName()
+            );
+        }
+
+        return sprintf(
+            'return $this->call(\'%s\', $%s);',
+            $method->getMethodName(),
+            $param->getName()
+        );
+    }
+
+    /**
      * @param ClientMethodContext $context
      *
-     * @return ParameterGenerator
+     * @return ParameterGenerator|null
      */
-    private function createParamsFromContext(ClientMethodContext $context): ParameterGenerator
+    private function createParamsFromContext(ClientMethodContext $context): ?ParameterGenerator
     {
-        if (!$context->isMultiArgument()) {
+        if ($context->getArgumentCount() === 0) {
+            return null;
+        }
+
+        if ($context->getArgumentCount() === 1) {
             $param = current($context->getMethod()->getParameters());
 
             return ParameterGenerator::fromArray($param->toArray());
@@ -137,41 +161,48 @@ class ClientMethodAssembler implements AssemblerInterface
         $class = $context->getClass();
         $param = current($method->getParameters());
 
-        return DocBlockGeneratorFactory::fromArray(
-            [
-                'tags' => [
-                    [
-                        'name' => 'param',
-                        'description' => sprintf(
-                            '%s|%s $%s',
-                            $this->generateClassNameAndAddImport(RequestInterface::class, $class),
-                            $this->generateClassNameAndAddImport($param->getType(), $class, true),
-                            $param->getName()
-                        ),
-                    ],
-                    [
-                        'name' => 'return',
-                        'description' => sprintf(
-                            '%s|%s',
-                            $this->generateClassNameAndAddImport(ResultInterface::class, $class),
-                            $this->generateClassNameAndAddImport(
-                                $method->getNamespacedReturnType(),
-                                $class,
-                                true
-                            )
-                        ),
+        $data = [
+            'tags' => [
+                [
+                    'name' => 'return',
+                    'description' => sprintf(
+                        '%s|%s',
+                        $this->generateClassNameAndAddImport(ResultInterface::class, $class),
+                        $this->generateClassNameAndAddImport(
+                            $method->getNamespacedReturnType(),
+                            $class,
+                            true
+                        )
+                    ),
 
-                    ],
-                    [
-                        'name' => 'throws',
-                        'description' => $this->generateClassNameAndAddImport(
-                            SoapException::class,
-                            $class
-                        ),
-                    ],
                 ],
-            ]
-        )->setWordWrap(false);
+                [
+                    'name' => 'throws',
+                    'description' => $this->generateClassNameAndAddImport(
+                        SoapException::class,
+                        $class
+                    ),
+                ],
+            ],
+        ];
+
+        if ($param) {
+            array_unshift(
+                $data['tags'],
+                [
+                    'name' => 'param',
+                    'description' => sprintf(
+                        '%s|%s $%s',
+                        $this->generateClassNameAndAddImport(RequestInterface::class, $class),
+                        $this->generateClassNameAndAddImport($param->getType(), $class, true),
+                        $param->getName()
+                    ),
+                ]
+            );
+        }
+
+        return DocBlockGeneratorFactory::fromArray($data)
+            ->setWordWrap(false);
     }
 
     /**

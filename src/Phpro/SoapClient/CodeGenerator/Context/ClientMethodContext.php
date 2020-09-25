@@ -46,10 +46,10 @@ class ClientMethodContext implements ContextInterface
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isMultiArgument(): bool
+    public function getArgumentCount(): int
     {
-        return \count($this->method->getParameters()) > 1;
+        return \count($this->method->getParameters());
     }
 }
