@@ -71,6 +71,20 @@ class Property
     }
 
     /**
+     * @return string|null
+     */
+    public function getCodeReturnType(): ?string
+    {
+        $type = $this->getType();
+
+        if ($type === 'mixed' && PHP_VERSION_ID < 80000) {
+            return null;
+        }
+
+        return $type;
+    }
+
+    /**
      * @return string
      */
     public function getterName(): string

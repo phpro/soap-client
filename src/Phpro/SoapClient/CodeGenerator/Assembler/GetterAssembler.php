@@ -59,7 +59,7 @@ class GetterAssembler implements AssemblerInterface
                     'parameters' => [],
                     'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                     'body'       => sprintf('return $this->%s;', $property->getName()),
-                    'returntype' => $this->options->useReturnType() ? $property->getType() : null,
+                    'returntype' => $this->options->useReturnType() ? $property->getCodeReturnType() : null,
                     'docblock'   => DocBlockGeneratorFactory::fromArray([
                         'tags' => [
                             [
