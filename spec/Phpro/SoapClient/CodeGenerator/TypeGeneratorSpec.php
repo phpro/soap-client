@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator;
 
+use Laminas\Code\Generator\Exception\ClassNotFoundException;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
@@ -54,6 +55,72 @@ class TypeGeneratorSpec extends ObjectBehavior
         $class->setNamespaceName('MyNamespace')->shouldBeCalled();
         $class->setName('MyType')->shouldBeCalled();
         $file->setClass($class)->shouldBeCalled();
+
+        $ruleSet->applyRules(Argument::that(function (ContextInterface $context) use ($type) {
+            return $context instanceof TypeContext
+                && $context->getType() === $type;
+        }))->shouldBeCalled();
+
+
+        $ruleSet->applyRules(Argument::that(function (ContextInterface $context) use ($type, $property) {
+            return $context instanceof PropertyContext
+                && $context->getType() === $type
+                && $context->getProperty() === $property;
+        }))->shouldBeCalled();
+
+        $this->generate($file, $type)->shouldReturn('code');
+    }
+
+    // laminas-code < 3.5.0 will return false when a file does not exist / does not contain classes.
+    function it_generates_types_for_file_without_classes_laminas_code_pre_3_5(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
+    {
+        $type = new Type(
+            $namespace = 'MyNamespace',
+            'MyType',
+            [new Property('prop1', 'string', $namespace)]
+        );
+        $property = $type->getProperties()[0];
+
+        $file->generate()->willReturn('code');
+        $file->getClass()->willReturn(false);
+
+        $file->setClass(Argument::that(function (ClassGenerator $class) {
+            return $class->getNamespaceName() === 'MyNamespace'
+                && $class->getName() === 'MyType';
+        }))->shouldBeCalled();
+
+        $ruleSet->applyRules(Argument::that(function (ContextInterface $context) use ($type) {
+            return $context instanceof TypeContext
+                && $context->getType() === $type;
+        }))->shouldBeCalled();
+
+
+        $ruleSet->applyRules(Argument::that(function (ContextInterface $context) use ($type, $property) {
+            return $context instanceof PropertyContext
+                && $context->getType() === $type
+                && $context->getProperty() === $property;
+        }))->shouldBeCalled();
+
+        $this->generate($file, $type)->shouldReturn('code');
+    }
+
+    // laminas-code >= 3.5.0 will throw an exception when a file does not exist / does not contain classes.
+    function it_generates_types_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
+    {
+        $type = new Type(
+            $namespace = 'MyNamespace',
+            'MyType',
+            [new Property('prop1', 'string', $namespace)]
+        );
+        $property = $type->getProperties()[0];
+
+        $file->generate()->willReturn('code');
+        $file->getClass()->willThrow(new ClassNotFoundException('No class is set'));
+
+        $file->setClass(Argument::that(function (ClassGenerator $class) {
+            return $class->getNamespaceName() === 'MyNamespace'
+                && $class->getName() === 'MyType';
+        }))->shouldBeCalled();
 
         $ruleSet->applyRules(Argument::that(function (ContextInterface $context) use ($type) {
             return $context instanceof TypeContext
