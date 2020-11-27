@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator;
 
+use Laminas\Code\Generator\Exception\ClassNotFoundException;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
@@ -39,7 +40,11 @@ class TypeGenerator implements GeneratorInterface
      */
     public function generate(FileGenerator $file, $type): string
     {
-        $class = $file->getClass() ?: new ClassGenerator();
+        try {
+            $class = $file->getClass();
+        } catch (ClassNotFoundException $exception) {
+            $class = new ClassGenerator();
+        }
         $class->setNamespaceName($type->getNamespace());
         $class->setName($type->getName());
 
