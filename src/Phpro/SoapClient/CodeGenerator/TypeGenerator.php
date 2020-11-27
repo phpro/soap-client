@@ -41,7 +41,7 @@ class TypeGenerator implements GeneratorInterface
     public function generate(FileGenerator $file, $type): string
     {
         try {
-            $class = $file->getClass() ?: new ClassGenerator();
+            $class = $file->getClass();
         } catch (ClassNotFoundException $exception) {
             $class = new ClassGenerator();
         }

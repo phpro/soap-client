@@ -62,31 +62,6 @@ class TypeGeneratorSpec extends ObjectBehavior
         $this->generate($file, $type)->shouldReturn('code');
     }
 
-    // laminas-code < 3.5.0 will return false when a file does not exist / does not contain classes.
-    function it_generates_types_for_file_without_classes_laminas_code_pre_3_5(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
-    {
-        $type = new Type(
-            $namespace = 'MyNamespace',
-            'MyType',
-            [new Property('prop1', 'string', $namespace)]
-        );
-        $property = $type->getProperties()[0];
-
-        $file->generate()->willReturn('code');
-
-        $file->getClass()->willReturn(false);
-        $file->setClass(Argument::that(function (ClassGenerator $class) {
-            return $class->getNamespaceName() === 'MyNamespace'
-                && $class->getName() === 'MyType';
-        }))->shouldBeCalled();
-
-        $this->RuleSet_should_apply_rules_for_type($ruleSet, $type);
-        $this->RuleSet_should_apply_rules_for_type_and_property($ruleSet, $type, $property);
-
-        $this->generate($file, $type)->shouldReturn('code');
-    }
-
-    // laminas-code >= 3.5.0 will throw an exception when a file does not exist / does not contain classes.
     function it_generates_types_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
     {
         $type = new Type(
@@ -125,6 +100,5 @@ class TypeGeneratorSpec extends ObjectBehavior
                 && $context->getType() === $type
                 && $context->getProperty() === $property;
         }))->shouldBeCalled();
-
     }
 }

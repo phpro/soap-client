@@ -56,24 +56,6 @@ class ClientGeneratorSpec extends ObjectBehavior
         $this->generate($file, $client)->shouldReturn('code');
     }
 
-    // laminas-code < 3.5.0 will return false when a file does not exist / does not contain classes.
-    function it_generates_clients_for_file_without_classes_laminas_code_pre_3_5(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
-    {
-        $method = new ClientMethod('Test', [new Parameter('parameters', 'Test')], 'TestResponse');
-        $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
-        $file->generate()->willReturn('code');
-
-        $file->getClass()->willReturn(false);
-        $file->setClass(Argument::type(ClassGenerator::class))->shouldBeCalled();
-
-        $client->getMethodMap()->willReturn($map);
-        $map->getMethods()->willReturn([$method]);
-        $client->getNamespace()->willReturn('MyNamespace');
-        $client->getName()->willReturn('MyClient');
-        $this->generate($file, $client)->shouldReturn('code');
-    }
-
-    // laminas-code >= 3.5.0 will throw an exception when a file does not exist / does not contain classes.
     private function assert_generates_clients_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
     {
         $method = new ClientMethod('Test', [new Parameter('parameters', 'Test')], 'TestResponse');
