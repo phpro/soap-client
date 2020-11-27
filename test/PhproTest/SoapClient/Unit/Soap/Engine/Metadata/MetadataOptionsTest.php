@@ -10,9 +10,12 @@ use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorChain;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorInterface;
 use Phpro\SoapClient\Soap\Engine\Metadata\MetadataOptions;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class MetadataOptionsTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var MetadataOptions
      */

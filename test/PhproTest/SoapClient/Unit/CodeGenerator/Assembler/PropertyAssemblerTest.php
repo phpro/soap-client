@@ -18,14 +18,6 @@ use Laminas\Code\Generator\PropertyGenerator;
  */
 class PropertyAssemblerTest extends TestCase
 {
-    function laminasCodeCompare($version, $operator)
-    {
-        $laminasCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
-        $laminasCodeVersion = substr($laminasCodeVersion, 0, strpos($laminasCodeVersion, '@'));
-
-        return version_compare($laminasCodeVersion, $version, $operator);
-    }
-
     /**
      * @test
      */
@@ -40,10 +32,6 @@ class PropertyAssemblerTest extends TestCase
      */
     function it_assembles_property_without_default_value()
     {
-        if ($this->laminasCodeCompare('3.3.0', '<')) {
-            $this->markTestSkipped('Running it_assembles_property_with_default_value instead');
-        }
-
         $assembler = new PropertyAssembler();
         $context = $this->createContext();
         $assembler->assemble($context);
@@ -70,44 +58,8 @@ CODE;
     /**
      * @test
      */
-    function it_assembles_property_with_default_value()
-    {
-        if ($this->laminasCodeCompare('3.3.0', '>=')) {
-            $this->markTestSkipped('Running it_assembles_property_without_default_value instead');
-        }
-
-        $assembler = new PropertyAssembler();
-        $context = $this->createContext();
-        $assembler->assemble($context);
-        $code = $context->getClass()->generate();
-        $expected = <<<CODE
-namespace MyNamespace;
-
-class MyType
-{
-
-    /**
-     * @var string
-     */
-    private \$prop1 = null;
-
-
-}
-
-CODE;
-
-        $this->assertEquals($expected, $code);
-    }
-
-    /**
-     * @test
-     */
     function it_assembles_with_visibility_without_default_value()
     {
-        if ($this->laminasCodeCompare('3.3.0', '<')) {
-            $this->markTestSkipped('Running it_assembles_with_visibility_with_default_value instead');
-        }
-
         $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
         $context = $this->createContext();
         $assembler->assemble($context);
@@ -122,38 +74,6 @@ class MyType
      * @var string
      */
     public \$prop1;
-
-
-}
-
-CODE;
-
-        $this->assertEquals($expected, $code);
-    }
-
-    /**
-     * @test
-     */
-    function it_assembles_with_visibility_with_default_value()
-    {
-        if ($this->laminasCodeCompare('3.3.0', '>=')) {
-            $this->markTestSkipped('Running it_assembles_with_visibility_without_default_value instead');
-        }
-
-        $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
-        $context = $this->createContext();
-        $assembler->assemble($context);
-        $code = $context->getClass()->generate();
-        $expected = <<<CODE
-namespace MyNamespace;
-
-class MyType
-{
-
-    /**
-     * @var string
-     */
-    public \$prop1 = null;
 
 
 }

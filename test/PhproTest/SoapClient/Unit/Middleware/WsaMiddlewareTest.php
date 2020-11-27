@@ -90,7 +90,7 @@ class WsaMiddlewareTest extends TestCase
         // Check defaults:
         $this->assertEquals('myaction', $xml->xpath('//soap:Header/wsa:Action')->item(0)->nodeValue);
         $this->assertEquals('/endpoint', $xml->xpath('//soap:Header/wsa:To')->item(0)->nodeValue);
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/^uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i',
             $xml->xpath('//soap:Header/wsa:MessageID')->item(0)->nodeValue
         );

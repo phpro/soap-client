@@ -19,18 +19,6 @@ use Laminas\Code\Generator\ClassGenerator;
 class GetterAssemblerTest extends TestCase
 {
     /**
-     * @param string $version
-     * @return bool
-     */
-    function laminasOlderOrEqual($version)
-    {
-        $laminasCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
-        $laminasCodeVersion = substr($laminasCodeVersion, 0, strpos($laminasCodeVersion, '@'));
-
-        return version_compare($laminasCodeVersion, $version, '>=');
-    }
-
-    /**
      * @test
      */
     function it_is_an_assembler()
@@ -86,9 +74,6 @@ CODE;
      */
     public function it_assembles_with_return_type()
     {
-        if (!$this->laminasOlderOrEqual('3.3.0')) {
-            $this->markTestSkipped('laminas/laminas-code 3.3.0 required');
-        }
         $options = (new GetterAssemblerOptions())
             ->withReturnType();
         $assembler = new GetterAssembler($options);
