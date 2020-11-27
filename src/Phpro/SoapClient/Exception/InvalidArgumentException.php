@@ -9,7 +9,7 @@ use Throwable;
  *
  * @package Phpro\SoapClient\Exception
  */
-class InvalidArgumentException extends \InvalidArgumentException
+final class InvalidArgumentException extends \InvalidArgumentException
 {
     public static function engineNotConfigured(): self
     {

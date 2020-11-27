@@ -15,10 +15,13 @@ use Phpro\SoapClient\Soap\Engine\Metadata\MetadataOptions;
 use Phpro\SoapClient\Soap\TypeConverter;
 use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExtSoapOptionsTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var string
      */

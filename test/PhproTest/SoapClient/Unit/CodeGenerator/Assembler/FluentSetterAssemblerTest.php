@@ -19,18 +19,6 @@ use Laminas\Code\Generator\ClassGenerator;
 class FluentSetterAssemblerTest extends TestCase
 {
     /**
-     * @param string $version
-     * @return bool
-     */
-    function laminasOlderOrEqual($version)
-    {
-        $laminasCodeVersion = \PackageVersions\Versions::getVersion('laminas/laminas-code');
-        $laminasCodeVersion = substr($laminasCodeVersion, 0, strpos($laminasCodeVersion, '@'));
-
-        return version_compare($laminasCodeVersion, $version, '>=');
-    }
-
-    /**
      * @test
      */
     function it_is_an_assembler()
@@ -156,9 +144,6 @@ CODE;
      */
     public function it_generates_return_types()
     {
-        if (!$this->laminasOlderOrEqual('3.3.0')) {
-            $this->markTestSkipped('laminas-code not new enough');
-        }
         $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withReturnType());
         $context = $this->createContextWithAnUnknownType();
         $assembler->assemble($context);
