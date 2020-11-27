@@ -92,6 +92,7 @@ class Xml
         $xml = new DOMDocument();
         $xml->loadXML($stream->getContents());
 
+        /** @phpstan-ignore-next-line */
         return new static($xml);
     }
 
@@ -105,6 +106,7 @@ class Xml
         $xml = new DOMDocument();
         $xml->loadXML($content);
 
+        /** @phpstan-ignore-next-line */
         return new static($xml);
     }
 

@@ -17,7 +17,7 @@ use Phpro\SoapClient\Soap\Engine\EngineInterface;
  *
  * @package Phpro\SoapClient\CodeGenerator\Config
  */
-class Config implements ConfigInterface
+final class Config implements ConfigInterface
 {
     /**
      * @var string

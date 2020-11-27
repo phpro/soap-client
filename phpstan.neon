@@ -1,11 +1,2 @@
 parameters:
-    ignoreErrors:
-        # Soapclient reflection is quite broken
-        - '#Call to an undefined static method SoapClient::__construct\(\).#'
-        # This is something we hope to fix in PHP 7.4
-        # https://wiki.php.net/rfc/covariant-returns-and-contravariant-parameters
-        - '#Call to an undefined method Phpro\\.*(Context|RuleSet)Interface.*$#'
-        # Symfony BC code makes phpstan cry:
-        - '#^Method Symfony\\(Contracts|Component)\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) invoked with 2 parameters, 1 required\.$#'
-        # When using old Symfony versions (3.4), the event contracts wont be included in the codebase:
-        - '#(.*)Symfony\\Contracts\\EventDispatcher\\Event(DispatcherInterface)?(.*)#'
+    level: 1
