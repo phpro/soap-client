@@ -9,7 +9,7 @@ grumphp:
         phpunit: ~
         phplint: ~
         phpstan:
-            level: 1
+            level: 4
             configuration: "phpstan.neon"
             ignore_patterns:
                 - "spec/"
