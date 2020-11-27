@@ -33,6 +33,7 @@ class SymfonyEventDispatcher implements EventDispatcherInterface
             return $event;
         }
 
+        /** @phpstan-ignore-next-line */
         $this->dispatcher->dispatch($eventName, $event);
 
         return $event;

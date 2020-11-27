@@ -62,8 +62,9 @@ class AbusedClient extends \SoapClient
         int $version,
         int $oneWay = 0
     ): string {
+        $typedOneWay = PHP_VERSION_ID >= 80000 ? (bool) $oneWay : $oneWay;
         $this->__last_request = $request;
-        $this->__last_response = (string) parent::__doRequest($request, $location, $action, $version, $oneWay);
+        $this->__last_response = (string) parent::__doRequest($request, $location, $action, $version, $typedOneWay);
 
         return $this->__last_response;
     }
