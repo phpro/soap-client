@@ -131,7 +131,7 @@ class WsseMiddleware extends Middleware
 
     public function beforeRequest(callable $handler, RequestInterface $request): Promise
     {
-        $xml = SoapXml::fromStream($request->getBody());
+        $xml = SoapXml::fromString((string)$request->getBody());
         $wsse = new WSSESoap($xml->getXmlDocument());
 
         // Prepare the WSSE soap class:
