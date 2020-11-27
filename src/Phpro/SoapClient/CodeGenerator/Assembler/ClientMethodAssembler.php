@@ -37,7 +37,9 @@ class ClientMethodAssembler implements AssemblerInterface
     public function assemble(ContextInterface $context): bool
     {
         if (!$context instanceof ClientMethodContext) {
-            throw new AssemblerException(__FUNCTION__.' expects an '.ClientMethodContext::class.' as input');
+            throw new AssemblerException(
+                __METHOD__.' expects an '.ClientMethodContext::class.' as input '.get_class($context).' given'
+            );
         }
         $class = $context->getClass();
         $class->setExtendedClass(Client::class);

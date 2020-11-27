@@ -2,12 +2,14 @@
 
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
+use Laminas\Code\Generator\ClassGenerator;
 use Phpro\SoapClient\CodeGenerator\Assembler\ClientMethodAssembler;
+use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
+use Phpro\SoapClient\Exception\AssemblerException;
 use PHPUnit\Framework\TestCase;
-use Laminas\Code\Generator\ClassGenerator;
 
 /**
  * Class GetterAssemblerTest
@@ -206,5 +208,21 @@ class  extends \Phpro\SoapClient\Client
 CODE;
 
         $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_throws_an_exception_when_wrong_context_is_passed() {
+        $clientMethodAssembler = new ClientMethodAssembler();
+        $context = $this->createMock(ClientContext::class);
+        $this->expectException(AssemblerException::class);
+        $this->expectExceptionMessage(sprintf(
+                'Phpro\SoapClient\CodeGenerator\Assembler\ClientMethodAssembler::assemble '.
+                'expects an Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext as input %s given',
+                get_class($context)
+            )
+        );
+        $clientMethodAssembler->assemble($context);
     }
 }
