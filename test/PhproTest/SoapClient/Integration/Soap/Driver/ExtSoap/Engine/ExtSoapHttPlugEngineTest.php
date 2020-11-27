@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Integration\Soap\Driver\ExtSoap\Engine;
 
-use Http\Adapter\Guzzle6\Client;
+use GuzzleHttp\Client;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\AbusedClient;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
@@ -63,7 +63,7 @@ class ExtSoapHttPlugEngineTest extends AbstractEngineTest
                 )
             ),
             $this->handler = HttPlugHandle::createForClient(
-                Client::createWithConfig(['headers' => ['User-Agent' => 'testing/1.0']])
+                new Client(['headers' => ['User-Agent' => 'testing/1.0']])
             )
         );
     }
