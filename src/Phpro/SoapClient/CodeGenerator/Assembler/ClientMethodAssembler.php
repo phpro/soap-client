@@ -2,21 +2,21 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
+use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\DocBlockGenerator;
+use Laminas\Code\Generator\MethodGenerator;
+use Laminas\Code\Generator\ParameterGenerator;
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\MultiArgumentRequest;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
-use Laminas\Code\Generator\ClassGenerator;
-use Laminas\Code\Generator\DocBlockGenerator;
-use Laminas\Code\Generator\MethodGenerator;
-use Laminas\Code\Generator\ParameterGenerator;
 
 class ClientMethodAssembler implements AssemblerInterface
 {
@@ -36,6 +36,11 @@ class ClientMethodAssembler implements AssemblerInterface
      */
     public function assemble(ContextInterface $context): bool
     {
+        if (!$context instanceof ClientMethodContext) {
+            throw new AssemblerException(
+                __METHOD__.' expects an '.ClientMethodContext::class.' as input '.get_class($context).' given'
+            );
+        }
         $class = $context->getClass();
         $class->setExtendedClass(Client::class);
         $method = $context->getMethod();
