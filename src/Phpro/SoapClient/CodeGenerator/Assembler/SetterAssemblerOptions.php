@@ -17,11 +17,32 @@ class SetterAssemblerOptions
     private $typeHints = false;
 
     /**
+     * @var bool
+     */
+    private $normalizeValue = false;
+
+    /**
      * @return SetterAssemblerOptions
      */
     public static function create(): SetterAssemblerOptions
     {
         return new self();
+    }
+
+    /**
+     * @return bool
+     */
+    public function useTypeHints(): bool
+    {
+        return $this->typeHints;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useNormalizeValue(): bool
+    {
+        return $this->normalizeValue;
     }
 
     /**
@@ -33,15 +54,19 @@ class SetterAssemblerOptions
     {
         $new = clone $this;
         $new->typeHints = $typeHints;
-
         return $new;
     }
 
     /**
-     * @return bool
+     * @param bool $normalizeValue
+     *
+     * @return SetterAssemblerOptions
      */
-    public function useTypeHints(): bool
+    public function withNormalizeValue(bool $normalizeValue = true): SetterAssemblerOptions
     {
-        return $this->typeHints;
+        $new = clone $this;
+        $new->normalizeValue = $normalizeValue;
+
+        return $new;
     }
 }

@@ -22,6 +22,11 @@ class FluentSetterAssemblerOptions
     private $returnType = false;
 
     /**
+     * @var bool
+     */
+    private $normalizeValue = false;
+
+    /**
      * @return FluentSetterAssemblerOptions
      */
     public static function create(): FluentSetterAssemblerOptions
@@ -56,6 +61,19 @@ class FluentSetterAssemblerOptions
     }
 
     /**
+     * @param bool $normalizeValue
+     *
+     * @return FluentSetterAssemblerOptions
+     */
+    public function withNormalizeValue(bool $normalizeValue = true): FluentSetterAssemblerOptions
+    {
+        $new = clone $this;
+        $new->normalizeValue = $normalizeValue;
+
+        return $new;
+    }
+
+    /**
      * @return bool
      */
     public function useTypeHints(): bool
@@ -69,5 +87,13 @@ class FluentSetterAssemblerOptions
     public function useReturnType(): bool
     {
         return $this->returnType;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useNormalizeValue(): bool
+    {
+        return $this->normalizeValue;
     }
 }
