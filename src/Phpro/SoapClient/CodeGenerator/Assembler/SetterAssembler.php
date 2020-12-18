@@ -51,7 +51,7 @@ class SetterAssembler implements AssemblerInterface
         try {
             $parameterOptions = ['name' => $property->getName()];
             if ($this->options->useTypeHints()) {
-                $parameterOptions['type'] = $property->getType();
+                $parameterOptions['type'] = $property->getCodeReturnType();
             }
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
