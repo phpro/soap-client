@@ -98,7 +98,7 @@ This rule can be used to e.g. add the required `ResultInterface` to request obje
 
 ## MultiRule
 
-```
+```php
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
