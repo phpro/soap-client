@@ -128,7 +128,7 @@ Implementing SOAP extensions is a real pain in the ass.
  you can easily add support for SOAP extensions or advanced authentication through HTTP middlewares.
 
 Dealing with ext-soap is not for all developers. There are some nasty quirks you need to know about.
- Therefor, we made it possible for you to use which ever driver you want to use.
+ Therefore, we made it possible for you to use which ever driver you want to use.
  By default we will still ship an ext-soap driver, but it is completely opt-in.
  You can use any user-land SoapClient implementation if you wrap it in our own driver interfaces.
  
@@ -139,4 +139,4 @@ Testing webservices is hard!
 Last but not least, we want to make it easy for you to configure your SoapClient.
  That is why we included a generated ClientFactory on which you can configure your custom Client.
  You want some other settings during development and in production? 
- No problem! Sit back and let the factory handle your Client initialisation.
+ No problem! Sit back and let the factory handle your Client initialization.
