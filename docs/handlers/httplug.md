@@ -35,6 +35,7 @@ composer require php-http/client-implementation:^1.0
 
 use Http\Adapter\Guzzle6\Client;
 use Phpro\SoapClient\Middleware\BasicAuthMiddleware;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
 use Phpro\SoapClient\Soap\Handler\HttPlugHandle;
@@ -45,8 +46,10 @@ $handler = HttPlugHandle::createForClient(
 $handler->addMiddleware(new BasicAuthMiddleware('user', 'password'));
 
 $engine = ExtSoapEngineFactory::fromOptionsWithHandler(
-    ExtSoapOptions::defaults($wsdl, []),
+    ExtSoapOptions::defaults($wsdl, [])
+        ->withClassMap(YourClassmap::getCollection()),
     $handler
 );
+$eventDispatcher = new EventDispatcher();
 $client = new YourClient($engine, $eventDispatcher);
 ```
