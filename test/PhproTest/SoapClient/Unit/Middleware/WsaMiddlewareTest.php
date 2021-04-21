@@ -112,7 +112,7 @@ class WsaMiddlewareTest extends TestCase
         $xml->loadXML($soapBody);
 
         $soapXml = new SoapXml($xml);
-        $soapXml->registerNamespace('wsa', WSASoap::WSANS_2005);
+        $soapXml->registerNamespace('wsa', WSASoap::WSANS);
 
         return $soapXml;
     }
