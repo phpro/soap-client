@@ -11,11 +11,12 @@ use Phpro\SoapClient\Middleware\WsaMiddleware2005;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Xml\SoapXml;
 use PHPUnit\Framework\TestCase;
+use RobRichards\WsePhp\WSASoap;
 
 /**
- * Class WsaMiddleware2005
+ * Class WsaMiddlewareTest2005
  *
- * @package PhproTest\SoapClient\Unit\Middleware2005
+ * @package PhproTest\SoapClient\Unit\Middleware
  */
 class WsaMiddlewareTest2005 extends TestCase
 {
