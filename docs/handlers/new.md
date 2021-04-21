@@ -20,6 +20,8 @@ class YourHandler implements HandlerInterface
 }
 ```
 
+Alternatively you might extend `Phpro\SoapClient\Middleware` which implements some boilerplate.
+
 ## Adding additional features to your custom handler
 
 - Allow [HTTP middlewares](../middlewares.md) by implementing the `Phpro\SoapClient\Middleware\MiddlewareSupportingInterface`.
