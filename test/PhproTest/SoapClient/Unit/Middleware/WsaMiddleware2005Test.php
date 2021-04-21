@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 use RobRichards\WsePhp\WSASoap;
 
 /**
- * Class WsaMiddlewareTest2005
+ * Class WsaMiddleware2005Test
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
