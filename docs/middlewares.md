@@ -53,7 +53,7 @@ Internally it used the [wse-php package of robrichards](https://github.com/robri
 which is a well known library that is used by many developers.
 The middleware is a light wrapper that makes it easy to use in your application.
 
-In case you need WSA w3c 2005 based Web Service Addressing, you should use WsaMiddleware2005
+In case you need [WSA w3c 2005 based Web Service Addressing](https://www.w3.org/TR/2005/CR-ws-addr-soap-20050817/#soaphttp), you should use WsaMiddleware2005.
 
 **Dependencies**
 ```sh
