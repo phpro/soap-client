@@ -95,7 +95,7 @@ class WsaMiddleware2005Test extends TestCase
             $xml->xpath('//soap:Header/wsa:MessageID')->item(0)->nodeValue
         );
         $this->assertEquals(
-            WsaMiddleware::WSA_ADDRESS_ANONYMOUS,
+            WsaMiddleware::WSA_ADDRESS2005_ANONYMOUS,
             $xml->xpath('//soap:Header/wsa:ReplyTo/wsa:Address')->item(0)->nodeValue
         );
     }
