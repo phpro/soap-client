@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @package PhproTest\SoapClient\Unit\Middleware2005
  */
-class WsaMiddleware2005Test extends TestCase
+class WsaMiddlewareTest2005 extends TestCase
 {
     /**
      * @var PluginClient
@@ -95,7 +95,7 @@ class WsaMiddleware2005Test extends TestCase
             $xml->xpath('//soap:Header/wsa:MessageID')->item(0)->nodeValue
         );
         $this->assertEquals(
-            WsaMiddleware::WSA_ADDRESS2005_ANONYMOUS,
+            WsaMiddleware2005::WSA_ADDRESS2005_ANONYMOUS,
             $xml->xpath('//soap:Header/wsa:ReplyTo/wsa:Address')->item(0)->nodeValue
         );
     }
