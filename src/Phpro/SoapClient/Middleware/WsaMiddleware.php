@@ -11,6 +11,7 @@ use RobRichards\WsePhp\WSASoap;
 class WsaMiddleware extends Middleware
 {
     const WSA_ADDRESS_ANONYMOUS = 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous';
+    const WSA_ADDRESS2005_ANONYMOUS = 'http://www.w3.org/2005/08/addressing';
 
     private $address;
 
@@ -28,7 +29,11 @@ class WsaMiddleware extends Middleware
     {
         $xml = SoapXml::fromStream($request->getBody());
 
-        $wsa = new WSASoap($xml->getXmlDocument());
+        if ($this->address === self::WSA_ADDRESS2005_ANONYMOUS) {
+            $wsa = new WSASoap($xml->getXmlDocument(), WSASoap::WSANS_2005);
+        } else {
+            $wsa = new WSASoap($xml->getXmlDocument());
+        }
         $wsa->addAction(SoapActionDetector::detectFromRequest($request));
         $wsa->addTo((string) $request->getUri());
         $wsa->addMessageID();
