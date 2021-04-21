@@ -111,7 +111,7 @@ class WsaMiddlewareTest2005 extends TestCase
         $xml->loadXML($soapBody);
 
         $soapXml = new SoapXml($xml);
-        $soapXml->registerNamespace('wsa', 'http://schemas.xmlsoap.org/ws/2005/08/addressing');
+        $soapXml->registerNamespace('wsa', WSASoap::WSANS_2005);
 
         return $soapXml;
     }

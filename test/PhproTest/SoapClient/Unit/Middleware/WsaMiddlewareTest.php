@@ -11,6 +11,7 @@ use Phpro\SoapClient\Middleware\WsaMiddleware;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Xml\SoapXml;
 use PHPUnit\Framework\TestCase;
+use RobRichards\WsePhp\WSASoap;
 
 /**
  * Class WsaMiddleware
@@ -111,7 +112,7 @@ class WsaMiddlewareTest extends TestCase
         $xml->loadXML($soapBody);
 
         $soapXml = new SoapXml($xml);
-        $soapXml->registerNamespace('wsa', 'http://schemas.xmlsoap.org/ws/2004/08/addressing');
+        $soapXml->registerNamespace('wsa', WSASoap::WSANS_2005);
 
         return $soapXml;
     }
