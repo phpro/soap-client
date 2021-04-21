@@ -18,7 +18,7 @@ use RobRichards\WsePhp\WSASoap;
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class WsaMiddlewareTest2005 extends TestCase
+class WsaMiddleware2005Test extends TestCase
 {
     /**
      * @var PluginClient
