@@ -74,7 +74,7 @@ CODE;
     /**
      * @return ClassMapContext
      */
-    private function createContext(bool $strictTypes = false)
+    private function createContext()
     {
         $file = new FileGenerator();
         $typeMap = new TypeMap($namespace = 'MyNamespace', [
@@ -87,6 +87,6 @@ CODE;
             ),
         ]);
 
-        return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace', $strictTypes);
+        return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace');
     }
 }
