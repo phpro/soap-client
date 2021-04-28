@@ -55,24 +55,23 @@ class SetterAssembler implements AssemblerInterface
             }
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
-            $class->addMethodFromGenerator(
-                MethodGenerator::fromArray(
-                    [
-                        'name' => $methodName,
-                        'parameters' => [$parameterOptions],
-                        'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                        'body' => sprintf('$this->%1$s = $%1$s;', $property->getName()),
-                        'docblock' => DocBlockGeneratorFactory::fromArray([
-                            'tags' => [
-                                [
-                                    'name' => 'param',
-                                    'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
-                                ],
-                            ],
-                        ]),
-                    ]
-                )
-            );
+
+            $methodGenerator = new MethodGenerator($methodName);
+            $methodGenerator->setParameters([$parameterOptions]);
+            $methodGenerator->setVisibility(MethodGenerator::VISIBILITY_PUBLIC);
+            $methodGenerator->setBody(sprintf('$this->%1$s = $%1$s;', $property->getName()));
+            if ($this->options->useDocBlocks()) {
+                $methodGenerator->setDocBlock(DocBlockGeneratorFactory::fromArray([
+                    'tags' => [
+                        [
+                            'name' => 'param',
+                            'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                        ],
+                    ],
+                ]));
+            }
+
+            $class->addMethodFromGenerator($methodGenerator);
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }

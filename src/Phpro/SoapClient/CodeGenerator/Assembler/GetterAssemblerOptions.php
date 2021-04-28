@@ -22,6 +22,11 @@ class GetterAssemblerOptions
     private $returnType = false;
 
     /**
+     * @var bool
+     */
+    private $docBlocks = true;
+
+    /**
      * @return GetterAssemblerOptions
      */
     public static function create(): GetterAssemblerOptions
@@ -69,5 +74,26 @@ class GetterAssemblerOptions
     public function useReturnType(): bool
     {
         return $this->returnType;
+    }
+
+    /**
+     * @param bool $withDocBlocks
+     *
+     * @return GetterAssemblerOptions
+     */
+    public function withDocBlocks(bool $withDocBlocks = true): GetterAssemblerOptions
+    {
+        $new = clone $this;
+        $new->docBlocks = $withDocBlocks;
+
+        return $new;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useDocBlocks(): bool
+    {
+        return $this->docBlocks;
     }
 }
