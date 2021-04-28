@@ -52,9 +52,10 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * Constructor
+     *
+     *
      *
      * @var string \$prop1
      * @var int \$prop2
@@ -64,8 +65,6 @@ class MyType
         \$this->prop1 = \$prop1;
         \$this->prop2 = \$prop2;
     }
-
-
 }
 
 CODE;
@@ -95,9 +94,10 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * Constructor
+     *
+     *
      *
      * @var string \$prop1
      * @var int \$prop2
@@ -109,8 +109,6 @@ class MyType
         \$this->prop2 = \$prop2;
         \$this->prop3 = \$prop3;
     }
-
-
 }
 
 CODE;
@@ -137,14 +135,11 @@ namespace MyNamespace;
 
 class MyType
 {
-
     public function __construct(string \$prop1, int \$prop2)
     {
         \$this->prop1 = \$prop1;
         \$this->prop2 = \$prop2;
     }
-
-
 }
 
 CODE;

@@ -52,7 +52,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      * @return \$this
@@ -62,8 +61,6 @@ class MyType
         \$this->prop1 = \$prop1;
         return \$this;
     }
-
-
 }
 
 CODE;
@@ -86,7 +83,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      * @return \$this
@@ -96,8 +92,6 @@ class MyType
         \$this->prop1 = \$prop1;
         return \$this;
     }
-
-
 }
 
 CODE;
@@ -127,8 +121,6 @@ class MyType
         \$this->prop1 = \$prop1;
         return \$this;
     }
-
-
 }
 
 CODE;
@@ -151,7 +143,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param \\MyNamespace\\Foobar \$prop1
      * @return \$this
@@ -161,8 +152,6 @@ class MyType
         \$this->prop1 = \$prop1;
         return \$this;
     }
-
-
 }
 
 CODE;
@@ -185,7 +174,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param \MyNamespace\\Foobar \$prop1
      * @return \$this
@@ -195,8 +183,6 @@ class MyType
         \$this->prop1 = \$prop1;
         return \$this;
     }
-
-
 }
 
 CODE;
@@ -220,7 +206,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap \$prop1
      * @return \$this

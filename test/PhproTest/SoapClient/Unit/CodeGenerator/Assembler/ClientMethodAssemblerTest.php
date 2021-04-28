@@ -100,7 +100,6 @@ use Vendor\MyTypeNamespace;
 
 class  extends \Phpro\SoapClient\Client
 {
-
     /**
      * @param RequestInterface|MyTypeNamespace\ParamType \$param
      * @return ResultInterface|MyTypeNamespace\ReturnType
@@ -110,8 +109,6 @@ class  extends \Phpro\SoapClient\Client
     {
         return \$this->call('functionName', \$param);
     }
-
-
 }
 
 CODE;
@@ -137,7 +134,6 @@ use Vendor\MyTypeNamespace;
 
 class  extends \Phpro\SoapClient\Client
 {
-
     /**
      * MultiArgumentRequest with following params:
      *
@@ -151,8 +147,6 @@ class  extends \Phpro\SoapClient\Client
     {
         return \$this->call('functionName', \$multiArgumentRequest);
     }
-
-
 }
 
 CODE;
@@ -191,7 +185,6 @@ use Vendor\MyTypeNamespace;
 
 class  extends \Phpro\SoapClient\Client
 {
-
     /**
      * @param RequestInterface|MyTypeNamespace\ParamType \$param
      * @return ResultInterface|MyTypeNamespace\ReturnType
@@ -201,8 +194,6 @@ class  extends \Phpro\SoapClient\Client
     {
         return \$this->call('Function_name', \$param);
     }
-
-
 }
 
 CODE;

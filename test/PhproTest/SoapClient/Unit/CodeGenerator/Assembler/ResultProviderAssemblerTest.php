@@ -55,7 +55,6 @@ use Phpro\SoapClient\Type\ResultInterface;
 
 class MyType implements ResultProviderInterface
 {
-
     /**
      * @return \MyNamespace\SomeClass|ResultInterface
      */
@@ -63,8 +62,6 @@ class MyType implements ResultProviderInterface
     {
         return \$this->prop1;
     }
-
-
 }
 
 CODE;
@@ -90,7 +87,6 @@ use Phpro\SoapClient\Type\MixedResult;
 
 class MyType implements ResultProviderInterface
 {
-
     /**
      * @return MixedResult
      */
@@ -98,8 +94,6 @@ class MyType implements ResultProviderInterface
     {
         return new MixedResult(\$this->prop1);
     }
-
-
 }
 
 CODE;
@@ -125,7 +119,6 @@ use Phpro\SoapClient\Type\MixedResult;
 
 class MyType implements ResultProviderInterface
 {
-
     /**
      * @return MixedResult
      */
@@ -133,8 +126,6 @@ class MyType implements ResultProviderInterface
     {
         return new MixedResult(\$this->prop1);
     }
-
-
 }
 
 CODE;

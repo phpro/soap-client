@@ -58,15 +58,12 @@ use Phpro\SoapClient\Soap\ClassMap\ClassMap;
 
 class ClassMap
 {
-
     public static function getCollection() : \Phpro\SoapClient\Soap\ClassMap\ClassMapCollection
     {
         return new ClassMapCollection([
             new ClassMap('MyType', Type\MyType::class),
         ]);
     }
-
-
 }
 
 
@@ -77,7 +74,7 @@ CODE;
     /**
      * @return ClassMapContext
      */
-    private function createContext()
+    private function createContext(bool $strictTypes = false)
     {
         $file = new FileGenerator();
         $typeMap = new TypeMap($namespace = 'MyNamespace', [
@@ -90,6 +87,6 @@ CODE;
             ),
         ]);
 
-        return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace');
+        return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace', $strictTypes);
     }
 }

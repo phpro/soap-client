@@ -53,7 +53,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      * @return MyType
@@ -65,8 +64,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;
@@ -90,7 +87,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap \$prop1
      * @return MyType
@@ -102,8 +98,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;
@@ -134,8 +128,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;
@@ -170,7 +162,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      * @return MyType
@@ -182,8 +173,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;
@@ -209,7 +198,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      * @return MyType
