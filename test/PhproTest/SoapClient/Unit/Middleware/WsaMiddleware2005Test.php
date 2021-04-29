@@ -7,18 +7,18 @@ use GuzzleHttp\Psr7\Response;
 use Http\Client\Common\PluginClient;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
 use Http\Mock\Client;
-use Phpro\SoapClient\Middleware\WsaMiddleware;
+use Phpro\SoapClient\Middleware\WsaMiddleware2005;
 use Phpro\SoapClient\Middleware\MiddlewareInterface;
 use Phpro\SoapClient\Xml\SoapXml;
 use PHPUnit\Framework\TestCase;
 use RobRichards\WsePhp\WSASoap;
 
 /**
- * Class WsaMiddleware
+ * Class WsaMiddleware2005Test
  *
  * @package PhproTest\SoapClient\Unit\Middleware
  */
-class WsaMiddlewareTest extends TestCase
+class WsaMiddleware2005Test extends TestCase
 {
     /**
      * @var PluginClient
@@ -31,7 +31,7 @@ class WsaMiddlewareTest extends TestCase
     private $mockClient;
 
     /**
-     * @var WsaMiddleware
+     * @var WsaMiddleware2005
      */
     private $middleware;
 
@@ -40,7 +40,7 @@ class WsaMiddlewareTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->middleware = new WsaMiddleware();
+        $this->middleware = new WsaMiddleware2005();
         $this->mockClient = new Client(new GuzzleMessageFactory());
         $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
@@ -58,7 +58,7 @@ class WsaMiddlewareTest extends TestCase
      */
     function it_has_a_name()
     {
-        $this->assertEquals('wsa_middleware', $this->middleware->getName());
+        $this->assertEquals('wsa2005_middleware', $this->middleware->getName());
     }
 
     /**
@@ -96,7 +96,7 @@ class WsaMiddlewareTest extends TestCase
             $xml->xpath('//soap:Header/wsa:MessageID')->item(0)->nodeValue
         );
         $this->assertEquals(
-            WsaMiddleware::WSA_ADDRESS_ANONYMOUS,
+            WsaMiddleware2005::WSA_ADDRESS2005_ANONYMOUS,
             $xml->xpath('//soap:Header/wsa:ReplyTo/wsa:Address')->item(0)->nodeValue
         );
     }
@@ -112,7 +112,7 @@ class WsaMiddlewareTest extends TestCase
         $xml->loadXML($soapBody);
 
         $soapXml = new SoapXml($xml);
-        $soapXml->registerNamespace('wsa', WSASoap::WSANS);
+        $soapXml->registerNamespace('wsa', WSASoap::WSANS_2005);
 
         return $soapXml;
     }

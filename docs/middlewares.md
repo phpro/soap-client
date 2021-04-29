@@ -13,7 +13,7 @@ Next, you can use one of the built-in middlewares:
 
 - [BasicAuthMiddleware](#basicauthmiddleware)
 - [NtlmMiddleware](#ntlmmiddleware) (deprecated)
-- [WsaMiddleware](#wsamiddleware)
+- [WsaMiddleware / WsaMiddleware2005](#wsamiddleware)
 - [WsseMiddleware](#wssemiddleware)
 - [RemoveEmptyNodesMiddleware](#removeemptynodesmiddleware)
 - [WS-I Compliance/QuotedSoapActionMiddleware](#ws-i-compliancequotedsoapactionmiddleware)
@@ -53,6 +53,8 @@ Internally it used the [wse-php package of robrichards](https://github.com/robri
 which is a well known library that is used by many developers.
 The middleware is a light wrapper that makes it easy to use in your application.
 
+In case you need [WSA w3c 2005 based Web Service Addressing](https://www.w3.org/TR/2005/CR-ws-addr-soap-20050817/#soaphttp), you should use WsaMiddleware2005.
+
 **Dependencies**
 ```sh
 composer require robrichards/wse-php:^2.0
@@ -60,7 +62,9 @@ composer require robrichards/wse-php:^2.0
 
 **Usage**
 ```php
-$handler->addMiddleware(new WsaMiddleware());
+$handler->addMiddleware(new WsaMiddleware()); // WSA xmlsoap 2004 based Web Service Addressing
+
+$handler->addMiddleware(new WsaMiddleware2005()); // for WSA w3c 2005 based Web Service Addressing
 ```
 
 
