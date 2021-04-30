@@ -23,22 +23,7 @@ return Config::create()
 
 BODY;
 
-    const RULESET_DEFAULT = <<<RULESET
-->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
-->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler()))
-RULESET;
-
-
-    const RULESET_REQUEST_RESPONSE = <<<RULESET
-->addRule(
-    new Rules\IsRequestRule(
-        \$engine->getMetadata(),
-        new Rules\MultiRule([
-            new Rules\AssembleRule(new Assembler\RequestAssembler()),
-            new Rules\AssembleRule(new Assembler\ConstructorAssembler(new Assembler\ConstructorAssemblerOptions())),
-        ])
-    )
-)
+    const RULESET_RESPONSE = <<<RULESET
 ->addRule(
     new Rules\IsResultRule(
         \$engine->getMetadata(),
@@ -55,8 +40,6 @@ RULESET;
             ->disableWsdlCache()
     ))
 EOENGINE;
-
-
 
     /**
      * @param string $name
@@ -103,11 +86,64 @@ EOENGINE;
             $body .= $this->generateSetter($name, $value, $file);
         }
 
-        $body .= $this->parseIndentedRuleSet($file, self::RULESET_DEFAULT);
-        $body .= $this->parseIndentedRuleSet($file, self::RULESET_REQUEST_RESPONSE);
+        $body .= $this->parseIndentedRuleSet($file, $this->generateGetterSetterRuleSet($context));
+        $body .= $this->parseIndentedRuleSet($file, $this->generateRequestRuleSet($context));
+        $body .= $this->parseIndentedRuleSet($file, self::RULESET_RESPONSE);
 
         $file->setBody($body.';'.PHP_EOL);
 
         return $file->generate();
+    }
+
+    private function generateGetterSetterRuleSet(ConfigContext $context): string
+    {
+        if ($context->isGenerateDocblocks()) {
+            return <<<RULESET
+->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
+->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler(
+    new Assembler\ImmutableSetterAssemblerOptions()
+)))
+RULESET;
+        }
+
+        return <<<RULESET
+->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(
+    (new Assembler\GetterAssemblerOptions())->withDocBlocks(false)
+)))
+->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler(
+    (new Assembler\ImmutableSetterAssemblerOptions())->withDocBlocks(false)
+)))
+RULESET;
+    }
+
+    private function generateRequestRuleSet(ConfigContext $context): string
+    {
+        if ($context->isGenerateDocblocks()) {
+            return <<<REQUEST
+->addRule(
+    new Rules\IsRequestRule(
+        \$engine->getMetadata(),
+        new Rules\MultiRule([
+            new Rules\AssembleRule(new Assembler\RequestAssembler()),
+            new Rules\AssembleRule(new Assembler\ConstructorAssembler(new Assembler\ConstructorAssemblerOptions())),
+        ])
+    )
+)
+REQUEST;
+        }
+
+        return <<<REQUEST
+->addRule(
+    new Rules\IsRequestRule(
+        \$engine->getMetadata(),
+        new Rules\MultiRule([
+            new Rules\AssembleRule(new Assembler\RequestAssembler()),
+            new Rules\AssembleRule(new Assembler\ConstructorAssembler(
+                (new Assembler\ConstructorAssemblerOptions())->withDocBlocks(false)
+            )),
+        ])
+    )
+)
+REQUEST;
     }
 }

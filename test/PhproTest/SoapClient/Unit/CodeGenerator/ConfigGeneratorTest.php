@@ -9,7 +9,7 @@ use Laminas\Code\Generator\FileGenerator;
 
 class ConfigGeneratorTest extends TestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $expected = <<<CONTENT
 <?php
@@ -34,7 +34,9 @@ return Config::create()
     ->setClassmapName('Classmap')
     ->setClassmapNamespace('App\\\\Classmap')
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
-    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler()))
+    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler(
+        new Assembler\ImmutableSetterAssemblerOptions()
+    )))
     ->addRule(
         new Rules\IsRequestRule(
             \$engine->getMetadata(),
@@ -66,6 +68,60 @@ CONTENT;
             ->addSetter('setClassmapDestination', 'src/classmap')
             ->addSetter('setClassmapName', 'Classmap')
             ->addSetter('setClassmapNamespace', 'App\\\\Classmap');
+
+        $generator = new ConfigGenerator();
+        $generated = $generator->generate(new FileGenerator(), $context);
+        self::assertEquals($expected, $generated);
+    }
+
+    public function testGenerateWithoutDocblocks(): void
+    {
+        $expected = <<<CONTENT
+<?php
+
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
+
+return Config::create()
+    ->setEngine(\$engine = ExtSoapEngineFactory::fromOptions(
+        ExtSoapOptions::defaults('wsdl.xml', [])
+            ->disableWsdlCache()
+    ))
+    ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(
+        (new Assembler\GetterAssemblerOptions())->withDocBlocks(false)
+    )))
+    ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler(
+        (new Assembler\ImmutableSetterAssemblerOptions())->withDocBlocks(false)
+    )))
+    ->addRule(
+        new Rules\IsRequestRule(
+            \$engine->getMetadata(),
+            new Rules\MultiRule([
+                new Rules\AssembleRule(new Assembler\RequestAssembler()),
+                new Rules\AssembleRule(new Assembler\ConstructorAssembler(
+                    (new Assembler\ConstructorAssemblerOptions())->withDocBlocks(false)
+                )),
+            ])
+        )
+    )
+    ->addRule(
+        new Rules\IsResultRule(
+            \$engine->getMetadata(),
+            new Rules\MultiRule([
+                new Rules\AssembleRule(new Assembler\ResultAssembler()),
+            ])
+        )
+    )
+;
+
+CONTENT;
+        $context = new ConfigContext();
+        $context
+            ->setWsdl('wsdl.xml')
+            ->setGenerateDocblocks(false);
 
         $generator = new ConfigGenerator();
         $generated = $generator->generate(new FileGenerator(), $context);
