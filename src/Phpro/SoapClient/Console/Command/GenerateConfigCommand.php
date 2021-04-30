@@ -61,6 +61,7 @@ class GenerateConfigCommand extends Command
         }
 
         $context->setWsdl($io->ask('Wsdl location (URL or path to file)', null, $required));
+        $context->setGenerateDocblocks($io->confirm('Should methods be generated with docblocks?', true));
         $name = $io->ask(
             'Generic name used to name this client (Results in <name>Client <name>Classmap etc.)',
             null,
