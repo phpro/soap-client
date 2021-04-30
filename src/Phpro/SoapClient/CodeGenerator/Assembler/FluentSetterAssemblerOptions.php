@@ -22,6 +22,11 @@ class FluentSetterAssemblerOptions
     private $returnType = false;
 
     /**
+     * @var bool
+     */
+    private $docBlocks = true;
+
+    /**
      * @return FluentSetterAssemblerOptions
      */
     public static function create(): FluentSetterAssemblerOptions
@@ -69,5 +74,26 @@ class FluentSetterAssemblerOptions
     public function useReturnType(): bool
     {
         return $this->returnType;
+    }
+
+    /**
+     * @param bool $withDocBlocks
+     *
+     * @return FluentSetterAssemblerOptions
+     */
+    public function withDocBlocks(bool $withDocBlocks = true): FluentSetterAssemblerOptions
+    {
+        $new = clone $this;
+        $new->docBlocks = $withDocBlocks;
+
+        return $new;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useDocBlocks(): bool
+    {
+        return $this->docBlocks;
     }
 }

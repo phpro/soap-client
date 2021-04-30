@@ -119,11 +119,11 @@ Example output:
     }
 ```
 
-Generating type-hints is disabled by default, but can be enabled by passing `FluentSetterAssemblerOption` instance to the constructor with the option withTypeHints set to true.
+Generating doc blocks is enabled by default, but can be disabled by passing `FluentSetterAssemblerOption` instance to the constructor with the option `withDocBlocks` set to false. This is normally used in conjunction with `withTypeHints`
 
 Example
 ```php
-new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints())
+new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withDocBlocks(false)->withTypeHints())
 ```
 
 ```php
@@ -185,7 +185,12 @@ Example output:
     }
 ```
 
-This assembler needs to be constructed with an instance of `GetterAssemblerOptions`
+Generating doc blocks is enabled by default, but can be disabled by passing `GetterAssemblerOptions` instance to the constructor with the option `withDocBlocks` set to false. This is normally used in conjunction with `withTypeHints`
+
+Example
+```php
+new GetterAssembler((new GetterAssemblerOptions())->withDocBlocks(false)->withTypeHints())
+```
 
 ## InterfaceAssembler
 
@@ -375,8 +380,12 @@ Example output:
     }
 ```
 
-This assembler needs to be constructed with an instance of `SetterAssemblerOptions`.
+Generating doc blocks is enabled by default, but can be disabled by passing `SetterAssemblerOptions` instance to the constructor with the option `withDocBlocks` set to false. This is normally used in conjunction with `withTypeHints`
 
+Example
+```php
+new SetterAssembler((new SetterAssemblerOptions())->withDocBlocks(false)->withTypeHints())
+```
 
 ## TraitAssembler
 
@@ -435,6 +444,12 @@ Example output:
     }
 ```
 
+Generating doc blocks is enabled by default, but can be disabled by passing `ImmutableSetterAssemblerOptions` instance to the constructor with the option `withDocBlocks` set to false. This is normally used in conjunction with `withTypeHints`
+
+Example
+```php
+new ImmutableSetterAssembler((new ImmutableSetterAssemblerOptions())->withDocBlocks(false)->withTypeHints())
+```
 
 # Creating your own Assembler
 

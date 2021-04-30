@@ -105,6 +105,37 @@ CODE;
         $this->assertEquals($expected, $code);
     }
 
+
+    /**
+     * @test
+     */
+    function it_assembles_with_no_doc_blocks()
+    {
+        $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withDocBlocks(false));
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    public function setProp1(\$prop1)
+    {
+        \$this->prop1 = \$prop1;
+        return \$this;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
     /**
      * @test
      */

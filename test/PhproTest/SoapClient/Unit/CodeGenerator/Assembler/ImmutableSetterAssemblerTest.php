@@ -111,6 +111,38 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_with_no_doc_blocks()
+    {
+        $assembler = new ImmutableSetterAssembler((new ImmutableSetterAssemblerOptions())->withDocBlocks(false));
+        $context = $this->createContextWithLongType();
+
+        $assembler->assemble($context);
+
+        $generated = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    public function withProp1(\$prop1)
+    {
+        \$new = clone \$this;
+        \$new->prop1 = \$prop1;
+
+        return \$new;
+    }
+
+
+}
+
+CODE;
+        $this->assertEquals($expected, $generated);
+    }
+
+    /**
      * @return PropertyContext
      */
     private function createContext()

@@ -53,23 +53,27 @@ class GetterAssembler implements AssemblerInterface
             $prefix = $this->getPrefix($property);
             $methodName = Normalizer::generatePropertyMethod($prefix, $property->getName());
             $class->removeMethod($methodName);
-            $class->addMethodFromGenerator(
-                MethodGenerator::fromArray([
-                    'name'       => $methodName,
-                    'parameters' => [],
-                    'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                    'body'       => sprintf('return $this->%s;', $property->getName()),
-                    'returntype' => $this->options->useReturnType() ? $property->getCodeReturnType() : null,
-                    'docblock'   => DocBlockGeneratorFactory::fromArray([
-                        'tags' => [
-                            [
-                                'name'        => 'return',
-                                'description' => $property->getType(),
-                            ],
+
+            $methodGenerator = new MethodGenerator($methodName);
+            $methodGenerator->setVisibility(MethodGenerator::VISIBILITY_PUBLIC);
+            $methodGenerator->setBody(sprintf('return $this->%s;', $property->getName()));
+
+            if ($this->options->useReturnType()) {
+                $methodGenerator->setReturnType($property->getCodeReturnType());
+            }
+
+            if ($this->options->useDocBlocks()) {
+                $methodGenerator->setDocBlock(DocBlockGeneratorFactory::fromArray([
+                    'tags' => [
+                        [
+                            'name'        => 'return',
+                            'description' => $property->getType(),
                         ],
-                    ]),
-                ])
-            );
+                    ],
+                ]));
+            }
+
+            $class->addMethodFromGenerator($methodGenerator);
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }

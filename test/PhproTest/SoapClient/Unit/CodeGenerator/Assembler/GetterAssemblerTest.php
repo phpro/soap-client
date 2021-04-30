@@ -107,6 +107,38 @@ CODE;
     /**
      * @test
      */
+    public function it_assembles_with_no_doc_blocks()
+    {
+        $options = (new GetterAssemblerOptions())
+            ->withDocBlocks(false);
+        $assembler = new GetterAssembler($options);
+
+        $context = $this->createContext('prop2');
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+
+    public function getProp2()
+    {
+        return \$this->prop2;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
     function it_assembles_property_methodnames_correctly()
     {
         $options = (new GetterAssemblerOptions())->withBoolGetters();

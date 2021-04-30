@@ -19,6 +19,11 @@ class ImmutableSetterAssemblerOptions
     private $returnTypes = false;
 
     /**
+     * @var bool
+     */
+    private $docBlocks = true;
+
+    /**
      * @return ImmutableSetterAssemblerOptions
      */
     public function withTypeHints(): ImmutableSetterAssemblerOptions
@@ -62,5 +67,26 @@ class ImmutableSetterAssemblerOptions
     public static function create(): ImmutableSetterAssemblerOptions
     {
         return new self();
+    }
+
+    /**
+     * @param bool $withDocBlocks
+     *
+     * @return ImmutableSetterAssemblerOptions
+     */
+    public function withDocBlocks(bool $withDocBlocks = true): ImmutableSetterAssemblerOptions
+    {
+        $new = clone $this;
+        $new->docBlocks = $withDocBlocks;
+
+        return $new;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useDocBlocks(): bool
+    {
+        return $this->docBlocks;
     }
 }

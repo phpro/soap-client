@@ -66,32 +66,28 @@ class ImmutableSetterAssembler implements AssemblerInterface
             if ($this->options->useTypeHints()) {
                 $parameterOptions['type'] = $property->getType();
             }
-            $returnType = $this->options->useReturnTypes()
-                ? $class->getNamespaceName() . '\\' . $class->getName()
-                : null;
-            $class->addMethodFromGenerator(
-                MethodGenerator::fromArray(
-                    [
-                        'name' => $methodName,
-                        'parameters' => [$parameterOptions],
-                        'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
-                        'body' => implode($class::LINE_FEED, $lines),
-                        'returntype' => $returnType,
-                        'docblock' => DocBlockGeneratorFactory::fromArray([
-                            'tags' => [
-                                [
-                                    'name' => 'param',
-                                    'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
-                                ],
-                                [
-                                    'name' => 'return',
-                                    'description' => $class->getName(),
-                                ],
-                            ],
-                        ]),
-                    ]
-                )
-            );
+
+            $methodGenerator = new MethodGenerator($methodName);
+            $methodGenerator->setParameters([$parameterOptions]);
+            $methodGenerator->setBody(implode($class::LINE_FEED, $lines));
+            if ($this->options->useReturnTypes()) {
+                $methodGenerator->setReturnType($class->getNamespaceName() . '\\' . $class->getName());
+            }
+            if ($this->options->useDocBlocks()) {
+                $methodGenerator->setDocBlock(DocBlockGeneratorFactory::fromArray([
+                    'tags' => [
+                        [
+                            'name' => 'param',
+                            'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                        ],
+                        [
+                            'name' => 'return',
+                            'description' => $class->getName(),
+                        ],
+                    ],
+                ]));
+            }
+            $class->addMethodFromGenerator($methodGenerator);
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
