@@ -1,7 +1,6 @@
-[![Build status](https://api.travis-ci.org/phpro/soap-client.svg)](http://travis-ci.org/phpro/soap-client)
-[![Installs](https://img.shields.io/packagist/dt/phpro/soap-client.svg)](https://packagist.org/packages/phpro/soap-client/stats)
-[![Packagist](https://img.shields.io/packagist/v/phpro/soap-client.svg)](https://packagist.org/packages/phpro/soap-client)
+# This is a fork of: https://github.com/phpro/soap-client 
 
+---
 # General purpose PHP SOAP-client
 
 Sick and tired of building crappy SOAP implementations?

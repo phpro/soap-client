@@ -15,62 +15,62 @@ class WsseMiddleware extends Middleware
     /**
      * @var string
      */
-    private $privateKeyFile;
+    protected $privateKeyFile;
 
     /**
      * @var string
      */
-    private $publicKeyFile;
+    protected $publicKeyFile;
 
     /**
      * @var string
      */
-    private $serverCertificateFile = '';
+    protected $serverCertificateFile = '';
 
     /**
      * @var int
      */
-    private $timestamp = 3600;
+    protected $timestamp = 3600;
 
     /**
      * @var bool
      */
-    private $signAllHeaders = false;
+    protected $signAllHeaders = false;
 
     /**
      * @var string
      */
-    private $digitalSignMethod = XMLSecurityKey::RSA_SHA1;
+    protected $digitalSignMethod = XMLSecurityKey::RSA_SHA1;
 
     /**
      * @var string
      */
-    private $userTokenName = '';
+    protected $userTokenName = '';
 
     /**
      * @var string
      */
-    private $userTokenPassword = '';
+    protected $userTokenPassword = '';
 
     /**
      * @var bool
      */
-    private $userTokenDigest = false;
+    protected $userTokenDigest = false;
 
     /**
      * @var bool
      */
-    private $encrypt = false;
+    protected $encrypt = false;
 
     /**
      * @var bool
      */
-    private $hasUserToken = false;
+    protected $hasUserToken = false;
 
     /**
      * @var bool
      */
-    private $serverCertificateHasSubjectKeyIdentifier = true;
+    protected $serverCertificateHasSubjectKeyIdentifier = true;
 
     public function __construct(string $privateKeyFile, string $publicKeyFile)
     {
