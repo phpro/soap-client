@@ -62,30 +62,4 @@ class Filesystem
         $this->ensureDirectoryExists(\dirname($path));
         file_put_contents($path, $content);
     }
-
-    /**
-     * @param string $file
-     */
-    public function createBackup(string $file)
-    {
-        if (!$this->fileExists($file)) {
-            throw new RuntimeException('Could not create a backup from a non existing file: '.$file);
-        }
-
-        $backupFile = preg_replace('{\.backup$}', '', $file).'.backup';
-        copy($file, $backupFile);
-    }
-
-    /**
-     * @param string $file
-     */
-    public function removeBackup(string $file)
-    {
-        $backupFile = preg_replace('{\.backup$}', '', $file).'.backup';
-        if (!$this->fileExists($backupFile)) {
-            return;
-        }
-
-        unlink($backupFile);
-    }
 }
