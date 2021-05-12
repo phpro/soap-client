@@ -26,7 +26,6 @@ use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
 
 class MyclientFactory
 {
-
     public static function factory(string \$wsdl) : \App\Client\Myclient
     {
         \$engine = ExtSoapEngineFactory::fromOptions(
@@ -37,8 +36,6 @@ class MyclientFactory
 
         return new Myclient(\$engine, \$eventDispatcher);
     }
-
-
 }
 
 

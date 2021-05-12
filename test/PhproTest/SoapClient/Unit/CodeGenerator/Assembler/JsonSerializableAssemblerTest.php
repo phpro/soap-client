@@ -54,7 +54,6 @@ use JsonSerializable;
 
 class MyType implements JsonSerializable
 {
-
     /**
      * @return array
      */
@@ -65,8 +64,6 @@ class MyType implements JsonSerializable
             'prop2' => \$this->prop2,
         ];
     }
-
-
 }
 
 CODE;

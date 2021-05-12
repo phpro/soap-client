@@ -54,8 +54,6 @@ use Phpro\SoapClient\Type\ResultInterface;
 
 class MyType implements ResultInterface
 {
-
-
 }
 
 CODE;

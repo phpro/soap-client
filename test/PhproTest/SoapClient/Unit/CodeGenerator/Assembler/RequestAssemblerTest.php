@@ -54,8 +54,6 @@ use Phpro\SoapClient\Type\RequestInterface;
 
 class MyType implements RequestInterface
 {
-
-
 }
 
 CODE;

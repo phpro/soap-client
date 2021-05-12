@@ -58,15 +58,12 @@ use Phpro\SoapClient\Soap\ClassMap\ClassMap;
 
 class ClassMap
 {
-
     public static function getCollection() : \Phpro\SoapClient\Soap\ClassMap\ClassMapCollection
     {
         return new ClassMapCollection([
             new ClassMap('MyType', Type\MyType::class),
         ]);
     }
-
-
 }
 
 

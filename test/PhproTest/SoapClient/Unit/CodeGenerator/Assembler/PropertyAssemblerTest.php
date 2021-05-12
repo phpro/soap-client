@@ -41,13 +41,10 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @var string
      */
     private \$prop1;
-
-
 }
 
 CODE;
@@ -69,13 +66,10 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @var string
      */
     public \$prop1;
-
-
 }
 
 CODE;
@@ -99,13 +93,10 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @var \\This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever\\Wrap
      */
     private \$prop1;
-
-
 }
 
 CODE;

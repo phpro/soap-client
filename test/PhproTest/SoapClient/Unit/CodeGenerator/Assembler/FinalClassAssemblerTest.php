@@ -51,8 +51,6 @@ namespace MyNamespace;
 
 final class MyType
 {
-
-
 }
 
 CODE;

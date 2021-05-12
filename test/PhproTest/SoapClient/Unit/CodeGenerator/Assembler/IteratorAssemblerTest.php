@@ -54,7 +54,6 @@ use IteratorAggregate;
 
 class MyType implements IteratorAggregate
 {
-
     /**
      * @return \ArrayIterator
      */
@@ -62,8 +61,6 @@ class MyType implements IteratorAggregate
     {
         return new \ArrayIterator(is_array(\$this->prop1) ? \$this->prop1 : []);
     }
-
-
 }
 
 CODE;

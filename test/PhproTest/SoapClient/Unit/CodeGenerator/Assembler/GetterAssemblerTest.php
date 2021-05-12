@@ -52,7 +52,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @return string
      */
@@ -60,8 +59,6 @@ class MyType
     {
         return \$this->prop1;
     }
-
-
 }
 
 CODE;
@@ -87,7 +84,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @return int
      */
@@ -95,8 +91,6 @@ class MyType
     {
         return \$this->prop2;
     }
-
-
 }
 
 CODE;
@@ -153,7 +147,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @return bool
      */
@@ -161,8 +154,6 @@ class MyType
     {
         return \$this->prop3;
     }
-
-
 }
 
 CODE;
@@ -187,7 +178,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @return \\ns1\\MyResponse
      */
@@ -195,8 +185,6 @@ class MyType
     {
         return \$this->prop4;
     }
-
-
 }
 
 CODE;
@@ -220,7 +208,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @return \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap
      */
@@ -228,8 +215,6 @@ class MyType
     {
         return \$this->prop1;
     }
-
-
 }
 
 CODE;
