@@ -17,7 +17,7 @@ class ResponseEvent extends SoapEvent
     protected $requestEvent;
 
     /**
-     * @var mixed
+     * @var ResultInterface
      */
     protected $response;
 
@@ -60,5 +60,10 @@ class ResponseEvent extends SoapEvent
     public function getClient(): Client
     {
         return $this->client;
+    }
+
+    public function registerResponse(ResultInterface $response): void
+    {
+        $this->response = $response;
     }
 }

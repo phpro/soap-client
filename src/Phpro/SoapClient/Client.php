@@ -76,6 +76,10 @@ class Client implements ClientInterface
      * For backward compatibility with Symfony 4
      *
      * @deprecated : We will remove this method  in v2.0 in favour of injecting the internal dispatcher directly.
+     *
+     * @template T of Event\SoapEvent
+     * @param T $event
+     * @return T
      */
     private function dispatch(Event\SoapEvent $event, string $name = null): Event\SoapEvent
     {
@@ -95,8 +99,8 @@ class Client implements ClientInterface
      */
     protected function call(string $method, RequestInterface $request): ResultInterface
     {
-        $requestEvent = new Event\RequestEvent($this, $method, $request);
-        $this->dispatch($requestEvent, Events::REQUEST);
+        $requestEvent = $this->dispatch(new Event\RequestEvent($this, $method, $request), Events::REQUEST);
+        $request = $requestEvent->getRequest();
 
         try {
             $arguments = ($request instanceof MultiArgumentRequestInterface) ? $request->getArguments() : [$request];
@@ -115,8 +119,8 @@ class Client implements ClientInterface
             throw $soapException;
         }
 
-        $this->dispatch(new Event\ResponseEvent($this, $requestEvent, $result), Events::RESPONSE);
+        $responseEvent = $this->dispatch(new Event\ResponseEvent($this, $requestEvent, $result), Events::RESPONSE);
 
-        return $result;
+        return $responseEvent->getResponse();
     }
 }

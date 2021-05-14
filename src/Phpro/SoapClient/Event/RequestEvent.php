@@ -62,4 +62,9 @@ class RequestEvent extends SoapEvent
     {
         return $this->client;
     }
+
+    public function registerRequest(RequestInterface $request): void
+    {
+        $this->request = $request;
+    }
 }

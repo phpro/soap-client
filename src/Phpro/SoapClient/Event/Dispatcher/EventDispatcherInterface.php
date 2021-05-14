@@ -14,10 +14,10 @@ use Phpro\SoapClient\Event\SoapEvent;
 interface EventDispatcherInterface
 {
     /**
-     * @param SoapEvent   $event
+     * @template T of SoapEvent
+     * @param T $event
      * @param string|null $name Deprecated : will be removed  in v2.0!
-     *
-     * @return SoapEvent
+     * @return T
      */
     public function dispatch(SoapEvent $event, string $name = null): SoapEvent;
 }
