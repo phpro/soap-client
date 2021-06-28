@@ -53,16 +53,16 @@ namespace MyNamespace;
 use IteratorAggregate;
 
 /**
- * @phpstan-implements \IteratorAggregate<int, array>
- * @psalm-implements \IteratorAggregate<int, array>
+ * @phpstan-implements \IteratorAggregate<array-key, array>
+ * @psalm-implements \IteratorAggregate<array-key, array>
  */
 class MyType implements IteratorAggregate
 {
 
     /**
      * @return \ArrayIterator
-     * @phpstan-return \ArrayIterator<int, array>
-     * @psalm-return \ArrayIterator<int, array>
+     * @phpstan-return \ArrayIterator<array-key, array>
+     * @psalm-return \ArrayIterator<array-key, array>
      */
     public function getIterator()
     {
