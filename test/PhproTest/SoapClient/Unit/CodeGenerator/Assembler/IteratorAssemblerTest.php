@@ -52,11 +52,17 @@ namespace MyNamespace;
 
 use IteratorAggregate;
 
+/**
+ * @phpstan-implements \IteratorAggregate<array-key, array>
+ * @psalm-implements \IteratorAggregate<array-key, array>
+ */
 class MyType implements IteratorAggregate
 {
 
     /**
      * @return \ArrayIterator
+     * @phpstan-return \ArrayIterator<array-key, array>
+     * @psalm-return \ArrayIterator<array-key, array>
      */
     public function getIterator()
     {
