@@ -80,6 +80,10 @@ class IteratorAssembler implements AssemblerInterface
                         [
                             'name' => 'phpstan-return',
                             'description' => '\\ArrayIterator<int, '. $firstProperty->getType() .'>'
+                        ],
+                        [
+                            'name' => 'psalm-return',
+                            'description' => '\\ArrayIterator<int, '. $firstProperty->getType() .'>'
                         ]
                     ]
                 ])
@@ -90,6 +94,10 @@ class IteratorAssembler implements AssemblerInterface
             'tags' => [
                 [
                     'name' => 'phpstan-implements',
+                    'description' => '\\IteratorAggregate<int, '. $firstProperty->getType() .'>'
+                ],
+                [
+                    'name' => 'psalm-implements',
                     'description' => '\\IteratorAggregate<int, '. $firstProperty->getType() .'>'
                 ]
             ]

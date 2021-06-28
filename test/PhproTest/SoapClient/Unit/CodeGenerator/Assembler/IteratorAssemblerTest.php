@@ -54,6 +54,7 @@ use IteratorAggregate;
 
 /**
  * @phpstan-implements \IteratorAggregate<int, array>
+ * @psalm-implements \IteratorAggregate<int, array>
  */
 class MyType implements IteratorAggregate
 {
@@ -61,6 +62,7 @@ class MyType implements IteratorAggregate
     /**
      * @return \ArrayIterator
      * @phpstan-return \ArrayIterator<int, array>
+     * @psalm-return \ArrayIterator<int, array>
      */
     public function getIterator()
     {
