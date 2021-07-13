@@ -20,6 +20,9 @@ use Phpro\SoapClient\Type\ResultInterface;
 
 class ClientMethodAssembler implements AssemblerInterface
 {
+    // to ease X-OS compat, always use linux newlines
+    const EOL = "\n";
+    
     /**
      * {@inheritdoc}
      */
@@ -128,14 +131,14 @@ class ClientMethodAssembler implements AssemblerInterface
     {
         $class = $context->getClass();
         $method = $context->getMethod();
-        $description = ['MultiArgumentRequest with following params:'.PHP_EOL];
+        $description = ['MultiArgumentRequest with following params:'. self::EOL];
         foreach ($context->getMethod()->getParameters() as $parameter) {
             $description[] = $parameter->getType().' $'.$parameter->getName();
         }
 
         return DocBlockGeneratorFactory::fromArray(
             [
-                'longdescription' => implode(PHP_EOL, $description),
+                'longdescription' => implode(self::EOL, $description),
                 'tags' => [
                     ['name' => 'param', 'description' => MultiArgumentRequest::class],
                     [
