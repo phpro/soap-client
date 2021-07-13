@@ -49,7 +49,7 @@ EOENGINE;
      */
     private function generateSetter(string $name, string $value, FileGenerator $file): string
     {
-        return sprintf("%s->%s('%s')".PHP_EOL, $file->getIndentation(), $name, $value);
+        return sprintf("%s->%s('%s')".GeneratorInterface::EOL, $file->getIndentation(), $name, $value);
     }
 
     /**
@@ -59,12 +59,12 @@ EOENGINE;
      */
     private function parseIndentedRuleSet(FileGenerator $file, string $ruleset): string
     {
-        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $ruleset).PHP_EOL;
+        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $ruleset).GeneratorInterface::EOL;
     }
 
     private function parseEngine(FileGenerator $fileGenerator, string $wsdl): string
     {
-        return $fileGenerator->getIndentation().sprintf(self::ENGINE_BOILERPLATE, $wsdl).PHP_EOL;
+        return $fileGenerator->getIndentation().sprintf(self::ENGINE_BOILERPLATE, $wsdl).GeneratorInterface::EOL;
     }
 
     /**
@@ -90,7 +90,7 @@ EOENGINE;
         $body .= $this->parseIndentedRuleSet($file, $this->generateRequestRuleSet($context));
         $body .= $this->parseIndentedRuleSet($file, self::RULESET_RESPONSE);
 
-        $file->setBody($body.';'.PHP_EOL);
+        $file->setBody($body.';'.GeneratorInterface::EOL);
 
         return $file->generate();
     }
