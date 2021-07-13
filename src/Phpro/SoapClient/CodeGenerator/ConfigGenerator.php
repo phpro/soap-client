@@ -59,7 +59,8 @@ EOENGINE;
      */
     private function parseIndentedRuleSet(FileGenerator $file, string $ruleset): string
     {
-        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $ruleset).GeneratorInterface::EOL;
+        return $file->getIndentation().preg_replace('/\n/', sprintf("\n%s", $file->getIndentation()), $ruleset)
+            .GeneratorInterface::EOL;
     }
 
     private function parseEngine(FileGenerator $fileGenerator, string $wsdl): string
