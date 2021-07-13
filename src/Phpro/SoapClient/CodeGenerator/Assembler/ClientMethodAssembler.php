@@ -21,9 +21,6 @@ use Phpro\SoapClient\Type\ResultInterface;
 
 class ClientMethodAssembler implements AssemblerInterface
 {
-    // to ease X-OS compat, always use linux newlines
-    const EOL = "\n";
-    
     /**
      * {@inheritdoc}
      */
