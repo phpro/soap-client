@@ -19,7 +19,7 @@ jobs:
               with:
                   php-version: ${{ matrix.php-versions }}
                   tools: 'composer:v2'
-                  extensions: pcov, mbstring, posix, soap, intl
+                  extensions: mbstring, posix, soap, intl
             - name: Check Versions
               run: |
                   php -v
