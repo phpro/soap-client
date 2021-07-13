@@ -4,6 +4,7 @@ on: [push, pull_request]
 jobs:
     run:
         runs-on: ${{ matrix.operating-system }}
+        timeout-minutes: 10
         strategy:
             matrix:
                 operating-system: ['windows-latest', 'ubuntu-latest']
