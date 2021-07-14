@@ -4,9 +4,10 @@ on: [push, pull_request]
 jobs:
     run:
         runs-on: ${{ matrix.operating-system }}
+        timeout-minutes: 10
         strategy:
             matrix:
-                operating-system: [ubuntu-latest]
+                operating-system: ['windows-latest', 'ubuntu-latest']
                 php-versions: ['7.4', '8.0']
                 composer-options: ['', '--prefer-lowest']
             fail-fast: false
@@ -19,7 +20,7 @@ jobs:
               with:
                   php-version: ${{ matrix.php-versions }}
                   tools: 'composer:v2'
-                  extensions: pcov, mbstring, posix, soap
+                  extensions: mbstring, posix, soap, intl
             - name: Check Versions
               run: |
                   php -v

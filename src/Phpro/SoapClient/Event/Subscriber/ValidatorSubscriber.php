@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Event\Subscriber;
 
+use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\Event\RequestEvent;
 use Phpro\SoapClient\Events;
 use Phpro\SoapClient\Exception\RequestException;
@@ -59,6 +60,6 @@ class ValidatorSubscriber implements EventSubscriberInterface
             $strErrors[] = $error->getMessage();
         }
 
-        return implode(PHP_EOL, $strErrors);
+        return implode(GeneratorInterface::EOL, $strErrors);
     }
 }

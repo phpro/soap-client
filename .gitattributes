@@ -1,0 +1,2 @@
+# make sure windows uses LF for files, which we expect to always use LF, no matter the platform
+*.php    text eol=lf

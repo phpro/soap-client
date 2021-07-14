@@ -11,6 +11,9 @@ use Laminas\Code\Generator\FileGenerator;
  */
 interface GeneratorInterface
 {
+    // to ease X-OS compat, always use linux newlines
+    const EOL = "\n";
+    
     /**
      * @param FileGenerator $file
      * @param mixed         $model
