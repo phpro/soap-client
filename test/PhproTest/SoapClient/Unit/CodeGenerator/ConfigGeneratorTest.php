@@ -18,10 +18,10 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Soap\ExtSoapEngine\ExtSoapOptions;
-use Soap\ExtSoapEngine\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
 
 return Config::create()
-    ->setEngine(\$engine = ExtSoapEngineFactory::fromOptions(
+    ->setEngine(\$engine = ExtSoapEngineFactory::create(
         ExtSoapOptions::defaults('wsdl.xml', [])
             ->disableWsdlCache()
     ))
@@ -83,10 +83,10 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Soap\ExtSoapEngine\ExtSoapOptions;
-use Soap\ExtSoapEngine\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
 
 return Config::create()
-    ->setEngine(\$engine = ExtSoapEngineFactory::fromOptions(
+    ->setEngine(\$engine = ExtSoapEngineFactory::create(
         ExtSoapOptions::defaults('wsdl.xml', [])
             ->disableWsdlCache()
     ))

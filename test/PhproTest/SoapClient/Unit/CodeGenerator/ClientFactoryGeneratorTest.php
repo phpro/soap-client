@@ -22,7 +22,7 @@ namespace App\Client;
 use App\Client\Myclient;
 use App\Classmap\SomeClassmap;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Soap\ExtSoapEngine\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
 use Soap\ExtSoapEngine\ExtSoapOptions;
 use Phpro\SoapClient\Caller\EventDispatchingCaller;
 use Phpro\SoapClient\Caller\EngineCaller;
@@ -32,7 +32,7 @@ class MyclientFactory
 
     public static function factory(string \$wsdl) : \App\Client\Myclient
     {
-        \$engine = ExtSoapEngineFactory::fromOptions(
+        \$engine = ExtSoapEngineFactory::create(
             ExtSoapOptions::defaults(\$wsdl, [])
                 ->withClassMap(SomeClassmap::getCollection())
         );

@@ -5,7 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator;
 use Phpro\SoapClient\Caller\EngineCaller;
 use Phpro\SoapClient\Caller\EventDispatchingCaller;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
-use Soap\ExtSoapEngine\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
 use Soap\ExtSoapEngine\ExtSoapOptions;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Laminas\Code\Generator\ClassGenerator;
@@ -20,7 +20,7 @@ use Laminas\Code\Generator\MethodGenerator;
 class ClientFactoryGenerator implements GeneratorInterface
 {
     const BODY = <<<BODY
-\$engine = ExtSoapEngineFactory::fromOptions(
+\$engine = ExtSoapEngineFactory::create(
     ExtSoapOptions::defaults(\$wsdl, [])
         ->withClassMap(%2\$s::getCollection())
 );

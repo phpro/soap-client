@@ -5,7 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use Laminas\Code\Generator\FileGenerator;
-use Soap\ExtSoapEngine\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
 use Soap\ExtSoapEngine\ExtSoapOptions;
 
 /**
@@ -32,7 +32,7 @@ BODY;
 RULESET;
 
     const ENGINE_BOILERPLATE = <<<EOENGINE
-->setEngine(\$engine = ExtSoapEngineFactory::fromOptions(
+->setEngine(\$engine = ExtSoapEngineFactory::create(
         ExtSoapOptions::defaults('%s', [])
             ->disableWsdlCache()
     ))
