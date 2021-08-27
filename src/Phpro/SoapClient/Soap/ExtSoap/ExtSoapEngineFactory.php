@@ -7,6 +7,7 @@ use Phpro\SoapClient\Soap\ExtSoap\Metadata\Manipulators\DuplicateTypes\Intersect
 use Phpro\SoapClient\Soap\Metadata\MetadataFactory;
 use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
 use Soap\Engine\Engine;
+use Soap\Engine\LazyEngine;
 use Soap\Engine\SimpleEngine;
 use Soap\Engine\Transport;
 use Soap\ExtSoapEngine\AbusedClient;
@@ -31,15 +32,17 @@ final class ExtSoapEngineFactory
             new IntersectDuplicateTypesStrategy()
         );
 
-        $client = AbusedClient::createFromOptions($options);
-        $driver = ExtSoapDriver::createFromClient(
-            $client,
-            MetadataFactory::manipulated(
-                new ExtSoapMetadata($client),
-                $metadataOptions
-            )
-        );
+        return new LazyEngine(static function () use ($options, $transport, $metadataOptions) {
+            $client = AbusedClient::createFromOptions($options);
+            $driver = ExtSoapDriver::createFromClient(
+                $client,
+                MetadataFactory::manipulated(
+                    new ExtSoapMetadata($client),
+                    $metadataOptions
+                )
+            );
 
-        return new SimpleEngine($driver, $transport);
+            return new SimpleEngine($driver, $transport);
+        });
     }
 }
