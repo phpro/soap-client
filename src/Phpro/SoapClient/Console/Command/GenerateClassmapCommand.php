@@ -63,8 +63,7 @@ class GenerateClassmapCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The location of the soap code-generator config file'
-            )
-            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default');
+            );
     }
 
     /**
@@ -117,9 +116,6 @@ class GenerateClassmapCommand extends Command
 
     /**
      * Try to create a class for a type.
-     * When a class exists: try to patch
-     * If patching the old class does not work: ask for an overwrite
-     * Create a class from an empty file
      *
      * @param ClassMapGenerator $generator
      * @param TypeMap           $typeMap

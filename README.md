@@ -7,11 +7,26 @@
 Sick and tired of building crappy SOAP implementations?
  This package aims to help you with some common SOAP integration pains in PHP.
  Its goal is to make integrating with SOAP fun again!
- Let's inspect some of the pains that are solved by this package:
 
 # Demo
 <img src="https://raw.githubusercontent.com/wiki/phpro/soap-client/soap-client-demo-fast.gif" alt="Soap Client demo" width="100%"/> 
- 
+
+
+## Prerequisites
+
+You can choose what HTTP client you want to use.
+This package expects some PSR implementations to be present in order to be installed:
+
+* PSR-7: `psr/http-message-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
+* PSR-17: `psr/http-factory-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
+* PSR-18: `psr/http-client-implementation` like `symfony/http-client` or `guzzlehttp/guzzle`
+
+Example:
+
+```sh
+$ composer require symfony/http-client nyholm/psr7
+```
+
 ## Installation
 
 ```sh
@@ -25,7 +40,6 @@ Since life is too short to read documentation,
 All you need to do is:
 
 ```sh
-composer require --dev laminas/laminas-code:^3.1.0
 ./vendor/bin/soap-client wizard
 ```
 
@@ -44,28 +58,20 @@ You can customize the generated code based on the manual installation pages in t
 
 ## Advanced configuration
 
-- [Add type converters.](docs/type-converter.md)
+- [Add type converters.](https://github.com/php-soap/ext-soap-engine/#typeconverter)
 - [Listen to events.](docs/events.md)
   - [Logger Subscriber](docs/event-subscribers/logger.md)
   - [Validator Subscriber](docs/event-subscribers/validator.md)
-  - [Caching Subscriber](docs/event-subscribers/caching.md)
-- [Get in control of the soap-client](docs/engine.md)
-  - [Choose a driver](docs/engine.md#driver)
-    - [ExtSoapDriver](docs/drivers/ext-soap.md)
-    - [Create your own driver](docs/drivers/new.md)
-        - [Manipulate the drivers metadata](docs/drivers/metadata.md)
-  - [Specify your HTTP handler.](docs/engine.md#handler)
-    - [HttPlugHandle](docs/handlers/httplug.md) (Supports [middlewares](docs/middlewares.md))
-    - [ExtSoapClientHandle](docs/handlers/ext-soap/client.md)
-    - [ExtSoapServerHandle](docs/handlers/ext-soap/local-server.md)
-    - [Create your own handler](docs/handlers/new.md)
-- [Configure one or multiple HTTP middlewares.](docs/middlewares.md)
-  - [BasicAuthMiddleware](docs/middlewares.md#basicauthmiddleware)
-  - [NtlmMiddleware](docs/middlewares.md#ntlmmiddleware)
-  - [WsaMiddleware](docs/middlewares.md#wsamiddleware)
-  - [WsseMiddleware](docs/middlewares.md#wssemiddleware)
-  - [Create your own middleware](docs/middlewares.md#creating-your-own-middleware)
-- [Select a WSDL Provider](docs/wsdl-providers.md)
+- [Get in control of the soap-client](https://github.com/php-soap/engine)
+    - [Psr-18 HTTP Transport](https://github.com/php-soap/psr18-transport/)
+        - [Configure one or multiple HTTP middlewares.](https://github.com/php-soap/psr18-transport/#middleware)
+    - [Customize how ext-soap behaves](https://github.com/php-soap/ext-soap-engine/)
+    - [Select a WSDL Provider](https://github.com/php-soap/ext-soap-engine/#wsdlprovider)
+    - [Manipulate the metadata](docs/drivers/metadata.md)
+
+
+This is a client implementation on top of [php-soap](https://github.com/php-soap).
+For more advanced configuration, you can check the documentation inside the php-soap packages.
 
 
 ## Customize the code generation
@@ -116,7 +122,7 @@ Creating a great OO SOAP client means that you'll have to create a lot of code.
 
 It is important keep your code clean. Therefore, we added an event-listener to your Soap client.
  You can hook in at every important step of the SOAP flow.
- This way it is possible to add logging, validation, caching and error handling with event subscribers. 
+ This way it is possible to add logging, validation and error handling with event subscribers. 
  Pretty cool right?!
 
 Implementing SOAP extensions is a real pain in the ass.
@@ -132,8 +138,10 @@ Dealing with ext-soap is not for all developers. There are some nasty quirks you
  By default we will still ship an ext-soap driver, but it is completely opt-in.
  You can use any user-land SoapClient implementation if you wrap it in our own driver interfaces.
  
-Testing webservices is hard! 
- That is Why this package is fully compatible with [php-vcr](http://php-vcr.github.io/).
+Testing webservices is hard!
+ This package provide some various ways of testing a SOAP service.
+ Since the transport is HTTP based, you could use a `php-vcr` implementation.
+ If you don't want to do actual HTTP calls, you could also use a custom `Transport` or `Caller` in your test cases. 
  Testing your SOAP client will be very fast and without any errors at the 3th party side of the integration. 
  
 Last but not least, we want to make it easy for you to configure your SoapClient.

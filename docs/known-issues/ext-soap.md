@@ -14,7 +14,7 @@ This package will generate the code for the last detected type in the WSDL.
 
 Suggested workaround:
 
-1. Use one of [the built-in duplicate types strategies](../drivers/ext-soap.md#duplicate-types)
+1. Use one of [the built-in duplicate types strategies](../drivers/metadata.md#duplicate-types)
 2. Manually determine type converters for the various classes:
     - Manually create the missing classes.
     - Determine which is the most important type and use that one in the classmap.

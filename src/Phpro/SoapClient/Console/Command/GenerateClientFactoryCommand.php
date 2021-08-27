@@ -49,8 +49,7 @@ class GenerateClientFactoryCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The location of the soap code-generator config file'
-            )
-            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default');
+            );
     }
 
     /**

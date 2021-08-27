@@ -10,11 +10,34 @@ We decided to make it more opinionated, so that you have to deal with less stran
 By moving the low-level SOAP stuff out, we can now focus on improving metadata collection,
 which will results in better generated classes.
 
+## Prerequisites
+
+If your application does not contain a PSR-18 client, you'll need to
+choosing what HTTP client you want to use. This package expects some PSR implementations to be present in order to be installed:
+
+* PSR-7: `psr/http-message-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
+* PSR-17: `psr/http-factory-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
+* PSR-18: `psr/http-client-implementation` like `symfony/http-client` or `guzzlehttp/guzzle`
+
+Example implementations:
+
+```
+composer require symfony/http-client nyholm/psr7
+```
+
+## Upgrading
+
+```bash
+composer require phpro/soap-client:^2.0
+```
+
 We suggest to use the `soap-client `CLI tools again if you want to upgrade and existing application:
 
 ```
 ./vendor/bin/soap-client wizard
 ```
+
+From this point on, you can re-add custom things back to your soap client.
 
 **You can check the updated documentation in order to discover how you need to do specific actions like adding middleware in v2.**
 
