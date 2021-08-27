@@ -16,7 +16,7 @@ We suggest to use the `soap-client `CLI tools again if you want to upgrade and e
 ./vendor/bin/soap-client wizard
 ```
 
-You can check the updated documentation in order to discover how you need to do specific actions like adding middleware in v2.
+**You can check the updated documentation in order to discover how you need to do specific actions like adding middleware in v2.**
 
 
 This update comes with some breaking changes:
@@ -48,7 +48,7 @@ If you use any of these interfaces in your own code, you will need to replace th
 
 ### Transport
 
-* https://github.com/php-soap/psr18-transport/
+https://github.com/php-soap/psr18-transport/
 
 * [Transport](https://raw.githubusercontent.com/php-soap/engine/main/src/Transport.php) : Replaces the old `HandlerInterface`
 
@@ -156,3 +156,76 @@ This implies that changes where done to:
 * the client factory generator
 * the configuration generator
 
+## Client Factory
+
+In order to make the new `Caller` system available for your SOAP client,
+the factory now injects the caller into your soap client.
+
+```php
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
+use Soap\ExtSoapEngine\ExtSoapOptions;
+use Phpro\SoapClient\Caller\EventDispatchingCaller;
+use Phpro\SoapClient\Caller\EngineCaller;
+
+class CalculatorClientFactory
+{
+    public static function factory(string $wsdl) : CalculatorClient
+    {
+        $engine = ExtSoapEngineFactory::create(
+            ExtSoapOptions::defaults($wsdl, [])
+                ->withClassMap(CalculatorClassmap::getCollection())
+        );
+
+        $eventDispatcher = new EventDispatcher();
+        $caller = new EventDispatchingCaller(new EngineCaller($engine), $eventDispatcher);
+
+        return new CalculatorClient($caller);
+    }
+}
+```
+
+You can opt-out on the event dispatching logic or decorate your own caller.
+
+The `ExtSoapEngineFactory` can now be configured with a transport and the metadata options.
+Full example on how you can personalize your factory class:
+
+```php
+use Http\Client\Common\PluginClient;
+use Http\Discovery\Psr18ClientDiscovery;
+use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;use Phpro\SoapClient\Soap\Metadata\Manipulators\TypesManipulatorChain;
+use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
+use Soap\ExtSoapEngine\ExtSoapOptions;
+use Soap\ExtSoapEngine\Wsdl\Naming\Md5Strategy;
+use Soap\ExtSoapEngine\Wsdl\PermanentWsdlLoaderProvider;
+use Soap\Psr18Transport\Psr18Transport;
+use Soap\Psr18Transport\Wsdl\Psr18Loader;
+
+$httpClient = Psr18ClientDiscovery::find();
+$engine = ExtSoapEngineFactory::create(
+    ExtSoapOptions::defaults($wsdl, [])
+        ->withClassMap(CalculatorClassmap::getCollection())
+        ->withWsdlProvider(
+            new PermanentWsdlLoaderProvider(
+                Psr18Loader::createForClient($httpClient),
+                new Md5Strategy(),
+                'target/location'
+            )
+        ),
+    Psr18Transport::createForClient(
+        new PluginClient(
+            $httpClient,
+            [
+                $middleware1,                        
+                $middleware2,                        
+            ]
+        )
+    ),
+    MetadataOptions::empty()->withTypesManipulator(
+        new TypesManipulatorChain(
+            new RemoveDuplicateTypesStrategy()
+        )
+    )
+);
+```
