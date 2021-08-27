@@ -99,9 +99,9 @@ class ClassMapAssembler implements AssemblerInterface
     private function assembleClassMapCollection(string $classMap, string $linefeed): string
     {
         $code = [
-            'new ClassMapCollection([',
+            'new ClassMapCollection(',
             '%s',
-            ']);',
+            ');',
         ];
 
         return sprintf(implode($linefeed, $code), $classMap);

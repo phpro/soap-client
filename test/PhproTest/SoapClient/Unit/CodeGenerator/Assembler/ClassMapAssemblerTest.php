@@ -56,14 +56,14 @@ use MyNamespace as Type;
 use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMapCollection;
 use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMap;
 
-class ClassMap
+class MyClassMap
 {
 
     public static function getCollection() : \Soap\ExtSoapEngine\Configuration\ClassMap\ClassMapCollection
     {
-        return new ClassMapCollection([
+        return new ClassMapCollection(
             new ClassMap('MyType', Type\MyType::class),
-        ]);
+        );
     }
 
 
@@ -90,6 +90,6 @@ CODE;
             ),
         ]);
 
-        return new ClassMapContext($file, $typeMap, 'ClassMap', 'ClassMapNamespace');
+        return new ClassMapContext($file, $typeMap, 'MyClassMap', 'ClassMapNamespace');
     }
 }

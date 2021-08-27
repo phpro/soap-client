@@ -127,7 +127,7 @@ class MyClient
      */
     public function functionName(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return \$this->call('functionName', \$param);
+        return (\$this->caller)('functionName', \$param);
     }
 
 
@@ -168,7 +168,7 @@ class MyClient
      */
     public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return \$this->call('functionName', \$multiArgumentRequest);
+        return (\$this->caller)('functionName', \$multiArgumentRequest);
     }
 
 
@@ -205,7 +205,7 @@ class MyClient
      */
     public function functionName() : \Vendor\MyTypeNamespace\ReturnType
     {
-        return \$this->call('functionName', new MultiArgumentRequest([]));
+        return (\$this->caller)('functionName', new MultiArgumentRequest([]));
     }
 
 
@@ -255,7 +255,7 @@ class MyClient
      */
     public function function_name(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return \$this->call('Function_name', \$param);
+        return (\$this->caller)('Function_name', \$param);
     }
 
 

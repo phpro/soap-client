@@ -80,7 +80,7 @@ class ClientMethodAssembler implements AssemblerInterface
     private function generateMethodBody(ClassGenerator $class, ?ParameterGenerator $param, ClientMethod $method): string
     {
         return sprintf(
-            'return $this->call(\'%s\', %s);',
+            'return ($this->caller)(\'%s\', %s);',
             $method->getMethodName(),
             $param === null
                 ? 'new '.$this->generateClassNameAndAddImport(MultiArgumentRequest::class, $class).'([])'
