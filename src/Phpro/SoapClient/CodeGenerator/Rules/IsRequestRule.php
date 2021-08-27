@@ -7,7 +7,7 @@ namespace Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Soap\Engine\Metadata\Detector\RequestTypesDetector;
+use Phpro\SoapClient\Soap\Metadata\Detector\RequestTypesDetector;
 use Soap\Engine\Metadata\Metadata;
 
 class IsRequestRule implements RuleInterface
