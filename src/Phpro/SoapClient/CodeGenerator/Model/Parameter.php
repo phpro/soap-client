@@ -3,7 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
+use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 
 class Parameter
 {

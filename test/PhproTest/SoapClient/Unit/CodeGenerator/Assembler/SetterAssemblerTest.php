@@ -53,7 +53,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      */
@@ -61,8 +60,6 @@ class MyType
     {
         \$this->prop1 = \$prop1;
     }
-
-
 }
 
 CODE;
@@ -86,13 +83,10 @@ namespace MyNamespace;
 
 class MyType
 {
-
     public function setProp1(\$prop1)
     {
         \$this->prop1 = \$prop1;
     }
-
-
 }
 
 CODE;
@@ -116,7 +110,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap \$prop1
      */
@@ -124,8 +117,6 @@ class MyType
     {
         \$this->prop1 = \$prop1;
     }
-
-
 }
 
 CODE;

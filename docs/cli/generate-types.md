@@ -1,10 +1,5 @@
 # Generating Value-objects
 
-Before you can generate code, you'll need to add some additional dev dependencies to your project:
-```sh
-composer require --dev laminas/laminas-code:^3.1.0
-```
-
 Basic value-objects can be generated automatically.
 
 ```sh
@@ -15,7 +10,6 @@ Usage:
 
 Options:
       --config=CONFIG   The location of the soap code-generator config file
-  -o, --overwrite       Makes it possible to overwrite by default
 
 ```
 

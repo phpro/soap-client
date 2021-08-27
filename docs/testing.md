@@ -4,7 +4,7 @@ As mentioned earlier, it is very easy to integrate this project with [php-vcr](h
  This makes it possible to created fixtures of all your SOAP calls.
  By loading the fixtures, no actual calls will be done to the SOAP endpoint.
  This will make your tests fast, deterministic and accurate!
- Her is an example of a PHPUnit test:
+ Here is an example of a PHPUnit test:
  
 ```php
 /**
@@ -34,5 +34,3 @@ The first time you run this test, a fixtures file `my-fixture-file.yml` will be 
 ```
 
 The configuration of php-vcr looks like this. Make sure to only select the library hook you wish to use.
-If you are using another handler then the default `SoapHandle`, you might only want to enable curl.
-The php-vcr package will overwrite the `SoapClient` which may result in custom methods that cannot be found.

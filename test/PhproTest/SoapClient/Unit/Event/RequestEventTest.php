@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Unit;
 
-use Phpro\SoapClient\Client;
 use Phpro\SoapClient\Event\RequestEvent;
 use Phpro\SoapClient\Type\RequestInterface;
 use PHPUnit\Framework\TestCase;
@@ -16,11 +15,6 @@ class RequestEventTest extends TestCase
     use ProphecyTrait;
 
     /**
-     * @var Client & ObjectProphecy
-     */
-    private Client $client;
-
-    /**
      * @var RequestInterface & ObjectProphecy
      */
     private RequestInterface $request;
@@ -29,15 +23,8 @@ class RequestEventTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = $this->prophesize(Client::class)->reveal();
         $this->request = $this->prophesize(RequestInterface::class)->reveal();
-        $this->event = new RequestEvent($this->client, 'method', $this->request);
-    }
-
-    /** @test */
-    public function it_contains_a_client(): void
-    {
-        self::assertSame($this->client, $this->event->getClient());
+        $this->event = new RequestEvent('method', $this->request);
     }
 
     /** @test */

@@ -2,8 +2,8 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
+use Soap\Engine\Metadata\Collection\MethodCollection;
+use Soap\Engine\Metadata\Model\Method;
 
 /**
  * Class ClientMethodMap

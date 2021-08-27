@@ -6,13 +6,9 @@ use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
-use Phpro\SoapClient\Exception\WsdlException;
-use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Util\Filesystem;
-use Phpro\SoapClient\Wsdl\Provider\LocalWsdlProvider;
-use Phpro\SoapClient\Wsdl\Provider\MixedWsdlProvider;
-use Phpro\SoapClient\Wsdl\Provider\WsdlProviderInterface;
 use PhpSpec\ObjectBehavior;
+use Soap\Engine\Engine;
 
 /**
  * Class ConfigSpec
@@ -32,7 +28,7 @@ class ConfigSpec extends ObjectBehavior
         $this->shouldImplement(ConfigInterface::class);
     }
 
-    function it_has_an_engine(EngineInterface $engine)
+    function it_has_an_engine(Engine $engine)
     {
         $this->setEngine($engine);
         $this->getEngine()->shouldReturn($engine);

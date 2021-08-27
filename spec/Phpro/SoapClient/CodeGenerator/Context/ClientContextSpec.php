@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Laminas\Code\Generator\ClassGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use PhpSpec\ObjectBehavior;
@@ -14,9 +15,9 @@ use PhpSpec\ObjectBehavior;
  */
 class ClientContextSpec extends ObjectBehavior
 {
-    function let()
+    function let(ClassGenerator $class)
     {
-        $this->beConstructedWith('MyClient', 'App\Client');
+        $this->beConstructedWith($class, 'MyClient', 'App\Client');
     }
 
     function it_is_initializable()
@@ -32,5 +33,10 @@ class ClientContextSpec extends ObjectBehavior
     function it_has_a_namespace()
     {
         $this->getNamespace()->shouldBe('App\Client');
+    }
+
+    function it_has_a_class(ClassGenerator $class)
+    {
+        $this->getClass()->shouldBe($class);
     }
 }

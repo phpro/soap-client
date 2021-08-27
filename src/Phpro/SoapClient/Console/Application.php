@@ -20,14 +20,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class Application extends SymfonyApplication
 {
     const APP_NAME = 'SoapClient';
-    const APP_VERSION = '0.1.0';
+    const APP_VERSION = '2.0.0';
 
     /**
      * Set up application:
      */
     public function __construct()
     {
-        $this->setDispatcher($this->createEventDispatcher());
         parent::__construct(self::APP_NAME, self::APP_VERSION);
     }
 
@@ -54,13 +53,5 @@ class Application extends SymfonyApplication
         $set->set(new ConfigHelper(new Filesystem()));
 
         return $set;
-    }
-
-    private function createEventDispatcher(): EventDispatcherInterface
-    {
-        $dispatcher = new EventDispatcher();
-        $dispatcher->addSubscriber(new LaminasCodeValidationSubscriber());
-
-        return $dispatcher;
     }
 }

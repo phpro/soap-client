@@ -7,13 +7,13 @@ namespace Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Soap\Engine\Metadata\Detector\ResponseTypesDetector;
-use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
+use Phpro\SoapClient\Soap\Metadata\Detector\ResponseTypesDetector;
+use Soap\Engine\Metadata\Metadata;
 
 class IsResultRule implements RuleInterface
 {
     /**
-     * @var MetadataInterface
+     * @var Metadata
      */
     private $metadata;
 
@@ -27,7 +27,7 @@ class IsResultRule implements RuleInterface
      */
     private $responseTypes;
 
-    public function __construct(MetadataInterface $metadata, RuleInterface $subRule)
+    public function __construct(Metadata $metadata, RuleInterface $subRule)
     {
         $this->metadata = $metadata;
         $this->subRule = $subRule;

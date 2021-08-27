@@ -54,8 +54,6 @@ use ArrayIterator;
 
 class MyType extends ArrayIterator
 {
-
-
 }
 
 CODE;
@@ -78,8 +76,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
-
 }
 
 CODE;

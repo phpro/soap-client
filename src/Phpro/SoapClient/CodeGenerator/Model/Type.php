@@ -3,8 +3,8 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Property as MetadataProperty;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type as MetadataType;
+use Soap\Engine\Metadata\Model\Property as MetadataProperty;
+use Soap\Engine\Metadata\Model\Type as MetadataType;
 use SplFileInfo;
 
 /**
@@ -62,7 +62,7 @@ class Type
                         $property
                     );
                 },
-                $type->getProperties()
+                iterator_to_array($type->getProperties())
             )
         );
     }
@@ -102,17 +102,6 @@ class Type
         $path = rtrim($destination, '/\\').'/'.$name.'.php';
 
         return new SplFileInfo($path);
-    }
-
-    /**
-     * @param string $destination
-     *
-     * @deprecated please use getFileInfo instead
-     * @return string
-     */
-    public function getPathname(string $destination): string
-    {
-        return $this->getFileInfo($destination)->getPathname();
     }
 
     /**
