@@ -29,7 +29,6 @@ use Phpro\SoapClient\Caller\EngineCaller;
 
 class MyclientFactory
 {
-
     public static function factory(string \$wsdl) : \App\Client\Myclient
     {
         \$engine = ExtSoapEngineFactory::create(
@@ -42,8 +41,6 @@ class MyclientFactory
 
         return new Myclient(\$caller);
     }
-
-
 }
 
 

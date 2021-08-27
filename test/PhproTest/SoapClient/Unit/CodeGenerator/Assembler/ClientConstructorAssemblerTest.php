@@ -60,7 +60,6 @@ use Phpro\SoapClient\Caller\Caller;
 
 class MyClient
 {
-
     /**
      * @var Caller
      */
@@ -70,8 +69,6 @@ class MyClient
     {
         \$this->caller = \$caller;
     }
-
-
 }
 
 CODE;

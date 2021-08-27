@@ -58,15 +58,12 @@ use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMap;
 
 class MyClassMap
 {
-
     public static function getCollection() : \Soap\ExtSoapEngine\Configuration\ClassMap\ClassMapCollection
     {
         return new ClassMapCollection(
             new ClassMap('MyType', Type\MyType::class),
         );
     }
-
-
 }
 
 

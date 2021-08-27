@@ -119,7 +119,6 @@ use Vendor\MyTypeNamespace;
 
 class MyClient
 {
-
     /**
      * @param RequestInterface|MyTypeNamespace\ParamType \$param
      * @return ResultInterface|MyTypeNamespace\ReturnType
@@ -129,8 +128,6 @@ class MyClient
     {
         return (\$this->caller)('functionName', \$param);
     }
-
-
 }
 
 CODE;
@@ -156,7 +153,6 @@ use Vendor\MyTypeNamespace;
 
 class MyClient
 {
-
     /**
      * MultiArgumentRequest with following params:
      *
@@ -170,8 +166,6 @@ class MyClient
     {
         return (\$this->caller)('functionName', \$multiArgumentRequest);
     }
-
-
 }
 
 CODE;
@@ -198,7 +192,6 @@ use Phpro\SoapClient\Type\MultiArgumentRequest;
 
 class MyClient
 {
-
     /**
      * @return ResultInterface|MyTypeNamespace\ReturnType
      * @throws SoapException
@@ -207,8 +200,6 @@ class MyClient
     {
         return (\$this->caller)('functionName', new MultiArgumentRequest([]));
     }
-
-
 }
 
 CODE;
@@ -247,7 +238,6 @@ use Vendor\MyTypeNamespace;
 
 class MyClient
 {
-
     /**
      * @param RequestInterface|MyTypeNamespace\ParamType \$param
      * @return ResultInterface|MyTypeNamespace\ReturnType
@@ -257,8 +247,6 @@ class MyClient
     {
         return (\$this->caller)('Function_name', \$param);
     }
-
-
 }
 
 CODE;

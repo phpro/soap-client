@@ -68,8 +68,6 @@ use Iterator;
 
 class MyType implements Iterator
 {
-
-
 }
 
 CODE;
