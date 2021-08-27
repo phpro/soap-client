@@ -99,7 +99,7 @@ class Type
     public function getFileInfo(string $destination): SplFileInfo
     {
         $name = Normalizer::normalizeClassname($this->getName());
-        $path = rtrim($destination, '/\\').DIRECTORY_SEPARATOR.$name.'.php';
+        $path = rtrim($destination, '/\\').'/'.$name.'.php';
 
         return new SplFileInfo($path);
     }

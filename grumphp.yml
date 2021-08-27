@@ -1,4 +1,6 @@
 grumphp:
+    parallel:
+        enabled: false
     tasks:
         phpcs:
             standard: "PSR2"

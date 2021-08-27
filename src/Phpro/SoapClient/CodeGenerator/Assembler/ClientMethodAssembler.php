@@ -9,6 +9,7 @@ use Laminas\Code\Generator\ParameterGenerator;
 use Phpro\SoapClient\Client;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
@@ -128,14 +129,14 @@ class ClientMethodAssembler implements AssemblerInterface
     {
         $class = $context->getClass();
         $method = $context->getMethod();
-        $description = ['MultiArgumentRequest with following params:'.PHP_EOL];
+        $description = ['MultiArgumentRequest with following params:'. GeneratorInterface::EOL];
         foreach ($context->getMethod()->getParameters() as $parameter) {
             $description[] = $parameter->getType().' $'.$parameter->getName();
         }
 
         return DocBlockGeneratorFactory::fromArray(
             [
-                'longdescription' => implode(PHP_EOL, $description),
+                'longdescription' => implode(GeneratorInterface::EOL, $description),
                 'tags' => [
                     ['name' => 'param', 'description' => MultiArgumentRequest::class],
                     [

@@ -11,6 +11,8 @@ class ConfigContext implements ContextInterface
      */
     private $wsdl;
 
+    private bool $generateDocblocks = true;
+
     public function addSetter(string $name, string $value): self
     {
         $this->setters[$name] = $value;
@@ -43,5 +45,17 @@ class ConfigContext implements ContextInterface
         $this->wsdl = $wsdl;
 
         return $this;
+    }
+
+    public function setGenerateDocblocks(bool $generateDocblocks): self
+    {
+        $this->generateDocblocks = $generateDocblocks;
+
+        return $this;
+    }
+
+    public function isGenerateDocblocks(): bool
+    {
+        return $this->generateDocblocks;
     }
 }

@@ -25,6 +25,12 @@ class SymfonyEventDispatcher implements EventDispatcherInterface
         $this->dispatcher = $eventDispatcher;
     }
 
+    /**
+     * @template T of SoapEvent
+     * @param T $event
+     * @param string|null $eventName Deprecated : will be removed  in v2.0!
+     * @return T
+     */
     public function dispatch(SoapEvent $event, string $eventName = null): SoapEvent
     {
         $interfacesImplemented = class_implements($this->dispatcher);

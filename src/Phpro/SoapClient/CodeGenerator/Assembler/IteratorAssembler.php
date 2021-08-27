@@ -76,10 +76,31 @@ class IteratorAssembler implements AssemblerInterface
                         [
                             'name' => 'return',
                             'description' => '\\ArrayIterator'
+                        ],
+                        [
+                            'name' => 'phpstan-return',
+                            'description' => '\\ArrayIterator<array-key, '. $firstProperty->getType() .'>'
+                        ],
+                        [
+                            'name' => 'psalm-return',
+                            'description' => '\\ArrayIterator<array-key, '. $firstProperty->getType() .'>'
                         ]
                     ]
                 ])
             ])
         );
+
+        $class->setDocBlock(DocBlockGeneratorFactory::fromArray([
+            'tags' => [
+                [
+                    'name' => 'phpstan-implements',
+                    'description' => '\\IteratorAggregate<array-key, '. $firstProperty->getType() .'>'
+                ],
+                [
+                    'name' => 'psalm-implements',
+                    'description' => '\\IteratorAggregate<array-key, '. $firstProperty->getType() .'>'
+                ]
+            ]
+        ]));
     }
 }
