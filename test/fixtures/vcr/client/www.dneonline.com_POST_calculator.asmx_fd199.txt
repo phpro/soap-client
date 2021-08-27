@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Cache-Control: private, max-age=0
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/8.0
+X-AspNet-Version: 2.0.50727
+X-Powered-By: ASP.NET
+X-Powered-By-Plesk: PleskWin
+Date: Fri, 27 Aug 2021 12:38:04 GMT
+Content-Length: 325
+
+<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><AddResponse xmlns="http://tempuri.org/"><AddResult>3</AddResult></AddResponse></soap:Body></soap:Envelope>
