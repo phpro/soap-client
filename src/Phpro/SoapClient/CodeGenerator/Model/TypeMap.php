@@ -3,8 +3,8 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type as MetadataType;
+use Soap\Engine\Metadata\Collection\TypeCollection;
+use Soap\Engine\Metadata\Model\Type as MetadataType;
 
 /**
  * Class TypeMap

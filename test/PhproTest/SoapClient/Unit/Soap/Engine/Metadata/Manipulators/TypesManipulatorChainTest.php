@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Unit\Soap\Engine\Metadata\Manipulators;
 
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorChain;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PHPUnit\Framework\TestCase;
+use Soap\Engine\Metadata\Collection\PropertyCollection;
+use Soap\Engine\Metadata\Collection\TypeCollection;
+use Soap\Engine\Metadata\Model\Type;
+use Soap\Engine\Metadata\Model\XsdType;
 
 class TypesManipulatorChainTest extends TestCase
 {
@@ -39,7 +40,7 @@ class TypesManipulatorChainTest extends TestCase
                 {
                     return new TypeCollection(...array_merge(
                         iterator_to_array($allTypes),
-                        [new Type(XsdType::create('Response'), [])]
+                        [new Type(XsdType::create('Response'), new PropertyCollection())]
                     ));
                 }
             },
@@ -48,7 +49,7 @@ class TypesManipulatorChainTest extends TestCase
                 {
                     return new TypeCollection(...array_merge(
                         iterator_to_array($allTypes),
-                        [new Type(XsdType::create('Response2'), [])]
+                        [new Type(XsdType::create('Response2'), new PropertyCollection())]
                     ));
                 }
             }
@@ -60,8 +61,8 @@ class TypesManipulatorChainTest extends TestCase
         self::assertCount(2, $result);
         self::assertEquals(
             [
-                new Type(XsdType::create('Response'), []),
-                new Type(XsdType::create('Response2'), []),
+                new Type(XsdType::create('Response'), new PropertyCollection()),
+                new Type(XsdType::create('Response2'), new PropertyCollection()),
             ],
             iterator_to_array($result)
         );

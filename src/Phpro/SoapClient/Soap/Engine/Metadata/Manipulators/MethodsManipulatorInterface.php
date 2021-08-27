@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine\Metadata\Manipulators;
 
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
+use Soap\Engine\Metadata\Collection\MethodCollection;
 
 interface MethodsManipulatorInterface
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine\Metadata\Detector;
 
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
+use Soap\Engine\Metadata\Collection\MethodCollection;
+use Soap\Engine\Metadata\Model\Method;
 
 final class ResponseTypesDetector
 {

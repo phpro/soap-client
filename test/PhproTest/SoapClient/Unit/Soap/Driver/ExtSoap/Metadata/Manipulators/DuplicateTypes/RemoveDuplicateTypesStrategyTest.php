@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace PhproTest\SoapClient\Unit\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes;
 
 use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Property;
 use PHPUnit\Framework\TestCase;
+use Soap\Engine\Metadata\Collection\PropertyCollection;
+use Soap\Engine\Metadata\Collection\TypeCollection;
+use Soap\Engine\Metadata\Model\Type;
+use Soap\Engine\Metadata\Model\XsdType;
 
 class RemoveDuplicateTypesStrategyTest extends TestCase
 {
@@ -25,15 +25,15 @@ class RemoveDuplicateTypesStrategyTest extends TestCase
     {
         $strategy = new RemoveDuplicateTypesStrategy();
         $types = new TypeCollection(
-            new Type(XsdType::create('file'), []),
-            new Type(XsdType::create('file'), []),
-            new Type(XsdType::create('uppercased'), []),
-            new Type(XsdType::create('Uppercased'), []),
-            new Type(XsdType::create('with-specialchar'), []),
-            new Type(XsdType::create('with*specialchar'), []),
-            new Type(XsdType::create('not-duplicate'), []),
-            new Type(XsdType::create('CASEISDIFFERENT'), []),
-            new Type(XsdType::create('Case-is-different'), [])
+            new Type(XsdType::create('file'), new PropertyCollection()),
+            new Type(XsdType::create('file'), new PropertyCollection()),
+            new Type(XsdType::create('uppercased'), new PropertyCollection()),
+            new Type(XsdType::create('Uppercased'), new PropertyCollection()),
+            new Type(XsdType::create('with-specialchar'), new PropertyCollection()),
+            new Type(XsdType::create('with*specialchar'), new PropertyCollection()),
+            new Type(XsdType::create('not-duplicate'), new PropertyCollection()),
+            new Type(XsdType::create('CASEISDIFFERENT'), new PropertyCollection()),
+            new Type(XsdType::create('Case-is-different'), new PropertyCollection())
         );
 
         $manipulated = $strategy($types);
@@ -41,9 +41,9 @@ class RemoveDuplicateTypesStrategyTest extends TestCase
         self::assertInstanceOf(TypeCollection::class, $manipulated);
         self::assertEquals(
             [
-                new Type(XsdType::create('not-duplicate'), []),
-                new Type(XsdType::create('CASEISDIFFERENT'), []),
-                new Type(XsdType::create('Case-is-different'), []),
+                new Type(XsdType::create('not-duplicate'), new PropertyCollection()),
+                new Type(XsdType::create('CASEISDIFFERENT'), new PropertyCollection()),
+                new Type(XsdType::create('Case-is-different'), new PropertyCollection()),
             ],
             iterator_to_array($manipulated)
         );

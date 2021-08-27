@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Engine\Metadata\Detector;
 
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter;
+use Soap\Engine\Metadata\Collection\MethodCollection;
+use Soap\Engine\Metadata\Model\Method;
+use Soap\Engine\Metadata\Model\Parameter;
 
 final class RequestTypesDetector
 {
@@ -17,7 +17,7 @@ final class RequestTypesDetector
             static function (array $list, Method $method): array {
                 if (count($method->getParameters()) === 1) {
                     /** @var Parameter $param */
-                    $param = current($method->getParameters());
+                    $param = current(iterator_to_array($method->getParameters()));
                     $list[] = $param->getType()->getName();
                 }
 

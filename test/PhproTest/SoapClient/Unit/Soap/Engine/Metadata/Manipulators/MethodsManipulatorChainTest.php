@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Unit\Soap\Engine\Metadata\Manipulators;
 
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\MethodsManipulatorChain;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\MethodsManipulatorInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PHPUnit\Framework\TestCase;
+use Soap\Engine\Metadata\Collection\MethodCollection;
+use Soap\Engine\Metadata\Collection\ParameterCollection;
+use Soap\Engine\Metadata\Model\Method;
+use Soap\Engine\Metadata\Model\XsdType;
 
 class MethodsManipulatorChainTest extends TestCase
 {
@@ -39,7 +40,7 @@ class MethodsManipulatorChainTest extends TestCase
                 {
                     return new MethodCollection(...array_merge(
                         iterator_to_array($allMethods),
-                        [new Method('method', [], XsdType::create('Response'))]
+                        [new Method('method', new ParameterCollection(), XsdType::create('Response'))]
                     ));
                 }
             },
@@ -48,7 +49,7 @@ class MethodsManipulatorChainTest extends TestCase
                 {
                     return new MethodCollection(...array_merge(
                         iterator_to_array($allMethods),
-                        [new Method('method2', [], XsdType::create('Response'))]
+                        [new Method('method2', new ParameterCollection(), XsdType::create('Response'))]
                     ));
                 }
             }
@@ -60,8 +61,8 @@ class MethodsManipulatorChainTest extends TestCase
         self::assertCount(2, $result);
         self::assertEquals(
             [
-                new Method('method', [], XsdType::create('Response')),
-                new Method('method2', [], XsdType::create('Response')),
+                new Method('method', new ParameterCollection(), XsdType::create('Response')),
+                new Method('method2', new ParameterCollection(), XsdType::create('Response')),
             ],
             iterator_to_array($result)
         );

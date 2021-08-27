@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTypes;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\PropertyCollection;
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
+use Soap\Engine\Metadata\Collection\PropertyCollection;
+use Soap\Engine\Metadata\Collection\TypeCollection;
+use Soap\Engine\Metadata\Model\Property;
+use Soap\Engine\Metadata\Model\Type;
 
 final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
 {
@@ -24,7 +25,7 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
                 return array_merge(
                     $result,
                     [
-                        $name => $this->intersectTypes($allTypes->fetchAllByNormalizedName($name))
+                        $name => $this->intersectTypes($this->fetchAllTypesNormalizedByName($allTypes, $name))
                     ]
                 );
             },
@@ -36,13 +37,30 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
     {
         return new Type(
             current(iterator_to_array($duplicateTypes))->getXsdType(),
-            iterator_to_array(
-                (new PropertyCollection(...array_merge(
-                    ...$duplicateTypes->map(static function (Type $type): array {
-                        return $type->getProperties();
-                    })
-                )))->unique()
+            $this->uniqueProperties(
+                new PropertyCollection(...array_merge(
+                    ...$duplicateTypes->map(
+                        static fn (Type $type): array => iterator_to_array($type->getProperties())
+                    )
+                ))
             )
         );
+    }
+
+    private function fetchAllTypesNormalizedByName(TypeCollection $types, string $name): TypeCollection
+    {
+        return $types->filter(static function (Type $type) use ($name): bool {
+            return Normalizer::normalizeClassname($type->getName()) === $name;
+        });
+    }
+
+    private function uniqueProperties(PropertyCollection $props): PropertyCollection
+    {
+        return new PropertyCollection(...array_values(
+            array_combine(
+                $props->map(static fn (Property $prop) => $prop->getName()),
+                iterator_to_array($props)
+            )
+        ));
     }
 }

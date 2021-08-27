@@ -22,8 +22,8 @@ namespace App\Client;
 use App\Client\Myclient;
 use App\Classmap\SomeClassmap;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+use Soap\ExtSoapEngine\ExtSoapEngineFactory;
+use Soap\ExtSoapEngine\ExtSoapOptions;
 use Phpro\SoapClient\Caller\EventDispatchingCaller;
 use Phpro\SoapClient\Caller\EngineCaller;
 

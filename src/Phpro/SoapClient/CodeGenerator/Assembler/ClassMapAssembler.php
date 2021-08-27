@@ -6,10 +6,10 @@ use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\Exception\AssemblerException;
-use Phpro\SoapClient\Soap\ClassMap\ClassMap;
-use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\MethodGenerator;
+use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMap;
+use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMapCollection;
 
 /**
  * Class ClassMapAssembler

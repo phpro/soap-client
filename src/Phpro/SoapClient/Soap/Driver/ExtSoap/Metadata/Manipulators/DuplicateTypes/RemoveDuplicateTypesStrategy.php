@@ -6,9 +6,9 @@ namespace Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Manipulators\DuplicateTy
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\Metadata\Detector\DuplicateTypeNamesDetector;
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
+use Soap\Engine\Metadata\Collection\TypeCollection;
+use Soap\Engine\Metadata\Model\Type;
 
 final class RemoveDuplicateTypesStrategy implements TypesManipulatorInterface
 {

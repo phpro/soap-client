@@ -5,7 +5,6 @@ namespace PhproTest\SoapClient\Unit\Caller;
 
 use Phpro\SoapClient\Caller\EngineCaller;
 use Phpro\SoapClient\Exception\SoapException;
-use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Type\MixedResult;
 use Phpro\SoapClient\Type\MultiArgumentRequest;
 use Phpro\SoapClient\Type\RequestInterface;
@@ -14,13 +13,14 @@ use Phpro\SoapClient\Type\ResultProviderInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use Soap\Engine\Engine;
 
 class EngineCallerTest extends TestCase
 {
     use ProphecyTrait;
 
     /**
-     * @var ObjectProphecy&EngineInterface
+     * @var ObjectProphecy&Engine
      */
     private ObjectProphecy $engine;
 
@@ -28,7 +28,7 @@ class EngineCallerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->engine = $this->prophesize(EngineInterface::class);
+        $this->engine = $this->prophesize(Engine::class);
         $this->caller = new EngineCaller($this->engine->reveal());
     }
 

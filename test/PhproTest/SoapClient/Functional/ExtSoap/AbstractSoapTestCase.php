@@ -4,27 +4,38 @@ declare( strict_types=1 );
 
 namespace PhproTest\SoapClient\Functional\ExtSoap;
 
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapServerHandle;
 use PHPUnit\Framework\TestCase;
+use Soap\ExtSoapEngine\AbusedClient;
+use Soap\ExtSoapEngine\ExtSoapDriver;
+use Soap\ExtSoapEngine\ExtSoapOptions;
+use Soap\ExtSoapEngine\Transport\ExtSoapServerTransport;
+use Soap\ExtSoapEngine\Transport\TraceableTransport;
 
 abstract class AbstractSoapTestCase extends TestCase
 {
+    protected AbusedClient $client;
+
     protected function configureSoapDriver(string $wsdl, array $options): ExtSoapDriver
     {
-        return ExtSoapDriver::createFromOptions(
+        $driver = ExtSoapDriver::createFromOptions(
             ExtSoapOptions::defaults($wsdl, $options)->disableWsdlCache()
         );
+
+        $this->client = $driver->getClient();
+
+        return $driver;
     }
 
-    protected function configureServer(string $wsdl, array $options, $object): ExtSoapServerHandle
+    protected function configureServer(string $wsdl, array $options, $object): TraceableTransport
     {
         $options = ExtSoapOptions::defaults($wsdl, $options)->disableWsdlCache();
 
         $server = new \SoapServer($options->getWsdl(), $options->getOptions());
         $server->setObject($object);
 
-        return new ExtSoapServerHandle($server);
+        return new TraceableTransport(
+            $this->client,
+            new ExtSoapServerTransport($server)
+        );
     }
 }

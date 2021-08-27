@@ -9,7 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
-use Phpro\SoapClient\Soap\Engine\EngineInterface;
+use Soap\Engine\Engine;
 
 /**
  * Class Config
@@ -34,7 +34,7 @@ final class Config implements ConfigInterface
     protected $clientNamespace = '';
 
     /**
-     * @var EngineInterface
+     * @var Engine
      */
     protected $engine;
 
@@ -107,22 +107,22 @@ final class Config implements ConfigInterface
     }
 
     /**
-     * @return EngineInterface
+     * @return Engine
      */
-    public function getEngine(): EngineInterface
+    public function getEngine(): Engine
     {
-        if (!$this->engine instanceof EngineInterface) {
+        if (!$this->engine instanceof Engine) {
             throw InvalidArgumentException::engineNotConfigured();
         }
         return $this->engine;
     }
 
     /**
-     * @param EngineInterface $engine
+     * @param Engine $engine
      *
      * @return Config
      */
-    public function setEngine(EngineInterface $engine): self
+    public function setEngine(Engine $engine): self
     {
         $this->engine = $engine;
 

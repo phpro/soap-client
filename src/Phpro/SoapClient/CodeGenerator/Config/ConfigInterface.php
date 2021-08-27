@@ -3,7 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator\Config;
 
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
-use Phpro\SoapClient\Soap\Engine\EngineInterface;
+use Soap\Engine\Engine;
 
 /**
  * Interface ConfigInterface
@@ -14,9 +14,9 @@ interface ConfigInterface
 {
 
     /**
-     * @return EngineInterface
+     * @return Engine
      */
-    public function getEngine(): EngineInterface;
+    public function getEngine(): Engine;
 
     /**
      * @return string

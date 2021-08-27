@@ -7,12 +7,13 @@ use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Rules\IsResultRule;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
-use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PhpSpec\ObjectBehavior;
+use Soap\Engine\Metadata\Collection\MethodCollection;
+use Soap\Engine\Metadata\Collection\ParameterCollection;
+use Soap\Engine\Metadata\Metadata;
+use Soap\Engine\Metadata\Model\Method;
+use Soap\Engine\Metadata\Model\Parameter;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class IsResponseRuleSpec
@@ -22,10 +23,16 @@ use PhpSpec\ObjectBehavior;
  */
 class IsResultRuleSpec extends ObjectBehavior
 {
-    function let(MetadataInterface $metadata, RuleInterface $subRule)
+    function let(Metadata $metadata, RuleInterface $subRule)
     {
         $metadata->getMethods()->willReturn(new MethodCollection(
-            new Method('method1', [new Parameter('prop1', XsdType::create('string'))], XsdType::create('Result-Type'))
+            new Method(
+                'method1',
+                new ParameterCollection(
+                    new Parameter('prop1', XsdType::create('string'))
+                ),
+                XsdType::create('Result-Type')
+            )
         ));
         $this->beConstructedWith($metadata, $subRule);
     }

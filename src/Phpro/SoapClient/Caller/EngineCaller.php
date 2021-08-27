@@ -4,18 +4,18 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\Caller;
 
 use Phpro\SoapClient\Exception\SoapException;
-use Phpro\SoapClient\Soap\Engine\EngineInterface;
 use Phpro\SoapClient\Type\MixedResult;
 use Phpro\SoapClient\Type\MultiArgumentRequestInterface;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
 use Phpro\SoapClient\Type\ResultProviderInterface;
+use Soap\Engine\Engine;
 
 final class EngineCaller implements Caller
 {
-    private EngineInterface $engine;
+    private Engine $engine;
 
-    public function __construct(EngineInterface $engine)
+    public function __construct(Engine $engine)
     {
         $this->engine = $engine;
     }

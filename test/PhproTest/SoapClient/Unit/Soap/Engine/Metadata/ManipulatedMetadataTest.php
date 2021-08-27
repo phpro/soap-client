@@ -4,29 +4,31 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Unit\Soap\Engine\Metadata;
 
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\MethodCollection;
-use Phpro\SoapClient\Soap\Engine\Metadata\Collection\TypeCollection;
 use Phpro\SoapClient\Soap\Engine\Metadata\ManipulatedMetadata;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\MethodsManipulatorChain;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\MethodsManipulatorInterface;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorChain;
 use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Type;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\XsdType;
 use PHPUnit\Framework\TestCase;
+use Soap\Engine\Metadata\Collection\MethodCollection;
+use Soap\Engine\Metadata\Collection\ParameterCollection;
+use Soap\Engine\Metadata\Collection\PropertyCollection;
+use Soap\Engine\Metadata\Collection\TypeCollection;
+use Soap\Engine\Metadata\Metadata;
+use Soap\Engine\Metadata\Model\Method;
+use Soap\Engine\Metadata\Model\Type;
+use Soap\Engine\Metadata\Model\XsdType;
 
 class ManipulatedMetadataTest extends TestCase
 {
     /**
-     * @var MetadataInterface
+     * @var Metadata
      */
     private $metadata;
 
     protected function setUp(): void
     {
-        $this->metadata = new class implements MetadataInterface
+        $this->metadata = new class implements Metadata
         {
             public function getTypes(): TypeCollection
             {
@@ -43,7 +45,7 @@ class ManipulatedMetadataTest extends TestCase
     /** @test */
     public function it_is_a_metdata_object(): void
     {
-        self::assertInstanceOf(MetadataInterface::class, new ManipulatedMetadata(
+        self::assertInstanceOf(Metadata::class, new ManipulatedMetadata(
             $this->metadata,
             new MethodsManipulatorChain(),
             new TypesManipulatorChain()
@@ -71,7 +73,9 @@ class ManipulatedMetadataTest extends TestCase
             new class implements MethodsManipulatorInterface {
                 public function __invoke(MethodCollection $allMethods): MethodCollection
                 {
-                    return new MethodCollection(new Method('method', [], XsdType::create('Response')));
+                    return new MethodCollection(
+                        new Method('method', new ParameterCollection(), XsdType::create('Response'))
+                    );
                 }
 
             },
@@ -79,7 +83,9 @@ class ManipulatedMetadataTest extends TestCase
         );
 
         self::assertEquals(
-            new MethodCollection(new Method('method', [], XsdType::create('Response'))),
+            new MethodCollection(
+                new Method('method', new ParameterCollection(), XsdType::create('Response'))
+            ),
             $manipulatedMeta->getMethods()
         );
     }
@@ -93,13 +99,13 @@ class ManipulatedMetadataTest extends TestCase
             new class implements TypesManipulatorInterface {
                 public function __invoke(TypeCollection $allTypes): TypeCollection
                 {
-                    return new TypeCollection(new Type(XsdType::create('Type'), []));
+                    return new TypeCollection(new Type(XsdType::create('Type'), new PropertyCollection()));
                 }
             }
         );
 
         self::assertEquals(
-            new TypeCollection(new Type(XsdType::create('Type'), [])),
+            new TypeCollection(new Type(XsdType::create('Type'), new PropertyCollection())),
             $manipulatedMeta->getTypes()
         );
     }

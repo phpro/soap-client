@@ -4,10 +4,10 @@ declare( strict_types=1 );
 
 namespace PhproTest\SoapClient\Functional\ExtSoap\Encoding;
 
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapServerHandle;
-use Phpro\SoapClient\Soap\Engine\Engine;
 use PhproTest\SoapClient\Functional\ExtSoap\AbstractSoapTestCase;
+use Soap\Engine\SimpleEngine;
+use Soap\ExtSoapEngine\ExtSoapDriver;
+use Soap\ExtSoapEngine\Transport\TraceableTransport;
 
 class EnumTest extends AbstractSoapTestCase
 {
@@ -22,15 +22,15 @@ class EnumTest extends AbstractSoapTestCase
     private $driver;
 
     /**
-     * @var ExtSoapServerHandle
+     * @var TraceableTransport
      */
-    private $handler;
+    private $transport;
 
     protected function setUp(): void
     {
         $this->wsdl = FIXTURE_DIR . '/wsdl/functional/enum.wsdl';
         $this->driver = $this->configureSoapDriver($this->wsdl, []);
-        $this->handler = $this->configureServer(
+        $this->transport = $this->configureServer(
             $this->wsdl,
             [],
             new class()
@@ -57,13 +57,19 @@ class EnumTest extends AbstractSoapTestCase
     function it_knows_how_to_add_enums()
     {
         $input = 'Home';
-        $engine = new Engine($this->driver, $this->handler);
+        $engine = new SimpleEngine($this->driver, $this->transport);
         $response = (string) $engine->request('validate', [$input]);
-        $lastRequestInfo = $this->handler->collectLastRequestInfo();
+        $lastRequestInfo = $this->transport->collectLastRequestInfo();
 
         $this->assertEquals($input, $response);
-        $this->assertContains('<input xsi:type="ns2:PhoneTypeEnum">Home</input>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<output xsi:type="ns2:PhoneTypeEnum">Home</output>', $lastRequestInfo->getLastResponse());
+        $this->assertStringContainsString(
+            '<input xsi:type="ns2:PhoneTypeEnum">Home</input>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<output xsi:type="ns2:PhoneTypeEnum">Home</output>',
+            $lastRequestInfo->getLastResponse()
+        );
     }
 
     /**
@@ -73,12 +79,18 @@ class EnumTest extends AbstractSoapTestCase
     function it_does_not_validate_enums()
     {
         $input = 'INVALID';
-        $engine = new Engine($this->driver, $this->handler);
+        $engine = new SimpleEngine($this->driver, $this->transport);
         $engine->request('validate', [$input]);
-        $lastRequestInfo = $this->handler->collectLastRequestInfo();
+        $lastRequestInfo = $this->transport->collectLastRequestInfo();
 
-        $this->assertContains('<input xsi:type="ns2:PhoneTypeEnum">INVALID</input>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<output xsi:type="ns2:PhoneTypeEnum">INVALID</output>', $lastRequestInfo->getLastResponse());
+        $this->assertStringContainsString(
+            '<input xsi:type="ns2:PhoneTypeEnum">INVALID</input>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<output xsi:type="ns2:PhoneTypeEnum">INVALID</output>',
+            $lastRequestInfo->getLastResponse()
+        );
     }
 
     /**
@@ -88,12 +100,18 @@ class EnumTest extends AbstractSoapTestCase
     function it_does_not_validate_enum_types()
     {
         $input = 123;
-        $engine = new Engine($this->driver, $this->handler);
+        $engine = new SimpleEngine($this->driver, $this->transport);
         $engine->request('validate', [$input]);
-        $lastRequestInfo = $this->handler->collectLastRequestInfo();
+        $lastRequestInfo = $this->transport->collectLastRequestInfo();
 
-        $this->assertContains('<input xsi:type="ns2:PhoneTypeEnum">123</input>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<output xsi:type="ns2:PhoneTypeEnum">123</output>', $lastRequestInfo->getLastResponse());
+        $this->assertStringContainsString(
+            '<input xsi:type="ns2:PhoneTypeEnum">123</input>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<output xsi:type="ns2:PhoneTypeEnum">123</output>',
+            $lastRequestInfo->getLastResponse()
+        );
     }
 
     /**
@@ -123,15 +141,21 @@ class EnumTest extends AbstractSoapTestCase
                 ]
             ]
         ]);
-        $engine = new Engine($this->driver, $this->handler);
+        $engine = new SimpleEngine($this->driver, $this->transport);
 
         $input = $this->createEnum('Home');
         $response = $engine->request('validate', [$input]);
-        $lastRequestInfo = $this->handler->collectLastRequestInfo();
+        $lastRequestInfo = $this->transport->collectLastRequestInfo();
 
         $this->assertEquals($input, $response);
-        $this->assertContains('<PhoneTypeEnum xsi:type="ns2:PhoneTypeEnum">Home</PhoneTypeEnum>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<output xsi:type="ns2:PhoneTypeEnum">Home</output>', $lastRequestInfo->getLastResponse());
+        $this->assertStringContainsString(
+            '<PhoneTypeEnum xsi:type="ns2:PhoneTypeEnum">Home</PhoneTypeEnum>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<output xsi:type="ns2:PhoneTypeEnum">Home</output>',
+            $lastRequestInfo->getLastResponse()
+        );
     }
 
     private function createEnum(string $value) {
