@@ -28,7 +28,7 @@ class ClientTest extends TestCase
         $namingStrategy = new PathNamingStrategy();
         $caller = new EngineCaller(
             ExtSoapEngineFactory::create(
-                ExtSoapOptions::defaults('http://www.dneonline.com/calculator.asmx?wsdl'),
+                ExtSoapOptions::defaults(FIXTURE_DIR.'/wsdl/functional/calculator.wsdl'),
                 Psr18Transport::createForClient(
                     new PluginClient(
                         Psr18ClientDiscovery::find(),
