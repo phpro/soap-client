@@ -105,17 +105,6 @@ class Type
     }
 
     /**
-     * @param string $destination
-     *
-     * @deprecated please use getFileInfo instead
-     * @return string
-     */
-    public function getPathname(string $destination): string
-    {
-        return $this->getFileInfo($destination)->getPathname();
-    }
-
-    /**
      * @return string
      */
     public function getFullName(): string

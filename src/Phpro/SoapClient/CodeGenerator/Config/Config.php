@@ -3,7 +3,6 @@
 namespace Phpro\SoapClient\CodeGenerator\Config;
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
-use Phpro\SoapClient\CodeGenerator\Assembler\ClientMethodAssembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
@@ -74,7 +73,8 @@ final class Config implements ConfigInterface
         $this->ruleSet = new RuleSet([
             new Rules\AssembleRule(new Assembler\PropertyAssembler()),
             new Rules\AssembleRule(new Assembler\ClassMapAssembler()),
-            new Rules\AssembleRule(new ClientMethodAssembler())
+            new Rules\AssembleRule(new Assembler\ClientConstructorAssembler()),
+            new Rules\AssembleRule(new Assembler\ClientMethodAssembler())
         ]);
     }
 

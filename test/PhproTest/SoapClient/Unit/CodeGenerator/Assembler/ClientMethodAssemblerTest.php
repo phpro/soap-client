@@ -44,7 +44,7 @@ class ClientMethodAssemblerTest extends TestCase
     {
         // ClassGenerator $class, ClientMethod $method
         $class = new ClassGenerator();
-        $class->setNamespaceName($namespace = 'Vendor\\MyNamespace');
+        $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
         $method = new ClientMethod(
             'functionName',
@@ -65,7 +65,7 @@ class ClientMethodAssemblerTest extends TestCase
     {
         // ClassGenerator $class, ClientMethod $method
         $class = new ClassGenerator();
-        $class->setNamespaceName($namespace = 'Vendor\\MyNamespace');
+        $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
         $method = new ClientMethod(
             'functionName',
@@ -73,6 +73,25 @@ class ClientMethodAssemblerTest extends TestCase
                 new Parameter('param', $typeNamespace.'\\ParamType'),
                 new Parameter('param2', $typeNamespace.'\\OtherParamType'),
             ],
+            'ReturnType',
+            $typeNamespace
+        );
+
+        return new ClientMethodContext($class, $method);
+    }
+
+    /**
+     * @return ClientMethodContext
+     */
+    private function createNoParamsContext()
+    {
+        // ClassGenerator $class, ClientMethod $method
+        $class = new ClassGenerator();
+        $class->setName('Vendor\\MyNamespace\\MyClient');
+        $typeNamespace = 'Vendor\\MyTypeNamespace';
+        $method = new ClientMethod(
+            'functionName',
+            [],
             'ReturnType',
             $typeNamespace
         );
@@ -98,7 +117,7 @@ use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\RequestInterface;
 use Vendor\MyTypeNamespace;
 
-class  extends \Phpro\SoapClient\Client
+class MyClient
 {
 
     /**
@@ -135,7 +154,7 @@ namespace Vendor\MyNamespace;
 use Phpro\SoapClient\Type\ResultInterface;
 use Vendor\MyTypeNamespace;
 
-class  extends \Phpro\SoapClient\Client
+class MyClient
 {
 
     /**
@@ -162,11 +181,48 @@ CODE;
     /**
      * @test
      */
+    function it_can_deal_with_empty_params()
+    {
+        $assembler = new ClientMethodAssembler();
+        $context = $this->createNoParamsContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace Vendor\MyNamespace;
+
+use Phpro\SoapClient\Type\ResultInterface;
+use Vendor\MyTypeNamespace;
+use Phpro\SoapClient\Exception\SoapException;
+use Phpro\SoapClient\Type\MultiArgumentRequest;
+
+class MyClient
+{
+
+    /**
+     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @throws SoapException
+     */
+    public function functionName() : \Vendor\MyTypeNamespace\ReturnType
+    {
+        return \$this->call('functionName', new MultiArgumentRequest([]));
+    }
+
+
+}
+
+CODE;
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
     function it_assembles_a_method_with_underscore_param_type()
     {
         $assembler = new ClientMethodAssembler();
         $class = new ClassGenerator();
-        $class->setNamespaceName('Vendor\\MyNamespace');
+        $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
         $method = new ClientMethod(
             'Function_name',
@@ -189,7 +245,7 @@ use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\RequestInterface;
 use Vendor\MyTypeNamespace;
 
-class  extends \Phpro\SoapClient\Client
+class MyClient
 {
 
     /**

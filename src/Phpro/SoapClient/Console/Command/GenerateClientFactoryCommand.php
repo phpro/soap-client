@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
+use Laminas\Code\Generator\ClassGenerator;
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
@@ -65,7 +66,11 @@ class GenerateClientFactoryCommand extends Command
             $config->getClassMapName(),
             $config->getClassMapNamespace()
         );
-        $clientContext = new ClientContext($config->getClientName(), $config->getClientNamespace());
+        $clientContext = new ClientContext(
+            new ClassGenerator(),
+            $config->getClientName(),
+            $config->getClientNamespace()
+        );
         $context = new ClientFactoryContext($clientContext, $classmapContext);
         $generator = new ClientFactoryGenerator();
         $dest = $config->getClientDestination().DIRECTORY_SEPARATOR.$config->getClientName().'Factory.php';

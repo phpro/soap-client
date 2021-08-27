@@ -12,15 +12,6 @@ class Validator
         return class_exists(ClassGenerator::class);
     }
 
-    /**
-     * @deprecated use laminasCodeIsInstalled() instead
-     * @see self::laminasCodeIsInstalled()
-     */
-    public static function zendCodeIsInstalled(): bool
-    {
-        return self::laminasCodeIsInstalled();
-    }
-
     public static function commandRequiresLaminasCode(string $name): bool
     {
         if ($name === WizardCommand::COMMAND_NAME) {
@@ -28,14 +19,5 @@ class Validator
         }
 
         return strpos($name, 'generate') === 0;
-    }
-
-    /**
-     * @deprecated use commandRequiresLaminasCode() instead
-     * @see self::commandRequiresLaminasCode()
-     */
-    public static function commandRequiresZendCode(string $name): bool
-    {
-        return self::commandRequiresLaminasCode($name);
     }
 }

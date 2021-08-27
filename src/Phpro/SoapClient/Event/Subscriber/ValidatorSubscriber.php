@@ -4,7 +4,6 @@ namespace Phpro\SoapClient\Event\Subscriber;
 
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\Event\RequestEvent;
-use Phpro\SoapClient\Events;
 use Phpro\SoapClient\Exception\RequestException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -34,7 +33,7 @@ class ValidatorSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            Events::REQUEST => 'onClientRequest',
+            RequestEvent::class => 'onClientRequest',
         ];
     }
 

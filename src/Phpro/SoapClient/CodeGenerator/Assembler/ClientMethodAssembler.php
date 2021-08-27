@@ -6,7 +6,6 @@ use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\MethodGenerator;
 use Laminas\Code\Generator\ParameterGenerator;
-use Phpro\SoapClient\Client;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
@@ -43,7 +42,6 @@ class ClientMethodAssembler implements AssemblerInterface
             );
         }
         $class = $context->getClass();
-        $class->setExtendedClass(Client::class);
         $method = $context->getMethod();
         try {
             $phpMethodName = Normalizer::normalizeMethodName($method->getMethodName());
@@ -52,7 +50,7 @@ class ClientMethodAssembler implements AssemblerInterface
             $docblock = $context->getArgumentCount() > 1 ?
                 $this->generateMultiArgumentDocblock($context) :
                 $this->generateSingleArgumentDocblock($context);
-            $methodBody = $this->generateMethodBody($param, $method);
+            $methodBody = $this->generateMethodBody($class, $param, $method);
 
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
@@ -79,19 +77,14 @@ class ClientMethodAssembler implements AssemblerInterface
      *
      * @return string
      */
-    private function generateMethodBody(?ParameterGenerator $param, ClientMethod $method): string
+    private function generateMethodBody(ClassGenerator $class, ?ParameterGenerator $param, ClientMethod $method): string
     {
-        if ($param === null) {
-            return sprintf(
-                'return $this->call(\'%s\');',
-                $method->getMethodName()
-            );
-        }
-
         return sprintf(
-            'return $this->call(\'%s\', $%s);',
+            'return $this->call(\'%s\', %s);',
             $method->getMethodName(),
-            $param->getName()
+            $param === null
+                ? 'new '.$this->generateClassNameAndAddImport(MultiArgumentRequest::class, $class).'([])'
+                : '$'.$param->getName()
         );
     }
 

@@ -5,6 +5,7 @@ namespace spec\Phpro\SoapClient\CodeGenerator;
 use Laminas\Code\Generator\Exception\ClassNotFoundException;
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
 use Phpro\SoapClient\CodeGenerator\ClientGenerator;
+use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
@@ -44,6 +45,7 @@ class ClientGeneratorSpec extends ObjectBehavior
     {
         $method = new ClientMethod('Test', [new Parameter('parameters', 'Test')], 'TestResponse');
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
+        $ruleSet->applyRules(Argument::type(ClientContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
 
         $file->getClass()->willThrow(new ClassNotFoundException('No class is set'));

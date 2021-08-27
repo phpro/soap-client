@@ -12,15 +12,15 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.0",
         "ext-dom": "*",
         "ext-xml": "*",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.0",
-        "symfony/console": "~4.0 || ~5.0",
-        "symfony/event-dispatcher": "~4.0 || ~5.0",
-        "symfony/filesystem": "~4.0 || ~5.0",
-        "symfony/options-resolver": "~4.0 || ~5.0"
+        "symfony/console": "~4.4 || ~5.0",
+        "symfony/event-dispatcher": "~4.4 || ~5.0",
+        "symfony/filesystem": "~4.4 || ~5.0",
+        "symfony/options-resolver": "~4.4 || ~5.0"
     },
     "require-dev": {
         "ext-soap": "*",

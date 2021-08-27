@@ -2,6 +2,7 @@
 
 namespace PhproTest\SoapClient\Unit\CodeGenerator;
 
+use Laminas\Code\Generator\ClassGenerator;
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
@@ -23,6 +24,8 @@ use App\Classmap\SomeClassmap;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
 use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
+use Phpro\SoapClient\Caller\EventDispatchingCaller;
+use Phpro\SoapClient\Caller\EngineCaller;
 
 class MyclientFactory
 {
@@ -33,9 +36,11 @@ class MyclientFactory
             ExtSoapOptions::defaults(\$wsdl, [])
                 ->withClassMap(SomeClassmap::getCollection())
         );
-        \$eventDispatcher = new EventDispatcher();
 
-        return new Myclient(\$engine, \$eventDispatcher);
+        \$eventDispatcher = new EventDispatcher();
+        \$caller = new EventDispatchingCaller(new EngineCaller(\$engine), \$eventDispatcher);
+
+        return new Myclient(\$caller);
     }
 
 
@@ -43,7 +48,7 @@ class MyclientFactory
 
 
 BODY;
-        $clientContext = new ClientContext('Myclient', 'App\\Client');
+        $clientContext = new ClientContext(new ClassGenerator(), 'Myclient', 'App\\Client');
         $classMapContext = new ClassMapContext(
             new FileGenerator(),
             new \Phpro\SoapClient\CodeGenerator\Model\TypeMap('App\\Types', []),
