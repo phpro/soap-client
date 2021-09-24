@@ -37,7 +37,7 @@ use Phpro\SoapClient\Soap\ExtSoap\Metadata\Manipulators\DuplicateTypes\Intersect
 use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
 use Soap\Psr18Transport\Psr18Transport;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\DefaultEngineFactory;
 use Soap\ExtSoapEngine\ExtSoapOptions;
 use Phpro\SoapClient\Caller\EventDispatchingCaller;
 use Phpro\SoapClient\Caller\EngineCaller;
@@ -46,7 +46,7 @@ class CalculatorClientFactory
 {
     public static function factory(string $wsdl) : CalculatorClient
     {
-        $engine = ExtSoapEngineFactory::create(
+        $engine = DefaultEngineFactory::create(
             ExtSoapOptions::defaults($wsdl, [])
                 ->withClassMap(CalculatorClassmap::getCollection()),
             Psr18Transport::createForClient(

@@ -11,7 +11,7 @@ use Http\Client\Plugin\Vcr\ReplayPlugin;
 use Http\Discovery\Psr18ClientDiscovery;
 use Phpro\SoapClient\Caller\Caller;
 use Phpro\SoapClient\Caller\EngineCaller;
-use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\DefaultEngineFactory;
 use Phpro\SoapClient\Type\MixedResult;
 use Phpro\SoapClient\Type\MultiArgumentRequest;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +27,7 @@ class ClientTest extends TestCase
         $recorder = new FilesystemRecorder(VCR_CASSETTE_DIR.'/client');
         $namingStrategy = new PathNamingStrategy();
         $caller = new EngineCaller(
-            ExtSoapEngineFactory::create(
+            DefaultEngineFactory::create(
                 ExtSoapOptions::defaults(FIXTURE_DIR.'/wsdl/functional/calculator.wsdl'),
                 Psr18Transport::createForClient(
                     new PluginClient(

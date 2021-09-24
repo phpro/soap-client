@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Phpro\SoapClient\Soap\ExtSoap;
+namespace Phpro\SoapClient\Soap;
 
 use Phpro\SoapClient\Soap\ExtSoap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
 use Phpro\SoapClient\Soap\Metadata\MetadataFactory;
@@ -16,7 +16,7 @@ use Soap\ExtSoapEngine\ExtSoapMetadata;
 use Soap\ExtSoapEngine\ExtSoapOptions;
 use Soap\Psr18Transport\Psr18Transport;
 
-final class ExtSoapEngineFactory
+final class DefaultEngineFactory
 {
     public static function create(
         ExtSoapOptions $options,
