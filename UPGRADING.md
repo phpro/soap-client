@@ -186,7 +186,7 @@ the factory now injects the caller into your soap client.
 
 ```php
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\DefaultEngineFactory;
 use Soap\ExtSoapEngine\ExtSoapOptions;
 use Phpro\SoapClient\Caller\EventDispatchingCaller;
 use Phpro\SoapClient\Caller\EngineCaller;
@@ -195,7 +195,7 @@ class CalculatorClientFactory
 {
     public static function factory(string $wsdl) : CalculatorClient
     {
-        $engine = ExtSoapEngineFactory::create(
+        $engine = DefaultEngineFactory::create(
             ExtSoapOptions::defaults($wsdl, [])
                 ->withClassMap(CalculatorClassmap::getCollection())
         );
@@ -210,13 +210,13 @@ class CalculatorClientFactory
 
 You can opt-out on the event dispatching logic or decorate your own caller.
 
-The `ExtSoapEngineFactory` can now be configured with a transport and the metadata options.
+The `DefaultEngineFactory` can now be configured with a transport and the metadata options.
 Full example on how you can personalize your factory class:
 
 ```php
 use Http\Client\Common\PluginClient;
 use Http\Discovery\Psr18ClientDiscovery;
-use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\DefaultEngineFactory;
 use Phpro\SoapClient\Soap\ExtSoap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;use Phpro\SoapClient\Soap\Metadata\Manipulators\TypesManipulatorChain;
 use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
 use Soap\ExtSoapEngine\ExtSoapOptions;
@@ -226,7 +226,7 @@ use Soap\Psr18Transport\Psr18Transport;
 use Soap\Psr18Transport\Wsdl\Psr18Loader;
 
 $httpClient = Psr18ClientDiscovery::find();
-$engine = ExtSoapEngineFactory::create(
+$engine = DefaultEngineFactory::create(
     ExtSoapOptions::defaults($wsdl, [])
         ->withClassMap(CalculatorClassmap::getCollection())
         ->withWsdlProvider(

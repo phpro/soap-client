@@ -9,11 +9,11 @@ The code generation commands require a configuration file to determine how the S
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Assembler;
-use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\DefaultEngineFactory;
 use Soap\ExtSoapEngine\ExtSoapOptions;
 
 return Config::create()
-    ->setEngine(ExtSoapEngineFactory::create(
+    ->setEngine(DefaultEngineFactory::create(
         ExtSoapOptions::defaults('wsdl.xml', [])
             ->disableWsdlCache()
     ))

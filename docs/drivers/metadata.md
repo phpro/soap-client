@@ -10,7 +10,7 @@ Therefore, we added some strategies to deal with duplicate types:
 
 **IntersectDuplicateTypesStrategy**
 
-Enabled by default when using `ExtSoapEngineFactory::create()`.
+Enabled by default when using `DefaultEngineFactory::create()`.
 
 This duplicate types strategy will merge all duplicate types into one big type which contains all properties.
 
@@ -18,16 +18,16 @@ This duplicate types strategy will merge all duplicate types into one big type w
 
 This duplicate types strategy will remove all duplicate types it finds.
 
-You can overwrite the strategy on the `ExtSoapEngineFactory` object inside the client factory:
+You can overwrite the strategy on the `DefaultEngineFactory` object inside the client factory:
 
 ```php
 <?php
 
-use Phpro\SoapClient\Soap\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\DefaultEngineFactory;
 use Phpro\SoapClient\Soap\ExtSoap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;
 use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
 
-$engine = ExtSoapEngineFactory::create(
+$engine = DefaultEngineFactory::create(
     $options, $transport,
     MetadataOptions::empty()->withTypesManipulator(
         new RemoveDuplicateTypesStrategy()
