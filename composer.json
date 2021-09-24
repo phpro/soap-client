@@ -13,12 +13,10 @@
     ],
     "require": {
         "php": "^8.0",
-        "ext-dom": "*",
-        "ext-xml": "*",
         "laminas/laminas-code": "^4.4.0",
-        "php-soap/engine": "^0.1.0",
-        "php-soap/ext-soap-engine": "^0.1.0",
-        "php-soap/psr18-transport": "^0.1.0",
+        "php-soap/engine": "^1.0",
+        "php-soap/ext-soap-engine": "^1.0",
+        "php-soap/psr18-transport": "^1.0",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.0",
         "symfony/console": "~4.4 || ~5.0",
@@ -27,7 +25,6 @@
         "symfony/validator": "~4.4 || ~5.0"
     },
     "require-dev": {
-        "ext-soap": "*",
         "guzzlehttp/guzzle": "^7.2.0",
         "nyholm/psr7": "^1.4",
         "php-http/vcr-plugin": "^1.2",
