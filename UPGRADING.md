@@ -1,19 +1,25 @@
 # V1 to V2
 
 V1 has been around for quite some time.
-We decided to move the [low-level SOAP core to a separate organisation](https://github.com/php-soap/).
-This will make both this soap-client and the more low-level SOAP things easier to change.
+Since the low-level SOAP parts became very stable and trustworthy,
+We decided to move them [to a separate organisation](https://github.com/php-soap/).
+This will make it easier to make changes in both this soap-client and the more low-level SOAP parts.
+An additional benefit is that the robust SOAP fundamentals can be used by other SOAP clients as well.
+We hope this will lead to an even more stable SOAP core. 
 
-The focus of this package is the generation of code so that you can easily interact with your SOAP service.
+The focus of this package shifted to the generation of SOAP client code.
+This is the part that makes it easy to interact with your SOAP service.
 We decided to make it more opinionated, so that you have to deal with less strange SOAP related bugs than before.
 
-By moving the low-level SOAP stuff out, we can now focus on improving metadata collection,
-which will results in better generated classes.
+By moving the low-level SOAP stuff out, we can now focus on improving WSDL metadata collection,
+which will results in more strictly typed generated code.
+You can expect this to come in one of the next releases.
 
 ## Prerequisites
 
-If your application does not contain a PSR-18 client, you'll need to
-choosing what HTTP client you want to use. This package expects some PSR implementations to be present in order to be installed:
+If your application does not contain a PSR-18 client, you'll have to
+choose which HTTP client you want to use.
+This package expects some PSR implementations to be present in order to be installed:
 
 * PSR-7: `psr/http-message-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
 * PSR-17: `psr/http-factory-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
@@ -31,13 +37,13 @@ composer require symfony/http-client nyholm/psr7
 composer require phpro/soap-client:^2.0
 ```
 
-We suggest to use the `soap-client `CLI tools again if you want to upgrade and existing application:
+We suggest you to use the `soap-client` CLI tools again if you want to upgrade and existing application:
 
 ```
 ./vendor/bin/soap-client wizard
 ```
 
-From this point on, you can re-add custom things back to your soap client.
+From this point on, you can re-add the custom parts of your existing SOAP client back into the new SOAP client.
 
 **You can check the updated documentation in order to discover how you need to do specific actions like adding middleware in v2.**
 
@@ -112,13 +118,14 @@ If you have custom classes implementing one of the items above, they will requir
 
 **Note:**
 
-* The Transport does not contain any last request information anymore.
+* By default, the Transport does not contain any last request information anymore. There is a `TraceableTransport` available that you can decorate another transport with in order to get this functionality back.
 
 ## Dependency upgrades
 
 * Symfony to LTS (4.4)
 * PHP (^8.0)
 * Removed a lot of old dependencies and suggestions
+* Removed ext-*, since they are required in the specific php-soap packages
 
 ## Removed deprecations
 
@@ -130,9 +137,9 @@ We now support any [PSR-14 event dispatcher](https://www.php-fig.org/psr/psr-14/
 Fully qualified class names will be used as event names.
 The old deprecated event names are now removed from the codebase.
 
-The events won't contain the soap client anymore.
+The events won't contain the SOAP client anymore.
 We don't want them to be service containers.
-So instead, if you require the soap client in the event listeners, you need to inject them manually.
+So instead, if you require the SOAP client in the event listeners, you need to inject them manually.
 
 ## Client
 
@@ -170,8 +177,8 @@ class CalculatorClient
 
 We removed the debugging method from the soap-client.
 Instead, you can either debug the request or result directly.
-If you want to have access to the HTTP soap payload, we suggest adding a logger plugin to the HTTP client.
-There is also a `TraceableTransport` available that can be used to detect the last SOAP request and response.
+If you want to have access to the HTTP SOAP payload, we suggest adding a logger plugin to the HTTP client.
+There is also a `TraceableTransport` available that can be used to detect the last SOAP request and response like you would in the old client.
 
 This implies that changes where done to:
 
@@ -182,7 +189,7 @@ This implies that changes where done to:
 ## Client Factory
 
 In order to make the new `Caller` system available for your SOAP client,
-the factory now injects the caller into your soap client.
+the factory now injects the caller into your SOAP client.
 
 ```php
 use Symfony\Component\EventDispatcher\EventDispatcher;
