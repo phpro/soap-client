@@ -1,11 +1,5 @@
 # Validator Subscriber
 
-Require the symfony validator:
-
-```bash
-composer require symfony/validator
-```
-
 Register the validator subscriber:
 
 ```php
