@@ -68,8 +68,6 @@ use MyUsedClass;
 
 class MyType
 {
-
-
 }
 
 CODE;
@@ -94,8 +92,6 @@ use MyUsedClass as Alias;
 
 class MyType
 {
-
-
 }
 
 CODE;
@@ -121,8 +117,6 @@ use MyUsedClass;
 
 class MyType
 {
-
-
 }
 
 CODE;
@@ -145,8 +139,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
-
 }
 
 CODE;
@@ -169,8 +161,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
-
 }
 
 CODE;
@@ -194,8 +184,6 @@ CODE;
         $expected = <<<CODE
 class MyType
 {
-
-
 }
 
 CODE;
@@ -221,8 +209,6 @@ use DifferentNamespace\SomeOtherClass;
 
 class MyType
 {
-
-
 }
 
 CODE;

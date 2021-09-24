@@ -64,8 +64,7 @@ class GenerateClientCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The location of the soap code-generator config file'
-            )
-            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default');
+            );
     }
 
     /**
@@ -116,9 +115,6 @@ class GenerateClientCommand extends Command
 
     /**
      * Try to create a class for a type.
-     * When a class exists: try to patch
-     * If patching the old class does not work: ask for an overwrite
-     * Create a class from an empty file
      *
      * @param ClientGenerator $generator
      * @param Client $client
@@ -127,20 +123,6 @@ class GenerateClientCommand extends Command
      */
     protected function handleClient(ClientGenerator $generator, Client $client, string $path): bool
     {
-        // Handle existing class:
-        if ($this->filesystem->fileExists($path)) {
-            if ($this->handleExistingFile($generator, $client, $path)) {
-                return true;
-            }
-
-            // Ask if a class can be overwritten if it contains errors
-            if (!$this->askForOverwrite()) {
-                $this->output->writeln(sprintf('Skipping %s', $client->getName()));
-
-                return false;
-            }
-        }
-
         // Try to create a blanco class:
         try {
             $file = new FileGenerator();
@@ -152,66 +134,6 @@ class GenerateClientCommand extends Command
         }
 
         return true;
-    }
-
-    /**
-     * An existing file was found. Try to patch or ask if it can be overwritten.
-     *
-     * @param GeneratorInterface $generator
-     * @param Client $client
-     * @param string $path
-     * @return bool
-     */
-    protected function handleExistingFile(GeneratorInterface $generator, Client $client, $path): bool
-    {
-        $this->output->write(sprintf('Class %s exists. Trying to patch ...', $client->getName()));
-        $patched = $this->patchExistingFile($generator, $client, $path);
-
-        if ($patched) {
-            $this->output->writeln('Patched!');
-
-            return true;
-        }
-
-        $this->output->writeln('Could not patch.');
-
-        return false;
-    }
-
-    /**
-     * This method tries to patch an existing type class.
-     *
-     * @param GeneratorInterface $generator
-     * @param Client $client
-     * @param string $path
-     * @return bool
-     * @internal param Type $type
-     */
-    protected function patchExistingFile(GeneratorInterface $generator, Client $client, $path): bool
-    {
-        try {
-            $this->filesystem->createBackup($path);
-            $file = FileGenerator::fromReflectedFileName($path);
-            $this->generateClient($file, $generator, $client, $path);
-        } catch (\Exception $e) {
-            $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
-            $this->filesystem->removeBackup($path);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function askForOverwrite(): bool
-    {
-        $overwriteByDefault = $this->input->getOption('overwrite');
-        $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
-
-        return $this->getHelper('question')->ask($this->input, $this->output, $question);
     }
 
     /**

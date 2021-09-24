@@ -17,11 +17,11 @@ class ConfigGeneratorTest extends TestCase
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
+use Soap\ExtSoapEngine\ExtSoapOptions;
+use Phpro\SoapClient\Soap\DefaultEngineFactory;
 
 return Config::create()
-    ->setEngine(\$engine = ExtSoapEngineFactory::fromOptions(
+    ->setEngine(\$engine = DefaultEngineFactory::create(
         ExtSoapOptions::defaults('wsdl.xml', [])
             ->disableWsdlCache()
     ))
@@ -82,11 +82,11 @@ CONTENT;
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
+use Soap\ExtSoapEngine\ExtSoapOptions;
+use Phpro\SoapClient\Soap\DefaultEngineFactory;
 
 return Config::create()
-    ->setEngine(\$engine = ExtSoapEngineFactory::fromOptions(
+    ->setEngine(\$engine = DefaultEngineFactory::create(
         ExtSoapOptions::defaults('wsdl.xml', [])
             ->disableWsdlCache()
     ))

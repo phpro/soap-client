@@ -5,7 +5,6 @@ namespace Phpro\SoapClient\Event\Subscriber;
 use Phpro\SoapClient\Event\RequestEvent;
 use Phpro\SoapClient\Event\ResponseEvent;
 use Phpro\SoapClient\Event\FaultEvent;
-use Phpro\SoapClient\Events;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -68,9 +67,9 @@ class LogSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return array(
-            Events::REQUEST  => 'onClientRequest',
-            Events::RESPONSE => 'onClientResponse',
-            Events::FAULT    => 'onClientFault'
+            RequestEvent::class  => 'onClientRequest',
+            ResponseEvent::class => 'onClientResponse',
+            FaultEvent::class    => 'onClientFault'
         );
     }
 }

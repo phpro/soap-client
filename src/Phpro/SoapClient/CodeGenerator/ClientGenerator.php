@@ -3,6 +3,7 @@
 namespace Phpro\SoapClient\CodeGenerator;
 
 use Laminas\Code\Generator\Exception\ClassNotFoundException;
+use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
@@ -50,8 +51,10 @@ class ClientGenerator implements GeneratorInterface
         }
         $class->setNamespaceName($client->getNamespace());
         $class->setName($client->getName());
-        $methods = $client->getMethodMap();
 
+        $this->ruleSet->applyRules(new ClientContext($class, $client->getName(), $client->getNamespace()));
+
+        $methods = $client->getMethodMap();
         foreach ($methods->getMethods() as $method) {
             $this->ruleSet->applyRules(new ClientMethodContext($class, $method));
         }

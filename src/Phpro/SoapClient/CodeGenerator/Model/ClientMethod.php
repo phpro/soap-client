@@ -3,8 +3,8 @@
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Method as MetadataMethod;
-use Phpro\SoapClient\Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
+use Soap\Engine\Metadata\Model\Method as MetadataMethod;
+use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 
 /**
  * Class ClientMethod
@@ -59,7 +59,7 @@ class ClientMethod
                 function (MetadataParameter $parameter) use ($parameterNamespace) {
                     return Parameter::fromMetadata($parameterNamespace, $parameter);
                 },
-                $method->getParameters()
+                iterator_to_array($method->getParameters())
             ),
             $method->getReturnType()->getBaseTypeOrFallbackToName(),
             $parameterNamespace

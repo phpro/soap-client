@@ -2,6 +2,7 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Laminas\Code\Generator\ClassGenerator;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
@@ -19,7 +20,7 @@ class ClientFactoryContextSpec extends ObjectBehavior
 {
     function let()
     {
-        $clientContext = new ClientContext('Myclient', 'App\\Client');
+        $clientContext = new ClientContext(new ClassGenerator(), 'Myclient', 'App\\Client');
         $classMapContext = new ClassMapContext(
             new FileGenerator(),
             new TypeMap('ns', []),

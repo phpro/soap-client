@@ -53,10 +53,7 @@ use MyTrait;
 
 class MyType
 {
-
     use MyTrait;
-
-
 }
 
 CODE;
@@ -81,10 +78,7 @@ use Namespace\MyTrait as TraitAlias;
 
 class MyType
 {
-
     use TraitAlias;
-
-
 }
 
 CODE;

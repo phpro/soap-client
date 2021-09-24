@@ -10,7 +10,6 @@ Usage:
 
 Options:
       --config=CONFIG   The location of the soap code-generator config file
-  -o, --overwrite       Makes it possible to overwrite by default
   -h, --help            Display this help message
   -q, --quiet           Do not output any message
   -V, --version         Display this application version
@@ -27,32 +26,45 @@ Options:
 
 The factory will be put in the same namespace and directory as the client, and use the same name as the client, appended by Factory.
 
-Example output:
+More advanced client factory:
 
 ```php
 <?php
 
-namespace App\Client;
+use Http\Client\Common\PluginClient;
+use Http\Discovery\Psr18ClientDiscovery;
+use Phpro\SoapClient\Soap\ExtSoap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
+use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
+use Soap\Psr18Transport\Psr18Transport;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Phpro\SoapClient\Soap\ExtSoap\DefaultEngineFactory;
+use Soap\ExtSoapEngine\ExtSoapOptions;
+use Phpro\SoapClient\Caller\EventDispatchingCaller;
+use Phpro\SoapClient\Caller\EngineCaller;
 
-use App\Client\MyClient;
-use App\Order\OrderClassmap;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
-
-class ClientFactory
+class CalculatorClientFactory
 {
-
-    public static function factory(string $wsdl) : \App\Client\MyClient
+    public static function factory(string $wsdl) : CalculatorClient
     {
-        $engine = ExtSoapEngineFactory::fromOptions(
+        $engine = DefaultEngineFactory::create(
             ExtSoapOptions::defaults($wsdl, [])
-                ->withClassMap(OrderClassmap::getCollection())
+                ->withClassMap(CalculatorClassmap::getCollection()),
+            Psr18Transport::createForClient(
+                new PluginClient(
+                    Psr18ClientDiscovery::find(),
+                    [$plugin1, $plugin2]
+                )
+            ),
+            MetadataOptions::empty()->withTypesManipulator(
+                new IntersectDuplicateTypesStrategy()
+            )
         );
+
         $eventDispatcher = new EventDispatcher();
+        $caller = new EventDispatchingCaller(new EngineCaller($engine), $eventDispatcher);
 
-        return new MyClient($engine, $eventDispatcher);
+        return new CalculatorClient($caller);
     }
-
 }
 
 
@@ -62,9 +74,9 @@ You can then tweak this class to fit your needs.
 
 Here you can find some bookmarks for changing the factory:
 
-- [Configuring ExtSoapOptions](../drivers/ext-soap.md#extsoapoptions)
+- [Configuring ExtSoapOptions](https://github.com/php-soap/ext-soap-engine/#configuration-options)
 - [Listening to events](../events.md)
-- [Configuring the engine](../engine.md)
-- [Using HTTP middleware](../middlewares.md) 
+- [Configuring the engine](https://github.com/php-soap/engine)
+- [Using HTTP middleware](https://github.com/php-soap/psr18-transport/#middleware) 
 
 Next: [Use your SOAP client.](/docs/usage.md)

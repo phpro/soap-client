@@ -53,7 +53,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      * @return MyType
@@ -65,8 +64,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;
@@ -90,7 +87,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap \$prop1
      * @return MyType
@@ -102,8 +98,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;
@@ -126,7 +120,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     public function withProp1(\$prop1)
     {
         \$new = clone \$this;
@@ -134,8 +127,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;
@@ -170,7 +161,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      * @return MyType
@@ -182,8 +172,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;
@@ -209,7 +197,6 @@ namespace MyNamespace;
 
 class MyType
 {
-
     /**
      * @param string \$prop1
      * @return MyType
@@ -221,8 +208,6 @@ class MyType
 
         return \$new;
     }
-
-
 }
 
 CODE;

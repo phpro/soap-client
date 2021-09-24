@@ -9,11 +9,11 @@ The code generation commands require a configuration file to determine how the S
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Assembler;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapOptions;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\DefaultEngineFactory;
+use Soap\ExtSoapEngine\ExtSoapOptions;
 
 return Config::create()
-    ->setEngine(ExtSoapEngineFactory::fromOptions(
+    ->setEngine(DefaultEngineFactory::create(
         ExtSoapOptions::defaults('wsdl.xml', [])
             ->disableWsdlCache()
     ))
@@ -46,13 +46,13 @@ Execute `vendor/bin/soap-client generate:config` to start the interactive config
 
 **engine**
 
-`Phpro\SoapClient\Soap\Engine\Engine` - REQUIRED
+`Soap\Engine\Engine` - REQUIRED
 
 Specify how the code generation tool can talk to SOAP.
-By default, we push PHP's built-in ext-soap engine by code generation.
+By default, we push PHP's built-in ext-soap engine with a PSR-18 transport for code generation.
 However, it is possible to change this to any other engine you want to use.
 
-[Read more about engines.](../engine.md)
+[Read more about engines.](https://github.com/php-soap/engine)
 
 **type destination**
 

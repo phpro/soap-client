@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Functional\ExtSoap\Encoding;
 
-use Phpro\SoapClient\Soap\ClassMap\ClassMap;
-use Phpro\SoapClient\Soap\ClassMap\ClassMapCollection;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\ExtSoapDriver;
-use Phpro\SoapClient\Soap\Driver\ExtSoap\Handler\ExtSoapServerHandle;
-use Phpro\SoapClient\Soap\Engine\Engine;
 use PhproTest\SoapClient\Functional\ExtSoap\AbstractSoapTestCase;
+use Soap\Engine\SimpleEngine;
+use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMap;
+use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMapCollection;
+use Soap\ExtSoapEngine\ExtSoapDriver;
+use Soap\ExtSoapEngine\Transport\TraceableTransport;
 
 class DuplicateTypenamesTest extends AbstractSoapTestCase
 {
@@ -24,15 +24,15 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
     private $driver;
 
     /**
-     * @var ExtSoapServerHandle
+     * @var TraceableTransport
      */
-    private $handler;
+    private $transport;
 
     protected function setUp(): void
     {
         $this->wsdl = FIXTURE_DIR.'/wsdl/functional/duplicate-typenames.wsdl';
         $this->driver = $this->configureSoapDriver($this->wsdl, []);
-        $this->handler = $this->configureServer(
+        $this->transport = $this->configureServer(
             $this->wsdl,
             [],
             new class()
@@ -51,13 +51,15 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
         $types = $this->driver->getMetadata()->getTypes();
         $this->assertCount(2, $types);
 
-        $store1 = $types->getIterator()[0];
-        $store2 = $types->getIterator()[1];
+        [$store1, $store2] = [...$types];
+        $store1Props = [...$store1->getProperties()];
+        $store2Props = [...$store2->getProperties()];
+
 
         $this->assertEquals($store1->getName(), 'Store');
-        $this->assertEquals($store1->getProperties()[0]->getName(), 'Attribute1');
+        $this->assertEquals($store1Props[0]->getName(), 'Attribute1');
         $this->assertEquals($store2->getName(), 'Store');
-        $this->assertEquals($store2->getProperties()[0]->getName(), 'Attribute2');
+        $this->assertEquals($store2Props[0]->getName(), 'Attribute2');
     }
 
     /**
@@ -66,7 +68,7 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
      */
     function it_knows_how_to_encode_both_types()
     {
-        $engine = new Engine($this->driver, $this->handler);
+        $engine = new SimpleEngine($this->driver, $this->transport);
         $store1 = (object) ['Attribute1' => 'ok'];
         $store2 = (object) ['Attribute2' => 'ok'];
 
@@ -75,11 +77,23 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
         $this->assertEquals($store1, $response['output1']);
         $this->assertEquals($store2, $response['output2']);
 
-        $lastRequestInfo = $this->handler->collectLastRequestInfo();
-        $this->assertContains('<input1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">ok</Attribute1></input1>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<input2 xsi:type="ns3:Store"><Attribute2 xsi:type="xsd:string">ok</Attribute2></input2>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<output1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">ok</Attribute1></output1>', $lastRequestInfo->getLastResponse());
-        $this->assertContains('<output2 xsi:type="ns3:Store"><Attribute2 xsi:type="xsd:string">ok</Attribute2></output2>', $lastRequestInfo->getLastResponse());
+        $lastRequestInfo = $this->transport->collectLastRequestInfo();
+        $this->assertStringContainsString(
+            '<input1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">ok</Attribute1></input1>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<input2 xsi:type="ns3:Store"><Attribute2 xsi:type="xsd:string">ok</Attribute2></input2>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<output1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">ok</Attribute1></output1>',
+            $lastRequestInfo->getLastResponse()
+        );
+        $this->assertStringContainsString(
+            '<output2 xsi:type="ns3:Store"><Attribute2 xsi:type="xsd:string">ok</Attribute2></output2>',
+            $lastRequestInfo->getLastResponse()
+        );
     }
 
     /**
@@ -89,11 +103,11 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
     function it_uses_same_model_for_both_objects()
     {
         $this->driver = $this->configureSoapDriver($this->wsdl, [
-            'classmap' => new ClassMapCollection([
+            'classmap' => new ClassMapCollection(
                 new ClassMap('Store', DuplicateTypeStore::class)
-            ])
+            )
         ]);
-        $this->handler = $this->configureServer(
+        $this->transport = $this->configureServer(
             $this->wsdl,
             [],
             new class()
@@ -108,18 +122,30 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
             }
         );
 
-        $engine = new Engine($this->driver, $this->handler);
+        $engine = new SimpleEngine($this->driver, $this->transport);
         $store1 = new DuplicateTypeStore('attr1', 'attr2');
         $store2 = new DuplicateTypeStore('attr1', 'attr2');
         $response = $engine->request('validate', [$store1, $store2]);
-        $lastRequestInfo = $this->handler->collectLastRequestInfo();
+        $lastRequestInfo = $this->transport->collectLastRequestInfo();
 
         $this->assertEquals(new DuplicateTypeStore('attr1', null), $response['output1']);
         $this->assertEquals(new DuplicateTypeStore(null, 'attr2'), $response['output2']);
-        $this->assertContains('<input1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></input1>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<input2 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></input2>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<output1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></output1>', $lastRequestInfo->getLastResponse());
-        $this->assertContains('<output2 xsi:type="ns3:Store"><Attribute2 xsi:type="xsd:string">attr2</Attribute2></output2>', $lastRequestInfo->getLastResponse());
+        $this->assertStringContainsString(
+            '<input1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></input1>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<input2 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></input2>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<output1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></output1>',
+            $lastRequestInfo->getLastResponse()
+        );
+        $this->assertStringContainsString(
+            '<output2 xsi:type="ns3:Store"><Attribute2 xsi:type="xsd:string">attr2</Attribute2></output2>',
+            $lastRequestInfo->getLastResponse()
+        );
     }
 
     /**
@@ -129,9 +155,9 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
     function it_is_possible_to_override_a_single_instance_with_typemap()
     {
         $this->driver = $this->configureSoapDriver($this->wsdl, [
-            'classmap' => new ClassMapCollection([
+            'classmap' => new ClassMapCollection(
                 new ClassMap('Store', DuplicateTypeStore::class)
-            ]),
+            ),
             'typemap' => [
                 [
                     'type_name' => 'Store',
@@ -146,7 +172,7 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
                 ],
             ]
         ]);
-        $this->handler = $this->configureServer(
+        $this->transport = $this->configureServer(
             $this->wsdl,
             [],
             new class()
@@ -161,18 +187,30 @@ class DuplicateTypenamesTest extends AbstractSoapTestCase
             }
         );
 
-        $engine = new Engine($this->driver, $this->handler);
+        $engine = new SimpleEngine($this->driver, $this->transport);
         $store1 = new DuplicateTypeStore('attr1', 'attr2');
         $store2 = new DuplicateTypeStore('attr1', 'attr2');
         $response = $engine->request('validate', [$store1, $store2]);
-        $lastRequestInfo = $this->handler->collectLastRequestInfo();
+        $lastRequestInfo = $this->transport->collectLastRequestInfo();
 
         $this->assertEquals($this->createStore1Class('attr1'), $response['output1']);
         $this->assertEquals(new DuplicateTypeStore(null, 'attr2'), $response['output2']);
-        $this->assertContains('<input1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></input1>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<input2 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></input2>', $lastRequestInfo->getLastRequest());
-        $this->assertContains('<output1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></output1>', $lastRequestInfo->getLastResponse());
-        $this->assertContains('<output2 xsi:type="ns3:Store"><Attribute2 xsi:type="xsd:string">attr2</Attribute2></output2>', $lastRequestInfo->getLastResponse());
+        $this->assertStringContainsString(
+            '<input1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></input1>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<input2 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></input2>',
+            $lastRequestInfo->getLastRequest()
+        );
+        $this->assertStringContainsString(
+            '<output1 xsi:type="ns2:Store"><Attribute1 xsi:type="xsd:string">attr1</Attribute1></output1>',
+            $lastRequestInfo->getLastResponse()
+        );
+        $this->assertStringContainsString(
+            '<output2 xsi:type="ns3:Store"><Attribute2 xsi:type="xsd:string">attr2</Attribute2></output2>',
+            $lastRequestInfo->getLastResponse()
+        );
     }
 
     private function createStore1Class($attr1) {

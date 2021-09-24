@@ -1,10 +1,5 @@
 # Generating class maps
 
-Before you can generate code, you'll need to add some additional dev dependencies to your project:
-```sh
-composer require --dev laminas/laminas-code:^3.1.0
-```
-
 When the value-objects are generated, we need to tell SOAP about how the PHP classes are mapped to the XSD types.
  This is done by a class map, which can be a really boring manual task.
  Luckily a class map generator is added, which you can use to parse the classmap from the WSDL.
@@ -16,7 +11,6 @@ Usage:
 
 Options:
       --config=CONFIG   The location of the soap code-generator config file
-  -o, --overwrite       Makes it possible to overwrite by default
   -h, --help            Display this help message
   -q, --quiet           Do not output any message
   -V, --version         Display this application version
@@ -50,18 +44,19 @@ Example output:
 
 namespace Myapp\Example\Classmap;
 
-use ...
+use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMapCollection;
+use Soap\ExtSoapEngine\Configuration\ClassMap\ClassMap;
 
 class OrderClassMap
 {
 
-    public static function getCollection() : \Phpro\SoapClient\Soap\ClassMap\ClassMapCollection
+    public static function getCollection() : ClassMapCollection
     {
-        return new ClassMapCollection([
+        return new ClassMapCollection(
             new ClassMap('CreateOrder', Type\Example1::class),
             new ClassMap('CardOrder', Type\Example2::class),
             new ClassMap('OrderDetails', Type\Example3::class)
-        ]);
+        );
     }
 }
 ```

@@ -63,8 +63,7 @@ class GenerateClassmapCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The location of the soap code-generator config file'
-            )
-            ->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Makes it possible to overwrite by default');
+            );
     }
 
     /**
@@ -117,9 +116,6 @@ class GenerateClassmapCommand extends Command
 
     /**
      * Try to create a class for a type.
-     * When a class exists: try to patch
-     * If patching the old class does not work: ask for an overwrite
-     * Create a class from an empty file
      *
      * @param ClassMapGenerator $generator
      * @param TypeMap           $typeMap
@@ -129,20 +125,6 @@ class GenerateClassmapCommand extends Command
      */
     protected function handleClassmap(ClassMapGenerator $generator, TypeMap $typeMap, string $path): bool
     {
-        // Handle existing class:
-        if ($this->filesystem->fileExists($path)) {
-            if ($this->handleExistingFile($generator, $typeMap, $path)) {
-                return true;
-            }
-
-            // Ask if a class can be overwritten if it contains errors
-            if (!$this->askForOverwrite()) {
-                $this->output->writeln(sprintf('Skipping %s', $path));
-
-                return false;
-            }
-        }
-
         // Try to create a new class:
         try {
             $file = new FileGenerator();
@@ -154,66 +136,6 @@ class GenerateClassmapCommand extends Command
         }
 
         return true;
-    }
-
-    /**
-     * An existing file was found. Try to patch or ask if it can be overwritten.
-     *
-     * @param ClassMapGenerator $generator
-     * @param TypeMap           $typeMap
-     * @param string            $path
-     * @return bool
-     */
-    protected function handleExistingFile(ClassMapGenerator $generator, TypeMap $typeMap, $path): bool
-    {
-        $this->output->write(sprintf('Type %s exists. Trying to patch ...', $path));
-        $patched = $this->patchExistingFile($generator, $typeMap, $path);
-
-        if ($patched) {
-            $this->output->writeln('Patched!');
-
-            return true;
-        }
-
-        $this->output->writeln('Could not patch.');
-
-        return false;
-    }
-
-    /**
-     * This method tries to patch an existing type class.
-     *
-     * @param ClassMapGenerator $generator
-     * @param TypeMap           $typeMap
-     * @param string            $path
-     * @return bool
-     * @internal param Type $type
-     */
-    protected function patchExistingFile(ClassMapGenerator $generator, TypeMap $typeMap, $path): bool
-    {
-        try {
-            $this->filesystem->createBackup($path);
-            $file = FileGenerator::fromReflectedFileName($path);
-            $this->generateClassmap($file, $generator, $typeMap, $path);
-        } catch (\Exception $e) {
-            $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
-            $this->filesystem->removeBackup($path);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function askForOverwrite(): bool
-    {
-        $overwriteByDefault = $this->input->getOption('overwrite');
-        $question = new ConfirmationQuestion('Do you want to overwrite it?', $overwriteByDefault);
-
-        return $this->getHelper('question')->ask($this->input, $this->output, $question);
     }
 
     /**

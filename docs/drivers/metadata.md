@@ -1,55 +1,36 @@
 # Driver metadata
 
-The metadata part of the driver knows what objects and functions are inside the soap service.
-This can be done by parsing the WSDL file.
-Every driver has its own way of collecting this information.
-On top of that, we provide some generic tools that can be useful.
+## Dealing with ext-soap issues
 
-# Built-in metadata tools
+### Duplicate types
 
-- [LazyInMemoryMetadata](#lazyinmemorymetadata)
-- [ManipulatedMetadata](#manipulatedmetadata)
+Ext-soap does not add any namespace or unique identifier to the types it knows.
+You can read more about this in the [known ext-soap issues](../known-issues/ext-soap.md#duplicate-typenames) section.
+Therefore, we added some strategies to deal with duplicate types:
 
-## LazyInMemoryMetadata
+**IntersectDuplicateTypesStrategy**
 
-This class will make sure that the metadata are only collected once and stores it in memory for a second access.
+Enabled by default when using `DefaultEngineFactory::create()`.
 
-Example output:
+This duplicate types strategy will merge all duplicate types into one big type which contains all properties.
 
-```php
-<?php
+**RemoveDuplicateTypesStrategy**
 
-use \Phpro\SoapClient\Soap\Engine\Metadata\LazyInMemoryMetadata;
-use \Phpro\SoapClient\Soap\Engine\Metadata\MetadataFactory;
+This duplicate types strategy will remove all duplicate types it finds.
 
-$lazy = MetadataFactory::lazy($actualMetadataInterface);
-```
-
-## ManipulatedMetadata
-
-This class makes it possible to manipulate metadata on the-fly.
-This can be handy for changing things before code is generated.
-Example use-cases are the duplicate type strategies in the ExtSoap driver.
-
-Example output:
+You can overwrite the strategy on the `DefaultEngineFactory` object inside the client factory:
 
 ```php
 <?php
 
-use \Phpro\SoapClient\Soap\Engine\Metadata\ManipulatedMetadata;
-use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\MethodsManipulatorChain;
-use Phpro\SoapClient\Soap\Engine\Metadata\Manipulators\TypesManipulatorChain;
-use \Phpro\SoapClient\Soap\Engine\Metadata\MetadataFactory;
-use Phpro\SoapClient\Soap\Engine\Metadata\MetadataOptions;
+use Phpro\SoapClient\Soap\DefaultEngineFactory;
+use Phpro\SoapClient\Soap\ExtSoap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;
+use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
 
-$lazyManipulated = MetadataFactory::manipulated(
-    $actualMetadataInterface,
-    (new MetadataOptions())
-        ->withMethodsManipulator(
-            new MethodsManipulatorChain()
-        )
-        ->withTypesManipulator(
-            new TypesManipulatorChain()
-        )
+$engine = DefaultEngineFactory::create(
+    $options, $transport,
+    MetadataOptions::empty()->withTypesManipulator(
+        new RemoveDuplicateTypesStrategy()
+    )
 );
 ```

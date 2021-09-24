@@ -1,10 +1,5 @@
 # Generating clients
 
-Before you can generate code, you'll need to add some additional dev dependencies to your project:
-```sh
-composer require --dev laminas/laminas-code:^3.1.0
-```
-
 A client with type and return type hints can be generated.
 
 ```sh
