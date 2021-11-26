@@ -10,7 +10,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Laminas\Code\Generator\FileGenerator;
 
@@ -33,11 +32,6 @@ class GenerateClassmapCommand extends Command
      * @var OutputInterface
      */
     private $output;
-
-    /**
-     * @var InputInterface
-     */
-    private $input;
 
     /**
      * GenerateClassmapCommand constructor.
@@ -72,7 +66,6 @@ class GenerateClassmapCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->input = $input;
         $this->output = $output;
         $io = new SymfonyStyle($input, $output);
 
