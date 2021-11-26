@@ -92,6 +92,7 @@ class Xml
         $xml = new DOMDocument();
         // use magic __toString() instead of getContents() because otherwise the stream
         // might not return the actual content if already read beforehand.
+        // see https://github.com/php-fig/http-message/blob/efd67d1dc14a7ef4fc4e518e7dee91c271d524e4/src/StreamInterface.php#L14-L28
         $xml->loadXML($stream->__toString());
 
         /** @phpstan-ignore-next-line */
