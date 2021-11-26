@@ -32,11 +32,6 @@ class GenerateTypesCommand extends Command
     private $filesystem;
 
     /**
-     * @var InputInterface
-     */
-    private $input;
-
-    /**
      * @var OutputInterface
      */
     private $output;
@@ -71,7 +66,6 @@ class GenerateTypesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->input = $input;
         $this->output = $output;
         $io = new SymfonyStyle($input, $output);
 
