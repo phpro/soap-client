@@ -90,7 +90,8 @@ class Xml
     public static function fromStream(StreamInterface $stream): Xml
     {
         $xml = new DOMDocument();
-        // use magic __toString() instead of getContents() because otherwise the stream might not return the actual content
+        // use magic __toString() instead of getContents() because otherwise the stream
+        // might not return the actual content if already read beforehand.
         $xml->loadXML($stream->__toString());
 
         /** @phpstan-ignore-next-line */
