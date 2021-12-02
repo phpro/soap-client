@@ -90,7 +90,10 @@ class Xml
     public static function fromStream(StreamInterface $stream): Xml
     {
         $xml = new DOMDocument();
-        $xml->loadXML($stream->getContents());
+
+        // rewind in case the stream was already read
+        $stream->rewind();
+        $xml->loadXML((string)$stream);
 
         /** @phpstan-ignore-next-line */
         return new static($xml);

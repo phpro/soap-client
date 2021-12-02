@@ -163,6 +163,19 @@ class SoapXmlTest extends TestCase
     /**
      * @test
      */
+    function it_is_possible_to_create_from_a_already_read_psr7_stream()
+    {
+        $rawXml = $this->xml->saveXML();
+        $stream = new Stream(fopen('php://memory', 'rwb'));
+        $stream->write($rawXml);
+
+        $xml = SoapXml::fromStream($stream);
+        $this->assertEquals($rawXml, $xml->getXmlDocument()->saveXML());
+    }
+
+    /**
+     * @test
+     */
     function it_can_convert_to_a_psr7_stream()
     {
         $rawXml = $this->xml->saveXML();
