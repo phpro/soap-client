@@ -269,4 +269,51 @@ CODE;
         );
         $clientMethodAssembler->assemble($context);
     }
+
+    /**
+     * @test
+     */
+    function it_does_not_import_known_types() {
+        $assembler = new ClientMethodAssembler();
+        $class = new ClassGenerator();
+        $class->setName('Vendor\\MyNamespace\\MyClient');
+        $typeNamespace = 'Vendor\\MyTypeNamespace';
+        $method = new ClientMethod(
+            'Function_name',
+            [
+                new Parameter('param', 'string'),
+            ],
+            'return_type',
+            $typeNamespace
+        );
+
+        $context = new ClientMethodContext($class, $method);
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace Vendor\MyNamespace;
+
+use Phpro\SoapClient\Type\ResultInterface;
+use Vendor\MyTypeNamespace;
+use Phpro\SoapClient\Exception\SoapException;
+use Phpro\SoapClient\Type\RequestInterface;
+
+class MyClient
+{
+    /**
+     * @param RequestInterface|string \$param
+     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @throws SoapException
+     */
+    public function function_name(string \$param) : \Vendor\MyTypeNamespace\ReturnType
+    {
+        return (\$this->caller)('Function_name', \$param);
+    }
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
 }

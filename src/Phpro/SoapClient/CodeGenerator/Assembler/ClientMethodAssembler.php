@@ -12,6 +12,7 @@ use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\CodeGenerator\Util\TypeChecker;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\MultiArgumentRequest;
@@ -213,6 +214,9 @@ class ClientMethodAssembler implements AssemblerInterface
      */
     protected function generateClassNameAndAddImport(string $fqcn, ClassGenerator $class, $prefixed = false): string
     {
+        if (TypeChecker::isKnownType($fqcn)) {
+            return $fqcn;
+        }
         $prefix = '';
         $fqcn = ltrim($fqcn, '\\');
         $parts = explode('\\', $fqcn);
