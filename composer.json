@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "laminas/laminas-code": "^4.4.0",
+        "laminas/laminas-code": "^4.5.0",
         "php-soap/engine": "^1.0",
         "php-soap/ext-soap-engine": "^1.0",
         "php-soap/psr18-transport": "^1.0",
