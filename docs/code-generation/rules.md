@@ -57,9 +57,9 @@ In the example above, a custom `RemoveClientMethodAssembler` is is used to remov
 ```php
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
-use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
+use Soap\Engine\Metadata\Metadata;
 
-assert($metadata instanceof MetadataInterface);
+assert($metadata instanceof Metadata);
 
 new Rules\IsRequestRule(
     $metadata,
@@ -79,9 +79,9 @@ This rule can be used to e.g. add the required `RequestInterface` to request obj
 ```php
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
-use Phpro\SoapClient\Soap\Engine\Metadata\MetadataInterface;
+use Soap\Engine\Metadata\Metadata;
 
-assert($metadata instanceof MetadataInterface);
+assert($metadata instanceof Metadata);
 
 new Rules\IsResultRule(
     $metadata,
