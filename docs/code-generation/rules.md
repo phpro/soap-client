@@ -102,9 +102,9 @@ This rule can be used to e.g. add the required `ResultInterface` to request obje
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 
-$rule = Rules\MultiRule([
-    Rules\AssembleRule(new Assembler\GetterAssembler($someGetterOptions)),
-    Rules\AssembleRule(new Assembler\SetterAssembler()),
+$rule = new Rules\MultiRule([
+    new Rules\AssembleRule(new Assembler\GetterAssembler($someGetterOptions)),
+    new Rules\AssembleRule(new Assembler\SetterAssembler()),
 ]);
 ```
 
