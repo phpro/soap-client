@@ -59,7 +59,7 @@ use IteratorAggregate;
 class MyType implements IteratorAggregate
 {
     /**
-     * @return \ArrayIterator
+     * @return \ArrayIterator|array[]
      * @phpstan-return \ArrayIterator<array-key, array>
      * @psalm-return \ArrayIterator<array-key, array>
      */
