@@ -75,7 +75,7 @@ class IteratorAssembler implements AssemblerInterface
                     'tags' => [
                         [
                             'name' => 'return',
-                            'description' => '\\ArrayIterator'
+                            'description' => '\\ArrayIterator|'. $firstProperty->getType() .'[]'
                         ],
                         [
                             'name' => 'phpstan-return',
