@@ -6,7 +6,6 @@ use JsonSerializable;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
-use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\MethodGenerator;
@@ -61,14 +60,7 @@ class JsonSerializableAssembler implements AssemblerInterface
                 'parameters' => [],
                 'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                 'body' => $this->generateJsonSerializeBody($type, $class),
-                'docblock' => DocBlockGeneratorFactory::fromArray([
-                    'tags' => [
-                        [
-                            'name' => 'return',
-                            'description' => 'array'
-                        ]
-                    ]
-                ])
+                'returntype' => 'array',
             ])
         );
     }

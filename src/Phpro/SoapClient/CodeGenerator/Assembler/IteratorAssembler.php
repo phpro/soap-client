@@ -71,6 +71,7 @@ class IteratorAssembler implements AssemblerInterface
                     'return new \\ArrayIterator(is_array($this->%1$s) ? $this->%1$s : []);',
                     $firstProperty->getName()
                 ),
+                'returntype' => 'ArrayIterator',
                 'docblock' => DocBlockGeneratorFactory::fromArray([
                     'tags' => [
                         [

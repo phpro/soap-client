@@ -63,7 +63,7 @@ class MyType implements IteratorAggregate
      * @phpstan-return \ArrayIterator<array-key, array>
      * @psalm-return \ArrayIterator<array-key, array>
      */
-    public function getIterator()
+    public function getIterator() : \ArrayIterator
     {
         return new \ArrayIterator(is_array(\$this->prop1) ? \$this->prop1 : []);
     }

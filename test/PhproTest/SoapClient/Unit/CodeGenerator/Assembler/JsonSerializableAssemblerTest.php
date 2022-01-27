@@ -54,10 +54,7 @@ use JsonSerializable;
 
 class MyType implements JsonSerializable
 {
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return [
             'prop1' => \$this->prop1,
