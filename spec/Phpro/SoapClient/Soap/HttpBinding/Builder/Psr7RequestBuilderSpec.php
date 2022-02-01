@@ -50,7 +50,6 @@ class Psr7RequestBuilderSpec extends ObjectBehavior
         $result->shouldBeAnInstanceOf(RequestInterface::class);
         $result->getMethod()->shouldBe('POST');
         $result->getHeader('Content-Type')[0]->shouldBe('text/xml; charset="utf-8"');
-        $result->getHeader('Content-Length')[0]->shouldBe((string) strlen($content));
         $result->hasHeader('SOAPAction')->shouldBe(true);
         $result->getHeader('SOAPAction')[0]->shouldBe($action);
         $result->getUri()->__toString()->shouldBe($endpoint);
@@ -79,7 +78,6 @@ class Psr7RequestBuilderSpec extends ObjectBehavior
         $result->shouldBeAnInstanceOf(RequestInterface::class);
         $result->getMethod()->shouldBe('POST');
         $result->getHeader('Content-Type')[0]->shouldBe('application/soap+xml; charset="utf-8"; action="http://www.soapaction.com"');
-        $result->getHeader('Content-Length')[0]->shouldBe((string) strlen($content));
         $result->hasHeader('SOAPAction')->shouldBe(false);
         $result->getUri()->__toString()->shouldBe($endpoint);
     }
