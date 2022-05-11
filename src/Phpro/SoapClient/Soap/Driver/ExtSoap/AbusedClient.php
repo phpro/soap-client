@@ -48,6 +48,7 @@ class AbusedClient extends \SoapClient
         return new self($options->getWsdl(), $options->getOptions());
     }
 
+    #[\ReturnTypeWillChange]
     public function __doRequest($request, $location, $action, $version, $oneWay = 0)
     {
         $this->storedRequest = new SoapRequest($request, $location, $action, $version, (int) $oneWay);
