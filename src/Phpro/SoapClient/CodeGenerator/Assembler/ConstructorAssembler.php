@@ -75,6 +75,10 @@ class ConstructorAssembler implements AssemblerInterface
             'shortdescription' => 'Constructor'
         ]);
 
+        if ($this->options->useCallParentConstructor())) {
+            $body[] = 'parent::__construct();';
+        }
+
         foreach ($type->getProperties() as $property) {
             $body[] = sprintf('$this->%1$s = $%1$s;', $property->getName());
             $withTypeHints = $this->options->useTypeHints() ? ['type' => $property->getType()] : [];

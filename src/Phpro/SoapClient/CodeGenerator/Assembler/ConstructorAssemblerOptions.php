@@ -14,6 +14,11 @@ class ConstructorAssemblerOptions
     /**
      * @var bool
      */
+    private $callParentConstructor = false;
+
+    /**
+     * @var bool
+     */
     private $typeHints = false;
 
     /**
@@ -28,6 +33,28 @@ class ConstructorAssemblerOptions
     {
         return new self();
     }
+
+    /**
+     * @param bool $withCallParentConstructor
+     *
+     * @return ConstructorAssemblerOptions
+     */
+    public function withCallParentConstructor(bool $withCallParentConstructor = true): ConstructorAssemblerOptions
+    {
+        $new = clone $this;
+        $new->callParentConstructor = $withCallParentConstructor;
+
+        return $new;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useCallParentConstructor(): bool
+    {
+        return $this->callParentConstructor;
+    }
+
 
     /**
      * @param bool $withTypeHints
