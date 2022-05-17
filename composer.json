@@ -18,7 +18,7 @@
         "php-soap/ext-soap-engine": "^1.0",
         "php-soap/psr18-transport": "^1.0",
         "psr/event-dispatcher": "^1.0",
-        "psr/log": "^1.0",
+        "psr/log": "^1.0 || ^2.0 || ^3.0",
         "symfony/console": "~5.3 || ~6.0",
         "symfony/event-dispatcher": "~5.3 || ~6.0",
         "symfony/filesystem": "~5.3 || ~6.0",
