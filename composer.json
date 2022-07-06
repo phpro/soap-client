@@ -19,10 +19,10 @@
         "php-soap/psr18-transport": "^1.0",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
-        "symfony/console": "~5.3 || ~6.0",
-        "symfony/event-dispatcher": "~5.3 || ~6.0",
-        "symfony/filesystem": "~5.3 || ~6.0",
-        "symfony/validator": "~5.3 || ~6.0"
+        "symfony/console": "~4.4 || ~5.3 || ~6.0",
+        "symfony/event-dispatcher": "~4.4 || ~5.3 || ~6.0",
+        "symfony/filesystem": "~4.4 || ~5.3 || ~6.0",
+        "symfony/validator": "~4.4 || ~5.3 || ~6.0"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.4.0",
