@@ -98,7 +98,7 @@ To solve the above problems, this package will force you into using Value-object
  We know that maintaining these value-objects can be a load of work. 
  No worries! There are some commandline tools available that will help you with generating a good base to start with.
  Because the SoapClient will need a classmap of WSDL to PHP Classes, there is also a classmap generator available.
- This will surely safe you a lot of time!
+ This will surely save you a lot of time!
  By adding SOAP type converters, it is possible to transform the values of a specific SOAP type from/to a PHP type.
  The package comes included with some basic transformers for date and datetime.
  On, top of that, it is very easy to create your own transformers.
