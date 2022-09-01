@@ -101,6 +101,39 @@ CODE;
     /**
      * @test
      */
+    public function it_assembles_with_return_null()
+    {
+        $options = (new GetterAssemblerOptions())
+            ->withReturnType()
+            ->withReturnNull();
+        $assembler = new GetterAssembler($options);
+
+        $context = $this->createContext('prop2');
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * @return int|null
+     */
+    public function getProp2() : ?int
+    {
+        return \$this->prop2;
+    }
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
     public function it_assembles_with_no_doc_blocks()
     {
         $options = (new GetterAssemblerOptions())

@@ -59,15 +59,17 @@ class GetterAssembler implements AssemblerInterface
             $methodGenerator->setBody(sprintf('return $this->%s;', $property->getName()));
 
             if ($this->options->useReturnType()) {
-                $methodGenerator->setReturnType($property->getCodeReturnType());
+                $returnType = $this->options->useReturnNull() ? '?' . $property->getCodeReturnType() : $property->getCodeReturnType();
+                $methodGenerator->setReturnType($returnType);
             }
 
             if ($this->options->useDocBlocks()) {
+                $propertyType = $this->options->useReturnNull() ? $property->getType() . '|null' : $property->getType();
                 $methodGenerator->setDocBlock(DocBlockGeneratorFactory::fromArray([
                     'tags' => [
                         [
                             'name'        => 'return',
-                            'description' => $property->getType(),
+                            'description' => $propertyType,
                         ],
                     ],
                 ]));

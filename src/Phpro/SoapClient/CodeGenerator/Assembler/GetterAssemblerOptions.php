@@ -24,6 +24,11 @@ class GetterAssemblerOptions
     /**
      * @var bool
      */
+    private $returnNull = false;
+
+    /**
+     * @var bool
+     */
     private $docBlocks = true;
 
     /**
@@ -95,5 +100,26 @@ class GetterAssemblerOptions
     public function useDocBlocks(): bool
     {
         return $this->docBlocks;
+    }
+
+    /**
+     * @param bool $returnNull
+     *
+     * @return GetterAssemblerOptions
+     */
+    public function withReturnNull(bool $returnNull = true): GetterAssemblerOptions
+    {
+        $new = clone $this;
+        $new->returnNull = $returnNull;
+
+        return $new;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useReturnNull(): bool
+    {
+        return $this->returnNull;
     }
 }
