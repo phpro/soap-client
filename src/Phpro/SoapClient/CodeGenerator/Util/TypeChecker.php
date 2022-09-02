@@ -45,7 +45,7 @@ class TypeChecker
      */
     private static function isClassType(string $type): bool
     {
-        if (preg_match('/^\\\[A-Z0-9]{1,}[a-zA-Z0-9\\\]+$/', $type)) {
+        if (preg_match('/^\\\[a-zA-Z0-9_]{1,}[a-zA-Z0-9_\\\]+$/', $type)) {
             return true;
         }
         return false;
