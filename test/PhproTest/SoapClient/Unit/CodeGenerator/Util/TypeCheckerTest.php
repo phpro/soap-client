@@ -35,6 +35,7 @@ class TypeCheckerTest extends TestCase
             ['array', true],
             ['callable', true],
             ['iterable', true],
+            ['\KnownClass', true],
             ['Unknown class', false],
         ];
     }
