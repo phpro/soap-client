@@ -4,9 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\CodeGenerator\Util\TypeChecker;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\MethodGenerator;
@@ -50,11 +48,15 @@ class FluentSetterAssembler implements AssemblerInterface
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
+            $parameterOptions = ['name' => $property->getName()];
+            if ($this->options->useTypeHints()) {
+                $parameterOptions['type'] = $property->getCodeReturnType();
+            }
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
 
             $methodGenerator = new MethodGenerator($methodName);
-            $methodGenerator->setParameters($this->getParameter($property));
+            $methodGenerator->setParameters([$parameterOptions]);
             $methodGenerator->setVisibility(MethodGenerator::VISIBILITY_PUBLIC);
             $methodGenerator->setBody(sprintf(
                 '$this->%1$s = $%1$s;%2$sreturn $this;',
@@ -82,25 +84,5 @@ class FluentSetterAssembler implements AssemblerInterface
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }
-    }
-
-    /**
-     * @param Property $property
-     *
-     * @return array
-     */
-    private function getParameter(Property $property): array
-    {
-        $type = $property->getType();
-        if (TypeChecker::isKnownType($type) && $this->options->useTypeHints()) {
-            return [
-                [
-                    'name' => $property->getName(),
-                    'type' => $type,
-                ],
-            ];
-        }
-
-        return [$property->getName()];
     }
 }

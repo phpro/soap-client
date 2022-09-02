@@ -25,7 +25,7 @@ class TypeChecker
      */
     public static function isKnownType(string $type): bool
     {
-        return self::isInternalPhpType($type) || self::isClassType($type);
+        return self::isInternalPhpType($type);
     }
 
     /**
@@ -36,17 +36,5 @@ class TypeChecker
     private static function isInternalPhpType(string $type): bool
     {
         return in_array(strtolower($type), self::$internalPhpTypes, true);
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    private static function isClassType(string $type): bool
-    {
-        //todo add check for available classes
-
-        return false;
     }
 }
