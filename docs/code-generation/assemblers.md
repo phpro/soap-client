@@ -9,6 +9,7 @@ to generate the code you want to add to the generated SOAP types.
 - [ClassMapAssembler](#classmapassembler)
 - [ConstructorAssembler](#constructorassembler)
 - [ExtendAssembler](#extendassembler)
+- [FileAssembler](#fileassembler)
 - [FinalClassAssembler](#finalclassassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
@@ -164,6 +165,23 @@ Example output:
 class MyType extends DType
 {
 
+
+}
+```
+
+## FileAssembler
+
+The `FileAssembler` is able to add `declare()` statements into generated files.
+
+Example output:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class MyType
+{
 
 }
 ```
@@ -488,3 +506,4 @@ Possible contexts:
 - `ClassMapContext`: Triggered during the `generate:classmap` command.
 - `TypeContext`: Triggered during the `generate:types` command for every type in the SOAP scheme.
 - `PropertyContext`: Triggered during the `generate:types` command for every property in a SOAP type.
+- 'FileContext': Triggered during every `generate:*` command.
