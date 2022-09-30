@@ -7,10 +7,9 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Laminas\Code\DeclareStatement;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\FileContext;
-use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
- * Class FileAssembler
+ * Class StrictTypesAssembler
  *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
