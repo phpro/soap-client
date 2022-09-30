@@ -9,7 +9,6 @@ to generate the code you want to add to the generated SOAP types.
 - [ClassMapAssembler](#classmapassembler)
 - [ConstructorAssembler](#constructorassembler)
 - [ExtendAssembler](#extendassembler)
-- [FileAssembler](#fileassembler)
 - [FinalClassAssembler](#finalclassassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
@@ -22,6 +21,7 @@ to generate the code you want to add to the generated SOAP types.
 - [ResultAssembler](#resultassembler)
 - [ResultProviderAssembler](#resultproviderassembler)
 - [SetterAssembler](#setterassembler)
+- [StrictTypesAssembler](#stricttypesassembler)
 - [TraitAssembler](#traitassembler)
 - [UseAssembler](#useassembler)
 
@@ -165,23 +165,6 @@ Example output:
 class MyType extends DType
 {
 
-
-}
-```
-
-## FileAssembler
-
-The `FileAssembler` is able to add `declare()` statements into generated files.
-
-Example output:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-class MyType
-{
 
 }
 ```
@@ -403,6 +386,16 @@ Generating doc blocks is enabled by default, but can be disabled by passing `Set
 Example
 ```php
 new SetterAssembler((new SetterAssemblerOptions())->withDocBlocks(false)->withTypeHints())
+```
+## StrictTypesAssembler
+Adds `declare(strict_types=1);` to each generated file.
+
+Example output:
+
+```php
+<?php
+
+declare(strict_types=1);
 ```
 
 ## TraitAssembler
