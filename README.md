@@ -11,8 +11,16 @@ Sick and tired of building crappy SOAP implementations?
 # Demo
 <img src="https://raw.githubusercontent.com/wiki/phpro/soap-client/soap-client-demo-fast.gif" alt="Soap Client demo" width="100%"/> 
 
+# Want to help out? 💚
 
-## Prerequisites
+- [Become a Sponsor](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md#sponsor)
+- [Let us do your implementation](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md#let-us-do-your-implementation)
+- [Contribute](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md#contribute)
+- [Help maintain these packages](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md#maintain)
+
+Want more information about the future of this project? Check out this list of the [next big projects](https://github.com/php-soap/.github/blob/main/PROJECTS.md) we'll be working on.
+
+# Prerequisites
 
 You can choose what HTTP client you want to use.
 This package expects some PSR implementations to be present in order to be installed:
@@ -27,7 +35,7 @@ Example:
 $ composer require symfony/http-client nyholm/psr7
 ```
 
-## Installation
+# Installation
 
 ```sh
 $ composer require phpro/soap-client
