@@ -51,6 +51,9 @@ More information:
 - [Code in php-src](https://github.com/php/php-src/blob/php-7.2.10/ext/soap/php_encoding.c#L468)
 - [Functional test](../../test/PhproTest/SoapClient/Functional/ExtSoap/Encoding/DuplicateTypenamesTest.php)
 
+
+**[Find out how you can help out here 💚](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md)**
+
 ## Enumerations
 
 It is possible that the WSDL file contains `xsd:enumeration` elements.
@@ -98,6 +101,8 @@ More information:
 - [Functional test](../../test/PhproTest/SoapClient/Functional/ExtSoap/Encoding/EnumTest.php)
 - [Lack of validation in php-src](https://github.com/php/php-src/blob/php-7.2.10/ext/soap/php_encoding.c#L3172-L3200)
 
+**[Find out how you can help out here 💚](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md)**
+
 
 ## Occurs
 
@@ -108,3 +113,6 @@ Therefore, we cannot predict during code generation if a type will definitely be
 Currently, this issue can be avoided by not generating too strict types in the soap-client and optionally by using the [IteratorAssembler](../code-generation/assemblers.md#iteratorassembler).
 A better solution would be to parse the WSDL manually and add that information to the metadata.
 From that point on we can take this information into consideration during code generation.
+
+**[Find out how you can help out here 💚](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md)**
+
