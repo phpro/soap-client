@@ -6,6 +6,10 @@
 
 Isn't your issue listed below? Feel free to provide additional issues in a functional test.
 
+
+**[Find out how you can help out here 💚](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md)**
+
+
 ## Duplicate typenames
 
 When there are 2 types with the same name in different XML namespaces,
