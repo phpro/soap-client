@@ -4,6 +4,7 @@ namespace spec\Phpro\SoapClient\CodeGenerator;
 
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
+use Phpro\SoapClient\CodeGenerator\Context\FileContext;
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
@@ -37,6 +38,7 @@ class ClassMapGeneratorSpec extends ObjectBehavior
     function it_generates_classmaps(RuleSetInterface $ruleSet, FileGenerator $file, TypeMap $typeMap)
     {
         $ruleSet->applyRules(Argument::type(ClassMapContext::class))->shouldBeCalled();
+        $ruleSet->applyRules(Argument::type(FileContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
         $this->generate($file, $typeMap)->shouldReturn('code');
     }

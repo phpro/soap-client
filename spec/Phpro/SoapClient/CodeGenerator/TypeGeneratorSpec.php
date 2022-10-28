@@ -4,6 +4,7 @@ namespace spec\Phpro\SoapClient\CodeGenerator;
 
 use Laminas\Code\Generator\Exception\ClassNotFoundException;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Context\FileContext;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
@@ -58,6 +59,7 @@ class TypeGeneratorSpec extends ObjectBehavior
 
         $this->RuleSet_should_apply_rules_for_type($ruleSet, $type);
         $this->RuleSet_should_apply_rules_for_type_and_property($ruleSet, $type, $property);
+        $this->RuleSet_should_apply_rules_for_file($ruleSet);
 
         $this->generate($file, $type)->shouldReturn('code');
     }
@@ -81,6 +83,7 @@ class TypeGeneratorSpec extends ObjectBehavior
 
         $this->RuleSet_should_apply_rules_for_type($ruleSet, $type);
         $this->RuleSet_should_apply_rules_for_type_and_property($ruleSet, $type, $property);
+        $this->RuleSet_should_apply_rules_for_file($ruleSet);
 
         $this->generate($file, $type)->shouldReturn('code');
     }
@@ -99,6 +102,13 @@ class TypeGeneratorSpec extends ObjectBehavior
             return $context instanceof PropertyContext
                 && $context->getType() === $type
                 && $context->getProperty() === $property;
+        }))->shouldBeCalled();
+    }
+
+    private function RuleSet_should_apply_rules_for_file(RuleSetInterface $ruleSet)
+    {
+        $ruleSet->applyRules(Argument::that(function (ContextInterface $context) {
+            return $context instanceof FileContext;
         }))->shouldBeCalled();
     }
 }

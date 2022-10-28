@@ -215,3 +215,4 @@ Possible contexts:
 - `ClassMapContext`: Triggered during the `generate:classmap` command.
 - `TypeContext`: Triggered during the `generate:types` command for every type in the SOAP scheme.
 - `PropertyContext`: Triggered during the `generate:types` command for every property in a SOAP type.
+- `FileContext`: Triggered during every generate command.

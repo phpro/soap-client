@@ -21,6 +21,7 @@ to generate the code you want to add to the generated SOAP types.
 - [ResultAssembler](#resultassembler)
 - [ResultProviderAssembler](#resultproviderassembler)
 - [SetterAssembler](#setterassembler)
+- [StrictTypesAssembler](#stricttypesassembler)
 - [TraitAssembler](#traitassembler)
 - [UseAssembler](#useassembler)
 
@@ -386,6 +387,16 @@ Example
 ```php
 new SetterAssembler((new SetterAssemblerOptions())->withDocBlocks(false)->withTypeHints())
 ```
+## StrictTypesAssembler
+Adds `declare(strict_types=1);` to each generated file.
+
+Example output:
+
+```php
+<?php
+
+declare(strict_types=1);
+```
 
 ## TraitAssembler
 
@@ -488,3 +499,4 @@ Possible contexts:
 - `ClassMapContext`: Triggered during the `generate:classmap` command.
 - `TypeContext`: Triggered during the `generate:types` command for every type in the SOAP scheme.
 - `PropertyContext`: Triggered during the `generate:types` command for every property in a SOAP type.
+- 'FileContext': Triggered during every `generate:*` command.
