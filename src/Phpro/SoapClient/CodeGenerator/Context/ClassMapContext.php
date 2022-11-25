@@ -81,7 +81,7 @@ class ClassMapContext implements ContextInterface
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getFqcn(): string
     {

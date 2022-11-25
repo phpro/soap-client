@@ -81,7 +81,7 @@ class GetterAssembler implements AssemblerInterface
 
     /**
      * @param Property $property
-     * @return string
+     * @return non-empty-string
      */
     public function getPrefix(Property $property): string
     {

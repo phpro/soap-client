@@ -18,6 +18,7 @@ use Phpro\SoapClient\Exception\SoapException;
 use Phpro\SoapClient\Type\MultiArgumentRequest;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
+use function Psl\Type\non_empty_string;
 
 class ClientMethodAssembler implements AssemblerInterface
 {
@@ -206,7 +207,7 @@ class ClientMethodAssembler implements AssemblerInterface
     }
 
     /**
-     * @param string $fqcn Fully qualified class name.
+     * @param non-empty-string $fqcn Fully qualified class name.
      * @param ClassGenerator $class Class generator object.
      * @param bool $prefixed
      *
@@ -231,7 +232,7 @@ class ClientMethodAssembler implements AssemblerInterface
             $fqcn = $classNamespace.'\\'.$prefix;
         }
         if ($classNamespace !== $currentNamespace || !\in_array($fqcn, $class->getUses(), true)) {
-            $class->addUse($fqcn);
+            $class->addUse(non_empty_string()->assert($fqcn));
         }
 
         return $className;

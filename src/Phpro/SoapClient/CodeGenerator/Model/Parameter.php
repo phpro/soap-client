@@ -4,24 +4,25 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
+use function Psl\Type\non_empty_string;
 
 class Parameter
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $name;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $type;
 
     /**
      * Parameter constructor.
      *
-     * @param string $name
-     * @param string $type
+     * @param non-empty-string $name
+     * @param non-empty-string $type
      */
     public function __construct(string $name, string $type)
     {
@@ -31,10 +32,10 @@ class Parameter
 
     public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter): Parameter
     {
-        $type = $parameter->getType()->getBaseTypeOrFallbackToName();
+        $type = non_empty_string()->assert($parameter->getType()->getBaseTypeOrFallbackToName());
 
         return new self(
-            $parameter->getName(),
+            non_empty_string()->assert($parameter->getName()),
             Normalizer::isKnownType($type)
                 ? $type
                 : $parameterNamespace.'\\'.$type
@@ -50,7 +51,7 @@ class Parameter
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getType(): string
     {

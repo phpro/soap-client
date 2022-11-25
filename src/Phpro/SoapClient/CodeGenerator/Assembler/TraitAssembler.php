@@ -16,18 +16,18 @@ use Phpro\SoapClient\Exception\AssemblerException;
 class TraitAssembler implements AssemblerInterface
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $traitName;
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $traitAlias;
 
     /**
      * TraitAssembler constructor.
-     * @param string $traitName
-     * @param string $traitAlias
+     * @param non-empty-string $traitName
+     * @param non-empty-string $traitAlias
      */
     public function __construct(string $traitName, $traitAlias = null)
     {

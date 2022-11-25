@@ -17,20 +17,20 @@ class Client
     private $methodMap;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $namespace;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $name;
 
     /**
      * TypeModel constructor.
      *
-     * @param string $name
-     * @param string $namespace
+     * @param non-empty-string $name
+     * @param non-empty-string $namespace
      * @param ClientMethodMap $methods
      * @internal param string $xsdName
      * @internal param Property[] $properties
@@ -43,7 +43,7 @@ class Client
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getNamespace()
     {
@@ -51,7 +51,7 @@ class Client
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getName()
     {

@@ -7,6 +7,7 @@ namespace Phpro\SoapClient\Soap\ExtSoap\Metadata\Detector;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Collection\TypeCollection;
 use Soap\Engine\Metadata\Model\Type;
+use function Psl\Type\non_empty_string;
 
 final class DuplicateTypeNamesDetector
 {
@@ -21,7 +22,7 @@ final class DuplicateTypeNamesDetector
             array_filter(
                 array_count_values($types->map(
                     static function (Type $type): string {
-                        return Normalizer::normalizeClassname($type->getName());
+                        return Normalizer::normalizeClassname(non_empty_string()->assert($type->getName()));
                     }
                 )),
                 static function (int $count): bool {

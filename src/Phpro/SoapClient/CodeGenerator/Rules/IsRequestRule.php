@@ -9,6 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Metadata\Detector\RequestTypesDetector;
 use Soap\Engine\Metadata\Metadata;
+use function Psl\Type\non_empty_string;
 
 class IsRequestRule implements RuleInterface
 {
@@ -57,7 +58,7 @@ class IsRequestRule implements RuleInterface
         if (null === $this->requestTypes) {
             $this->requestTypes = array_map(
                 static function (string $type) {
-                    return Normalizer::normalizeClassname($type);
+                    return Normalizer::normalizeClassname(non_empty_string()->assert($type));
                 },
                 (new RequestTypesDetector())($this->metadata->getMethods())
             );

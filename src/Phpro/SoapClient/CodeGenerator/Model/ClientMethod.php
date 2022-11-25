@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Method as MetadataMethod;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
+use function Psl\Type\non_empty_string;
 
 /**
  * Class ClientMethod
@@ -19,12 +20,12 @@ class ClientMethod
     private $parameters;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $methodName;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $returnType;
 
@@ -36,9 +37,9 @@ class ClientMethod
     /**
      * TypeModel constructor.
      *
-     * @param string $name
+     * @param non-empty-string $name
      * @param array $params
-     * @param string $returnType
+     * @param non-empty-string $returnType
      * @param string $parameterNamespace
      */
     public function __construct(string $name, array $params, string $returnType, string $parameterNamespace = '')
@@ -54,14 +55,14 @@ class ClientMethod
         MetadataMethod $method
     ): self {
         return new self(
-            $method->getName(),
+            non_empty_string()->assert($method->getName()),
             array_map(
                 function (MetadataParameter $parameter) use ($parameterNamespace) {
                     return Parameter::fromMetadata($parameterNamespace, $parameter);
                 },
                 iterator_to_array($method->getParameters())
             ),
-            $method->getReturnType()->getBaseTypeOrFallbackToName(),
+            non_empty_string()->assert($method->getReturnType()->getBaseTypeOrFallbackToName()),
             $parameterNamespace
         );
     }
@@ -75,7 +76,7 @@ class ClientMethod
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getMethodName(): string
     {
@@ -83,7 +84,7 @@ class ClientMethod
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getNamespacedReturnType(): string
     {
@@ -99,7 +100,7 @@ class ClientMethod
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getReturnType(): string
     {

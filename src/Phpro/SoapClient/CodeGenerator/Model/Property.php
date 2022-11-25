@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Property as MetadataProperty;
+use function Psl\Type\non_empty_string;
 
 /**
  * Class Property
@@ -13,26 +14,26 @@ use Soap\Engine\Metadata\Model\Property as MetadataProperty;
 class Property
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $name;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $type;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $namespace;
 
     /**
      * Property constructor.
      *
-     * @param string $name
-     * @param string $type
-     * @param string $namespace
+     * @param non-empty-string $name
+     * @param non-empty-string $type
+     * @param non-empty-string $namespace
      */
     public function __construct(string $name, string $type, string $namespace)
     {
@@ -41,17 +42,20 @@ class Property
         $this->namespace = Normalizer::normalizeNamespace($namespace);
     }
 
+    /**
+     * @param non-empty-string $namespace
+     */
     public static function fromMetaData(string $namespace, MetadataProperty $property)
     {
         return new self(
-            $property->getName(),
-            $property->getType()->getBaseTypeOrFallbackToName(),
+            non_empty_string()->assert($property->getName()),
+            non_empty_string()->assert($property->getType()->getBaseTypeOrFallbackToName()),
             $namespace
         );
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getName(): string
     {
@@ -59,7 +63,7 @@ class Property
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getType(): string
     {
@@ -71,7 +75,7 @@ class Property
     }
 
     /**
-     * @return string|null
+     * @return non-empty-string|null
      */
     public function getCodeReturnType(): ?string
     {
@@ -85,7 +89,7 @@ class Property
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getterName(): string
     {
@@ -93,7 +97,7 @@ class Property
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function setterName(): string
     {

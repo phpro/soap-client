@@ -9,6 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Metadata\Detector\ResponseTypesDetector;
 use Soap\Engine\Metadata\Metadata;
+use function Psl\Type\non_empty_string;
 
 class IsResultRule implements RuleInterface
 {
@@ -57,7 +58,7 @@ class IsResultRule implements RuleInterface
         if (null === $this->responseTypes) {
             $this->responseTypes = array_map(
                 static function (string $type) {
-                    return Normalizer::normalizeClassname($type);
+                    return Normalizer::normalizeClassname(non_empty_string()->assert($type));
                 },
                 (new ResponseTypesDetector())($this->metadata->getMethods())
             );

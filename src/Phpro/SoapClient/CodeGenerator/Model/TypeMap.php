@@ -20,14 +20,14 @@ class TypeMap
     private $types;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $namespace;
 
     /**
      * TypeMap constructor.
      *
-     * @param string $namespace
+     * @param non-empty-string $namespace
      * @param array|Type[] $types
      */
     public function __construct(string $namespace, array $types)
@@ -36,6 +36,9 @@ class TypeMap
         $this->types = $types;
     }
 
+    /**
+     * @param non-empty-string $namespace
+     */
     public static function fromMetadata(string $namespace, TypeCollection $types): self
     {
         return new self(

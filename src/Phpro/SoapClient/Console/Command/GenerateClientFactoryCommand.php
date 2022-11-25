@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Laminas\Code\Generator\FileGenerator;
+use function Psl\Type\instance_of;
 
 class GenerateClientFactoryCommand extends Command
 {
@@ -61,7 +62,7 @@ class GenerateClientFactoryCommand extends Command
         $config = $this->getConfigHelper()->load($input);
         $classmapContext = new ClassMapContext(
             new FileGenerator(),
-            new TypeMap('', []),
+            new TypeMap('not-used', []),
             $config->getClassMapName(),
             $config->getClassMapNamespace()
         );
@@ -82,10 +83,9 @@ class GenerateClientFactoryCommand extends Command
 
     /**
      * Function for added type hint
-     * @return ConfigHelper
      */
     public function getConfigHelper(): ConfigHelper
     {
-        return $this->getHelper('config');
+        return instance_of(ConfigHelper::class)->assert($this->getHelper('config'));
     }
 }
