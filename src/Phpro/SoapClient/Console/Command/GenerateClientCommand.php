@@ -16,6 +16,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Laminas\Code\Generator\FileGenerator;
+use function Psl\Type\instance_of;
+use function Psl\Type\non_empty_string;
 
 /**
  * Class GenerateClientCommand
@@ -78,7 +80,11 @@ class GenerateClientCommand extends Command
             $config->getEngine()->getMetadata()->getMethods()
         );
 
-        $client = new Client($config->getClientName(), $config->getClientNamespace(), $methodMap);
+        $client = new Client(
+            non_empty_string()->assert($config->getClientName()),
+            non_empty_string()->coerce($config->getClientNamespace()),
+            $methodMap
+        );
         $generator = new ClientGenerator($config->getRuleSet());
         $fileGenerator = new FileGenerator();
         $this->generateClient(
@@ -132,10 +138,9 @@ class GenerateClientCommand extends Command
 
     /**
      * Function for added type hint
-     * @return ConfigHelper
      */
     public function getConfigHelper(): ConfigHelper
     {
-        return $this->getHelper('config');
+        return instance_of(ConfigHelper::class)->assert($this->getHelper('config'));
     }
 }

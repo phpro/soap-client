@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Property as MetadataProperty;
 use Soap\Engine\Metadata\Model\Type as MetadataType;
 use SplFileInfo;
+use function Psl\Type\non_empty_string;
 
 /**
  * Class Type
@@ -15,17 +16,17 @@ use SplFileInfo;
 class Type
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $namespace;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $xsdName;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $name;
 
@@ -38,8 +39,8 @@ class Type
     /**
      * TypeModel constructor.
      *
-     * @param string     $namespace
-     * @param string     $xsdName
+     * @param non-empty-string     $namespace
+     * @param non-empty-string     $xsdName
      * @param Property[] $properties
      */
     public function __construct(string $namespace, string $xsdName, array $properties)
@@ -50,11 +51,14 @@ class Type
         $this->properties = $properties;
     }
 
+    /**
+     * @param non-empty-string $namespace
+     */
     public static function fromMetadata(string $namespace, MetadataType $type): self
     {
         return new self(
             $namespace,
-            $type->getName(),
+            non_empty_string()->assert($type->getName()),
             array_map(
                 function (MetadataProperty $property) use ($namespace) {
                     return Property::fromMetaData(
@@ -68,7 +72,7 @@ class Type
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getNamespace(): string
     {
@@ -76,7 +80,7 @@ class Type
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getName(): string
     {
@@ -84,7 +88,7 @@ class Type
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getXsdName(): string
     {
@@ -92,7 +96,7 @@ class Type
     }
 
     /**
-     * @param string $destination
+     * @param non-empty-string $destination
      *
      * @return SplFileInfo
      */
@@ -105,7 +109,7 @@ class Type
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getFullName(): string
     {

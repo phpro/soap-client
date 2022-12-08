@@ -12,6 +12,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
+use function Psl\Type\non_empty_string;
 
 class ClientConstructorAssembler implements AssemblerInterface
 {
@@ -70,9 +71,12 @@ class ClientConstructorAssembler implements AssemblerInterface
         return true;
     }
 
+    /**
+     * @param non-empty-string $fqcn
+     */
     private function generateClassNameAndAddImport(string $fqcn, ClassGenerator $class): string
     {
-        $fqcn = ltrim($fqcn, '\\');
+        $fqcn = non_empty_string()->assert(ltrim($fqcn, '\\'));
         $parts = explode('\\', $fqcn);
         $className = array_pop($parts);
 

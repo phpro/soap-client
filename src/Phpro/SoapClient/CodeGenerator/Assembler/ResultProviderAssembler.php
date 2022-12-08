@@ -21,18 +21,20 @@ use Laminas\Code\Generator\MethodGenerator;
 class ResultProviderAssembler implements AssemblerInterface
 {
     /**
-     * @var null|string
+     * @var null|non-empty-string
      */
     private $wrapperClass;
 
     /**
      * ResultProviderAssembler constructor.
      *
-     * @param string $wrapperClass
+     * @param non-empty-string $wrapperClass
      */
     public function __construct(string $wrapperClass = null)
     {
-        $this->wrapperClass = ($wrapperClass !== null) ? ltrim($wrapperClass, '\\') : null;
+        $wrapperClass = ($wrapperClass !== null) ? ltrim($wrapperClass, '\\') : null;
+
+        $this->wrapperClass = $wrapperClass ?: null;
     }
 
     /**
@@ -106,7 +108,7 @@ class ResultProviderAssembler implements AssemblerInterface
     /**
      * @param Property $property
      *
-     * @return string
+     * @return non-empty-string
      */
     private function generateGetResultBody(Property $property): string
     {
@@ -124,7 +126,7 @@ class ResultProviderAssembler implements AssemblerInterface
     /**
      * @param Property $property
      *
-     * @return string
+     * @return non-empty-string
      */
     private function generateGetResultReturnTag(Property $property): string
     {

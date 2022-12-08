@@ -95,7 +95,7 @@ final class Config implements ConfigInterface
     }
 
     /**
-     * @param string $namespace
+     * @param non-empty-string $namespace
      *
      * @return Config
      */

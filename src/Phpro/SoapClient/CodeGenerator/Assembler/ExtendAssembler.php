@@ -15,14 +15,14 @@ use Laminas\Code\Generator\ClassGenerator;
 class ExtendAssembler implements AssemblerInterface
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $extendedClassName;
 
     /**
      * ExtendAssembler constructor.
      *
-     * @param string $extendedClassName
+     * @param non-empty-string $extendedClassName
      */
     public function __construct(string $extendedClassName)
     {

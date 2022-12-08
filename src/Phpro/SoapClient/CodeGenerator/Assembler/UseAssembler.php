@@ -17,19 +17,19 @@ use Laminas\Code\Generator\ClassGenerator;
 class UseAssembler implements AssemblerInterface
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $useName;
 
     /**
-     * @var string
+     * @var non-empty-string|null
      */
     private $useAlias;
 
     /**
      * UseAssembler constructor.
-     * @param string $useName
-     * @param string $useAlias
+     * @param non-empty-string $useName
+     * @param non-empty-string|null $useAlias
      */
     public function __construct(string $useName, string $useAlias = null)
     {

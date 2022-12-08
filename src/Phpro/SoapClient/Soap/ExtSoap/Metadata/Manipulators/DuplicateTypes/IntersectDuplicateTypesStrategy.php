@@ -10,6 +10,7 @@ use Soap\Engine\Metadata\Collection\PropertyCollection;
 use Soap\Engine\Metadata\Collection\TypeCollection;
 use Soap\Engine\Metadata\Model\Property;
 use Soap\Engine\Metadata\Model\Type;
+use function Psl\Type\non_empty_string;
 
 final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
 {
@@ -17,7 +18,7 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
     {
         return new TypeCollection(...array_values($allTypes->reduce(
             function (array $result, Type $type) use ($allTypes): array {
-                $name = Normalizer::normalizeClassname($type->getName());
+                $name = Normalizer::normalizeClassname(non_empty_string()->assert($type->getName()));
                 if (array_key_exists($name, $result)) {
                     return $result;
                 }
@@ -50,7 +51,7 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
     private function fetchAllTypesNormalizedByName(TypeCollection $types, string $name): TypeCollection
     {
         return $types->filter(static function (Type $type) use ($name): bool {
-            return Normalizer::normalizeClassname($type->getName()) === $name;
+            return Normalizer::normalizeClassname(non_empty_string()->assert($type->getName())) === $name;
         });
     }
 

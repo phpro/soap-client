@@ -42,11 +42,17 @@ class ClientFactoryContext implements ContextInterface
         return $this->classMapContext->getNamespace();
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getClientFqcn(): string
     {
         return $this->clientContext->getFqcn();
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getClassmapFqcn(): string
     {
         return $this->classMapContext->getFqcn();
