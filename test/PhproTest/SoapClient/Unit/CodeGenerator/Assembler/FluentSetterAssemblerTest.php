@@ -130,7 +130,7 @@ CODE;
     /**
      * @test
      */
-    function it_assembles_a_property_with_an_unkown_type()
+    function it_assembles_a_property_with_class_type()
     {
         $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints());
         $context = $this->createContextWithAnUnknownType();
@@ -146,7 +146,7 @@ class MyType
      * @param \\MyNamespace\\Foobar \$prop1
      * @return \$this
      */
-    public function setProp1(\$prop1)
+    public function setProp1(\\MyNamespace\\Foobar \$prop1)
     {
         \$this->prop1 = \$prop1;
         return \$this;
