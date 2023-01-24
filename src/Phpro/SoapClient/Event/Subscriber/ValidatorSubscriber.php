@@ -56,7 +56,7 @@ class ValidatorSubscriber implements EventSubscriberInterface
         $strErrors = [];
         /** @var ConstraintViolationInterface $error */
         foreach ($errors as $error) {
-            $strErrors[] = $error->getMessage();
+            $strErrors[] = $error->getPropertyPath().': '.$error->getMessage();
         }
 
         return implode(GeneratorInterface::EOL, $strErrors);
