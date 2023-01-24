@@ -36,7 +36,9 @@ class ValidatorSubscriberSpec extends ObjectBehavior
         ConstraintViolation $violation2
     ) {
         $event = new RequestEvent('method', $request->getWrappedObject());
+        $violation1->getPropertyPath()->willReturn('one.two');
         $violation1->getMessage()->willReturn('error 1');
+        $violation2->getPropertyPath()->willReturn('one.two');
         $violation2->getMessage()->willReturn('error 2');
         $validator->validate($request)->willReturn(new ConstraintViolationList([
             $violation1->getWrappedObject(),
