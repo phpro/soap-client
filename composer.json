@@ -40,7 +40,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "phpro/grumphp-shim": true
+            "phpro/grumphp-shim": true,
+            "php-http/discovery": true
         }
     },
     "autoload": {
