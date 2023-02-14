@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\CodeGenerator\Rules;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Metadata\Detector\ResponseTypesDetector;
@@ -36,7 +37,7 @@ class IsResultRule implements RuleInterface
 
     public function appliesToContext(ContextInterface $context): bool
     {
-        if (!$context instanceof TypeContext) {
+        if (!$context instanceof TypeContext && !$context instanceof PropertyContext) {
             return false;
         }
 
