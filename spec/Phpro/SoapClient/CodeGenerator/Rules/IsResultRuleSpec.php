@@ -3,6 +3,7 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Rules;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
+use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Rules\IsResultRule;
@@ -53,6 +54,13 @@ class IsResultRuleSpec extends ObjectBehavior
     }
 
     function it_can_apply_to_type_context(RuleInterface $subRule, TypeContext $context)
+    {
+        $context->getType()->willReturn(new Type('MyNamespace', 'ResultType', []));
+        $subRule->appliesToContext($context)->willReturn(true);
+        $this->appliesToContext($context)->shouldReturn(true);
+    }
+
+    function it_can_apply_to_property_context(RuleInterface $subRule, PropertyContext $context)
     {
         $context->getType()->willReturn(new Type('MyNamespace', 'ResultType', []));
         $subRule->appliesToContext($context)->willReturn(true);
