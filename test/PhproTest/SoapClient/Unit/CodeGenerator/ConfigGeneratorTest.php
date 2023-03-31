@@ -18,12 +18,11 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Soap\ExtSoapEngine\ExtSoapOptions;
-use Phpro\SoapClient\Soap\DefaultEngineFactory;
+use Phpro\SoapClient\Soap\CodeGeneratorEngineFactory;
 
 return Config::create()
-    ->setEngine(\$engine = DefaultEngineFactory::create(
-        ExtSoapOptions::defaults('wsdl.xml', [])
-            ->disableWsdlCache()
+    ->setEngine(\$engine = CodeGeneratorEngineFactory::create(
+        'wsdl.xml'
     ))
     ->setTypeDestination('src/type')
     ->setTypeNamespace('App\\\\Type')
@@ -83,12 +82,11 @@ use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Soap\ExtSoapEngine\ExtSoapOptions;
-use Phpro\SoapClient\Soap\DefaultEngineFactory;
+use Phpro\SoapClient\Soap\CodeGeneratorEngineFactory;
 
 return Config::create()
-    ->setEngine(\$engine = DefaultEngineFactory::create(
-        ExtSoapOptions::defaults('wsdl.xml', [])
-            ->disableWsdlCache()
+    ->setEngine(\$engine = CodeGeneratorEngineFactory::create(
+        'wsdl.xml'
     ))
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(
         (new Assembler\GetterAssemblerOptions())->withDocBlocks(false)
