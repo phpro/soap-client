@@ -11,12 +11,12 @@ class ImmutableSetterAssemblerOptions
     /**
      * @var bool
      */
-    private $typeHints = false;
+    private $typeHints = true;
 
     /**
      * @var bool
      */
-    private $returnTypes = false;
+    private $returnTypes = true;
 
     /**
      * @var bool

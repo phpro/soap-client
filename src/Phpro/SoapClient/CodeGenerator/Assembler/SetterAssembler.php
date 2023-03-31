@@ -51,7 +51,7 @@ class SetterAssembler implements AssemblerInterface
         try {
             $parameterOptions = ['name' => $property->getName()];
             if ($this->options->useTypeHints()) {
-                $parameterOptions['type'] = $property->getCodeReturnType();
+                $parameterOptions['type'] = $property->getPhpType();
             }
             $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
             $class->removeMethod($methodName);
@@ -65,7 +65,7 @@ class SetterAssembler implements AssemblerInterface
                     'tags' => [
                         [
                             'name' => 'param',
-                            'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                            'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName()),
                         ],
                     ],
                 ]));

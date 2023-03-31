@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
+use Laminas\Code\Generator\TypeGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
@@ -57,11 +58,12 @@ class PropertyAssembler implements AssemblerInterface
                     'name' => $property->getName(),
                     'visibility' => $this->visibility,
                     'omitdefaultvalue' => true,
+                    'type' => TypeGenerator::fromTypeString($property->getPhpType()),
                     'docblock' => DocBlockGeneratorFactory::fromArray([
                         'tags' => [
                             [
                                 'name'        => 'var',
-                                'description' => $property->getType(),
+                                'description' => $property->getDocBlockType(),
                             ],
                         ]
                     ])

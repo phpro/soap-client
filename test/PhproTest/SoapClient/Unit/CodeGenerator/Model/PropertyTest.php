@@ -21,7 +21,7 @@ class PropertyTest extends TestCase
             self::markTestSkipped('Pre PHP 8 only');
         }
         $property = new Property('test', 'mixed', 'App');
-        self::assertNull($property->getCodeReturnType());
+        self::assertNull($property->getPhpType());
         self::assertEquals('mixed', $property->getType());
     }
 
@@ -34,7 +34,7 @@ class PropertyTest extends TestCase
             self::markTestSkipped('Post PHP 8 only');
         }
         $property = new Property('test', 'mixed', 'App');
-        self::assertEquals('mixed', $property->getCodeReturnType());
+        self::assertEquals('mixed', $property->getPhpType());
         self::assertEquals('mixed', $property->getType());
     }
 }

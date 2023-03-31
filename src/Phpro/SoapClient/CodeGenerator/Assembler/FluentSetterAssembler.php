@@ -69,7 +69,7 @@ class FluentSetterAssembler implements AssemblerInterface
                     'tags' => [
                         [
                             'name'        => 'param',
-                            'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                            'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName()),
                         ],
                         [
                             'name'        => 'return',
@@ -96,7 +96,7 @@ class FluentSetterAssembler implements AssemblerInterface
             return [
                 [
                     'name' => $property->getName(),
-                    'type' => $type,
+                    'type' => $property->getPhpType(),
                 ],
             ];
         }

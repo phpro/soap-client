@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Property as MetadataProperty;
+use Soap\Engine\Metadata\Model\TypeMeta;
 use function Psl\Type\non_empty_string;
 
 /**
@@ -28,6 +29,8 @@ class Property
      */
     private $namespace;
 
+    private TypeMeta $meta;
+
     /**
      * Property constructor.
      *
@@ -35,11 +38,12 @@ class Property
      * @param non-empty-string $type
      * @param non-empty-string $namespace
      */
-    public function __construct(string $name, string $type, string $namespace)
+    public function __construct(string $name, string $type, string $namespace, TypeMeta $meta)
     {
         $this->name = Normalizer::normalizeProperty($name);
         $this->type = Normalizer::normalizeDataType($type);
         $this->namespace = Normalizer::normalizeNamespace($namespace);
+        $this->meta = $meta;
     }
 
     /**
@@ -47,10 +51,19 @@ class Property
      */
     public static function fromMetaData(string $namespace, MetadataProperty $property)
     {
+        $type = $property->getType();
+        $meta = $type->getMeta();
+        $isArrayType = $meta->isList()->unwrapOr(false);
+
         return new self(
             non_empty_string()->assert($property->getName()),
-            non_empty_string()->assert($property->getType()->getBaseTypeOrFallbackToName()),
-            $namespace
+            non_empty_string()->assert(
+                // In case of an array base-type, use the real name.
+                // The metadata will be used. The meta data will be used to enhance type information!
+                $isArrayType ? $type->getName() : $type->getBaseTypeOrFallbackToName()
+            ),
+            $namespace,
+            $meta
         );
     }
 
@@ -75,17 +88,52 @@ class Property
     }
 
     /**
-     * @return non-empty-string|null
+     * @return non-empty-string
      */
-    public function getCodeReturnType(): ?string
+    public function getPhpType(): string
     {
-        $type = $this->getType();
-
-        if ($type === 'mixed' && PHP_VERSION_ID < 80000) {
-            return null;
+        $isArray = $this->meta->isList()->unwrapOr(false);
+        if ($isArray) {
+            return 'array';
         }
 
-        return $type;
+        $isNullable = $this->meta->isNullable()->unwrapOr(false);
+        if ($isNullable) {
+            return '?'.$this->getType();
+        }
+
+        return $this->getType();
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function getDocBlockType(): ?string
+    {
+        $isArray = $this->meta->isList()->unwrapOr(false);
+        if ($isArray) {
+            return 'array<'.$this->getArrayBounds().', '.$this->getName().'>';
+        }
+
+        $isNullable = $this->meta->isNullable()->unwrapOr(false);
+        if ($isNullable) {
+            return 'null|'.$this->getType();
+        }
+
+        return $this->getType();
+    }
+
+    public function getArrayBounds(): string
+    {
+        $min = $this->meta->minOccurs()
+            ->map(fn (int $min): string => $min === -1 ? 'min' : (string) $min)
+            ->unwrapOr('min');
+
+        $max = $this->meta->maxOccurs()
+            ->map(fn (int $max): string => $max === -1 ? 'max' : (string) $max)
+            ->unwrapOr('max');
+
+        return 'int<'.$min.','.$max.'>';
     }
 
     /**
@@ -102,5 +150,10 @@ class Property
     public function setterName(): string
     {
         return Normalizer::generatePropertyMethod('set', $this->getName());
+    }
+
+    public function getMeta(): TypeMeta
+    {
+        return $this->meta;
     }
 }

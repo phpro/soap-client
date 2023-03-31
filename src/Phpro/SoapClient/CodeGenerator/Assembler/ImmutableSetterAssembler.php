@@ -78,7 +78,7 @@ class ImmutableSetterAssembler implements AssemblerInterface
                     'tags' => [
                         [
                             'name' => 'param',
-                            'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                            'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName()),
                         ],
                         [
                             'name' => 'return',

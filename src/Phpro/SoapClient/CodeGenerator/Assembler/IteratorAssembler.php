@@ -68,7 +68,7 @@ class IteratorAssembler implements AssemblerInterface
                 'parameters' => [],
                 'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                 'body' => sprintf(
-                    'return new \\ArrayIterator(is_array($this->%1$s) ? $this->%1$s : []);',
+                    'return new \\ArrayIterator($this->%1$s);',
                     $firstProperty->getName()
                 ),
                 'returntype' => 'ArrayIterator',
@@ -80,11 +80,11 @@ class IteratorAssembler implements AssemblerInterface
                         ],
                         [
                             'name' => 'phpstan-return',
-                            'description' => '\\ArrayIterator<array-key, '. $firstProperty->getType() .'>'
+                            'description' => '\\ArrayIterator<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>'
                         ],
                         [
                             'name' => 'psalm-return',
-                            'description' => '\\ArrayIterator<array-key, '. $firstProperty->getType() .'>'
+                            'description' => '\\ArrayIterator<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>'
                         ]
                     ]
                 ])
@@ -95,11 +95,11 @@ class IteratorAssembler implements AssemblerInterface
             'tags' => [
                 [
                     'name' => 'phpstan-implements',
-                    'description' => '\\IteratorAggregate<array-key, '. $firstProperty->getType() .'>'
+                    'description' => '\\IteratorAggregate<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>'
                 ],
                 [
                     'name' => 'psalm-implements',
-                    'description' => '\\IteratorAggregate<array-key, '. $firstProperty->getType() .'>'
+                    'description' => '\\IteratorAggregate<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>'
                 ]
             ]
         ]));
