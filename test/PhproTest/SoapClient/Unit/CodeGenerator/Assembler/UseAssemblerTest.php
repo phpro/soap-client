@@ -10,6 +10,8 @@ use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Laminas\Code\Generator\ClassGenerator;
+use Soap\Engine\Metadata\Model\Property as MetaProperty;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class UseAssemblerTest
@@ -46,7 +48,7 @@ class UseAssemblerTest extends TestCase
         $assembler = new UseAssembler('MyUsedClass');
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', []);
-        $property = new Property('prop1', 'string', 'ns1');
+        $property = Property::fromMetaData('ns1', new MetaProperty('prop1', XsdType::guess('string')));
         $context = new PropertyContext($class, $type, $property);
         $this->assertTrue($assembler->canAssemble($context));
     }

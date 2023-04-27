@@ -57,6 +57,7 @@ class SetterAssembler implements AssemblerInterface
             $class->removeMethod($methodName);
 
             $methodGenerator = new MethodGenerator($methodName);
+            $methodGenerator->setReturnType('void');
             $methodGenerator->setParameters([$parameterOptions]);
             $methodGenerator->setVisibility(MethodGenerator::VISIBILITY_PUBLIC);
             $methodGenerator->setBody(sprintf('$this->%1$s = $%1$s;', $property->getName()));

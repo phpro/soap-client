@@ -64,14 +64,14 @@ class ImmutableSetterAssembler implements AssemblerInterface
             ];
             $parameterOptions = ['name' => $property->getName()];
             if ($this->options->useTypeHints()) {
-                $parameterOptions['type'] = $property->getType();
+                $parameterOptions['type'] = $property->getPhpType();
             }
 
             $methodGenerator = new MethodGenerator($methodName);
             $methodGenerator->setParameters([$parameterOptions]);
             $methodGenerator->setBody(implode($class::LINE_FEED, $lines));
             if ($this->options->useReturnTypes()) {
-                $methodGenerator->setReturnType($class->getNamespaceName() . '\\' . $class->getName());
+                $methodGenerator->setReturnType('static');
             }
             if ($this->options->useDocBlocks()) {
                 $methodGenerator->setDocBlock(DocBlockGeneratorFactory::fromArray([
@@ -82,7 +82,7 @@ class ImmutableSetterAssembler implements AssemblerInterface
                         ],
                         [
                             'name' => 'return',
-                            'description' => $class->getName(),
+                            'description' => 'static',
                         ],
                     ],
                 ]));

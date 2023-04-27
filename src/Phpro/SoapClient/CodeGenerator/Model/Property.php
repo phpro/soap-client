@@ -112,7 +112,7 @@ class Property
     {
         $isArray = $this->meta->isList()->unwrapOr(false);
         if ($isArray) {
-            return 'array<'.$this->getArrayBounds().', '.$this->getName().'>';
+            return 'array<'.$this->getArrayBounds().', '.$this->getType().'>';
         }
 
         $isNullable = $this->meta->isNullable()->unwrapOr(false);

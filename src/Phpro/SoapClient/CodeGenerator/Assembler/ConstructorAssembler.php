@@ -77,7 +77,7 @@ class ConstructorAssembler implements AssemblerInterface
 
         foreach ($type->getProperties() as $property) {
             $body[] = sprintf('$this->%1$s = $%1$s;', $property->getName());
-            $withTypeHints = $this->options->useTypeHints() ? ['type' => $property->getType()] : [];
+            $withTypeHints = $this->options->useTypeHints() ? ['type' => $property->getPhpType()] : [];
 
             $constructor->setParameter(array_merge([
                 'name' => $property->getName(),
@@ -86,7 +86,7 @@ class ConstructorAssembler implements AssemblerInterface
             if ($this->options->useDocBlocks()) {
                 $docblock->setTag([
                     'name' => 'var',
-                    'description' => sprintf('%s $%s', $property->getType(), $property->getName())
+                    'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName())
                 ]);
             }
         }

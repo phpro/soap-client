@@ -16,18 +16,11 @@ use Laminas\Code\Generator\PropertyGenerator;
  */
 class PropertyAssembler implements AssemblerInterface
 {
-    /**
-     * @var string
-     */
-    private $visibility;
+    private PropertyAssemblerOptions $options;
 
-    /**
-     * PropertyAssembler constructor.
-     * @param string $visibility
-     */
-    public function __construct(string $visibility = PropertyGenerator::VISIBILITY_PRIVATE)
+    public function __construct(?PropertyAssemblerOptions $options = null)
     {
-        $this->visibility = $visibility;
+        $this->options = $options ?? PropertyAssemblerOptions::create();
     }
 
     /**
@@ -53,13 +46,16 @@ class PropertyAssembler implements AssemblerInterface
                 return;
             }
 
-            $class->addPropertyFromGenerator(
-                PropertyGenerator::fromArray([
-                    'name' => $property->getName(),
-                    'visibility' => $this->visibility,
-                    'omitdefaultvalue' => true,
-                    'type' => TypeGenerator::fromTypeString($property->getPhpType()),
-                    'docblock' => DocBlockGeneratorFactory::fromArray([
+            $propertyGenerator = PropertyGenerator::fromArray([
+                'name' => $property->getName(),
+                'visibility' => $this->options->visibility(),
+                'omitdefaultvalue' => true,
+            ]);
+
+            if ($this->options->useDocBlocks()) {
+                $propertyGenerator->setDocBlock(
+                    DocBlockGeneratorFactory::fromArray([
+                        'longdescription' => $property->getMeta()->docs()->unwrapOr(''),
                         'tags' => [
                             [
                                 'name'        => 'var',
@@ -67,8 +63,14 @@ class PropertyAssembler implements AssemblerInterface
                             ],
                         ]
                     ])
-                ])
-            );
+                );
+            }
+
+            if ($this->options->useTypeHints()) {
+                $propertyGenerator->setType(TypeGenerator::fromTypeString($property->getPhpType()));
+            }
+
+            $class->addPropertyFromGenerator($propertyGenerator);
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
         }

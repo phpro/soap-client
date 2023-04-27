@@ -16,6 +16,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\FileGenerator;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class TypeGeneratorSpec
@@ -46,7 +47,7 @@ class TypeGeneratorSpec extends ObjectBehavior
         $type = new Type(
             $namespace = 'MyNamespace',
             'MyType',
-            [new Property('prop1', 'string', $namespace)]
+            [new Property('prop1', 'string', $namespace, new TypeMeta())]
         );
         $property = $type->getProperties()[0];
 
@@ -69,7 +70,7 @@ class TypeGeneratorSpec extends ObjectBehavior
         $type = new Type(
             $namespace = 'MyNamespace',
             'MyType',
-            [new Property('prop1', 'string', $namespace)]
+            [new Property('prop1', 'string', $namespace, new TypeMeta())]
         );
         $property = $type->getProperties()[0];
 

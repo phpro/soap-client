@@ -60,6 +60,8 @@ class IteratorAssembler implements AssemblerInterface
      */
     private function implementGetIterator(ClassGenerator $class, Property $firstProperty)
     {
+        $arrayInfo = '<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>';
+
         $methodName = 'getIterator';
         $class->removeMethod($methodName);
         $class->addMethodFromGenerator(
@@ -80,11 +82,11 @@ class IteratorAssembler implements AssemblerInterface
                         ],
                         [
                             'name' => 'phpstan-return',
-                            'description' => '\\ArrayIterator<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>'
+                            'description' => '\\ArrayIterator'.$arrayInfo,
                         ],
                         [
                             'name' => 'psalm-return',
-                            'description' => '\\ArrayIterator<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>'
+                            'description' => '\\ArrayIterator'.$arrayInfo,
                         ]
                     ]
                 ])
@@ -95,11 +97,11 @@ class IteratorAssembler implements AssemblerInterface
             'tags' => [
                 [
                     'name' => 'phpstan-implements',
-                    'description' => '\\IteratorAggregate<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>'
+                    'description' => '\\IteratorAggregate'.$arrayInfo,
                 ],
                 [
                     'name' => 'psalm-implements',
-                    'description' => '\\IteratorAggregate<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>'
+                    'description' => '\\IteratorAggregate'.$arrayInfo,
                 ]
             ]
         ]));

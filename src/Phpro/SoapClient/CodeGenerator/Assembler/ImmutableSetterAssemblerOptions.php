@@ -26,10 +26,10 @@ class ImmutableSetterAssemblerOptions
     /**
      * @return ImmutableSetterAssemblerOptions
      */
-    public function withTypeHints(): ImmutableSetterAssemblerOptions
+    public function withTypeHints(bool $typeHints = true): ImmutableSetterAssemblerOptions
     {
         $new = clone $this;
-        $new->typeHints = true;
+        $new->typeHints = $typeHints;
 
         return $new;
     }
@@ -37,10 +37,10 @@ class ImmutableSetterAssemblerOptions
     /**
      * @return ImmutableSetterAssemblerOptions
      */
-    public function withReturnTypes(): ImmutableSetterAssemblerOptions
+    public function withReturnTypes(bool $returnTypes = true): ImmutableSetterAssemblerOptions
     {
         $new = clone $this;
-        $new->returnTypes = true;
+        $new->returnTypes = $returnTypes;
 
         return $new;
     }

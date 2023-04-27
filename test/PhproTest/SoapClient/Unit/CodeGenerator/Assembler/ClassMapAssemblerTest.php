@@ -10,6 +10,8 @@ use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Laminas\Code\Generator\FileGenerator;
 use PHPUnit\Framework\TestCase;
+use Soap\Engine\Metadata\Model\Property as MetaProperty;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class ClassMapAssemblerTest
@@ -82,8 +84,11 @@ CODE;
                 $namespace,
                 'MyType',
                 [
-                    new Property('myProperty', 'string', $namespace)
-                ]
+                    Property::fromMetaData(
+                        $namespace,
+                        new MetaProperty('myProperty', XsdType::guess('string'))
+                    ),
+                ],
             ),
         ]);
 

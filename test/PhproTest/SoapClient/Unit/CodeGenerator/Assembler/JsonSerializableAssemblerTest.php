@@ -9,6 +9,8 @@ use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Laminas\Code\Generator\ClassGenerator;
+use Soap\Engine\Metadata\Model\Property as MetaProperty;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class JsonSerializableAssemblerTest
@@ -75,8 +77,8 @@ CODE;
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type($namespace = 'MyNamespace', 'MyType', [
-            new Property('prop1', 'array', $namespace),
-            new Property('prop2', 'array', $namespace),
+            Property::fromMetaData($namespace, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($namespace, new MetaProperty('prop2', XsdType::guess('int'))),
         ]);
 
         return new TypeContext($class, $type);

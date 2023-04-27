@@ -7,6 +7,7 @@ use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class TypeMapSpec
@@ -20,7 +21,7 @@ class TypeMapSpec extends ObjectBehavior
     {
         $this->beConstructedWith($namespace = 'MyNamespace', [
             new Type($namespace, 'type1', [
-                new Property('prop1', 'string', $namespace)
+                new Property('prop1', 'string', $namespace, new TypeMeta())
             ])
         ]);
     }
