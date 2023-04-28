@@ -5,6 +5,7 @@ namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class PropertySpec
@@ -16,7 +17,7 @@ class PropertySpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('name', 'Type', 'My\Namespace');
+        $this->beConstructedWith('name', 'Type', 'My\Namespace', new TypeMeta());
     }
 
     function it_is_initializable()
@@ -42,5 +43,10 @@ class PropertySpec extends ObjectBehavior
     function it_has_a_setter_name()
     {
         $this->setterName()->shouldReturn('setName');
+    }
+
+    public function it_has_type_meta(): void
+    {
+        $this->getMeta()->shouldBeLike(new TypeMeta());
     }
 }

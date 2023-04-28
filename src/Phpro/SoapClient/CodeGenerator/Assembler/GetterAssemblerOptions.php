@@ -19,7 +19,7 @@ class GetterAssemblerOptions
     /**
      * @var bool
      */
-    private $returnType = false;
+    private $returnType = true;
 
     /**
      * @var bool

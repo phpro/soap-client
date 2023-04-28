@@ -64,25 +64,25 @@ class ImmutableSetterAssembler implements AssemblerInterface
             ];
             $parameterOptions = ['name' => $property->getName()];
             if ($this->options->useTypeHints()) {
-                $parameterOptions['type'] = $property->getType();
+                $parameterOptions['type'] = $property->getPhpType();
             }
 
             $methodGenerator = new MethodGenerator($methodName);
             $methodGenerator->setParameters([$parameterOptions]);
             $methodGenerator->setBody(implode($class::LINE_FEED, $lines));
             if ($this->options->useReturnTypes()) {
-                $methodGenerator->setReturnType($class->getNamespaceName() . '\\' . $class->getName());
+                $methodGenerator->setReturnType('static');
             }
             if ($this->options->useDocBlocks()) {
                 $methodGenerator->setDocBlock(DocBlockGeneratorFactory::fromArray([
                     'tags' => [
                         [
                             'name' => 'param',
-                            'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                            'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName()),
                         ],
                         [
                             'name' => 'return',
-                            'description' => $class->getName(),
+                            'description' => 'static',
                         ],
                     ],
                 ]));

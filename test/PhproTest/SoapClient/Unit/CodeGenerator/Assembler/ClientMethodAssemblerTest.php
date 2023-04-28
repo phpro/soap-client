@@ -10,6 +10,8 @@ use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use Phpro\SoapClient\Exception\AssemblerException;
 use PHPUnit\Framework\TestCase;
+use Soap\Engine\Metadata\Model\MethodMeta;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class GetterAssemblerTest
@@ -49,10 +51,11 @@ class ClientMethodAssemblerTest extends TestCase
         $method = new ClientMethod(
             'functionName',
             [
-                new Parameter('param', $typeNamespace.'\\ParamType'),
+                new Parameter('param', $typeNamespace.'\\ParamType', new TypeMeta()),
             ],
             'ReturnType',
-            $typeNamespace
+            $typeNamespace,
+            (new MethodMeta())->withDocs('This is an awesome function.')
         );
 
         return new ClientMethodContext($class, $method);
@@ -70,11 +73,12 @@ class ClientMethodAssemblerTest extends TestCase
         $method = new ClientMethod(
             'functionName',
             [
-                new Parameter('param', $typeNamespace.'\\ParamType'),
-                new Parameter('param2', $typeNamespace.'\\OtherParamType'),
+                new Parameter('param', $typeNamespace.'\\ParamType', new TypeMeta()),
+                new Parameter('param2', $typeNamespace.'\\OtherParamType', new TypeMeta()),
             ],
             'ReturnType',
-            $typeNamespace
+            $typeNamespace,
+            (new MethodMeta())->withDocs('This is an awesome function.')
         );
 
         return new ClientMethodContext($class, $method);
@@ -93,7 +97,8 @@ class ClientMethodAssemblerTest extends TestCase
             'functionName',
             [],
             'ReturnType',
-            $typeNamespace
+            $typeNamespace,
+            new MethodMeta()
         );
 
         return new ClientMethodContext($class, $method);
@@ -120,6 +125,8 @@ use Vendor\MyTypeNamespace;
 class MyClient
 {
     /**
+     * This is an awesome function.
+     *
      * @param RequestInterface|MyTypeNamespace\ParamType \$param
      * @return ResultInterface|MyTypeNamespace\ReturnType
      * @throws SoapException
@@ -154,6 +161,8 @@ use Vendor\MyTypeNamespace;
 class MyClient
 {
     /**
+     * This is an awesome function.
+     *
      * MultiArgumentRequest with following params:
      *
      * Vendor\MyTypeNamespace\ParamType \$param
@@ -218,10 +227,11 @@ CODE;
         $method = new ClientMethod(
             'Function_name',
             [
-                new Parameter('param', $typeNamespace.'\\param_type'),
+                new Parameter('param', $typeNamespace.'\\param_type', new TypeMeta()),
             ],
             'return_type',
-            $typeNamespace
+            $typeNamespace,
+            new MethodMeta()
         );
 
         $context = new ClientMethodContext($class, $method);
@@ -281,10 +291,11 @@ CODE;
         $method = new ClientMethod(
             'Function_name',
             [
-                new Parameter('param', 'string'),
+                new Parameter('param', 'string', new TypeMeta()),
             ],
             'return_type',
-            $typeNamespace
+            $typeNamespace,
+            new MethodMeta()
         );
 
         $context = new ClientMethodContext($class, $method);

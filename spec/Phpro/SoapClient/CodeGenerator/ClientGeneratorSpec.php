@@ -18,6 +18,8 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\FileGenerator;
+use Soap\Engine\Metadata\Model\MethodMeta;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class ClientGeneratorSpec
@@ -44,7 +46,13 @@ class ClientGeneratorSpec extends ObjectBehavior
 
     function it_generates_clients(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
     {
-        $method = new ClientMethod('Test', [new Parameter('parameters', 'Test')], 'TestResponse');
+        $method = new ClientMethod(
+            'Test',
+            [new Parameter('parameters', 'Test', new TypeMeta())],
+            'TestResponse',
+            '',
+            new MethodMeta()
+        );
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
         $ruleSet->applyRules(Argument::type(ClientContext::class))->shouldBeCalled();
         $ruleSet->applyRules(Argument::type(FileContext::class))->shouldBeCalled();
@@ -60,9 +68,9 @@ class ClientGeneratorSpec extends ObjectBehavior
         $this->generate($file, $client)->shouldReturn('code');
     }
 
-    private function assert_generates_clients_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
+    private function it_generates_clients_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
     {
-        $method = new ClientMethod('Test', [new Parameter('parameters', 'Test')], 'TestResponse');
+        $method = new ClientMethod('Test', [new Parameter('parameters', 'Test')], 'TestResponse', '', new MethodMeta());
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
 

@@ -4,12 +4,16 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssembler;
+use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssemblerOptions;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\PropertyGenerator;
+use Soap\Engine\Metadata\Model\Property as MetaProperty;
+use Soap\Engine\Metadata\Model\TypeMeta;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class PropertyAssemblerTest
@@ -42,9 +46,11 @@ namespace MyNamespace;
 class MyType
 {
     /**
+     * Type specific docs
+     *
      * @var string
      */
-    private \$prop1;
+    private string \$prop1;
 }
 
 CODE;
@@ -57,7 +63,9 @@ CODE;
      */
     function it_assembles_with_visibility_without_default_value()
     {
-        $assembler = new PropertyAssembler(PropertyGenerator::VISIBILITY_PUBLIC);
+        $assembler = new PropertyAssembler(
+            PropertyAssemblerOptions::create()->withVisibility(PropertyGenerator::VISIBILITY_PUBLIC)
+        );
         $context = $this->createContext();
         $assembler->assemble($context);
         $code = $context->getClass()->generate();
@@ -67,9 +75,64 @@ namespace MyNamespace;
 class MyType
 {
     /**
+     * Type specific docs
+     *
      * @var string
      */
-    public \$prop1;
+    public string \$prop1;
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_without_doc_blocks()
+    {
+        $assembler = new PropertyAssembler(
+            PropertyAssemblerOptions::create()->withDocBlocks(false)
+        );
+        $context = $this->createContext();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    private string \$prop1;
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_assembles_with_visibility_without_type_info()
+    {
+        $assembler = new PropertyAssembler(
+            PropertyAssemblerOptions::create()->withTypeHints(false)
+        );
+        $context = $this->createContext();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * Type specific docs
+     *
+     * @var string
+     */
+    private \$prop1;
 }
 
 CODE;
@@ -96,12 +159,49 @@ class MyType
     /**
      * @var \\This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever\\Wrap
      */
-    private \$prop1;
+    private \\This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever\\Wrap \$prop1;
 }
 
 CODE;
         $this->assertEquals($expected, $code);
     }
+
+    /**
+     * @test
+     */
+    function it_assembles_properties_with_advanced_types()
+    {
+        $assembler = new PropertyAssembler();
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $type = new Type($namespace = 'MyNamespace', 'MyType', [
+            $property = Property::fromMetaData(
+                $namespace,
+                new MetaProperty('prop1', XsdType::guess('string')->withMeta(
+                    static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
+                ))
+            ),
+        ]);
+
+        $context =  new PropertyContext($class, $type, $property);
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * @var array<int<min,max>, string>
+     */
+    private array \$prop1;
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
 
     /**
      * @return PropertyContext
@@ -110,7 +210,9 @@ CODE;
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
-            $property = new Property('prop1', 'string', 'ns1'),
+            $property = Property::fromMetaData('ns1', new MetaProperty('prop1', XsdType::guess('string')->withMeta(
+                static fn (TypeMeta $meta): TypeMeta => $meta->withDocs('Type specific docs')
+            ))),
         ]);
 
         return new PropertyContext($class, $type, $property);
@@ -123,10 +225,9 @@ CODE;
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
-            $property = new Property(
-                'prop1',
-                'Wrap',
-                'This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever'
+            $property = Property::fromMetaData(
+                'This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever',
+                new MetaProperty('prop1', XsdType::guess('Wrap'))
             ),
         ]);
         return new PropertyContext($class, $type, $property);

@@ -62,14 +62,14 @@ class FluentSetterAssembler implements AssemblerInterface
                 $class::LINE_FEED
             ));
             if ($this->options->useReturnType()) {
-                $methodGenerator->setReturnType($class->getNamespaceName().'\\'.$class->getName());
+                $methodGenerator->setReturnType('static');
             }
             if ($this->options->useDocBlocks()) {
                 $methodGenerator->setDocBlock(DocBlockGeneratorFactory::fromArray([
                     'tags' => [
                         [
                             'name'        => 'param',
-                            'description' => sprintf('%s $%s', $property->getType(), $property->getName()),
+                            'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName()),
                         ],
                         [
                             'name'        => 'return',
@@ -96,7 +96,7 @@ class FluentSetterAssembler implements AssemblerInterface
             return [
                 [
                     'name' => $property->getName(),
-                    'type' => $type,
+                    'type' => $property->getPhpType(),
                 ],
             ];
         }

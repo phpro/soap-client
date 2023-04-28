@@ -2,8 +2,11 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\MetaTypeEnhancer;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\TypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Property as MetadataProperty;
+use Soap\Engine\Metadata\Model\TypeMeta;
 use function Psl\Type\non_empty_string;
 
 /**
@@ -28,6 +31,10 @@ class Property
      */
     private $namespace;
 
+    private TypeMeta $meta;
+
+    private TypeEnhancer $typeEnhancer;
+
     /**
      * Property constructor.
      *
@@ -35,11 +42,13 @@ class Property
      * @param non-empty-string $type
      * @param non-empty-string $namespace
      */
-    public function __construct(string $name, string $type, string $namespace)
+    public function __construct(string $name, string $type, string $namespace, TypeMeta $meta)
     {
         $this->name = Normalizer::normalizeProperty($name);
         $this->type = Normalizer::normalizeDataType($type);
         $this->namespace = Normalizer::normalizeNamespace($namespace);
+        $this->meta = $meta;
+        $this->typeEnhancer = new MetaTypeEnhancer($this->meta);
     }
 
     /**
@@ -47,10 +56,19 @@ class Property
      */
     public static function fromMetaData(string $namespace, MetadataProperty $property)
     {
+        $type = $property->getType();
+        $meta = $type->getMeta();
+        $isArrayType = $meta->isList()->unwrapOr(false);
+
         return new self(
             non_empty_string()->assert($property->getName()),
-            non_empty_string()->assert($property->getType()->getBaseTypeOrFallbackToName()),
-            $namespace
+            non_empty_string()->assert(
+                // In case of an array base-type, use the real name.
+                // The metadata will be used. The meta data will be used to enhance type information!
+                $isArrayType ? $type->getName() : $type->getBaseTypeOrFallbackToName()
+            ),
+            $namespace,
+            $meta
         );
     }
 
@@ -75,17 +93,19 @@ class Property
     }
 
     /**
-     * @return non-empty-string|null
+     * @return non-empty-string
      */
-    public function getCodeReturnType(): ?string
+    public function getPhpType(): string
     {
-        $type = $this->getType();
+        return $this->typeEnhancer->asPhpType($this->getType());
+    }
 
-        if ($type === 'mixed' && PHP_VERSION_ID < 80000) {
-            return null;
-        }
-
-        return $type;
+    /**
+     * @return non-empty-string
+     */
+    public function getDocBlockType(): string
+    {
+        return $this->typeEnhancer->asDocBlockType($this->getType());
     }
 
     /**
@@ -102,5 +122,10 @@ class Property
     public function setterName(): string
     {
         return Normalizer::generatePropertyMethod('set', $this->getName());
+    }
+
+    public function getMeta(): TypeMeta
+    {
+        return $this->meta;
     }
 }

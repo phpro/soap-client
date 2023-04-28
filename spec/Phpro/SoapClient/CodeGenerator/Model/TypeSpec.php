@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class TypeSpec
@@ -20,7 +21,7 @@ class TypeSpec extends ObjectBehavior
         $this->beConstructedWith(
             $namespace = 'MyNamespace',
             'myType',
-            [new Property('prop1', 'string', $namespace)]
+            [new Property('prop1', 'string', $namespace, new TypeMeta())]
         );
     }
 
@@ -60,7 +61,7 @@ class TypeSpec extends ObjectBehavior
         $this->beConstructedWith(
             $namespace = 'MyNamespace',
             'Final',
-            [new Property('xor', 'string', $namespace)]
+            [new Property('xor', 'string', $namespace, new TypeMeta())]
         );
 
         $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/FinalType.php');

@@ -59,7 +59,7 @@ class GetterAssembler implements AssemblerInterface
             $methodGenerator->setBody(sprintf('return $this->%s;', $property->getName()));
 
             if ($this->options->useReturnType()) {
-                $methodGenerator->setReturnType($property->getCodeReturnType());
+                $methodGenerator->setReturnType($property->getPhpType());
             }
 
             if ($this->options->useDocBlocks()) {
@@ -67,7 +67,7 @@ class GetterAssembler implements AssemblerInterface
                     'tags' => [
                         [
                             'name'        => 'return',
-                            'description' => $property->getType(),
+                            'description' => $property->getDocBlockType(),
                         ],
                     ],
                 ]));

@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Method as MetadataMethod;
+use Soap\Engine\Metadata\Model\MethodMeta;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 use function Psl\Type\non_empty_string;
 
@@ -34,6 +35,8 @@ class ClientMethod
      */
     private $parameterNamespace;
 
+    private MethodMeta $meta;
+
     /**
      * TypeModel constructor.
      *
@@ -42,12 +45,18 @@ class ClientMethod
      * @param non-empty-string $returnType
      * @param string $parameterNamespace
      */
-    public function __construct(string $name, array $params, string $returnType, string $parameterNamespace = '')
-    {
-        $this->parameterNamespace = $parameterNamespace ?: '';
+    public function __construct(
+        string $name,
+        array $params,
+        string $returnType,
+        string $parameterNamespace,
+        MethodMeta $meta
+    ) {
+        $this->parameterNamespace = $parameterNamespace;
         $this->methodName = $name;
         $this->parameters = $params;
         $this->returnType = $returnType;
+        $this->meta = $meta;
     }
 
     public static function fromMetadata(
@@ -63,7 +72,8 @@ class ClientMethod
                 iterator_to_array($method->getParameters())
             ),
             non_empty_string()->assert($method->getReturnType()->getBaseTypeOrFallbackToName()),
-            $parameterNamespace
+            $parameterNamespace,
+            $method->getMeta()
         );
     }
 
@@ -105,5 +115,10 @@ class ClientMethod
     public function getReturnType(): string
     {
         return Normalizer::normalizeClassname($this->returnType);
+    }
+
+    public function getMeta(): MethodMeta
+    {
+        return $this->meta;
     }
 }

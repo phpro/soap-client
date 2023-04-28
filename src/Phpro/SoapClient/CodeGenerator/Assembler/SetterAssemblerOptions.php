@@ -14,7 +14,7 @@ class SetterAssemblerOptions
     /**
      * @var bool
      */
-    private $typeHints = false;
+    private $typeHints = true;
 
     /**
      * @var bool

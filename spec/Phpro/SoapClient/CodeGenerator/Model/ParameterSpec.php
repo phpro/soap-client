@@ -4,6 +4,7 @@ namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use PhpSpec\ObjectBehavior;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class ParameterSpec
@@ -15,7 +16,7 @@ class ParameterSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('MyParameter', 'MyParameterType');
+        $this->beConstructedWith('MyParameter', 'MyParameterType', new TypeMeta());
     }
 
     function it_is_initializable()
@@ -41,5 +42,10 @@ class ParameterSpec extends ObjectBehavior
                 'type' => 'MyParameterType',
             ]
         );
+    }
+
+    public function it_has_type_meta(): void
+    {
+        $this->getMeta()->shouldBeLike(new TypeMeta());
     }
 }

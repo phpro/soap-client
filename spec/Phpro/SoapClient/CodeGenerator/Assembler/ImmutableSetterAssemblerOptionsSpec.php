@@ -21,16 +21,16 @@ class ImmutableSetterAssemblerOptionsSpec extends ObjectBehavior
         $this::create()->shouldBeAnInstanceOf(ImmutableSetterAssemblerOptions::class);
     }
 
-    function it_should_have_false_as_default()
+    function it_should_have_type_hints_as_default()
     {
         $options = $this::create();
-        $options->useTypeHints()->shouldBe(false);
+        $options->useTypeHints()->shouldBe(true);
     }
 
     function it_should_set_type_hints()
     {
-        $options = $this::create()->withTypeHints();
-        $options->useTypeHints()->shouldBe(true);
+        $options = $this::create()->withTypeHints(false);
+        $options->useTypeHints()->shouldBe(false);
     }
 
     function it_shout_set_return_types()

@@ -10,6 +10,9 @@ use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Laminas\Code\Generator\ClassGenerator;
+use Soap\Engine\Metadata\Model\Property as MetaProperty;
+use Soap\Engine\Metadata\Model\TypeMeta;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class GetterAssemblerTest
@@ -55,7 +58,7 @@ class MyType
     /**
      * @return string
      */
-    public function getProp1()
+    public function getProp1() : string
     {
         return \$this->prop1;
     }
@@ -69,10 +72,10 @@ CODE;
     /**
      * @test
      */
-    public function it_assembles_with_return_type()
+    public function it_assembles_without_return_type()
     {
         $options = (new GetterAssemblerOptions())
-            ->withReturnType();
+            ->withReturnType(false);
         $assembler = new GetterAssembler($options);
 
         $context = $this->createContext('prop2');
@@ -87,7 +90,7 @@ class MyType
     /**
      * @return int
      */
-    public function getProp2() : int
+    public function getProp2()
     {
         return \$this->prop2;
     }
@@ -116,7 +119,7 @@ namespace MyNamespace;
 
 class MyType
 {
-    public function getProp2()
+    public function getProp2() : int
     {
         return \$this->prop2;
     }
@@ -147,7 +150,7 @@ class MyType
     /**
      * @return bool
      */
-    public function isProp3()
+    public function isProp3() : bool
     {
         return \$this->prop3;
     }
@@ -208,7 +211,7 @@ class MyType
     /**
      * @return \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap
      */
-    public function getProp1()
+    public function getProp1() : \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap
     {
         return \$this->prop1;
     }
@@ -219,16 +222,55 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_a_property_with_advanced_types()
+    {
+        $assembler = new GetterAssembler();
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $type = new Type($namespace = 'MyNamespace', 'MyType', [
+            $property = Property::fromMetaData(
+                $namespace,
+                new MetaProperty('prop1', XsdType::guess('string')->withMeta(
+                    static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
+                ))
+            ),
+        ]);
+
+        $context =  new PropertyContext($class, $type, $property);
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * @return array<int<min,max>, string>
+     */
+    public function getProp1() : array
+    {
+        return \$this->prop1;
+    }
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @param string $propertyName
      * @return PropertyContext
      */
     private function createContext($propertyName = 'prop1')
     {
         $properties = [
-            'prop1' => new Property('prop1', 'string', 'ns1'),
-            'prop2' => new Property('prop2', 'int', 'ns1'),
-            'prop3' => new Property('prop3', 'boolean', 'ns1'),
-            'prop4' => new Property('prop4', 'My_Response', 'ns1'),
+            'prop1' => Property::fromMetaData('ns1', new MetaProperty('prop1', XsdType::guess('string'))),
+            'prop2' => Property::fromMetaData('ns1', new MetaProperty('prop2', XsdType::guess('int'))),
+            'prop3' => Property::fromMetaData('ns1', new MetaProperty('prop3', XsdType::guess('boolean'))),
+            'prop4' => Property::fromMetaData('ns1', new MetaProperty('prop4', XsdType::guess('My_Response'))),
         ];
 
         $class = new ClassGenerator('MyType', 'MyNamespace');
@@ -244,10 +286,9 @@ CODE;
     private function createContextWithLongType()
     {
         $properties = [
-            'prop1' => new Property(
-                'prop1',
-                'Wrap',
-                'This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever'
+            'prop1' => Property::fromMetaData(
+                'This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever',
+                new MetaProperty('prop1', XsdType::guess('Wrap'))
             ),
         ];
         $class = new ClassGenerator('MyType', 'MyNamespace');

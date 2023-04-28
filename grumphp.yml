@@ -1,4 +1,5 @@
 grumphp:
+    process_timeout: 120
     parallel:
         enabled: false
     tasks:

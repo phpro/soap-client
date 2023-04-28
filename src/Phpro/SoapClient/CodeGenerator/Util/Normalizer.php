@@ -15,6 +15,8 @@ class Normalizer
     private static $normalizations = [
         'any' => 'mixed',
         'anytype' => 'mixed',
+        'anyxml' => 'string',
+        'anysimpletype' => 'mixed',
         'long' => 'int',
         'short' => 'int',
         'datetime' => '\\DateTimeInterface',

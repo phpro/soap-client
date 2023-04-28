@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\ArrayBoundsCalculator;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\MethodGenerator;
@@ -60,6 +61,9 @@ class IteratorAssembler implements AssemblerInterface
      */
     private function implementGetIterator(ClassGenerator $class, Property $firstProperty)
     {
+        $arrayBounds = (new ArrayBoundsCalculator())($firstProperty->getMeta());
+        $arrayInfo = '<'.$arrayBounds.', '. $firstProperty->getType() .'>';
+
         $methodName = 'getIterator';
         $class->removeMethod($methodName);
         $class->addMethodFromGenerator(
@@ -68,7 +72,7 @@ class IteratorAssembler implements AssemblerInterface
                 'parameters' => [],
                 'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                 'body' => sprintf(
-                    'return new \\ArrayIterator(is_array($this->%1$s) ? $this->%1$s : []);',
+                    'return new \\ArrayIterator($this->%1$s);',
                     $firstProperty->getName()
                 ),
                 'returntype' => 'ArrayIterator',
@@ -80,11 +84,11 @@ class IteratorAssembler implements AssemblerInterface
                         ],
                         [
                             'name' => 'phpstan-return',
-                            'description' => '\\ArrayIterator<array-key, '. $firstProperty->getType() .'>'
+                            'description' => '\\ArrayIterator'.$arrayInfo,
                         ],
                         [
                             'name' => 'psalm-return',
-                            'description' => '\\ArrayIterator<array-key, '. $firstProperty->getType() .'>'
+                            'description' => '\\ArrayIterator'.$arrayInfo,
                         ]
                     ]
                 ])
@@ -95,11 +99,11 @@ class IteratorAssembler implements AssemblerInterface
             'tags' => [
                 [
                     'name' => 'phpstan-implements',
-                    'description' => '\\IteratorAggregate<array-key, '. $firstProperty->getType() .'>'
+                    'description' => '\\IteratorAggregate'.$arrayInfo,
                 ],
                 [
                     'name' => 'psalm-implements',
-                    'description' => '\\IteratorAggregate<array-key, '. $firstProperty->getType() .'>'
+                    'description' => '\\IteratorAggregate'.$arrayInfo,
                 ]
             ]
         ]));
