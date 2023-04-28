@@ -4,6 +4,7 @@ namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use PhpSpec\ObjectBehavior;
+use Soap\Engine\Metadata\Model\MethodMeta;
 
 /**
  * Class ClientMethodSpec
@@ -15,7 +16,7 @@ class ClientMethodSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('testMethod', [], 'CreditResponse', 'ParamNamespace');
+        $this->beConstructedWith('testMethod', [], 'CreditResponse', 'ParamNamespace', new MethodMeta());
     }
 
     function it_is_initializable()
@@ -40,7 +41,7 @@ class ClientMethodSpec extends ObjectBehavior
 
     function it_transforms_return_type()
     {
-        $this->beConstructedWith('testMethod', [], 'credit_response', 'ParamNamespace');
+        $this->beConstructedWith('testMethod', [], 'credit_response', 'ParamNamespace', new MethodMeta());
         $this->getReturnType()->shouldBe('CreditResponse');
     }
 
@@ -52,5 +53,10 @@ class ClientMethodSpec extends ObjectBehavior
     function it_has_namespaced_return_type()
     {
         $this->getNamespacedReturnType()->shouldBe('\\ParamNamespace\\CreditResponse');
+    }
+
+    public function it_has_type_meta(): void
+    {
+        $this->getMeta()->shouldBeLike(new MethodMeta());
     }
 }

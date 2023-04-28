@@ -10,6 +10,7 @@ use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\ClientMethodMatchesRule;
 use PhpSpec\ObjectBehavior;
+use Soap\Engine\Metadata\Model\MethodMeta;
 
 /**
  * Class ClientMethodMatchesRuleSpec
@@ -42,21 +43,21 @@ class ClientMethodMatchesRuleSpec extends ObjectBehavior
 
     function it_can_apply_to_client_method_context(RuleInterface $subRule, ClientMethodContext $context)
     {
-        $context->getMethod()->willReturn(new ClientMethod('myClientMethod', [], 'string'));
+        $context->getMethod()->willReturn(new ClientMethod('myClientMethod', [], 'string', '', new MethodMeta()));
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }
 
     function it_can_not_apply_on_unmatched_regex(RuleInterface $subRule, ClientMethodContext $context)
     {
-        $context->getMethod()->willReturn(new ClientMethod('myInvalidClientMethod', [], 'string'));
+        $context->getMethod()->willReturn(new ClientMethod('myInvalidClientMethod', [], 'string', '', new MethodMeta()));
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
     function it_can_not_apply_if_subrule_does_not_apply(RuleInterface $subRule, ClientMethodContext $context)
     {
-        $context->getMethod()->willReturn(new ClientMethod('myClientMethod', [], 'string'));
+        $context->getMethod()->willReturn(new ClientMethod('myClientMethod', [], 'string', '', new MethodMeta()));
         $subRule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);
     }

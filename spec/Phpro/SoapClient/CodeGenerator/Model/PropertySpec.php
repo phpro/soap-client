@@ -44,4 +44,9 @@ class PropertySpec extends ObjectBehavior
     {
         $this->setterName()->shouldReturn('setName');
     }
+
+    public function it_has_type_meta(): void
+    {
+        $this->getMeta()->shouldBeLike(new TypeMeta());
+    }
 }

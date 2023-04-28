@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
+use Soap\Engine\Metadata\Model\TypeMeta;
 use function Psl\Type\non_empty_string;
 
 class Parameter
@@ -18,16 +19,19 @@ class Parameter
      */
     private $type;
 
+    private TypeMeta $meta;
+
     /**
      * Parameter constructor.
      *
      * @param non-empty-string $name
      * @param non-empty-string $type
      */
-    public function __construct(string $name, string $type)
+    public function __construct(string $name, string $type, TypeMeta $meta)
     {
         $this->name = Normalizer::normalizeProperty($name);
         $this->type = Normalizer::normalizeClassnameInFQN($type);
+        $this->meta = $meta;
     }
 
     public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter): Parameter
@@ -38,7 +42,8 @@ class Parameter
             non_empty_string()->assert($parameter->getName()),
             Normalizer::isKnownType($type)
                 ? $type
-                : $parameterNamespace.'\\'.$type
+                : $parameterNamespace.'\\'.$type,
+            $parameter->getType()->getMeta()
         );
     }
 
@@ -69,5 +74,10 @@ class Parameter
             'name' => $this->name,
             'type' => $this->type,
         ];
+    }
+
+    public function getMeta(): TypeMeta
+    {
+        return $this->meta;
     }
 }
