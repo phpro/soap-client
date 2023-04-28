@@ -55,7 +55,7 @@ class ClientMethodAssemblerTest extends TestCase
             ],
             'ReturnType',
             $typeNamespace,
-            new MethodMeta()
+            (new MethodMeta())->withDocs('This is an awesome function.')
         );
 
         return new ClientMethodContext($class, $method);
@@ -78,7 +78,7 @@ class ClientMethodAssemblerTest extends TestCase
             ],
             'ReturnType',
             $typeNamespace,
-            new MethodMeta()
+            (new MethodMeta())->withDocs('This is an awesome function.')
         );
 
         return new ClientMethodContext($class, $method);
@@ -125,6 +125,8 @@ use Vendor\MyTypeNamespace;
 class MyClient
 {
     /**
+     * This is an awesome function.
+     *
      * @param RequestInterface|MyTypeNamespace\ParamType \$param
      * @return ResultInterface|MyTypeNamespace\ReturnType
      * @throws SoapException
@@ -159,6 +161,8 @@ use Vendor\MyTypeNamespace;
 class MyClient
 {
     /**
+     * This is an awesome function.
+     *
      * MultiArgumentRequest with following params:
      *
      * Vendor\MyTypeNamespace\ParamType \$param

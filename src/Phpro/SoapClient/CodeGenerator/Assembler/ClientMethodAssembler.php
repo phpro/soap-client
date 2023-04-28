@@ -131,6 +131,7 @@ class ClientMethodAssembler implements AssemblerInterface
 
         return DocBlockGeneratorFactory::fromArray(
             [
+                'shortdescription' => $context->getMethod()->getMeta()->docs()->unwrapOr(''),
                 'longdescription' => implode(GeneratorInterface::EOL, $description),
                 'tags' => [
                     ['name' => 'param', 'description' => MultiArgumentRequest::class],
@@ -163,6 +164,7 @@ class ClientMethodAssembler implements AssemblerInterface
         $param = current($method->getParameters());
 
         $data = [
+            'shortdescription' => $context->getMethod()->getMeta()->docs()->unwrapOr(''),
             'tags' => [
                 [
                     'name' => 'return',
