@@ -2,6 +2,8 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\MetaTypeEnhancer;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\TypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Property as MetadataProperty;
 use Soap\Engine\Metadata\Model\TypeMeta;
@@ -31,6 +33,8 @@ class Property
 
     private TypeMeta $meta;
 
+    private TypeEnhancer $typeEnhancer;
+
     /**
      * Property constructor.
      *
@@ -44,6 +48,7 @@ class Property
         $this->type = Normalizer::normalizeDataType($type);
         $this->namespace = Normalizer::normalizeNamespace($namespace);
         $this->meta = $meta;
+        $this->typeEnhancer = new MetaTypeEnhancer($this->meta);
     }
 
     /**
@@ -92,48 +97,15 @@ class Property
      */
     public function getPhpType(): string
     {
-        $isArray = $this->meta->isList()->unwrapOr(false);
-        if ($isArray) {
-            return 'array';
-        }
-
-        $isNullable = $this->meta->isNullable()->unwrapOr(false);
-        if ($isNullable) {
-            return '?'.$this->getType();
-        }
-
-        return $this->getType();
+        return $this->typeEnhancer->asPhpType($this->getType());
     }
 
     /**
      * @return non-empty-string
      */
-    public function getDocBlockType(): ?string
+    public function getDocBlockType(): string
     {
-        $isArray = $this->meta->isList()->unwrapOr(false);
-        if ($isArray) {
-            return 'array<'.$this->getArrayBounds().', '.$this->getType().'>';
-        }
-
-        $isNullable = $this->meta->isNullable()->unwrapOr(false);
-        if ($isNullable) {
-            return 'null|'.$this->getType();
-        }
-
-        return $this->getType();
-    }
-
-    public function getArrayBounds(): string
-    {
-        $min = $this->meta->minOccurs()
-            ->map(fn (int $min): string => $min === -1 ? 'min' : (string) $min)
-            ->unwrapOr('min');
-
-        $max = $this->meta->maxOccurs()
-            ->map(fn (int $max): string => $max === -1 ? 'max' : (string) $max)
-            ->unwrapOr('max');
-
-        return 'int<'.$min.','.$max.'>';
+        return $this->typeEnhancer->asDocBlockType($this->getType());
     }
 
     /**

@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\ArrayBoundsCalculator;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\MethodGenerator;
@@ -60,7 +61,8 @@ class IteratorAssembler implements AssemblerInterface
      */
     private function implementGetIterator(ClassGenerator $class, Property $firstProperty)
     {
-        $arrayInfo = '<'.$firstProperty->getArrayBounds().', '. $firstProperty->getType() .'>';
+        $arrayBounds = (new ArrayBoundsCalculator())($firstProperty->getMeta());
+        $arrayInfo = '<'.$arrayBounds.', '. $firstProperty->getType() .'>';
 
         $methodName = 'getIterator';
         $class->removeMethod($methodName);
