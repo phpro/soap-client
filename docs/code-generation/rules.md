@@ -12,6 +12,8 @@ The goal of a rule is to run a code assembler.
 
 - [AssemblerRule](#assemblerrule)
 - [ClientMethodMatchesRule](#clientmethodmatchesrule)
+- [IsAbstractTypeRule](#isabstracttyperule)
+- [IsExtendingTypeRule](#isextendingtyperule)
 - [IsRequestRule](#isrequestrule)
 - [IsResultRule](#isresultrule)
 - [MultiRule](#multirule)
@@ -51,6 +53,50 @@ The regular expression will be matched against the method name added to the gene
 If the regular expression matches and the subRule is accepted, the defined assembler will run.
  
 In the example above, a custom `RemoveClientMethodAssembler` is is used to remove the `demoSetup` method from the Client completely.
+
+## IsAbstractTypeRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+use Soap\Engine\Metadata\Metadata;
+
+assert($metadata instanceof Metadata);
+
+new Rules\IsAbstractTypeRule(
+    $metadata,
+    new Rules\AssembleRule(new Assembler\AbstractClassAssembler())
+)
+```
+
+The `IsAbstractTypeRule` can be used in the "types" generation command and contains the engine's metadata and a subRule.
+The rule will detect all abstract types based on the provided SOAP metadata.
+If the type matches an abstract type and the subRule is accepted, the defined assembler will run.
+
+This rule can be used to e.g. mark the PHP class as abstract.
+
+
+## IsExtendingTypeRule
+
+```php
+use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\Rules;
+use Soap\Engine\Metadata\Metadata;
+
+assert($metadata instanceof Metadata);
+
+new Rules\IsExtendingTypeRule(
+    $metadata,
+    new Rules\AssembleRule(new Assembler\ExtendingTypeAssembler())
+)
+```
+
+The `IsExtendingTypeRule` can be used in the "types" generation command and contains the engine's metadata and a subRule.
+The rule will detect all types that extend another SOAP type based on the provided SOAP metadata.
+If the type matches an abstract type and the subRule is accepted, the defined assembler will run.
+
+This rule can be used to make the PHP class of a type extend the base PHP class that is provided by the metadata.
+
 
 ## IsRequestRule
 

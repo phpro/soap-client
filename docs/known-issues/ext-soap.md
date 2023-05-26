@@ -2,7 +2,6 @@
 
 - [Duplicate typenames](#duplicate-typenames)
 - [Enumerations](#enumerations)
-- [Occurs](#occurs)
 
 Isn't your issue listed below? Feel free to provide additional issues in a functional test.
 
@@ -106,17 +105,3 @@ More information:
 - [Lack of validation in php-src](https://github.com/php/php-src/blob/php-7.2.10/ext/soap/php_encoding.c#L3172-L3200)
 
 **[Find out how you can help out here 💚](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md)**
-
-
-## Occurs
-
-It is possible that the WSDL file contains `minOccurs` and `maxOccurs` on XSD elements.
-Ext-soap will not make this information available through the public API of the SOAP client.
-Therefore, we cannot predict during code generation if a type will definitely be an array or possibly be nullable.
-
-Currently, this issue can be avoided by not generating too strict types in the soap-client and optionally by using the [IteratorAssembler](../code-generation/assemblers.md#iteratorassembler).
-A better solution would be to parse the WSDL manually and add that information to the metadata.
-From that point on we can take this information into consideration during code generation.
-
-**[Find out how you can help out here 💚](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md)**
-

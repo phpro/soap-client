@@ -6,9 +6,11 @@ to generate the code you want to add to the generated SOAP types.
  
 # Built-in assemblers
 
+- [AbstractClassAssembler](#abstractclassassembler)
 - [ClassMapAssembler](#classmapassembler)
 - [ConstructorAssembler](#constructorassembler)
 - [ExtendAssembler](#extendassembler)
+- [ExtendingTypeAssembler](#extendingtypeassembler)
 - [FinalClassAssembler](#finalclassassembler)
 - [FluentSetterAssembler](#fluentsetterassembler)
 - [GetterAssembler](#getterassembler)
@@ -25,6 +27,22 @@ to generate the code you want to add to the generated SOAP types.
 - [TraitAssembler](#traitassembler)
 - [UseAssembler](#useassembler)
 
+
+## AbstractClassAssembler
+
+The `AbstractClassAssembler` can be used to mark a generated class as abstract.
+
+Example output:
+
+```php
+
+abstract class MyType
+{
+
+
+}
+
+```
 
 ## ClassMapAssembler
 
@@ -154,6 +172,7 @@ final class MyType
 }
 
 ```
+
 ## ExtendAssembler
 
 The `ExtendAssembler` will add a parent class to the generated class.
@@ -163,6 +182,21 @@ Example output:
 ```php
 
 class MyType extends DType
+{
+
+
+}
+```
+
+## ExtendingTypeAssembler
+
+The `ExtendingTypeAssembler` will add the parent class that is provided by the WSDL metadata to the generated class.
+
+Example output:
+
+```php
+
+class MyType extends BaseType
 {
 
 

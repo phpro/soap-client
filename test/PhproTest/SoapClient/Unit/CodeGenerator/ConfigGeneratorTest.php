@@ -53,6 +53,18 @@ return Config::create()
             ])
         )
     )
+    ->addRule(
+        new Rules\IsExtendingTypeRule(
+            \$engine->getMetadata(),
+            new Rules\AssembleRule(new Assembler\ExtendingTypeAssembler())
+        )
+    )
+    ->addRule(
+        new Rules\IsAbstractTypeRule(
+            \$engine->getMetadata(),
+            new Rules\AssembleRule(new Assembler\AbstractClassAssembler())
+        )
+    )
 ;
 
 CONTENT;
@@ -111,6 +123,18 @@ return Config::create()
             new Rules\MultiRule([
                 new Rules\AssembleRule(new Assembler\ResultAssembler()),
             ])
+        )
+    )
+    ->addRule(
+        new Rules\IsExtendingTypeRule(
+            \$engine->getMetadata(),
+            new Rules\AssembleRule(new Assembler\ExtendingTypeAssembler())
+        )
+    )
+    ->addRule(
+        new Rules\IsAbstractTypeRule(
+            \$engine->getMetadata(),
+            new Rules\AssembleRule(new Assembler\AbstractClassAssembler())
         )
     )
 ;
