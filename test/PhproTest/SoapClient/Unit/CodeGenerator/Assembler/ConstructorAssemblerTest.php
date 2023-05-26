@@ -58,8 +58,8 @@ class MyType
     /**
      * Constructor
      *
-     * @var string \$prop1
-     * @var int \$prop2
+     * @param string \$prop1
+     * @param int \$prop2
      */
     public function __construct(\$prop1, \$prop2)
     {
@@ -98,9 +98,9 @@ class MyType
     /**
      * Constructor
      *
-     * @var string \$prop1
-     * @var int \$prop2
-     * @var \MyNamespace\SomeClass \$prop3
+     * @param string \$prop1
+     * @param int \$prop2
+     * @param \MyNamespace\SomeClass \$prop3
      */
     public function __construct(string \$prop1, int \$prop2, \MyNamespace\SomeClass \$prop3)
     {
@@ -174,7 +174,7 @@ class MyType
     /**
      * Constructor
      *
-     * @var array<int<min,max>, string> \$prop1
+     * @param array<int<min,max>, string> \$prop1
      */
     public function __construct(array \$prop1)
     {
