@@ -4,6 +4,7 @@ namespace Phpro\SoapClient\Console\Command;
 
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsConsideredScalarType;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
 use Phpro\SoapClient\Util\Filesystem;
@@ -103,6 +104,11 @@ class GenerateTypesCommand extends Command
      */
     protected function handleType(TypeGenerator $generator, Type $type, SplFileInfo $fileInfo): bool
     {
+        // Skip generation of simple types.
+        if ((new IsConsideredScalarType())($type->getMeta())) {
+            return false;
+        }
+
         // Generate type sub folders if needed
         $this->filesystem->ensureDirectoryExists($fileInfo->getPath());
 

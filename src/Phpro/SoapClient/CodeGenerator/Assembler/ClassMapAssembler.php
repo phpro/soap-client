@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsConsideredScalarType;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\MethodGenerator;
@@ -79,6 +80,10 @@ class ClassMapAssembler implements AssemblerInterface
     {
         $classMap = [];
         foreach ($typeMap->getTypes() as $type) {
+            if ((new IsConsideredScalarType())($type->getMeta())) {
+                continue;
+            }
+
             $classMap[] = sprintf(
                 '%snew ClassMap(\'%s\', %s::class),',
                 $indentation,

@@ -11,6 +11,7 @@ use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Laminas\Code\Generator\FileGenerator;
 use PHPUnit\Framework\TestCase;
 use Soap\Engine\Metadata\Model\Property as MetaProperty;
+use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
 
 /**
@@ -89,6 +90,7 @@ CODE;
                         new MetaProperty('myProperty', XsdType::guess('string'))
                     ),
                 ],
+                new TypeMeta(),
             ),
         ]);
 

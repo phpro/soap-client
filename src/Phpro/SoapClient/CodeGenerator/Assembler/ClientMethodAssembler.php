@@ -12,9 +12,9 @@ use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
-use Phpro\SoapClient\CodeGenerator\Util\TypeChecker;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Phpro\SoapClient\Exception\SoapException;
+use Phpro\SoapClient\Type\MixedResult;
 use Phpro\SoapClient\Type\MultiArgumentRequest;
 use Phpro\SoapClient\Type\RequestInterface;
 use Phpro\SoapClient\Type\ResultInterface;
@@ -49,9 +49,9 @@ class ClientMethodAssembler implements AssemblerInterface
             $phpMethodName = Normalizer::normalizeMethodName($method->getMethodName());
             $param = $this->createParamsFromContext($context);
             $class->removeMethod($phpMethodName);
-            $docblock = $context->getArgumentCount() > 1 ?
-                $this->generateMultiArgumentDocblock($context) :
-                $this->generateSingleArgumentDocblock($context);
+            $docblock = $method->shouldGenerateAsMultiArgumentsRequest()
+                ? $this->generateMultiArgumentDocblock($context)
+                : $this->generateSingleArgumentDocblock($context);
             $methodBody = $this->generateMethodBody($class, $param, $method);
 
             $class->addMethodFromGenerator(
@@ -61,7 +61,7 @@ class ClientMethodAssembler implements AssemblerInterface
                         'parameters' => $param === null ? [] : [$param],
                         'visibility' => MethodGenerator::VISIBILITY_PUBLIC,
                         'body' => $methodBody,
-                        'returntype' => $method->getNamespacedReturnType(),
+                        'returntype' => $this->decideOnReturnType($context, true),
                         'docblock' => $docblock,
                     ]
                 )
@@ -97,11 +97,14 @@ class ClientMethodAssembler implements AssemblerInterface
      */
     private function createParamsFromContext(ClientMethodContext $context): ?ParameterGenerator
     {
-        if ($context->getArgumentCount() === 0) {
+        $method = $context->getMethod();
+        $paramsCount = $method->getParametersCount();
+
+        if ($paramsCount === 0) {
             return null;
         }
 
-        if ($context->getArgumentCount() === 1) {
+        if (!$method->shouldGenerateAsMultiArgumentsRequest()) {
             $param = current($context->getMethod()->getParameters());
 
             return ParameterGenerator::fromArray($param->toArray());
@@ -123,7 +126,6 @@ class ClientMethodAssembler implements AssemblerInterface
     private function generateMultiArgumentDocblock(ClientMethodContext $context): DocBlockGenerator
     {
         $class = $context->getClass();
-        $method = $context->getMethod();
         $description = ['MultiArgumentRequest with following params:'. GeneratorInterface::EOL];
         foreach ($context->getMethod()->getParameters() as $parameter) {
             $description[] = $parameter->getType().' $'.$parameter->getName();
@@ -134,17 +136,30 @@ class ClientMethodAssembler implements AssemblerInterface
                 'shortdescription' => $context->getMethod()->getMeta()->docs()->unwrapOr(''),
                 'longdescription' => implode(GeneratorInterface::EOL, $description),
                 'tags' => [
-                    ['name' => 'param', 'description' => MultiArgumentRequest::class],
+                    [
+                        'name' => 'param',
+                        'description' => sprintf(
+                            '%s $%s',
+                            $this->generateClassNameAndAddImport(
+                                MultiArgumentRequest::class,
+                                $class
+                            ),
+                            'multiArgumentRequest'
+                        ),
+                    ],
                     [
                         'name' => 'return',
                         'description' => sprintf(
-                            '%s|%s',
+                            '%s & %s',
                             $this->generateClassNameAndAddImport(ResultInterface::class, $class),
-                            $this->generateClassNameAndAddImport(
-                                $method->getNamespacedReturnType(),
-                                $class,
-                                true
-                            )
+                            $this->decideOnReturnType($context, false)
+                        ),
+                    ],
+                    [
+                        'name' => 'throws',
+                        'description' => $this->generateClassNameAndAddImport(
+                            SoapException::class,
+                            $class
                         ),
                     ],
                 ],
@@ -169,15 +184,10 @@ class ClientMethodAssembler implements AssemblerInterface
                 [
                     'name' => 'return',
                     'description' => sprintf(
-                        '%s|%s',
+                        '%s & %s',
                         $this->generateClassNameAndAddImport(ResultInterface::class, $class),
-                        $this->generateClassNameAndAddImport(
-                            $method->getNamespacedReturnType(),
-                            $class,
-                            true
-                        )
+                        $this->decideOnReturnType($context, false)
                     ),
-
                 ],
                 [
                     'name' => 'throws',
@@ -195,7 +205,7 @@ class ClientMethodAssembler implements AssemblerInterface
                 [
                     'name' => 'param',
                     'description' => sprintf(
-                        '%s|%s $%s',
+                        '%s & %s $%s',
                         $this->generateClassNameAndAddImport(RequestInterface::class, $class),
                         $this->generateClassNameAndAddImport($param->getType(), $class, true),
                         $param->getName()
@@ -213,11 +223,11 @@ class ClientMethodAssembler implements AssemblerInterface
      * @param ClassGenerator $class Class generator object.
      * @param bool $prefixed
      *
-     * @return string
+     * @return non-empty-string
      */
     protected function generateClassNameAndAddImport(string $fqcn, ClassGenerator $class, $prefixed = false): string
     {
-        if (TypeChecker::isKnownType($fqcn)) {
+        if (Normalizer::isKnownType($fqcn)) {
             return $fqcn;
         }
         $prefix = '';
@@ -237,6 +247,29 @@ class ClientMethodAssembler implements AssemblerInterface
             $class->addUse(non_empty_string()->assert($fqcn));
         }
 
-        return $className;
+        return non_empty_string()->assert($className);
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    protected function decideOnReturnType(ClientMethodContext $context, bool $useFqcn): string
+    {
+        $class = $context->getClass();
+        $returnType = $context->getMethod()->getReturnType();
+
+        if ($returnType->shouldGenerateAsMixedResult()) {
+            if ($useFqcn) {
+                return MixedResult::class;
+            }
+
+            return $this->generateClassNameAndAddImport(MixedResult::class, $class) . '<'.$returnType->getType().'>';
+        }
+
+        if ($useFqcn) {
+            return $returnType->getType();
+        }
+
+        return $this->generateClassNameAndAddImport($returnType->getType(), $class, true);
     }
 }

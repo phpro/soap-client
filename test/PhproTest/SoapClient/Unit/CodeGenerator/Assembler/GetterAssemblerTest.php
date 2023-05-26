@@ -235,7 +235,7 @@ CODE;
                     static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
                 ))
             ),
-        ]);
+        ], new TypeMeta());
 
         $context =  new PropertyContext($class, $type, $property);
         $assembler->assemble($context);
@@ -274,7 +274,7 @@ CODE;
         ];
 
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', array_values($properties));
+        $type = new Type('MyNamespace', 'MyType', array_values($properties), new TypeMeta());
         $property = $properties[$propertyName];
 
         return new PropertyContext($class, $type, $property);
@@ -292,7 +292,7 @@ CODE;
             ),
         ];
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', array_values($properties));
+        $type = new Type('MyNamespace', 'MyType', array_values($properties), new TypeMeta());
         $property = $properties['prop1'];
         return new PropertyContext($class, $type, $property);
     }

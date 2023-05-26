@@ -8,10 +8,12 @@ use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
+use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
 use Phpro\SoapClient\Exception\AssemblerException;
 use PHPUnit\Framework\TestCase;
 use Soap\Engine\Metadata\Model\MethodMeta;
 use Soap\Engine\Metadata\Model\TypeMeta;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class GetterAssemblerTest
@@ -51,9 +53,9 @@ class ClientMethodAssemblerTest extends TestCase
         $method = new ClientMethod(
             'functionName',
             [
-                new Parameter('param', $typeNamespace.'\\ParamType', new TypeMeta()),
+                new Parameter('param', 'ParamType', $typeNamespace, new TypeMeta()),
             ],
-            'ReturnType',
+            ReturnType::fromMetaData($typeNamespace, XsdType::create('ReturnType')),
             $typeNamespace,
             (new MethodMeta())->withDocs('This is an awesome function.')
         );
@@ -73,10 +75,10 @@ class ClientMethodAssemblerTest extends TestCase
         $method = new ClientMethod(
             'functionName',
             [
-                new Parameter('param', $typeNamespace.'\\ParamType', new TypeMeta()),
-                new Parameter('param2', $typeNamespace.'\\OtherParamType', new TypeMeta()),
+                new Parameter('param', 'ParamType', $typeNamespace, new TypeMeta()),
+                new Parameter('param2', 'OtherParamType', $typeNamespace, new TypeMeta()),
             ],
-            'ReturnType',
+            ReturnType::fromMetaData($typeNamespace, XsdType::create('ReturnType')),
             $typeNamespace,
             (new MethodMeta())->withDocs('This is an awesome function.')
         );
@@ -96,7 +98,7 @@ class ClientMethodAssemblerTest extends TestCase
         $method = new ClientMethod(
             'functionName',
             [],
-            'ReturnType',
+            ReturnType::fromMetaData($typeNamespace, XsdType::create('ReturnType')),
             $typeNamespace,
             new MethodMeta()
         );
@@ -127,8 +129,8 @@ class MyClient
     /**
      * This is an awesome function.
      *
-     * @param RequestInterface|MyTypeNamespace\ParamType \$param
-     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @param RequestInterface & MyTypeNamespace\ParamType \$param
+     * @return ResultInterface & MyTypeNamespace\ReturnType
      * @throws SoapException
      */
     public function functionName(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
@@ -155,8 +157,10 @@ CODE;
         $expected = <<<CODE
 namespace Vendor\MyNamespace;
 
+use Phpro\SoapClient\Type\MultiArgumentRequest;
 use Phpro\SoapClient\Type\ResultInterface;
 use Vendor\MyTypeNamespace;
+use Phpro\SoapClient\Exception\SoapException;
 
 class MyClient
 {
@@ -165,11 +169,12 @@ class MyClient
      *
      * MultiArgumentRequest with following params:
      *
-     * Vendor\MyTypeNamespace\ParamType \$param
-     * Vendor\MyTypeNamespace\OtherParamType \$param2
+     * \Vendor\MyTypeNamespace\ParamType \$param
+     * \Vendor\MyTypeNamespace\OtherParamType \$param2
      *
-     * @param Phpro\SoapClient\Type\MultiArgumentRequest
-     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @param MultiArgumentRequest \$multiArgumentRequest
+     * @return ResultInterface & MyTypeNamespace\ReturnType
+     * @throws SoapException
      */
     public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Vendor\MyTypeNamespace\ReturnType
     {
@@ -202,7 +207,7 @@ use Phpro\SoapClient\Type\MultiArgumentRequest;
 class MyClient
 {
     /**
-     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @return ResultInterface & MyTypeNamespace\ReturnType
      * @throws SoapException
      */
     public function functionName() : \Vendor\MyTypeNamespace\ReturnType
@@ -227,9 +232,9 @@ CODE;
         $method = new ClientMethod(
             'Function_name',
             [
-                new Parameter('param', $typeNamespace.'\\param_type', new TypeMeta()),
+                new Parameter('param', 'param_type', $typeNamespace, new TypeMeta()),
             ],
-            'return_type',
+            ReturnType::fromMetaData($typeNamespace, XsdType::create('return_type')),
             $typeNamespace,
             new MethodMeta()
         );
@@ -249,8 +254,8 @@ use Vendor\MyTypeNamespace;
 class MyClient
 {
     /**
-     * @param RequestInterface|MyTypeNamespace\ParamType \$param
-     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @param RequestInterface & MyTypeNamespace\ParamType \$param
+     * @return ResultInterface & MyTypeNamespace\ReturnType
      * @throws SoapException
      */
     public function function_name(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
@@ -283,7 +288,7 @@ CODE;
     /**
      * @test
      */
-    function it_does_not_import_known_types() {
+    function it_deals_with_scalar_types_as_a_multi_arguments_request() {
         $assembler = new ClientMethodAssembler();
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
@@ -291,9 +296,62 @@ CODE;
         $method = new ClientMethod(
             'Function_name',
             [
-                new Parameter('param', 'string', new TypeMeta()),
+                new Parameter('param', 'string', $typeNamespace, (new TypeMeta())->withIsSimple(true)),
             ],
-            'return_type',
+            ReturnType::fromMetaData($typeNamespace, XsdType::create('ReturnType')),
+            $typeNamespace,
+            new MethodMeta()
+        );
+
+        $context = new ClientMethodContext($class, $method);
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace Vendor\MyNamespace;
+
+use Phpro\SoapClient\Type\MultiArgumentRequest;
+use Phpro\SoapClient\Type\ResultInterface;
+use Vendor\MyTypeNamespace;
+use Phpro\SoapClient\Exception\SoapException;
+
+class MyClient
+{
+    /**
+     * MultiArgumentRequest with following params:
+     *
+     * string \$param
+     *
+     * @param MultiArgumentRequest \$multiArgumentRequest
+     * @return ResultInterface & MyTypeNamespace\ReturnType
+     * @throws SoapException
+     */
+    public function function_name(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Vendor\MyTypeNamespace\ReturnType
+    {
+        return (\$this->caller)('Function_name', \$multiArgumentRequest);
+    }
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_can_deal_with_scalar_return_types_on_single_arguments()
+    {
+        $assembler = new ClientMethodAssembler();
+        $class = new ClassGenerator();
+        $class->setName('Vendor\\MyNamespace\\MyClient');
+        $typeNamespace = 'Vendor\\MyTypeNamespace';
+        $method = new ClientMethod(
+            'functionName',
+            [],
+            ReturnType::fromMetaData($typeNamespace, XsdType::create('string')->withMeta(
+                fn (TypeMeta $meta): TypeMeta => $meta->withIsSimple(true)
+            )),
             $typeNamespace,
             new MethodMeta()
         );
@@ -306,20 +364,76 @@ CODE;
 namespace Vendor\MyNamespace;
 
 use Phpro\SoapClient\Type\ResultInterface;
-use Vendor\MyTypeNamespace;
+use Phpro\SoapClient\Type\MixedResult;
 use Phpro\SoapClient\Exception\SoapException;
-use Phpro\SoapClient\Type\RequestInterface;
+use Phpro\SoapClient\Type\MultiArgumentRequest;
 
 class MyClient
 {
     /**
-     * @param RequestInterface|string \$param
-     * @return ResultInterface|MyTypeNamespace\ReturnType
+     * @return ResultInterface & MixedResult<string>
      * @throws SoapException
      */
-    public function function_name(string \$param) : \Vendor\MyTypeNamespace\ReturnType
+    public function functionName() : \Phpro\SoapClient\Type\MixedResult
     {
-        return (\$this->caller)('Function_name', \$param);
+        return (\$this->caller)('functionName', new MultiArgumentRequest([]));
+    }
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_can_deal_with_scalar_return_types_on_multi_arguments()
+    {
+        $assembler = new ClientMethodAssembler();
+        $class = new ClassGenerator();
+        $class->setName('Vendor\\MyNamespace\\MyClient');
+        $typeNamespace = 'Vendor\\MyTypeNamespace';
+        $method = new ClientMethod(
+            'functionName',
+            [
+                new Parameter('param1', 'string', $typeNamespace, (new TypeMeta())),
+                new Parameter('param2', 'string', $typeNamespace, (new TypeMeta())),
+            ],
+            ReturnType::fromMetaData($typeNamespace, XsdType::create('string')->withMeta(
+                fn (TypeMeta $meta): TypeMeta => $meta->withIsSimple(true)
+            )),
+            $typeNamespace,
+            new MethodMeta()
+        );
+
+        $context = new ClientMethodContext($class, $method);
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace Vendor\MyNamespace;
+
+use Phpro\SoapClient\Type\MultiArgumentRequest;
+use Phpro\SoapClient\Type\ResultInterface;
+use Phpro\SoapClient\Type\MixedResult;
+use Phpro\SoapClient\Exception\SoapException;
+
+class MyClient
+{
+    /**
+     * MultiArgumentRequest with following params:
+     *
+     * string \$param1
+     * string \$param2
+     *
+     * @param MultiArgumentRequest \$multiArgumentRequest
+     * @return ResultInterface & MixedResult<string>
+     * @throws SoapException
+     */
+    public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Phpro\SoapClient\Type\MixedResult
+    {
+        return (\$this->caller)('functionName', \$multiArgumentRequest);
     }
 }
 

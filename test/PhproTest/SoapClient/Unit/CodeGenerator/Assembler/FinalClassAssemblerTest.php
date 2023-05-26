@@ -10,6 +10,7 @@ use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Laminas\Code\Generator\ClassGenerator;
 use Soap\Engine\Metadata\Model\Property as MetaProperty;
+use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
 
 /**
@@ -69,7 +70,7 @@ CODE;
         $type = new Type($namespace ='MyNamespace', 'MyType', [
             Property::fromMetaData($namespace, new MetaProperty('prop1', XsdType::guess('string'))),
             Property::fromMetaData($namespace, new MetaProperty('prop2', XsdType::guess('int'))),
-        ]);
+        ], new TypeMeta());
 
         return new TypeContext($class, $type);
     }

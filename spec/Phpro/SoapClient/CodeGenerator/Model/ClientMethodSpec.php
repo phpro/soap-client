@@ -3,8 +3,10 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
+use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
 use PhpSpec\ObjectBehavior;
 use Soap\Engine\Metadata\Model\MethodMeta;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class ClientMethodSpec
@@ -16,7 +18,13 @@ class ClientMethodSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('testMethod', [], 'CreditResponse', 'ParamNamespace', new MethodMeta());
+        $this->beConstructedWith(
+            'testMethod',
+            [],
+            ReturnType::fromMetaData('ParamNamespace', XsdType::create('CreditResponse')),
+            'ParamNamespace',
+            new MethodMeta()
+        );
     }
 
     function it_is_initializable()
@@ -34,25 +42,21 @@ class ClientMethodSpec extends ObjectBehavior
         $this->getParameters()->shouldBeArray();
     }
 
-    function is_has_a_return_type()
+    function it_can_count_parameters(): void
     {
-        $this->getReturnType()->shouldBe('CreditResponse');
+        $this->getParametersCount()->shouldBe(0);
     }
 
-    function it_transforms_return_type()
+    function is_has_a_return_type()
     {
-        $this->beConstructedWith('testMethod', [], 'credit_response', 'ParamNamespace', new MethodMeta());
-        $this->getReturnType()->shouldBe('CreditResponse');
+        $this->getReturnType()->shouldBeLike(
+            ReturnType::fromMetaData('ParamNamespace', XsdType::create('CreditResponse'))
+        );
     }
 
     function it_has_a_parameter_namespace()
     {
         $this->getParameterNamespace()->shouldBe('ParamNamespace');
-    }
-
-    function it_has_namespaced_return_type()
-    {
-        $this->getNamespacedReturnType()->shouldBe('\\ParamNamespace\\CreditResponse');
     }
 
     public function it_has_type_meta(): void

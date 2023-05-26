@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsConsideredScalarType;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Method as MetadataMethod;
 use Soap\Engine\Metadata\Model\MethodMeta;
@@ -18,22 +19,19 @@ class ClientMethod
     /**
      * @var Parameter[]
      */
-    private $parameters;
+    private array $parameters;
 
     /**
      * @var non-empty-string
      */
-    private $methodName;
+    private string $methodName;
 
-    /**
-     * @var non-empty-string
-     */
-    private $returnType;
+    private ReturnType $returnType;
 
     /**
      * @var string
      */
-    private $parameterNamespace;
+    private string $parameterNamespace;
 
     private MethodMeta $meta;
 
@@ -42,13 +40,12 @@ class ClientMethod
      *
      * @param non-empty-string $name
      * @param array $params
-     * @param non-empty-string $returnType
      * @param string $parameterNamespace
      */
     public function __construct(
         string $name,
         array $params,
-        string $returnType,
+        ReturnType $returnType,
         string $parameterNamespace,
         MethodMeta $meta
     ) {
@@ -59,6 +56,9 @@ class ClientMethod
         $this->meta = $meta;
     }
 
+    /**
+     * @param non-empty-string $parameterNamespace
+     */
     public static function fromMetadata(
         string $parameterNamespace,
         MetadataMethod $method
@@ -71,7 +71,7 @@ class ClientMethod
                 },
                 iterator_to_array($method->getParameters())
             ),
-            non_empty_string()->assert($method->getReturnType()->getBaseTypeOrFallbackToName()),
+            ReturnType::fromMetaData($parameterNamespace, $method->getReturnType()),
             $parameterNamespace,
             $method->getMeta()
         );
@@ -85,20 +85,17 @@ class ClientMethod
         return $this->parameters;
     }
 
+    public function getParametersCount(): int
+    {
+        return count($this->parameters);
+    }
+
     /**
      * @return non-empty-string
      */
     public function getMethodName(): string
     {
         return $this->methodName;
-    }
-
-    /**
-     * @return non-empty-string
-     */
-    public function getNamespacedReturnType(): string
-    {
-        return '\\'.Normalizer::normalizeNamespace($this->getParameterNamespace().'\\'.$this->getReturnType());
     }
 
     /**
@@ -109,16 +106,29 @@ class ClientMethod
         return $this->parameterNamespace;
     }
 
-    /**
-     * @return non-empty-string
-     */
-    public function getReturnType(): string
+    public function getReturnType(): ReturnType
     {
-        return Normalizer::normalizeClassname($this->returnType);
+        return $this->returnType;
     }
 
     public function getMeta(): MethodMeta
     {
         return $this->meta;
+    }
+
+    public function shouldGenerateAsMultiArgumentsRequest(): bool
+    {
+        $paramCount = $this->getParametersCount();
+        if ($paramCount > 1) {
+            return true;
+        }
+
+        if ($paramCount === 1) {
+            $param = current($this->getParameters());
+
+            return (new IsConsideredScalarType())($param->getMeta());
+        }
+
+        return false;
     }
 }

@@ -133,37 +133,6 @@ CODE;
     /**
      * @test
      */
-    function it_assembles_a_property_with_an_unkown_type()
-    {
-        $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withTypeHints());
-        $context = $this->createContextWithAnUnknownType();
-        $assembler->assemble($context);
-
-        $code = $context->getClass()->generate();
-        $expected = <<<CODE
-namespace MyNamespace;
-
-class MyType
-{
-    /**
-     * @param \\MyNamespace\\Foobar \$prop1
-     * @return \$this
-     */
-    public function setProp1(\$prop1) : static
-    {
-        \$this->prop1 = \$prop1;
-        return \$this;
-    }
-}
-
-CODE;
-
-        $this->assertEquals($expected, $code);
-    }
-
-    /**
-     * @test
-     */
     public function it_generates_without_return_types()
     {
         $assembler = new FluentSetterAssembler((new FluentSetterAssemblerOptions())->withReturnType(false));
@@ -180,7 +149,7 @@ class MyType
      * @param \MyNamespace\\Foobar \$prop1
      * @return \$this
      */
-    public function setProp1(\$prop1)
+    public function setProp1(\MyNamespace\Foobar \$prop1)
     {
         \$this->prop1 = \$prop1;
         return \$this;
@@ -212,7 +181,7 @@ class MyType
      * @param \This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap \$prop1
      * @return \$this
      */
-    public function setProp1(\$prop1) : static
+    public function setProp1(\This\Is\My\Very\Very\Long\Namespace\And\Class\Name\That\Should\Not\Never\Ever\Wrap \$prop1) : static
     {
         \$this->prop1 = \$prop1;
         return \$this;
@@ -237,7 +206,7 @@ CODE;
                     static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
                 ))
             ),
-        ]);
+        ], new TypeMeta());
 
         $context =  new PropertyContext($class, $type, $property);
         $assembler->assemble($context);
@@ -275,7 +244,7 @@ CODE;
                 $namespace,
                 new MetaProperty('prop1', XsdType::guess('string'))
             ),
-        ]);
+        ], new TypeMeta());
 
         return new PropertyContext($class, $type, $property);
     }
@@ -288,7 +257,7 @@ CODE;
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type($namespace = 'MyNamespace', 'MyType', [
             $property = Property::fromMetaData($namespace, new MetaProperty('prop1', XsdType::guess('foobar'))),
-        ]);
+        ], new TypeMeta());
 
         return new PropertyContext($class, $type, $property);
     }
@@ -305,7 +274,7 @@ CODE;
             ),
         ];
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', array_values($properties));
+        $type = new Type('MyNamespace', 'MyType', array_values($properties), new TypeMeta());
         $property = $properties['prop1'];
         return new PropertyContext($class, $type, $property);
     }

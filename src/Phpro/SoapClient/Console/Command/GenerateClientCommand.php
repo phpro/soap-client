@@ -76,7 +76,7 @@ class GenerateClientCommand extends Command
 
         $destination = $config->getClientDestination().'/'.$config->getClientName().'.php';
         $methodMap = ClientMethodMap::fromMetadata(
-            $config->getTypeNamespace(),
+            non_empty_string()->assert($config->getTypeNamespace()),
             $config->getEngine()->getMetadata()->getMethods()
         );
 
@@ -95,7 +95,7 @@ class GenerateClientCommand extends Command
         );
 
         $io->success('Generated client at ' . $destination);
-        
+
         return 0;
     }
 

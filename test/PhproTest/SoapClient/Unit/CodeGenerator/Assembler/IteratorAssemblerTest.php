@@ -133,7 +133,7 @@ CODE;
                     ->withMinOccurs(1)
                     ->withMaxOccurs(2)
             )))),
-        ]);
+        ], new TypeMeta());
 
         return new TypeContext($class, $type);
     }

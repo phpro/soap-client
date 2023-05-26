@@ -44,12 +44,4 @@ class ClientMethodContext implements ContextInterface
     {
         return $this->method;
     }
-
-    /**
-     * @return int
-     */
-    public function getArgumentCount(): int
-    {
-        return \count($this->method->getParameters());
-    }
 }
