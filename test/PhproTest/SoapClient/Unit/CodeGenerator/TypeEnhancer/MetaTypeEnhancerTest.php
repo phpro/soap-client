@@ -54,14 +54,38 @@ class MetaTypeEnhancerTest extends TestCase
         yield 'nullable' => [
             (new TypeMeta())->withIsNullable(true),
             'simple',
-            'null|simple',
+            'null | simple',
             '?simple',
         ];
         yield 'nullable-array' => [
             (new TypeMeta())->withIsList(true)->withIsNullable(true),
             'simple',
-            'null|array<int<min,max>, simple>',
+            'null | array<int<min,max>, simple>',
             '?array',
+        ];
+        yield 'enum' => [
+            (new TypeMeta())->withEnums(['a', 'b']),
+            'string',
+            "'a' | 'b'",
+            'string',
+        ];
+        yield 'enum-list' => [
+            (new TypeMeta())->withEnums(['a', 'b'])->withIsList(true),
+            'string',
+            "array<int<min,max>, 'a' | 'b'>",
+            'array',
+        ];
+        yield 'nullable-enum-list' => [
+            (new TypeMeta())->withEnums(['a', 'b'])->withIsList(true)->withIsNullable(true),
+            'string',
+            "null | array<int<min,max>, 'a' | 'b'>",
+            '?array',
+        ];
+        yield 'nullable-enum' => [
+            (new TypeMeta())->withEnums(['a', 'b'])->withIsNullable(true),
+            'string',
+            "null | 'a' | 'b'",
+            '?string',
         ];
     }
 }

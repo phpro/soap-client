@@ -64,6 +64,9 @@ Since PHP does not have an internal `enum` type,
 ext-soap will transform the data to the type that is determined in the `xsd:restriction` section.
 The soap client will never try to validate the input against the configured enumerations inside the WSDL.
 
+We've added basic support for enumerations in this package so that issues can be resolved at static analysis level.
+However, during runtime, it is not possible to validate these enumerations without creating a custom typemap.
+
 For example:
 ```xml
 <xsd:simpleType name="PhoneTypeEnum">
@@ -81,6 +84,12 @@ For example:
 - If you do want to use a custom class for the enumerations type, you can create a type converter like this:
 
 ```php
+enum PhoneTypeEnum : string {
+    case HOME = 'Home';
+    case GSM = 'Gsm';
+    case OFFICE = 'Office';
+}
+
 $soapOptions = [
     'typemap' => [
         [
@@ -90,10 +99,10 @@ $soapOptions = [
                 $doc = new \DOMDocument();
                 $doc->loadXML($xml);
 
-                return new PhoneTypeEnum($doc->textContent);
+                return PhoneTypeEnum::from($doc->textContent);
             },
             'to_xml' => function(PhoneTypeEnum $enum) {
-                return sprintf('<PhoneTypeEnum>%s</PhoneTypeEnum>', $enum->getValue());
+                return sprintf('<PhoneTypeEnum>%s</PhoneTypeEnum>', $enum->value);
             },
         ],
     ],
