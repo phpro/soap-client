@@ -86,6 +86,7 @@ EOENGINE;
         $body .= $this->parseIndentedRuleSet($file, $this->generateGetterSetterRuleSet($context));
         $body .= $this->parseIndentedRuleSet($file, $this->generateRequestRuleSet($context));
         $body .= $this->parseIndentedRuleSet($file, self::RULESET_RESPONSE);
+        $body .= $this->parseIndentedRuleSet($file, $this->generateInheritanceRules());
 
         $file->setBody($body.';'.GeneratorInterface::EOL);
 
@@ -142,5 +143,23 @@ REQUEST;
     )
 )
 REQUEST;
+    }
+
+    private function generateInheritanceRules(): string
+    {
+        return <<<INHERITANCE
+->addRule(
+    new Rules\IsExtendingTypeRule(
+        \$engine->getMetadata(),
+        new Rules\AssembleRule(new Assembler\ExtendingTypeAssembler())
+    )
+)
+->addRule(
+    new Rules\IsAbstractTypeRule(
+        \$engine->getMetadata(),
+        new Rules\AssembleRule(new Assembler\AbstractClassAssembler())
+    )
+)
+INHERITANCE;
     }
 }
