@@ -87,5 +87,64 @@ class MetaTypeEnhancerTest extends TestCase
             "null | 'a' | 'b'",
             '?string',
         ];
+        yield 'union' => [
+            (new TypeMeta())
+                ->withIsAlias(true)
+                ->withUnions([
+                    ['type' => 'string', 'isList' => false, 'namespace' => 'xx'],
+                    ['type' => 'int', 'isList' => false, 'namespace' => 'xx'],
+                ]),
+            'unionType',
+            "string | int",
+            'mixed',
+        ];
+        yield 'union-with-list' => [
+            (new TypeMeta())
+                ->withIsAlias(true)
+                ->withUnions([
+                    ['type' => 'string', 'isList' => false, 'namespace' => 'xx'],
+                    ['type' => 'int', 'isList' => true, 'namespace' => 'xx'],
+                ]),
+            'unionType',
+            "string | list<int>",
+            'mixed',
+        ];
+        yield 'nullable-union-with-list' => [
+            (new TypeMeta())
+                ->withIsAlias(true)
+                ->withIsNullable(true)
+                ->withUnions([
+                    ['type' => 'string', 'isList' => false, 'namespace' => 'xx'],
+                    ['type' => 'int', 'isList' => true, 'namespace' => 'xx'],
+                ]),
+            'unionType',
+            "null | string | list<int>",
+            '?mixed',
+        ];
+        yield 'array-of-union-with-list' => [
+            (new TypeMeta())
+                ->withIsList(true)
+                ->withIsAlias(true)
+                ->withUnions([
+                    ['type' => 'string', 'isList' => false, 'namespace' => 'xx'],
+                    ['type' => 'int', 'isList' => true, 'namespace' => 'xx'],
+                ]),
+            'unionType',
+            "array<int<min,max>, string | list<int>>",
+            'array',
+        ];
+        yield 'nullable-array-of-union-with-list' => [
+            (new TypeMeta())
+                ->withIsList(true)
+                ->withIsAlias(true)
+                ->withIsNullable(true)
+                ->withUnions([
+                    ['type' => 'string', 'isList' => false, 'namespace' => 'xx'],
+                    ['type' => 'int', 'isList' => true, 'namespace' => 'xx'],
+                ]),
+            'unionType',
+            "null | array<int<min,max>, string | list<int>>",
+            '?array',
+        ];
     }
 }
