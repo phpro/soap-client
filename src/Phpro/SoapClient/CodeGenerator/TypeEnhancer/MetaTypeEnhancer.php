@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\TypeEnhancer;
 
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\ArrayBoundsCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\EnumValuesCalculator;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\UnionTypesCalculator;
 use Soap\Engine\Metadata\Model\TypeMeta;
 
 final class MetaTypeEnhancer implements TypeEnhancer
@@ -20,10 +21,11 @@ final class MetaTypeEnhancer implements TypeEnhancer
      */
     public function asDocBlockType(string $type): string
     {
-        $enums = $this->meta->enums()->unwrapOr([]);
-        if ($enums) {
-            $type = (new EnumValuesCalculator())($this->meta);
-        }
+        $type = match (true) {
+            (bool) $this->meta->enums()->unwrapOr([]) => (new EnumValuesCalculator())($this->meta),
+            (bool) $this->meta->unions()->unwrapOr([]) => (new UnionTypesCalculator())($this->meta),
+            default => $type
+        };
 
         $isArray = $this->meta->isList()->unwrapOr(false);
         if ($isArray) {
@@ -44,6 +46,11 @@ final class MetaTypeEnhancer implements TypeEnhancer
      */
     public function asPhpType(string $type): string
     {
+        $unions = (bool) $this->meta->unions()->unwrapOr([]);
+        if ($unions) {
+            $type = 'mixed';
+        }
+
         $isArray = $this->meta->isList()->unwrapOr(false);
         if ($isArray) {
             $type = 'array';

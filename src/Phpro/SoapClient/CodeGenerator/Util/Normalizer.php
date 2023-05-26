@@ -200,22 +200,6 @@ class Normalizer
     }
 
     /**
-     * @param non-empty-string $fqn
-     *
-     * @return non-empty-string
-     */
-    public static function normalizeClassnameInFQN(string $fqn): string
-    {
-        if (self::isKnownType($fqn)) {
-            return $fqn;
-        }
-
-        $className = self::getClassNameFromFQN($fqn);
-
-        return substr($fqn, 0, -1 * \strlen($className)).self::normalizeClassname($className);
-    }
-
-    /**
      * @param non-empty-string $property
      *
      * @return non-empty-string

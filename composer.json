@@ -34,7 +34,7 @@
         "phpro/grumphp-shim": "^1.14",
         "phpspec/phpspec": "~7.2",
         "phpspec/prophecy-phpunit": "^2.0.1",
-        "phpstan/phpstan": "^1.9.0",
+        "phpstan/phpstan": "^1.10.15",
         "phpunit/phpunit": "~9.5",
         "squizlabs/php_codesniffer": "^3.7.1"
     },
