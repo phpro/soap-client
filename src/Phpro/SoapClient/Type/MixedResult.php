@@ -3,21 +3,17 @@
 namespace Phpro\SoapClient\Type;
 
 /**
- * Class MixedResult
- *
- * @package Phpro\SoapClient\Type
+ * @template T
  */
 class MixedResult implements ResultInterface
 {
     /**
-     * @var mixed
+     * @var T
      */
     private $result;
 
     /**
-     * MixedResult constructor.
-     *
-     * @param mixed $result
+     * @param T $result
      */
     public function __construct($result)
     {
@@ -25,7 +21,7 @@ class MixedResult implements ResultInterface
     }
 
     /**
-     * @return mixed
+     * @return T
      */
     public function getResult()
     {

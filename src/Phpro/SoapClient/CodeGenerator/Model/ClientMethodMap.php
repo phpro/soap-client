@@ -27,6 +27,9 @@ class ClientMethodMap
         $this->methods = $methods;
     }
 
+    /**
+     * @param non-empty-string $parameterNamespace
+     */
     public static function fromMetadata(string $parameterNamespace, MethodCollection $collection): self
     {
         return new self($collection->map(function (Method $method) use ($parameterNamespace) {

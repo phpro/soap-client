@@ -21,7 +21,8 @@ class TypeSpec extends ObjectBehavior
         $this->beConstructedWith(
             $namespace = 'MyNamespace',
             'myType',
-            [new Property('prop1', 'string', $namespace, new TypeMeta())]
+            [new Property('prop1', 'string', $namespace, new TypeMeta())],
+            new TypeMeta()
         );
     }
 
@@ -49,10 +50,14 @@ class TypeSpec extends ObjectBehavior
     {
         $this->getFullName()->shouldReturn('MyNamespace\\MyType');
     }
+    function it_has_meta()
+    {
+        $this->getMeta()->shouldBeLike(new TypeMeta());
+    }
 
     function it_should_not_replace_underscores_in_paths()
     {
-        $this->beConstructedWith('MyNamespace', 'my_type_3_2', ['prop1' => 'string']);
+        $this->beConstructedWith('MyNamespace', 'my_type_3_2', ['prop1' => 'string'], new TypeMeta());
         $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/MyType32.php');
     }
 
@@ -61,7 +66,8 @@ class TypeSpec extends ObjectBehavior
         $this->beConstructedWith(
             $namespace = 'MyNamespace',
             'Final',
-            [new Property('xor', 'string', $namespace, new TypeMeta())]
+            [new Property('xor', 'string', $namespace, new TypeMeta())],
+            new TypeMeta()
         );
 
         $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/FinalType.php');

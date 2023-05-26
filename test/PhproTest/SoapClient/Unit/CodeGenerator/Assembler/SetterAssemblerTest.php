@@ -169,7 +169,7 @@ CODE;
                     static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
                 ))
             ),
-        ]);
+        ], new TypeMeta());
 
         $context =  new PropertyContext($class, $type, $property);
         $assembler->assemble($context);
@@ -202,8 +202,7 @@ CODE;
         $class = new ClassGenerator('MyType', 'MyNamespace');
         $type = new Type('MyNamespace', 'MyType', [
             $property = Property::fromMetaData('ns1', new MetaProperty('prop1', XsdType::guess('string'))),
-        ]);
-
+        ], new TypeMeta());
 
         return new PropertyContext($class, $type, $property);
     }
@@ -220,7 +219,7 @@ CODE;
             ),
         ];
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', array_values($properties));
+        $type = new Type('MyNamespace', 'MyType', array_values($properties), new TypeMeta());
         $property = $properties['prop1'];
         return new PropertyContext($class, $type, $property);
     }

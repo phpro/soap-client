@@ -22,7 +22,7 @@ class TypeMapSpec extends ObjectBehavior
         $this->beConstructedWith($namespace = 'MyNamespace', [
             new Type($namespace, 'type1', [
                 new Property('prop1', 'string', $namespace, new TypeMeta())
-            ])
+            ], new TypeMeta())
         ]);
     }
 

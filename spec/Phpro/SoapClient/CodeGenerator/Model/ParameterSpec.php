@@ -16,7 +16,7 @@ class ParameterSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('MyParameter', 'MyParameterType', new TypeMeta());
+        $this->beConstructedWith('MyParameter', 'MyParameterType', 'MyNamespace', new TypeMeta());
     }
 
     function it_is_initializable()
@@ -39,7 +39,7 @@ class ParameterSpec extends ObjectBehavior
         $this->toArray()->shouldBe(
             [
                 'name' => 'MyParameter',
-                'type' => 'MyParameterType',
+                'type' => '\\MyNamespace\\MyParameterType',
             ]
         );
     }

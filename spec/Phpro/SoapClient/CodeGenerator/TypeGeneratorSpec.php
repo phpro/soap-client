@@ -47,7 +47,8 @@ class TypeGeneratorSpec extends ObjectBehavior
         $type = new Type(
             $namespace = 'MyNamespace',
             'MyType',
-            [new Property('prop1', 'string', $namespace, new TypeMeta())]
+            [new Property('prop1', 'string', $namespace, new TypeMeta())],
+            new TypeMeta()
         );
         $property = $type->getProperties()[0];
 
@@ -70,7 +71,8 @@ class TypeGeneratorSpec extends ObjectBehavior
         $type = new Type(
             $namespace = 'MyNamespace',
             'MyType',
-            [new Property('prop1', 'string', $namespace, new TypeMeta())]
+            [new Property('prop1', 'string', $namespace, new TypeMeta())],
+            new TypeMeta()
         );
         $property = $type->getProperties()[0];
 

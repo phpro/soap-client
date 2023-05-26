@@ -12,12 +12,17 @@ class Parameter
     /**
      * @var non-empty-string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var non-empty-string
      */
-    private $type;
+    private string $type;
+
+    /**
+     * @var non-empty-string
+     */
+    private string $namespace;
 
     private TypeMeta $meta;
 
@@ -26,24 +31,34 @@ class Parameter
      *
      * @param non-empty-string $name
      * @param non-empty-string $type
+     * @param non-empty-string $namespace
      */
-    public function __construct(string $name, string $type, TypeMeta $meta)
+    public function __construct(string $name, string $type, string $namespace, TypeMeta $meta)
     {
         $this->name = Normalizer::normalizeProperty($name);
-        $this->type = Normalizer::normalizeClassnameInFQN($type);
+        $this->type = Normalizer::normalizeDataType($type);
+        $this->namespace = Normalizer::normalizeNamespace($namespace);
         $this->meta = $meta;
     }
 
+    /**
+     * @param non-empty-string $parameterNamespace
+     */
     public static function fromMetadata(string $parameterNamespace, MetadataParameter $parameter): Parameter
     {
-        $type = non_empty_string()->assert($parameter->getType()->getBaseTypeOrFallbackToName());
+        $type = $parameter->getType();
+        $meta = $type->getMeta();
+        $isArrayType = $meta->isList()->unwrapOr(false);
 
         return new self(
             non_empty_string()->assert($parameter->getName()),
-            Normalizer::isKnownType($type)
-                ? $type
-                : $parameterNamespace.'\\'.$type,
-            $parameter->getType()->getMeta()
+            non_empty_string()->assert(
+                // In case of an array base-type, use the real name.
+                // The metadata will be used. The meta data will be used to enhance type information!
+                $isArrayType ? $type->getName() : $type->getBaseTypeOrFallbackToName()
+            ),
+            $parameterNamespace,
+            $meta
         );
     }
 
@@ -60,7 +75,11 @@ class Parameter
      */
     public function getType(): string
     {
-        return $this->type;
+        if (Normalizer::isKnownType($this->type)) {
+            return $this->type;
+        }
+
+        return '\\'.$this->namespace.'\\'.Normalizer::normalizeClassname($this->type);
     }
 
     /**
@@ -72,7 +91,7 @@ class Parameter
     {
         return [
             'name' => $this->name,
-            'type' => $this->type,
+            'type' => $this->getType(),
         ];
     }
 

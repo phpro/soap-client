@@ -8,6 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Laminas\Code\Generator\ClassGenerator;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class TraitAssemblerTest
@@ -92,7 +93,7 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', []);
+        $type = new Type('MyNamespace', 'MyType', [], new TypeMeta());
 
         return new TypeContext($class, $type);
     }

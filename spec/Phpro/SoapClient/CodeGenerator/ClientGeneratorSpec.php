@@ -13,6 +13,7 @@ use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
+use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -20,6 +21,7 @@ use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\FileGenerator;
 use Soap\Engine\Metadata\Model\MethodMeta;
 use Soap\Engine\Metadata\Model\TypeMeta;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class ClientGeneratorSpec
@@ -48,8 +50,8 @@ class ClientGeneratorSpec extends ObjectBehavior
     {
         $method = new ClientMethod(
             'Test',
-            [new Parameter('parameters', 'Test', new TypeMeta())],
-            'TestResponse',
+            [new Parameter('parameters', 'Test', '', new TypeMeta())],
+            ReturnType::fromMetaData('', XsdType::create('TestResponse')),
             '',
             new MethodMeta()
         );
@@ -70,7 +72,14 @@ class ClientGeneratorSpec extends ObjectBehavior
 
     private function it_generates_clients_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
     {
-        $method = new ClientMethod('Test', [new Parameter('parameters', 'Test')], 'TestResponse', '', new MethodMeta());
+        $method = new ClientMethod(
+            'Test',
+            [new Parameter('parameters', 'Test', '', new TypeMeta())],
+            ReturnType::fromMetaData('', XsdType::create('TestResponse')),
+            '',
+            new MethodMeta()
+        );
+
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
 

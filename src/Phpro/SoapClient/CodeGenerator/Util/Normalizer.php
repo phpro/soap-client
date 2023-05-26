@@ -11,7 +11,6 @@ use function Psl\Type\non_empty_string;
  */
 class Normalizer
 {
-
     private static $normalizations = [
         'any' => 'mixed',
         'anytype' => 'mixed',
@@ -30,6 +29,7 @@ class Normalizer
         'callable' => 'callable',
         'iterable' => 'iterable',
         'array' => 'array',
+        'void' => 'void',
     ];
 
     /**
