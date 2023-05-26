@@ -133,17 +133,20 @@ class EnumTest extends AbstractSoapTestCase
                             return null;
                         }
 
-                        return $this->createEnum($doc->textContent);
+                        return OfficeEnum::from($doc->textContent)->value;
                     },
                     'to_xml' => function($enum) {
-                        return sprintf('<PhoneTypeEnum>%s</PhoneTypeEnum>', $enum);
+                        return sprintf(
+                            '<PhoneTypeEnum>%s</PhoneTypeEnum>',
+                            $enum ? OfficeEnum::from($enum)->value : ''
+                        );
                     },
                 ]
             ]
         ]);
         $engine = new SimpleEngine($this->driver, $this->transport);
 
-        $input = $this->createEnum('Home');
+        $input = OfficeEnum::HOME->value;
         $response = $engine->request('validate', [$input]);
         $lastRequestInfo = $this->transport->collectLastRequestInfo();
 
@@ -157,27 +160,15 @@ class EnumTest extends AbstractSoapTestCase
             $lastRequestInfo->getLastResponse()
         );
     }
+}
 
-    private function createEnum(string $value) {
-        return new class ($value) {
-            /**
-             * @var string
-             */
-            private $value;
+enum OfficeEnum : string {
+    case HOME = 'Home';
+    case GSM = 'Gsm';
+    case OFFICE = 'Office';
 
-            public function __construct(string $value)
-            {
-                if (!in_array($value, ['Home', 'Office', 'Gsm'], true)) {
-                    throw new \Exception('Unknown enum value ' . $value);
-                }
-
-                $this->value = $value;
-            }
-
-            public function __toString()
-            {
-                return $this->value;
-            }
-        };
-    }
+    /**
+     * sadly __toString is not possible on enums.
+     * Otherwise, soap would just be able to use php enums...
+     */
 }

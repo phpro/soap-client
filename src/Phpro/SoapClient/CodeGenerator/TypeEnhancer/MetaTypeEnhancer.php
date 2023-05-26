@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\CodeGenerator\TypeEnhancer;
 
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\ArrayBoundsCalculator;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\EnumValuesCalculator;
 use Soap\Engine\Metadata\Model\TypeMeta;
 
 final class MetaTypeEnhancer implements TypeEnhancer
@@ -19,6 +20,11 @@ final class MetaTypeEnhancer implements TypeEnhancer
      */
     public function asDocBlockType(string $type): string
     {
+        $enums = $this->meta->enums()->unwrapOr([]);
+        if ($enums) {
+            $type = (new EnumValuesCalculator())($this->meta);
+        }
+
         $isArray = $this->meta->isList()->unwrapOr(false);
         if ($isArray) {
             $type = 'array<'.(new ArrayBoundsCalculator())($this->meta).', '.$type.'>';
@@ -26,7 +32,7 @@ final class MetaTypeEnhancer implements TypeEnhancer
 
         $isNullable = $this->meta->isNullable()->unwrapOr(false);
         if ($isNullable) {
-            $type = 'null|'.$type;
+            $type = 'null | '.$type;
         }
 
         return $type;
