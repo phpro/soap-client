@@ -72,6 +72,17 @@ class NormalizerSpec extends ObjectBehavior
         $this->normalizeProperty('My-./final*prop_123')->shouldReturn('MyFinalProp_123');
     }
 
+    function it_noramizes_properties_for_common_naming_convention()
+    {
+        $this->normalizePropertyForCommonNamingConvention('prop1')->shouldReturn('prop1');
+        $this->normalizePropertyForCommonNamingConvention('final')->shouldReturn('final');
+        $this->normalizePropertyForCommonNamingConvention('Final')->shouldReturn('Final');
+        $this->normalizePropertyForCommonNamingConvention('UpperCased')->shouldReturn('UpperCased');
+        $this->normalizePropertyForCommonNamingConvention('my-./*prop_123')->shouldReturn('myProp123');
+        $this->normalizePropertyForCommonNamingConvention('My-./*prop_123')->shouldReturn('MyProp123');
+        $this->normalizePropertyForCommonNamingConvention('My-./final*prop_123')->shouldReturn('MyFinalProp123');
+    }
+
     function it_normalizes_datatypes()
     {
         $this->normalizeDataType('string')->shouldReturn('string');
@@ -101,6 +112,19 @@ class NormalizerSpec extends ObjectBehavior
         $this->generatePropertyMethod('get', 'My-./final*prop_123')->shouldReturn('getMyFinalProp_123');
         $this->generatePropertyMethod('get', 'final')->shouldReturn('getFinal');
         $this->generatePropertyMethod('set', 'Final')->shouldReturn('setFinal');
+    }
+
+    function it_generates_common_naming_convention_property_methods()
+    {
+        $this->generateCommonNamingConventionPropertyMethod('get', 'prop1')->shouldReturn('getProp1');
+        $this->generateCommonNamingConventionPropertyMethod('set', 'prop1')->shouldReturn('setProp1');
+        $this->generateCommonNamingConventionPropertyMethod('get', 'prop1_test*./')->shouldReturn('getProp1Test');
+        $this->generateCommonNamingConventionPropertyMethod('get', 'UpperCased')->shouldReturn('getUpperCased');
+        $this->generateCommonNamingConventionPropertyMethod('get', 'my-./*prop_123')->shouldReturn('getMyProp123');
+        $this->generateCommonNamingConventionPropertyMethod('get', 'My-./*prop_123')->shouldReturn('getMyProp123');
+        $this->generateCommonNamingConventionPropertyMethod('get', 'My-./final*prop_123')->shouldReturn('getMyFinalProp123');
+        $this->generateCommonNamingConventionPropertyMethod('get', 'final')->shouldReturn('getFinal');
+        $this->generateCommonNamingConventionPropertyMethod('set', 'Final')->shouldReturn('setFinal');
     }
 
     function it_gets_classname_from_fqn()

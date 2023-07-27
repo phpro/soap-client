@@ -51,7 +51,11 @@ class GetterAssembler implements AssemblerInterface
         $property = $context->getProperty();
         try {
             $prefix = $this->getPrefix($property);
-            $methodName = Normalizer::generatePropertyMethod($prefix, $property->getName());
+            if ($this->options->useCommonNamingConvention()) {
+                $methodName = Normalizer::generateCommonNamingConventionPropertyMethod($prefix, $property->getName());
+            } else {
+                $methodName = Normalizer::generatePropertyMethod($prefix, $property->getName());
+            }
             $class->removeMethod($methodName);
 
             $methodGenerator = new MethodGenerator($methodName);

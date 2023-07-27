@@ -219,6 +219,37 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_assembles_a_property_with_common_naming_convention()
+    {
+        $options = (new GetterAssemblerOptions())->withCommonNamingConvention();
+        $assembler = new GetterAssembler($options);
+        $context = $this->createContext('prop5');
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * @return string
+     */
+    public function getProp5()
+    {
+        return \$this->prop_5;
+    }
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+
+    /**
      * @param string $propertyName
      * @return PropertyContext
      */
@@ -229,6 +260,7 @@ CODE;
             'prop2' => new Property('prop2', 'int', 'ns1'),
             'prop3' => new Property('prop3', 'boolean', 'ns1'),
             'prop4' => new Property('prop4', 'My_Response', 'ns1'),
+            'prop5' => new Property('prop_5', 'string', 'ns1'),
         ];
 
         $class = new ClassGenerator('MyType', 'MyNamespace');

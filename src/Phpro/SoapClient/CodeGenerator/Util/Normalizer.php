@@ -224,6 +224,16 @@ class Normalizer
     }
 
     /**
+     * @param non-empty-string $property
+     *
+     * @return non-empty-string
+     */
+    public static function normalizePropertyForCommonNamingConvention(string $property): string
+    {
+        return self::camelCase($property, '{[^a-z0-9]+}i');
+    }
+
+    /**
      * @param non-empty-string $type
      *
      * @return non-empty-string
@@ -249,6 +259,17 @@ class Normalizer
     public static function generatePropertyMethod(string $prefix, string $property): string
     {
         return strtolower($prefix).ucfirst(self::normalizeProperty($property));
+    }
+
+    /**
+     * @param non-empty-string $prefix
+     * @param non-empty-string $property
+     *
+     * @return non-empty-string
+     */
+    public static function generateCommonNamingConventionPropertyMethod(string $prefix, string $property): string
+    {
+        return strtolower($prefix).ucfirst(self::normalizePropertyForCommonNamingConvention($property));
     }
 
     /**

@@ -27,6 +27,11 @@ class GetterAssemblerOptions
     private $docBlocks = true;
 
     /**
+     * @var bool
+     */
+    private $commonNamingConvention = false;
+
+    /**
      * @return GetterAssemblerOptions
      */
     public static function create(): GetterAssemblerOptions
@@ -95,5 +100,26 @@ class GetterAssemblerOptions
     public function useDocBlocks(): bool
     {
         return $this->docBlocks;
+    }
+
+    /**
+     * @param bool $withCommonNamingConvention
+     *
+     * @return GetterAssemblerOptions
+     */
+    public function withCommonNamingConvention(bool $withCommonNamingConvention = true): GetterAssemblerOptions
+    {
+        $new = clone $this;
+        $new->commonNamingConvention = $withCommonNamingConvention;
+
+        return $new;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useCommonNamingConvention(): bool
+    {
+        return $this->commonNamingConvention;
     }
 }
