@@ -17,6 +17,8 @@ use Soap\Wsdl\Loader\FlatteningLoader;
 use Soap\Wsdl\Loader\WsdlLoader;
 use Soap\WsdlReader\Locator\ServiceSelectionCriteria;
 use Soap\WsdlReader\Metadata\Wsdl1MetadataProvider;
+use Soap\WsdlReader\Model\Definitions\SoapVersion;
+use Soap\WsdlReader\Parser\Context\ParserContext;
 use Soap\WsdlReader\Wsdl1Reader;
 
 final class CodeGeneratorEngineFactory
@@ -27,7 +29,9 @@ final class CodeGeneratorEngineFactory
     public static function create(
         string $wsdlLocation,
         ?WsdlLoader $loader = null,
-        ?MetadataOptions $metadataOptions = null
+        ?MetadataOptions $metadataOptions = null,
+        ?SoapVersion $preferredSoapVersion = null,
+        ?ParserContext $parserContext = null,
     ): Engine {
         $loader ??= new FlatteningLoader(Psr18Loader::createForClient(Psr18ClientDiscovery::find()));
         $metadataOptions ??= MetadataOptions::empty()->withTypesManipulator(
@@ -38,11 +42,19 @@ final class CodeGeneratorEngineFactory
             new IntersectDuplicateTypesStrategy()
         );
 
-        return new LazyEngine(static function () use ($wsdlLocation, $loader, $metadataOptions) {
-            $wsdl = (new Wsdl1Reader($loader))($wsdlLocation);
+        return new LazyEngine(static function () use (
+            $wsdlLocation,
+            $loader,
+            $metadataOptions,
+            $parserContext,
+            $preferredSoapVersion
+        ) {
+            $wsdl = (new Wsdl1Reader($loader))($wsdlLocation, $parserContext);
             $metadataProvider = new Wsdl1MetadataProvider(
                 $wsdl,
-                ServiceSelectionCriteria::defaults()->withAllowHttpPorts(false)
+                ServiceSelectionCriteria::defaults()
+                    ->withAllowHttpPorts(false)
+                    ->withPreferredSoapVersion($preferredSoapVersion)
             );
 
             return new SimpleEngine(
