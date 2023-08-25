@@ -4,7 +4,6 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
-use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsLocatedInBaseNamespace;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 
@@ -34,7 +33,7 @@ class ExtendingTypeAssembler implements AssemblerInterface
         $meta = $type->getMeta();
         $extending = $meta->extends()->unwrapOr(null);
 
-        if (!$extending || (new IsLocatedInBaseNamespace())($extending['namespace'])) {
+        if (!$extending || $extending['isSimple']) {
             return;
         }
 

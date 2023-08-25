@@ -61,6 +61,9 @@ class Property
         $meta = $type->getMeta();
         $isArrayType = $meta->isList()->unwrapOr(false);
 
+        // TODO : types that extend simple types should just use the 'name' instead of the base type
+        $isArrayType = $isArrayType || $meta->extends()->map(static fn ($extends) => $extends['isSimple'])->unwrapOr(false);
+
         return new self(
             non_empty_string()->assert($property->getName()),
             non_empty_string()->assert(

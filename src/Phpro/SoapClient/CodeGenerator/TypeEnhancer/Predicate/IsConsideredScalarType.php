@@ -10,7 +10,6 @@ class IsConsideredScalarType
     public function __invoke(TypeMeta $meta): bool
     {
         return $meta->isSimple()->unwrapOr(false)
-            || $meta->isList()->unwrapOr(false)
-            || $meta->isNullable()->unwrapOr(false);
+            || $meta->isAttribute()->unwrapOr(false);
     }
 }
