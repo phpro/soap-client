@@ -119,7 +119,7 @@ class MetaTypeEnhancerTest extends TestCase
                 ]),
             'unionType',
             "null | string | list<int>",
-            '?mixed',
+            'mixed',
         ];
         yield 'array-of-union-with-list' => [
             (new TypeMeta())

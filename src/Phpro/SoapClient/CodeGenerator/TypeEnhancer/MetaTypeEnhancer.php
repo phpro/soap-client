@@ -6,6 +6,7 @@ namespace Phpro\SoapClient\CodeGenerator\TypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\ArrayBoundsCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\EnumValuesCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\UnionTypesCalculator;
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsConsideredNullableType;
 use Soap\Engine\Metadata\Model\TypeMeta;
 
 final class MetaTypeEnhancer implements TypeEnhancer
@@ -32,7 +33,7 @@ final class MetaTypeEnhancer implements TypeEnhancer
             $type = 'array<'.(new ArrayBoundsCalculator())($this->meta).', '.$type.'>';
         }
 
-        $isNullable = $this->meta->isNullable()->unwrapOr(false);
+        $isNullable = (new IsConsideredNullableType())($this->meta);
         if ($isNullable) {
             $type = 'null | '.$type;
         }
@@ -56,8 +57,8 @@ final class MetaTypeEnhancer implements TypeEnhancer
             $type = 'array';
         }
 
-        $isNullable = $this->meta->isNullable()->unwrapOr(false);
-        if ($isNullable) {
+        $isNullable = (new IsConsideredNullableType())($this->meta);
+        if ($isNullable && $type !== 'mixed') {
             $type = '?'.$type;
         }
 
