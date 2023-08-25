@@ -72,6 +72,35 @@ CODE;
     /**
      * @test
      */
+    function it_assembles_an_optional_value()
+    {
+        $assembler = new GetterAssembler(GetterAssemblerOptions::create()->withOptionalValue());
+        $context = $this->createContext();
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * @return null | string
+     */
+    public function getProp1() : ?string
+    {
+        return \$this->prop1;
+    }
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
     public function it_assembles_without_return_type()
     {
         $options = (new GetterAssemblerOptions())

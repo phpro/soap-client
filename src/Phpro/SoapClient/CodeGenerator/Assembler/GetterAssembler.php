@@ -9,6 +9,7 @@ use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\MethodGenerator;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class GetterAssembler
@@ -49,6 +50,12 @@ class GetterAssembler implements AssemblerInterface
     {
         $class = $context->getClass();
         $property = $context->getProperty();
+
+        // Property might be forced to be nullable by the code generator.
+        if ($this->options->useOptionalValue()) {
+            $property = $property->withMeta(fn(TypeMeta $meta): TypeMeta => $meta->withIsNullable(true));
+        }
+
         try {
             $prefix = $this->getPrefix($property);
             $methodName = Normalizer::generatePropertyMethod($prefix, $property->getName());

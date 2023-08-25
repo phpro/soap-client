@@ -14,6 +14,7 @@ class PropertyAssemblerOptions
     private bool $typeHints = true;
     private bool $docBlocks = true;
     private string $visibility = PropertyGenerator::VISIBILITY_PRIVATE;
+    private bool $optionalValue = false;
 
     public static function create(): PropertyAssemblerOptions
     {
@@ -63,5 +64,18 @@ class PropertyAssemblerOptions
     public function useDocBlocks(): bool
     {
         return $this->docBlocks;
+    }
+
+    public function withOptionalValue(bool $withOptionalValue = true): self
+    {
+        $new = clone $this;
+        $new->optionalValue = $withOptionalValue;
+
+        return $new;
+    }
+
+    public function useOptionalValue(): bool
+    {
+        return $this->optionalValue;
     }
 }
