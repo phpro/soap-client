@@ -5,6 +5,7 @@ namespace Phpro\SoapClient\CodeGenerator\Model;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\MetaTypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\TypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Soap\Engine\Metadata\Metadata;
 use Soap\Engine\Metadata\Model\Property as MetadataProperty;
 use Soap\Engine\Metadata\Model\TypeMeta;
 use function Psl\Type\non_empty_string;
@@ -127,5 +128,19 @@ class Property
     public function getMeta(): TypeMeta
     {
         return $this->meta;
+    }
+
+    /**
+     * @param callable(TypeMeta): TypeMeta $metaProvider
+     */
+    public function withMeta(callable $metaProvider): self
+    {
+        $meta = $metaProvider($this->meta);
+
+        $new = clone $this;
+        $new->meta = $meta;
+        $new->typeEnhancer = new MetaTypeEnhancer($meta);
+
+        return $new;
     }
 }

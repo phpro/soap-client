@@ -61,6 +61,36 @@ CODE;
     /**
      * @test
      */
+    function it_assembles_property_with_default_value()
+    {
+        $assembler = new PropertyAssembler(
+            PropertyAssemblerOptions::create()->withOptionalValue()
+        );
+        $context = $this->createContext();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * Type specific docs
+     *
+     * @var null | string
+     */
+    private ?string \$prop1 = null;
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+
+    /**
+     * @test
+     */
     function it_assembles_with_visibility_without_default_value()
     {
         $assembler = new PropertyAssembler(
@@ -199,6 +229,39 @@ class MyType
 
 CODE;
 
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
+     * @test
+     */
+    function it_overwrite_props_during_assembling()
+    {
+        $context = $this->createContext();
+
+        $assembler1 = new PropertyAssembler();
+        $assembler1->assemble($context);
+
+        $assembler2 = new PropertyAssembler(
+            PropertyAssemblerOptions::create()->withVisibility(PropertyGenerator::VISIBILITY_PUBLIC)
+        );
+        $assembler2->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * Type specific docs
+     *
+     * @var string
+     */
+    public string \$prop1;
+}
+
+CODE;
         $this->assertEquals($expected, $code);
     }
 

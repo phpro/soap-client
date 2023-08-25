@@ -25,6 +25,7 @@ class GetterAssemblerOptions
      * @var bool
      */
     private $docBlocks = true;
+    private bool $optionalValue = false;
 
     /**
      * @return GetterAssemblerOptions
@@ -95,5 +96,18 @@ class GetterAssemblerOptions
     public function useDocBlocks(): bool
     {
         return $this->docBlocks;
+    }
+
+    public function withOptionalValue(bool $withOptionalValue = true): self
+    {
+        $new = clone $this;
+        $new->optionalValue = $withOptionalValue;
+
+        return $new;
+    }
+
+    public function useOptionalValue(): bool
+    {
+        return $this->optionalValue;
     }
 }

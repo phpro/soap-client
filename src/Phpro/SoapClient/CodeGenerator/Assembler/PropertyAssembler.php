@@ -8,6 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\PropertyGenerator;
+use Soap\Engine\Metadata\Model\TypeMeta;
 
 /**
  * Class PropertyAssembler
@@ -40,16 +41,23 @@ class PropertyAssembler implements AssemblerInterface
     {
         $class = $context->getClass();
         $property = $context->getProperty();
+
+        // Always make sure properties are nullable!
+        if ($this->options->useOptionalValue()) {
+            $property = $property->withMeta(fn(TypeMeta $meta): TypeMeta => $meta->withIsNullable(true));
+        }
+
         try {
-            // It's not possible to overwrite a property in laminas-code yet!
+            // This makes it easier to overwrite the default property assembler with your own:
+            // It will remove the existing one and recreate the property
             if ($class->hasProperty($property->getName())) {
-                return;
+                $class->removeProperty($property->getName());
             }
 
             $propertyGenerator = PropertyGenerator::fromArray([
                 'name' => $property->getName(),
                 'visibility' => $this->options->visibility(),
-                'omitdefaultvalue' => true,
+                'omitdefaultvalue' => !$this->options->useOptionalValue(),
             ]);
 
             if ($this->options->useDocBlocks()) {
