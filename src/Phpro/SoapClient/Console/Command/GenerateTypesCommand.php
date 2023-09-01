@@ -106,6 +106,9 @@ class GenerateTypesCommand extends Command
     {
         // Skip generation of simple types.
         if ((new IsConsideredScalarType())($type->getMeta())) {
+            if ($this->output->isVeryVerbose()) {
+                $this->output->writeln('<fg=yellow>Skipped scalar type : '.$type->getFullName().'</fg=yellow>');
+            }
             return false;
         }
 
