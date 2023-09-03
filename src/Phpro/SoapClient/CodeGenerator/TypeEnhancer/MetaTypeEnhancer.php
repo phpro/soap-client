@@ -29,13 +29,8 @@ final class MetaTypeEnhancer implements TypeEnhancer
         };
 
         $isArray = $this->meta->isList()->unwrapOr(false);
-        $isAttribute = $this->meta->isAttribute()->unwrapOr(false);
         if ($isArray) {
-            // Attribute types can be simple types.
-            // From the meta, we currently don't know what the base type of this simple type is.
-            // TODO : what about string | integer | ... types - from them we know the type?
-            $valueType = $isAttribute ? 'mixed' : $type;
-            $type = 'array<'.(new ArrayBoundsCalculator())($this->meta).', '.$valueType.'>';
+            $type = 'array<'.(new ArrayBoundsCalculator())($this->meta).', '.$type.'>';
         }
 
         $isNullable = (new IsConsideredNullableType())($this->meta);
