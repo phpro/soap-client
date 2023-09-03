@@ -52,7 +52,7 @@ class ClientMethodAssembler implements AssemblerInterface
             $docblock = $method->shouldGenerateAsMultiArgumentsRequest()
                 ? $this->generateMultiArgumentDocblock($context)
                 : $this->generateSingleArgumentDocblock($context);
-            $methodBody = $this->generateMethodBody($class, $param, $method);
+            $methodBody = $this->generateMethodBody($class, $param, $method, $context);
 
             $class->addMethodFromGenerator(
                 MethodGenerator::fromArray(
@@ -73,21 +73,28 @@ class ClientMethodAssembler implements AssemblerInterface
         return true;
     }
 
-    /**
-     * @param ParameterGenerator|null $param
-     * @param ClientMethod $method
-     *
-     * @return string
-     */
-    private function generateMethodBody(ClassGenerator $class, ?ParameterGenerator $param, ClientMethod $method): string
-    {
-        return sprintf(
-            'return ($this->caller)(\'%s\', %s);',
-            $method->getMethodName(),
-            $param === null
-                ? 'new '.$this->generateClassNameAndAddImport(MultiArgumentRequest::class, $class).'([])'
-                : '$'.$param->getName()
-        );
+    private function generateMethodBody(
+        ClassGenerator $class,
+        ?ParameterGenerator $param,
+        ClientMethod $method,
+        $context
+    ): string {
+        $code = [
+            sprintf(
+                '$response = ($this->caller)(\'%s\', %s);',
+                $method->getMethodName(),
+                $param === null
+                    ? 'new '.$this->generateClassNameAndAddImport(MultiArgumentRequest::class, $class).'([])'
+                    : '$'.$param->getName()
+            ),
+            '',
+            '\\assert($response instanceof \\'.ltrim($this->decideOnReturnType($context, true), '\\').');',
+            '\\assert($response instanceof \\'.ResultInterface::class.');',
+            '',
+            'return $response;',
+        ];
+
+        return implode($class::LINE_FEED, $code);
     }
 
     /**
