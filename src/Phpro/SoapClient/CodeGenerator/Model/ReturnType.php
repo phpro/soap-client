@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\TypeNameCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsConsideredScalarType;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\TypeMeta;
@@ -41,8 +42,10 @@ final class ReturnType
      */
     public static function fromMetaData(string $namespace, XsdType $returnType): self
     {
+        $typeName = (new TypeNameCalculator())($returnType);
+
         return new self(
-            non_empty_string()->assert($returnType->getBaseTypeOrFallbackToName()),
+            non_empty_string()->assert($typeName),
             $namespace,
             $returnType->getMeta()
         );
