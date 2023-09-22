@@ -87,6 +87,35 @@ CODE;
     }
 
     /**
+     * @test
+     */
+    function it_skips_assambling_on_extending_simple_type()
+    {
+        $assembler = new ExtendingTypeAssembler();
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $type = new Type('MyNamespace', 'MyType', [], (new TypeMeta())->withExtends([
+            'type' => 'string',
+            'namespace' => 'xsd',
+            'isSimple' => true,
+        ]));
+
+        $context = new TypeContext($class, $type);
+        $assembler->assemble($context);
+
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    /**
      * @return TypeContext
      */
     private function createContext()
