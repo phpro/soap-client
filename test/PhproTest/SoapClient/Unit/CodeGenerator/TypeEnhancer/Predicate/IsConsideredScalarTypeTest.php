@@ -24,15 +24,11 @@ class IsConsideredScalarTypeTest extends TestCase
             (new TypeMeta()),
             false,
         ];
-        yield 'list' => [
-            (new TypeMeta())->withIsList(true),
-            true,
-        ];
-        yield 'nullable' => [
-            (new TypeMeta())->withIsNullable(true),
-            true,
-        ];
         yield 'simple' => [
+            (new TypeMeta())->withIsSimple(true),
+            true,
+        ];
+        yield 'attribute' => [
             (new TypeMeta())->withIsSimple(true),
             true,
         ];

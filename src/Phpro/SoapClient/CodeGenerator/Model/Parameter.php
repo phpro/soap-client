@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\TypeNameCalculator;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 use Soap\Engine\Metadata\Model\TypeMeta;
@@ -48,15 +49,11 @@ class Parameter
     {
         $type = $parameter->getType();
         $meta = $type->getMeta();
-        $isArrayType = $meta->isList()->unwrapOr(false);
+        $typeName = (new TypeNameCalculator())($type);
 
         return new self(
             non_empty_string()->assert($parameter->getName()),
-            non_empty_string()->assert(
-                // In case of an array base-type, use the real name.
-                // The metadata will be used. The meta data will be used to enhance type information!
-                $isArrayType ? $type->getName() : $type->getBaseTypeOrFallbackToName()
-            ),
+            non_empty_string()->assert($typeName),
             $parameterNamespace,
             $meta
         );

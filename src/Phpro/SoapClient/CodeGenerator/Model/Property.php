@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\TypeNameCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\MetaTypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\TypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
@@ -59,15 +60,11 @@ class Property
     {
         $type = $property->getType();
         $meta = $type->getMeta();
-        $isArrayType = $meta->isList()->unwrapOr(false);
+        $typeName = (new TypeNameCalculator())($type);
 
         return new self(
             non_empty_string()->assert($property->getName()),
-            non_empty_string()->assert(
-                // In case of an array base-type, use the real name.
-                // The metadata will be used. The meta data will be used to enhance type information!
-                $isArrayType ? $type->getName() : $type->getBaseTypeOrFallbackToName()
-            ),
+            non_empty_string()->assert($typeName),
             $namespace,
             $meta
         );

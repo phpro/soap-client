@@ -33,7 +33,7 @@ class ExtendingTypeAssembler implements AssemblerInterface
         $meta = $type->getMeta();
         $extending = $meta->extends()->unwrapOr(null);
 
-        if (!$extending) {
+        if (!$extending || ($extending['isSimple'] ?? false)) {
             return;
         }
 
