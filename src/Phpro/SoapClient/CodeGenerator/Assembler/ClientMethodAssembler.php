@@ -79,6 +79,9 @@ class ClientMethodAssembler implements AssemblerInterface
         ClientMethod $method,
         $context
     ): string {
+        $assertInstanceOf = static fn (string $class): string =>
+            '\\Psl\\Type\\instance_of(\\'.ltrim($class, '\\').'::class)->assert($response);';
+
         $code = [
             sprintf(
                 '$response = ($this->caller)(\'%s\', %s);',
@@ -88,8 +91,8 @@ class ClientMethodAssembler implements AssemblerInterface
                     : '$'.$param->getName()
             ),
             '',
-            '\\assert($response instanceof \\'.ltrim($this->decideOnReturnType($context, true), '\\').');',
-            '\\assert($response instanceof \\'.ResultInterface::class.');',
+            $assertInstanceOf($this->decideOnReturnType($context, true)),
+            $assertInstanceOf(ResultInterface::class),
             '',
             'return $response;',
         ];

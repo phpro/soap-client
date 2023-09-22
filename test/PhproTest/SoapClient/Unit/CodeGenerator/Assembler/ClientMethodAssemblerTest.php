@@ -135,7 +135,12 @@ class MyClient
      */
     public function functionName(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return (\$this->caller)('functionName', \$param);
+        \$response = (\$this->caller)('functionName', \$param);
+
+        \Psl\Type\instance_of(\Vendor\MyTypeNamespace\ReturnType::class)->assert(\$response);
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert(\$response);
+
+        return \$response;
     }
 }
 
@@ -178,7 +183,12 @@ class MyClient
      */
     public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return (\$this->caller)('functionName', \$multiArgumentRequest);
+        \$response = (\$this->caller)('functionName', \$multiArgumentRequest);
+
+        \Psl\Type\instance_of(\Vendor\MyTypeNamespace\ReturnType::class)->assert(\$response);
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert(\$response);
+
+        return \$response;
     }
 }
 
@@ -212,7 +222,12 @@ class MyClient
      */
     public function functionName() : \Vendor\MyTypeNamespace\ReturnType
     {
-        return (\$this->caller)('functionName', new MultiArgumentRequest([]));
+        \$response = (\$this->caller)('functionName', new MultiArgumentRequest([]));
+
+        \Psl\Type\instance_of(\Vendor\MyTypeNamespace\ReturnType::class)->assert(\$response);
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert(\$response);
+
+        return \$response;
     }
 }
 
@@ -260,7 +275,12 @@ class MyClient
      */
     public function function_name(\Vendor\MyTypeNamespace\ParamType \$param) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return (\$this->caller)('Function_name', \$param);
+        \$response = (\$this->caller)('Function_name', \$param);
+
+        \Psl\Type\instance_of(\Vendor\MyTypeNamespace\ReturnType::class)->assert(\$response);
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert(\$response);
+
+        return \$response;
     }
 }
 
@@ -328,7 +348,12 @@ class MyClient
      */
     public function function_name(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Vendor\MyTypeNamespace\ReturnType
     {
-        return (\$this->caller)('Function_name', \$multiArgumentRequest);
+        \$response = (\$this->caller)('Function_name', \$multiArgumentRequest);
+
+        \Psl\Type\instance_of(\Vendor\MyTypeNamespace\ReturnType::class)->assert(\$response);
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert(\$response);
+
+        return \$response;
     }
 }
 
@@ -376,7 +401,12 @@ class MyClient
      */
     public function functionName() : \Phpro\SoapClient\Type\MixedResult
     {
-        return (\$this->caller)('functionName', new MultiArgumentRequest([]));
+        \$response = (\$this->caller)('functionName', new MultiArgumentRequest([]));
+
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\MixedResult::class)->assert(\$response);
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert(\$response);
+
+        return \$response;
     }
 }
 
@@ -433,7 +463,12 @@ class MyClient
      */
     public function functionName(\Phpro\SoapClient\Type\MultiArgumentRequest \$multiArgumentRequest) : \Phpro\SoapClient\Type\MixedResult
     {
-        return (\$this->caller)('functionName', \$multiArgumentRequest);
+        \$response = (\$this->caller)('functionName', \$multiArgumentRequest);
+
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\MixedResult::class)->assert(\$response);
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert(\$response);
+
+        return \$response;
     }
 }
 

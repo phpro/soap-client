@@ -58,7 +58,7 @@ class UnionTypesCalculatorTest extends TestCase
                 ['type' => 'My_Type', 'isList' => false, 'namespace' => 'xx'],
                 ['type' => 'Your_Type', 'isList' => true, 'namespace' => 'xx'],
             ]),
-            "MyType | list<YourType>",
+            "mixed | list<mixed>",
         ];
     }
 }

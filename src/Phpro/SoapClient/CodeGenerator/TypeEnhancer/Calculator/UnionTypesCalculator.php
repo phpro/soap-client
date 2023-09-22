@@ -29,7 +29,14 @@ final class UnionTypesCalculator
                          */
                         static function (array $union): string {
                             $type = $union['type'];
-                            $type = Normalizer::isKnownType($type) ? $type : 'mixed'; // Todo : resolve bottom type of the selected simple type??
+
+                            // The union type could be a nested simple type.
+                            // If the normalizer does not know the type,
+                            // this implementation falls back to 'mixed' in that case.
+                            //
+                            // A possible improvement here could be to parse and store the inferred bottom type
+                            //as meta-info inside the union meta instead.
+                            $type = Normalizer::isKnownType($type) ? $type : 'mixed';
 
                             return $union['isList'] ? 'list<'.$type.'>' : $type;
                         }
