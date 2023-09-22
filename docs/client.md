@@ -20,12 +20,17 @@ class YourClient
     /**
      * @param RequestInterface $request
      *
-     * @return ResultInterface
+     * @return ResultInterface & HelloWorldResponse
      * @throws \Phpro\SoapClient\Exception\SoapException
      */
-    public function helloWorld(RequestInterface $request)
+    public function helloWorld(RequestInterface $request) : HelloWorldResponse
     {
-        return ($this->caller)('HelloWorld', $request);
+        $response = ($this->caller)('HelloWorld', $request);
+
+        \Psl\Type\instance_of(\Your\HelloWorldResponse::class)->assert($response);
+        \Psl\Type\instance_of(\Phpro\SoapClient\Type\ResultInterface::class)->assert($response);
+
+        return $response;    
     }
 }
 ```
