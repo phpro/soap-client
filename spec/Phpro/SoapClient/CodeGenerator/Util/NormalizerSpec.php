@@ -81,11 +81,11 @@ class NormalizerSpec extends ObjectBehavior
     {
         $this->generatePropertyMethod('get', 'prop1')->shouldReturn('getProp1');
         $this->generatePropertyMethod('set', 'prop1')->shouldReturn('setProp1');
-        $this->generatePropertyMethod('get', 'prop1_test*./')->shouldReturn('getProp1_test');
+        $this->generatePropertyMethod('get', 'prop1_test*./')->shouldReturn('getProp1Test');
         $this->generatePropertyMethod('get', 'UpperCased')->shouldReturn('getUpperCased');
-        $this->generatePropertyMethod('get', 'my-./*prop_123')->shouldReturn('getMyProp_123');
-        $this->generatePropertyMethod('get', 'My-./*prop_123')->shouldReturn('getMyProp_123');
-        $this->generatePropertyMethod('get', 'My-./final*prop_123')->shouldReturn('getMyFinalProp_123');
+        $this->generatePropertyMethod('get', 'my-./*prop_123')->shouldReturn('getMyProp123');
+        $this->generatePropertyMethod('get', 'My-./*prop_123')->shouldReturn('getMyProp123');
+        $this->generatePropertyMethod('get', 'My-./final*prop_123')->shouldReturn('getMyFinalProp123');
         $this->generatePropertyMethod('get', 'final')->shouldReturn('getFinal');
         $this->generatePropertyMethod('set', 'Final')->shouldReturn('setFinal');
     }
