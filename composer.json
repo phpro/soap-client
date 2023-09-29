@@ -18,7 +18,7 @@
         "php-soap/engine": "^2.4",
         "php-soap/ext-soap-engine": "^1.4",
         "php-soap/psr18-transport": "^1.3",
-        "php-soap/wsdl-reader": "~0.5",
+        "php-soap/wsdl-reader": "~0.6",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
         "symfony/console": "~5.4 || ~6.0",
