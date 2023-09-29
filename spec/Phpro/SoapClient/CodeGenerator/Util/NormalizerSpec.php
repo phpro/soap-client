@@ -88,6 +88,7 @@ class NormalizerSpec extends ObjectBehavior
         $this->generatePropertyMethod('get', 'My-./final*prop_123')->shouldReturn('getMyFinalProp123');
         $this->generatePropertyMethod('get', 'final')->shouldReturn('getFinal');
         $this->generatePropertyMethod('set', 'Final')->shouldReturn('setFinal');
+        $this->generatePropertyMethod('set', '_')->shouldReturn('set_');
     }
 
     function it_gets_classname_from_fqn()
