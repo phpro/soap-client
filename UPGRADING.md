@@ -1,3 +1,33 @@
+# V2 to V3
+
+```bash
+composer require 'phpro/soap-client:^3.0.0' --update-with-dependencies
+```
+
+Upgrading is a matter of changing the engine for code generation in the code-generation configuration file:
+
+```php
+use Phpro\SoapClient\Soap\CodeGeneratorEngineFactory;
+use Soap\Wsdl\Loader\FlatteningLoader;
+use Soap\Wsdl\Loader\StreamWrapperLoader;
+
+return Config::create()
+    ->setEngine($engine = CodeGeneratorEngineFactory::create(
+        'your.wsdl',
+        new FlatteningLoader(new StreamWrapperLoader()) // Or a PSR18-based loader ... :)
+    ))
+```
+
+**Note:** You can still use the default engine, yet you won't get the information for the enhanced type generation.
+
+Regenerate classes:
+
+```
+./vendor/bin/soap-client generate:client --config=config/soap-client.php
+./vendor/bin/soap-client generate:classmap --config=config/soap-client.php
+./vendor/bin/soap-client generate:types --config=config/soap-client.php
+```
+
 # V1 to V2
 
 V1 has been around for quite some time.
