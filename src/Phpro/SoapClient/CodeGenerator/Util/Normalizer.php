@@ -234,7 +234,7 @@ class Normalizer
      */
     public static function generatePropertyMethod(string $prefix, string $property): string
     {
-        return strtolower($prefix).ucfirst(self::normalizeProperty($property));
+        return strtolower($prefix).ucfirst(self::camelCase($property, '{[^a-z0-9]+}i'));
     }
 
     /**
