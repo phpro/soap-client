@@ -2,11 +2,10 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsConsideredScalarType;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Method as MetadataMethod;
 use Soap\Engine\Metadata\Model\MethodMeta;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
+use Soap\WsdlReader\Metadata\Predicate\IsConsideredScalarType;
 use function Psl\Type\non_empty_string;
 
 /**

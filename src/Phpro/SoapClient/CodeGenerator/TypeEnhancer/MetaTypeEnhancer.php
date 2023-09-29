@@ -6,8 +6,8 @@ namespace Phpro\SoapClient\CodeGenerator\TypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\ArrayBoundsCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\EnumValuesCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\UnionTypesCalculator;
-use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsConsideredNullableType;
 use Soap\Engine\Metadata\Model\TypeMeta;
+use Soap\WsdlReader\Metadata\Predicate\IsConsideredNullableType;
 
 final class MetaTypeEnhancer implements TypeEnhancer
 {

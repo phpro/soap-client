@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\TypeNameCalculator;
-use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Predicate\IsConsideredScalarType;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
+use Soap\WsdlReader\Metadata\Predicate\IsConsideredScalarType;
 use function Psl\Type\non_empty_string;
 
 final class ReturnType
