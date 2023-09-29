@@ -120,7 +120,10 @@ class GenerateTypesCommand extends Command
             $file = new FileGenerator();
             $this->generateType($file, $generator, $type, $fileInfo);
         } catch (\Exception $e) {
-            $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
+            $this->output->writeln('<fg=red>Error generating '.$type->getFullName().':'.$e->getMessage().'</fg=red>');
+            if ($this->output->isVeryVerbose()) {
+                $this->output->writeln('<fg=red>'.$e->getTraceAsString().'</fg=red>');
+            }
 
             return false;
         }
