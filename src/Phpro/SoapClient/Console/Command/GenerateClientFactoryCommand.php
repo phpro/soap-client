@@ -56,7 +56,7 @@ class GenerateClientFactoryCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $config = $this->getConfigHelper()->load($input);

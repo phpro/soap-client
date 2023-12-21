@@ -45,7 +45,7 @@ class GenerateConfigCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $context = new ConfigContext();
         $io = new SymfonyStyle($input, $output);

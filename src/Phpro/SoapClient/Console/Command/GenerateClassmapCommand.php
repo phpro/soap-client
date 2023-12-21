@@ -66,7 +66,7 @@ class GenerateClassmapCommand extends Command
      * {@inheritdoc}
      * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
         $io = new SymfonyStyle($input, $output);
