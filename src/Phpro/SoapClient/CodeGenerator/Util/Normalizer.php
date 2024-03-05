@@ -30,6 +30,7 @@ class Normalizer
         'iterable' => 'iterable',
         'array' => 'array',
         'void' => 'void',
+        'unsignedInt' => 'int',
     ];
 
     /**
