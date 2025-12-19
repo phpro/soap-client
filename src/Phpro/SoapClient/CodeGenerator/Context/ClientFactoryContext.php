@@ -2,41 +2,41 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
-class ClientFactoryContext implements ContextInterface
+final readonly class ClientFactoryContext implements ContextInterface
 {
-    /**
-     * @var ClassMapContext
-     */
-    private $classMapContext;
-
-    /**
-     * @var ClientContext
-     */
-    private $clientContext;
-
     public function __construct(
-        ClientContext $clientContext,
-        ClassMapContext $classMapContext
+        private ClientContext $clientContext,
+        private ClassMapContext $classMapContext
     ) {
-        $this->classMapContext = $classMapContext;
-        $this->clientContext = $clientContext;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getClientName(): string
     {
         return $this->clientContext->getName();
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getClientNamespace(): string
     {
         return $this->clientContext->getNamespace();
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getClassmapName(): string
     {
         return $this->classMapContext->getName();
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getClassmapNamespace(): string
     {
         return $this->classMapContext->getNamespace();

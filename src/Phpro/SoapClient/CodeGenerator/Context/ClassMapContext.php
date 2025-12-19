@@ -2,82 +2,43 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Laminas\Code\Generator\FileGenerator;
 
-/**
- * Class ClassMapContext
- *
- * @package Phpro\SoapClient\CodeGenerator\Context
- */
-class ClassMapContext implements ContextInterface
+final readonly class ClassMapContext implements ContextInterface
 {
-    /**
-     * @var FileGenerator
-     */
-    private $file;
-
-    /**
-     * @var TypeMap
-     */
-    private $typeMap;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $namespace;
-
-    /**
-     * TypeContext constructor.
-     *
-     * @param FileGenerator $file
-     * @param TypeMap       $typeMap
-     * @param string        $name
-     * @param string        $namespace
-     */
-    public function __construct(FileGenerator $file, TypeMap $typeMap, string $name, string $namespace)
-    {
-        $this->file = $file;
-        $this->typeMap = $typeMap;
-        $this->name = $name;
-        $this->namespace = $namespace;
+    public function __construct(
+        private FileGenerator $file,
+        private TypeMap $typeMap,
+        private ClassMapConfig $classMap
+    ) {
     }
 
-    /**
-     * @return FileGenerator
-     */
     public function getFile(): FileGenerator
     {
         return $this->file;
     }
 
-    /**
-     * @return TypeMap
-     */
     public function getTypeMap(): TypeMap
     {
         return $this->typeMap;
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getName(): string
     {
-        return $this->name;
+        return $this->classMap->name;
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getNamespace(): string
     {
-        return $this->namespace;
+        return $this->classMap->destination->namespace;
     }
 
     /**
@@ -85,6 +46,6 @@ class ClassMapContext implements ContextInterface
      */
     public function getFqcn(): string
     {
-        return $this->namespace.'\\'.$this->name;
+        return $this->classMap->fqcn();
     }
 }

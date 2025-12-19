@@ -22,24 +22,12 @@ class GenerateClientFactoryCommand extends Command
 {
     const COMMAND_NAME = 'generate:clientfactory';
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * GenerateClientBuilderCommand constructor.
-     * @param Filesystem $filesystem
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
+    public function __construct(
+        private Filesystem $filesystem
+    ) {
         parent::__construct();
     }
 
-    /**
-     * Configure the command.
-     */
     protected function configure(): void
     {
         $this
@@ -53,37 +41,29 @@ class GenerateClientFactoryCommand extends Command
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $config = $this->getConfigHelper()->load($input);
         $classmapContext = new ClassMapContext(
             new FileGenerator(),
-            new TypeMap('not-used', []),
-            $config->getClassMapName(),
-            $config->getClassMapNamespace()
+            new TypeMap($config->getTypeNamespaceMap(), []),
+            $config->getClassMap(),
         );
         $clientContext = new ClientContext(
             new ClassGenerator(),
-            $config->getClientName(),
-            $config->getClientNamespace()
+            $config->getClient(),
         );
         $context = new ClientFactoryContext($clientContext, $classmapContext);
         $generator = new ClientFactoryGenerator();
-        $dest = $config->getClientDestination().DIRECTORY_SEPARATOR.$config->getClientName().'Factory.php';
+        $dest = $config->getClient()->destination->path.DIRECTORY_SEPARATOR.$config->getClient()->name.'Factory.php';
         $this->filesystem->putFileContents($dest, $generator->generate(new FileGenerator(), $context));
 
         $io->success('Generated client factory at ' . $dest);
 
-        return 0;
+        return self::SUCCESS;
     }
 
-    /**
-     * Function for added type hint
-     */
     public function getConfigHelper(): ConfigHelper
     {
         return instance_of(ConfigHelper::class)->assert($this->getHelper('config'));

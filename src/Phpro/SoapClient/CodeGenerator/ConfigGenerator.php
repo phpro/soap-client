@@ -44,7 +44,7 @@ EOENGINE;
      */
     private function generateSetter(string $name, string $value, FileGenerator $file): string
     {
-        return sprintf("%s->%s('%s')".GeneratorInterface::EOL, $file->getIndentation(), $name, $value);
+        return sprintf("%s->%s(%s)".GeneratorInterface::EOL, $file->getIndentation(), $name, $value);
     }
 
     /**

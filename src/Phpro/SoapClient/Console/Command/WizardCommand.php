@@ -14,9 +14,6 @@ class WizardCommand extends Command
 {
     const COMMAND_NAME = 'wizard';
 
-    /**
-     * Configure the command.
-     */
     protected function configure(): void
     {
         $this
@@ -50,6 +47,6 @@ class WizardCommand extends Command
             }
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }

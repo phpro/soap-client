@@ -50,7 +50,7 @@ class ClientGenerator implements GeneratorInterface
         $class->setNamespaceName($client->getNamespace());
         $class->setName($client->getName());
 
-        $this->ruleSet->applyRules(new ClientContext($class, $client->getName(), $client->getNamespace()));
+        $this->ruleSet->applyRules(new ClientContext($class, $client->config()));
 
         $methods = $client->getMethodMap();
         foreach ($methods->getMethods() as $method) {

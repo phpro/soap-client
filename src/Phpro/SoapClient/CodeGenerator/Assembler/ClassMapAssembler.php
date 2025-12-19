@@ -42,8 +42,6 @@ class ClassMapAssembler implements AssemblerInterface
         $file->setClass($class);
         $file->setNamespace($context->getNamespace());
         $typeMap = $context->getTypeMap();
-        $typeNamespace = $typeMap->getNamespace();
-        $file->setUse($typeNamespace, preg_match('/\\\\Type$/', $typeNamespace) ? null : 'Type');
 
         try {
             $file->setUse(ClassMapCollection::class);
@@ -117,7 +115,7 @@ class ClassMapAssembler implements AssemblerInterface
                 $indentation,
                 $type->getXsdType()->getXmlNamespace(),
                 $type->getXsdType()->getName(),
-                'Type\\'.$type->getName()
+                '\\' . $type->getFullName(),
             );
         }
 

@@ -14,16 +14,14 @@ Enabled by default when using `Config::create()`.
 
 This duplicate types strategy will merge all duplicate types into one big type which contains all properties.
 
-
 ```php
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
-use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
 
 return Config::create()
     //...
     ->setDuplicateTypeIntersectStrategy(
-        new IntersectDuplicateTypesStrategy()
+        IntersectDuplicateTypesStrategy::create()
     )
     // ...
 ```
@@ -32,20 +30,49 @@ return Config::create()
 
 This duplicate types strategy will remove all duplicate types it finds.
 
-You can overwrite the strategy on the `DefaultEngineFactory` object inside the client factory:
-
 ```php
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;
-use Phpro\SoapClient\Soap\Metadata\MetadataOptions;
 
 return Config::create()
     //...
     ->setDuplicateTypeIntersectStrategy(
-        new RemoveDuplicateTypesStrategy()
+        RemoveDuplicateTypesStrategy::create()
     )
     // ...
 ```
+
+**Namespace-aware duplicate detection**
+
+The duplicate type strategies are namespace-aware when used with `TypeNamespaceMap`.
+When you configure multiple XML namespaces to map to different PHP namespaces,
+types with the same name in different XML namespaces will NOT be considered duplicates
+because they will be generated into separate PHP namespaces.
+
+For example, if you have `AccidentItem` in both `http://ns-a.com` and `http://ns-b.com`,
+and you map these to `App\Type\A` and `App\Type\B` respectively,
+the strategies will treat them as separate types (`App\Type\A\AccidentItem` and `App\Type\B\AccidentItem`).
+
+```php
+use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
+
+return Config::create()
+    ->setTypeNamespaceMap(
+        TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
+            ->withMapping('http://ns-a.com', new Destination('src/Type/A', 'App\\Type\\A'))
+            ->withMapping('http://ns-b.com', new Destination('src/Type/B', 'App\\Type\\B'))
+    )
+    ->setDuplicateTypeIntersectStrategy(
+        IntersectDuplicateTypesStrategy::create()
+    )
+    // ...
+```
+
+The `create()` factory method returns a closure that receives the `TypeNamespaceMap` from the configuration,
+enabling the strategy to determine target PHP namespaces for each type.
 
 ### Type replacements
 

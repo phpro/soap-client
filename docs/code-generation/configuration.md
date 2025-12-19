@@ -179,12 +179,20 @@ Examples:
 ```php
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
+use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\TypeReplacer\TypeReplacers;
 
 Config::create()
-    ->setDuplicateTypeIntersectStrategy(new IntersectDuplicateTypesStrategy())
+    // Use the factory method - this is namespace-aware when TypeNamespaceMap is configured
+    ->setDuplicateTypeIntersectStrategy(IntersectDuplicateTypesStrategy::create())
+    // Or use the remove strategy instead:
+    // ->setDuplicateTypeIntersectStrategy(RemoveDuplicateTypesStrategy::create())
     ->setTypeReplacementStrategy(TypeReplacers::defaults()->add(new MyDateReplacer()));
 ```
+
+The duplicate type strategies use a factory pattern (`create()`) that returns a closure.
+This closure receives the `TypeNamespaceMap` from the configuration, enabling namespace-aware duplicate detection.
+When types map to different PHP namespaces, they are not considered duplicates.
 
 **Enumeration options**
 

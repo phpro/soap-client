@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\TypeNameCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\MetaTypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\TypeEnhancer;
@@ -11,30 +12,8 @@ use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
 use function Psl\Type\non_empty_string;
 
-/**
- * Class Property
- *
- * @package Phpro\SoapClient\CodeGenerator\Model
- */
-class Property
+final class Property
 {
-    /**
-     * @var non-empty-string
-     */
-    private $name;
-
-    /**
-     * @var non-empty-string
-     */
-    private $type;
-
-    /**
-     * @var string
-     */
-    private $namespace;
-
-    private XsdType $xsdType;
-
     private TypeMeta $meta;
 
     private TypeEnhancer $typeEnhancer;
@@ -42,30 +21,27 @@ class Property
     /**
      * @internal
      *
-     * Property constructor.
-     *
      * @param non-empty-string $name
      * @param non-empty-string $type
-     * @param string $namespace
+     * @param non-empty-string $namespace
      */
-    public function __construct(string $name, string $type, string $namespace, XsdType $xsdType)
-    {
-        $this->name = $name;
-        $this->type = $type;
-        $this->namespace = $namespace;
-        $this->xsdType = $xsdType;
+    public function __construct(
+        private readonly string $name,
+        private readonly string $type,
+        private readonly TypeNamespaceMap $namespaces,
+        private readonly string $namespace,
+        private readonly XsdType $xsdType
+    ) {
         $this->meta = $xsdType->getMeta();
         $this->typeEnhancer = new MetaTypeEnhancer($this->meta);
     }
 
-    /**
-     * @param non-empty-string $namespace
-     */
-    public static function fromMetaData(string $namespace, MetadataProperty $property): self
+    public static function fromMetaData(TypeNamespaceMap $namespaces, MetadataProperty $property): self
     {
         $type = $property->getType();
         $typeName = $type->getName();
         $calculatedTypeName = Normalizer::normalizeDataType((new TypeNameCalculator())($type));
+        $namespace = $namespaces->detectDestinationForType($type)->namespace;
 
         // This makes it possible to set FQCN as type names in the metadata through TypeReplacers.
         if (Normalizer::isConsideredExistingThirdPartyClass($typeName)) {
@@ -78,6 +54,7 @@ class Property
         return new self(
             Normalizer::normalizeProperty(non_empty_string()->assert($property->getName())),
             non_empty_string()->assert($calculatedTypeName),
+            $namespaces,
             Normalizer::normalizeNamespace($namespace),
             $type
         );
@@ -105,10 +82,6 @@ class Property
                 && Normalizer::isKnownType($this->xsdType->getBaseType())
         ) {
             return $this->xsdType->getBaseType();
-        }
-
-        if (!$this->namespace) {
-            return '\\'.Normalizer::normalizeClassname($this->type);
         }
 
         return '\\'.$this->namespace.'\\'.Normalizer::normalizeClassname($this->type);
@@ -154,6 +127,11 @@ class Property
     public function getMeta(): TypeMeta
     {
         return $this->meta;
+    }
+
+    public function getNamespaces(): TypeNamespaceMap
+    {
+        return $this->namespaces;
     }
 
     /**

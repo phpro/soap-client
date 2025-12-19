@@ -2,85 +2,50 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Soap\Engine\Metadata\Model\Method as MetadataMethod;
 use Soap\Engine\Metadata\Model\MethodMeta;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
 use Soap\WsdlReader\Metadata\Predicate\IsConsideredScalarType;
 use function Psl\Type\non_empty_string;
 
-/**
- * Class ClientMethod
- *
- * @package Phpro\SoapClient\CodeGenerator\Model
- */
-class ClientMethod
+final readonly class ClientMethod
 {
-    /**
-     * @var Parameter[]
-     */
-    private array $parameters;
-
-    /**
-     * @var non-empty-string
-     */
-    private string $methodName;
-
-    private ReturnType $returnType;
-
-    /**
-     * @var string
-     */
-    private string $parameterNamespace;
-
-    private MethodMeta $meta;
-
     /**
      * @internal - Use ClientMethod::fromMetadata instead
      *
-     * TypeModel constructor.
-     *
-     * @param non-empty-string $name
-     * @param array $params
-     * @param string $parameterNamespace
+     * @param non-empty-string $methodName
+     * @param array<array-key, Parameter> $parameters
      */
     public function __construct(
-        string $name,
-        array $params,
-        ReturnType $returnType,
-        string $parameterNamespace,
-        MethodMeta $meta
+        private string $methodName,
+        private array $parameters,
+        private ReturnType $returnType,
+        private TypeNamespaceMap $typeNamespaceMap,
+        private MethodMeta $meta
     ) {
-        $this->parameterNamespace = $parameterNamespace;
-        $this->methodName = $name;
-        $this->parameters = $params;
-        $this->returnType = $returnType;
-        $this->meta = $meta;
     }
 
-    /**
-     * @param non-empty-string $parameterNamespace
-     */
     public static function fromMetadata(
-        string $parameterNamespace,
+        TypeNamespaceMap $typeNamespaceMap,
         MetadataMethod $method
     ): self {
         return new self(
             non_empty_string()->assert($method->getName()),
             array_map(
-                function (MetadataParameter $parameter) use ($parameterNamespace) {
-                    return Parameter::fromMetadata($parameterNamespace, $parameter);
+                function (MetadataParameter $parameter) use ($typeNamespaceMap) {
+                    return Parameter::fromMetadata($typeNamespaceMap, $parameter);
                 },
                 iterator_to_array($method->getParameters())
             ),
-            ReturnType::fromMetaData($parameterNamespace, $method->getReturnType()),
-            Normalizer::normalizeNamespace($parameterNamespace),
+            ReturnType::fromMetaData($typeNamespaceMap, $method->getReturnType()),
+            $typeNamespaceMap,
             $method->getMeta()
         );
     }
 
     /**
-     * @return array|Parameter[]
+     * @return array<array-key, Parameter>
      */
     public function getParameters(): array
     {
@@ -100,12 +65,9 @@ class ClientMethod
         return $this->methodName;
     }
 
-    /**
-     * @return string
-     */
-    public function getParameterNamespace(): string
+    public function getTypeNamespaceMap(): TypeNamespaceMap
     {
-        return $this->parameterNamespace;
+        return $this->typeNamespaceMap;
     }
 
     public function getReturnType(): ReturnType

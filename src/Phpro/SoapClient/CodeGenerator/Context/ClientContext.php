@@ -3,56 +3,30 @@
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
 use Laminas\Code\Generator\ClassGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 
-/**
- * Class ClientContext
- *
- * @package Phpro\SoapClient\CodeGenerator\Context
- */
-class ClientContext implements ContextInterface
+final readonly class ClientContext implements ContextInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $namespace;
-
-    /**
-     * @var ClassGenerator
-     */
-    private $class;
-
-    /**
-     * PropertyContext constructor.
-     *
-     * @param string $name
-     * @param string $namespace
-     */
-    public function __construct(ClassGenerator $class, string $name, string $namespace)
-    {
-        $this->class = $class;
-        $this->name = $name;
-        $this->namespace = $namespace;
+    public function __construct(
+        private ClassGenerator $class,
+        private ClientConfig $clientConfig
+    ) {
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getName(): string
     {
-        return $this->name;
+        return $this->clientConfig->name;
     }
 
     /**
-     * @return string
+     * @return non-empty-string
      */
     public function getNamespace(): string
     {
-        return $this->namespace;
+        return $this->clientConfig->destination->namespace;
     }
 
     /**
@@ -60,7 +34,7 @@ class ClientContext implements ContextInterface
      */
     public function getFqcn(): string
     {
-        return $this->namespace.'\\'.$this->name;
+        return $this->clientConfig->fqcn();
     }
 
     public function getClass(): ClassGenerator

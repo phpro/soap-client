@@ -2,14 +2,14 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
-class ConfigContext implements ContextInterface
+final class ConfigContext implements ContextInterface
 {
-    private $setters = [];
-
     /**
-     * @var string
+     * @var array<string, string>
      */
-    private $wsdl;
+    private array $setters = [];
+
+    private string $wsdl = '';
 
     private bool $generateDocblocks = true;
 
@@ -21,25 +21,18 @@ class ConfigContext implements ContextInterface
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getSetters(): array
     {
         return $this->setters;
     }
 
-    /**
-     * @return string
-     */
     public function getWsdl(): string
     {
         return $this->wsdl;
     }
 
-    /**
-     * @param string $wsdl
-     * @return ConfigContext
-     */
     public function setWsdl(string $wsdl): self
     {
         $this->wsdl = $wsdl;

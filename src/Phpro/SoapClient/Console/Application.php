@@ -20,7 +20,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class Application extends SymfonyApplication
 {
     const APP_NAME = 'SoapClient';
-    const APP_VERSION = '2.0.0';
+    const APP_VERSION = '5.0.0';
 
     /**
      * Set up application:

@@ -5,11 +5,6 @@ namespace Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 
-/**
- * Class AssembleRule
- *
- * @package Phpro\SoapClient\CodeGenerator\Rules
- */
 class AssembleRule implements RuleInterface
 {
     /**

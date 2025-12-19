@@ -6,11 +6,6 @@ use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 
-/**
- * Class TypenameMatchingAssembleRule
- *
- * @package Phpro\SoapClient\CodeGenerator\Rules
- */
 class TypenameMatchesRule implements RuleInterface
 {
     /**

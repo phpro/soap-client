@@ -2,8 +2,13 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Console\Validator\NotBlankValidator;
 use Phpro\SoapClient\Util\Filesystem;
 use Symfony\Component\Console\Command\Command;
@@ -17,18 +22,9 @@ class GenerateConfigCommand extends Command
 {
     const COMMAND_NAME = 'generate:config';
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * GenerateConfigCommand constructor.
-     * @param Filesystem $filesystem
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
+    public function __construct(
+        private Filesystem $filesystem
+    ) {
         parent::__construct();
     }
 
@@ -68,38 +64,39 @@ class GenerateConfigCommand extends Command
             $required
         );
         $baseDir = $io->ask('Directory where the client should be generated in', null, $required);
-        $namespace = $io->ask('Namespace for your client', null, $required);
+        $namespace = Normalizer::normalizeNamespace($io->ask('Namespace for your client', null, $required));
 
-        // Type
-        $context->addSetter('setTypeDestination', $baseDir.DIRECTORY_SEPARATOR.'Type');
-        $context->addSetter('setTypeNamespace', $namespace.'\\Type');
+        $context->addSetter('setTypeNamespaceMap', sprintf(
+            '%s::create(new %s(%s, %s))',
+            '\\' . TypeNamespaceMap::class,
+            '\\' . Destination::class,
+            var_export($baseDir . DIRECTORY_SEPARATOR . 'Type', true),
+            var_export($namespace . '\\Type', true)
+        ));
 
-        // Client
-        $this->addNonEmptySetter($context, 'setClientDestination', $baseDir);
-        $this->addNonEmptySetter($context, 'setClientName', $name.'Client');
-        $this->addNonEmptySetter($context, 'setClientNamespace', $namespace);
+        $context->addSetter('setClient', sprintf(
+            'new %s(%s, new %s(%s, %s))',
+            '\\' . ClientConfig::class,
+            var_export($name.'Client', true),
+            '\\' . Destination::class,
+            var_export($baseDir, true),
+            var_export($namespace, true)
+        ));
 
-        // Classmap
-        $this->addNonEmptySetter($context, 'setClassMapDestination', $baseDir);
-        $this->addNonEmptySetter($context, 'setClassMapName', $name.'Classmap');
-        $this->addNonEmptySetter($context, 'setClassMapNamespace', $namespace);
+        $context->addSetter('setClassMap', sprintf(
+            'new %s(%s, new %s(%s, %s))',
+            '\\' . ClassMapConfig::class,
+            var_export($name.'Classmap', true),
+            '\\' . Destination::class,
+            var_export($baseDir, true),
+            var_export($namespace, true)
+        ));
 
         // Create the config
         $generator = new ConfigGenerator();
         $this->filesystem->putFileContents($destination, $generator->generate(new FileGenerator(), $context));
         $io->success('Config has been written to ' . $destination);
 
-        return 0;
-    }
-
-    private function addNonEmptySetter(ConfigContext $context, string $key, string $value)
-    {
-        if ($value === '') {
-            return;
-        }
-        if (preg_match('/namespace$/i', $key)) {
-            $value = str_replace('/', '\\\\', $value);
-        }
-        $context->addSetter($key, $value);
+        return self::SUCCESS;
     }
 }
