@@ -2,10 +2,13 @@
 
 namespace Phpro\SoapClient\CodeGenerator;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use Laminas\Code\Generator\FileGenerator;
-use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 use Phpro\SoapClient\Soap\EngineOptions;
 
@@ -37,14 +40,41 @@ RULESET;
 EOENGINE;
 
     /**
-     * @param string $name
-     * @param string $value
-     * @param FileGenerator $file
-     * @return string
+     * Generate code for TypeNamespaceMap configuration
      */
-    private function generateSetter(string $name, string $value, FileGenerator $file): string
+    private function generateTypeNamespaceMapCode(Destination $fallback): string
     {
-        return sprintf("%s->%s(%s)".GeneratorInterface::EOL, $file->getIndentation(), $name, $value);
+        return sprintf(
+            'TypeNamespaceMap::create(new Destination(%s, %s))',
+            var_export($fallback->path, true),
+            var_export($fallback->namespace, true)
+        );
+    }
+
+    /**
+     * Generate code for ClientConfig configuration
+     */
+    private function generateClientConfigCode(ClientConfig $config): string
+    {
+        return sprintf(
+            'new ClientConfig(%s, new Destination(%s, %s))',
+            var_export($config->name, true),
+            var_export($config->destination->path, true),
+            var_export($config->destination->namespace, true)
+        );
+    }
+
+    /**
+     * Generate code for ClassMapConfig configuration
+     */
+    private function generateClassMapConfigCode(ClassMapConfig $config): string
+    {
+        return sprintf(
+            'new ClassMapConfig(%s, new Destination(%s, %s))',
+            var_export($config->name, true),
+            var_export($config->destination->path, true),
+            var_export($config->destination->namespace, true)
+        );
     }
 
     /**
@@ -73,13 +103,41 @@ EOENGINE;
         $body = self::BODY;
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Assembler');
         $file->setUse('Phpro\\SoapClient\\CodeGenerator\\Rules');
+        $file->setUse(ClassMapConfig::class);
+        $file->setUse(ClientConfig::class);
         $file->setUse(Config::class);
+        $file->setUse(Destination::class);
+        $file->setUse(TypeNamespaceMap::class);
         $file->setUse(EngineOptions::class);
         $file->setUse(DefaultEngineFactory::class);
 
         $body .= $this->parseEngine($file, $context->getWsdl());
-        foreach ($context->getSetters() as $name => $value) {
-            $body .= $this->generateSetter($name, $value, $file);
+
+        // Generate TypeNamespaceMap setter
+        if ($typeDestination = $context->getTypeDestination()) {
+            $body .= sprintf(
+                "%s->setTypeNamespaceMap(%s)".GeneratorInterface::EOL,
+                $file->getIndentation(),
+                $this->generateTypeNamespaceMapCode($typeDestination)
+            );
+        }
+
+        // Generate Client setter
+        if ($clientConfig = $context->getClientConfig()) {
+            $body .= sprintf(
+                "%s->setClient(%s)".GeneratorInterface::EOL,
+                $file->getIndentation(),
+                $this->generateClientConfigCode($clientConfig)
+            );
+        }
+
+        // Generate ClassMap setter
+        if ($classMapConfig = $context->getClassMapConfig()) {
+            $body .= sprintf(
+                "%s->setClassMap(%s)".GeneratorInterface::EOL,
+                $file->getIndentation(),
+                $this->generateClassMapConfigCode($classMapConfig)
+            );
         }
 
         $body .= $this->parseIndentedRuleSet($file, $this->generateGetterSetterRuleSet($context));

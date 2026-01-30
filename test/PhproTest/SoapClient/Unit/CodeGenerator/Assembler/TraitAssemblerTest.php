@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\TraitAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use PhproTest\SoapClient\Unit\CodeGenerator\ConfigurationHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Laminas\Code\Generator\ClassGenerator;
@@ -19,6 +20,7 @@ use Soap\Engine\Metadata\Model\XsdType;
  */
 class TraitAssemblerTest extends TestCase
 {
+    use ConfigurationHelper;
 
     #[Test]
     function it_is_an_assembler()
@@ -87,7 +89,8 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', 'MyType', [], XsdType::create('MyType'));
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [], XsdType::create('MyType'));
 
         return new TypeContext($class, $type);
     }

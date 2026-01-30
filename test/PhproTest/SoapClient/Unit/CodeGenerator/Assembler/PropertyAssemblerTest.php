@@ -8,6 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssemblerOptions;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use PhproTest\SoapClient\Unit\CodeGenerator\ConfigurationHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Laminas\Code\Generator\ClassGenerator;
@@ -23,6 +24,8 @@ use Soap\Engine\Metadata\Model\XsdType;
  */
 class PropertyAssemblerTest extends TestCase
 {
+    use ConfigurationHelper;
+
     #[Test]
     function it_is_an_assembler()
     {
@@ -188,9 +191,10 @@ CODE;
     {
         $assembler = new PropertyAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type($namespace = 'MyNamespace', 'MyType', 'MyType', [
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
             $property = Property::fromMetaData(
-                $namespace,
+                $namespaces,
                 new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                     static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
                 ))
@@ -282,8 +286,9 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', 'MyType', [
-            $property = Property::fromMetaData('ns1', new MetaProperty('prop1', XsdType::guess('string')->withMeta(
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
+            $property = Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withDocs('Type specific docs')
             ))),
         ], XsdType::create('MyType'));
@@ -297,9 +302,10 @@ CODE;
     private function createContextWithLongType()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', 'MyType', [
+        $namespaces = $this->createTypeNamespaceMap('This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
             $property = Property::fromMetaData(
-                'This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever',
+                $namespaces,
                 new MetaProperty('prop1', XsdType::guess('Wrap'))
             ),
         ], XsdType::create('MyType'));
@@ -312,8 +318,9 @@ CODE;
     private function createContextWithNullableType()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', 'MyType', [
-            $property = Property::fromMetaData('ns1', new MetaProperty('prop1', XsdType::guess('string')->withMeta(
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
+            $property = Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withDocs('Type specific docs')->withIsNullable(true)
             ))),
         ], XsdType::create('MyType'));

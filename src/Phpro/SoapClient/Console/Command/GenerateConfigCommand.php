@@ -5,7 +5,6 @@ namespace Phpro\SoapClient\Console\Command;
 use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
 use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
@@ -66,31 +65,16 @@ class GenerateConfigCommand extends Command
         $baseDir = $io->ask('Directory where the client should be generated in', null, $required);
         $namespace = Normalizer::normalizeNamespace($io->ask('Namespace for your client', null, $required));
 
-        $context->addSetter('setTypeNamespaceMap', sprintf(
-            '%s::create(new %s(%s, %s))',
-            '\\' . TypeNamespaceMap::class,
-            '\\' . Destination::class,
-            var_export($baseDir . DIRECTORY_SEPARATOR . 'Type', true),
-            var_export($namespace . '\\Type', true)
-        ));
+        // Create configuration objects
+        $typeDestination = new Destination($baseDir . DIRECTORY_SEPARATOR . 'Type', $namespace . '\\Type');
+        $context->setTypeDestination($typeDestination);
 
-        $context->addSetter('setClient', sprintf(
-            'new %s(%s, new %s(%s, %s))',
-            '\\' . ClientConfig::class,
-            var_export($name.'Client', true),
-            '\\' . Destination::class,
-            var_export($baseDir, true),
-            var_export($namespace, true)
-        ));
+        $clientDestination = new Destination($baseDir, $namespace);
+        $clientConfig = new ClientConfig($name . 'Client', $clientDestination);
+        $context->setClientConfig($clientConfig);
 
-        $context->addSetter('setClassMap', sprintf(
-            'new %s(%s, new %s(%s, %s))',
-            '\\' . ClassMapConfig::class,
-            var_export($name.'Classmap', true),
-            '\\' . Destination::class,
-            var_export($baseDir, true),
-            var_export($namespace, true)
-        ));
+        $classMapConfig = new ClassMapConfig($name . 'Classmap', $clientDestination);
+        $context->setClassMapConfig($classMapConfig);
 
         // Create the config
         $generator = new ConfigGenerator();

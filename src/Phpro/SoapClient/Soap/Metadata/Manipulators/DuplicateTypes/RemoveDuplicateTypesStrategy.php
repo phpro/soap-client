@@ -32,7 +32,11 @@ final class RemoveDuplicateTypesStrategy implements TypesManipulatorInterface
         $duplicateKeys = $this->detectDuplicateKeys($types);
 
         return $types->filter(
-            fn (Type $type): bool => !in_array(DuplicateTypesKey::forType($type, $this->namespaceMap), $duplicateKeys, true)
+            fn (Type $type): bool => !in_array(
+                DuplicateTypesKey::forType($type, $this->namespaceMap),
+                $duplicateKeys,
+                true
+            )
         );
     }
 

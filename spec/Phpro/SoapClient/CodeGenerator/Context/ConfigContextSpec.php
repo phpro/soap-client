@@ -2,9 +2,11 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 
 /**
@@ -22,10 +24,23 @@ class ConfigContextSpec extends ObjectBehavior
         $this->shouldImplement(ContextInterface::class);
     }
 
-    function it_adds_setters()
+    function it_has_type_namespace_fallback()
     {
-        $this->addSetter('setTest', 'test\'run');
-        $this->getSetters()->shouldBeArray();
-        $this->getSetters()['setTest']->shouldBe('test\'run');
+        $this->setTypeDestination($destination = new Destination('src/type', 'App\\Type'));
+        $this->getTypeDestination()->shouldBe($destination);
+    }
+
+    function it_has_client_config()
+    {
+        $clientConfig = new ClientConfig('MyClient', new Destination('src/client', 'App\\Client'));
+        $this->setClientConfig($clientConfig);
+        $this->getClientConfig()->shouldBe($clientConfig);
+    }
+
+    function it_has_classmap_config()
+    {
+        $classMapConfig = new ClassMapConfig('MyClassmap', new Destination('src/classmap', 'App\\Classmap'));
+        $this->setClassMapConfig($classMapConfig);
+        $this->getClassMapConfig()->shouldBe($classMapConfig);
     }
 }

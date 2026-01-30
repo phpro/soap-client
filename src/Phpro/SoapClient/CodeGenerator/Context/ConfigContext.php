@@ -2,31 +2,17 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+
 final class ConfigContext implements ContextInterface
 {
-    /**
-     * @var array<string, string>
-     */
-    private array $setters = [];
-
     private string $wsdl = '';
-
     private bool $generateDocblocks = true;
-
-    public function addSetter(string $name, string $value): self
-    {
-        $this->setters[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function getSetters(): array
-    {
-        return $this->setters;
-    }
+    private ?Destination $typeDestination = null;
+    private ?ClientConfig $clientConfig = null;
+    private ?ClassMapConfig $classMapConfig = null;
 
     public function getWsdl(): string
     {
@@ -50,5 +36,41 @@ final class ConfigContext implements ContextInterface
     public function isGenerateDocblocks(): bool
     {
         return $this->generateDocblocks;
+    }
+
+    public function getTypeDestination(): ?Destination
+    {
+        return $this->typeDestination;
+    }
+
+    public function setTypeDestination(Destination $typeDestination): self
+    {
+        $this->typeDestination = $typeDestination;
+
+        return $this;
+    }
+
+    public function getClientConfig(): ?ClientConfig
+    {
+        return $this->clientConfig;
+    }
+
+    public function setClientConfig(ClientConfig $clientConfig): self
+    {
+        $this->clientConfig = $clientConfig;
+
+        return $this;
+    }
+
+    public function getClassMapConfig(): ?ClassMapConfig
+    {
+        return $this->classMapConfig;
+    }
+
+    public function setClassMapConfig(ClassMapConfig $classMapConfig): self
+    {
+        $this->classMapConfig = $classMapConfig;
+
+        return $this;
     }
 }

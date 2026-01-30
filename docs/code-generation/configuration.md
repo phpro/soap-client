@@ -8,7 +8,11 @@ The code generation commands require a configuration file to determine how the S
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 
@@ -22,14 +26,14 @@ return Config::create()
                     ->addBackedEnumClassMapCollection(SomeClassmap::enums())
             )
     ))
-    ->setTypeDestination('src/SoapTypes')
-    ->setTypeNamespace('SoapTypes')
-    ->setClientDestination('src/SoapClient')
-    ->setClientNamespace('SoapClient')
-    ->setClientName('MySoapClient')
-    ->setClassMapNamespace('Acme\\Classmap')
-    ->setClassMapDestination('src/acme/classmap')
-    ->setClassMapName('AcmeClassmap')
+    ->setTypeNamespaceMap(
+        TypeNamespaceMap::create(new Destination('SoapTypes', 'src/SoapTypes'))
+            // You can add specific XML xmlns -> PHP namespace mappings here:
+            // If no mapping is found, the default destination + namespace will be used.
+            ->withMapping('http://www.xmlns.mapping', new Destination('src/Type/OtherDir', 'App\\Type\\OtherDir'))
+    )
+    ->setClient(new ClientConfig('MySoapClient', new Destination('SoapClient', 'src/SoapClient')))
+    ->setClassMap(new ClassMapConfig('AcmeClassmap', new Destination('Acme\\Classmap', 'src/acme/classmap')))
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
     ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler(
         new Assembler\ImmutableSetterAssemblerOptions()
@@ -104,48 +108,19 @@ DefaultEngineFactory::create(
 );
 ```
 
-**type destination**
+**Type Namespace Map**
 
-String - REQUIRED
+Use `setTypeNamespaceMap(TypeNamespaceMap::create($namespace, $destination))` to configure the namespace and destination for generated types.
 
-The destination of the generated PHP classes. 
+You can also add specific XML namespace to PHP namespace mappings by using the `withMapping($xmlNamespace, Destination)` method on the created TypeNamespaceMap instance.
 
-**client destination**
+**Client Configuration**
 
-String - REQUIRED
+Use `setClient(new ClientConfig($name, $destination))` to configure the generated client class.
 
-The destination of the generated soap client. 
+**Classmap Configuration**
 
-**type namespace**
-
-String - OPTIONAL
-
-The namespace of the PHP Classes you want to generate.
-
-
-**client namespace**
-
-String - OPTIONAL
-
-The namespace of the generated client.
-
-**client name**
-
-String - OPTIONAL
-
-The class name of the client, defaults to 'Client'.
-
-**classmap name**
-
-Name of the classmap class
-
-**classmap destination**
-
-The location of a directory the classmap should be generated in.
-
-**classmap namespace**
-
-Name for the classmap
+Use `setClassMap(new ClassMapConfig($name, $destination))` to configure the classmap.
 
 **rules**
 
@@ -154,7 +129,7 @@ RuleInterface - OPTIONAL
 You can specify how you want to generate your code.
 More information about the topic is available in the [rules](rules.md) and [assemblers](assemblers.md) section.
 
-The pre-defined rules are override-able by calling `setRuleSet` on the constucted object.
+The pre-defined rules are override-able by calling `setRuleSet` on the constructed object.
 
 For example, to make all your properties protected:
 ```php

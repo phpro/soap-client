@@ -2,24 +2,41 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
+use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
 use PhpSpec\ObjectBehavior;
 use Laminas\Code\Generator\ClassGenerator;
+use Soap\Engine\Metadata\Model\MethodMeta;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class ClientMethodContextSpec
  *
  * @package spec\Phpro\SoapClient\CodeGenerator\Context
- * @mixin TypeContext
+ * @mixin ClientMethodContext
  */
 class ClientMethodContextSpec extends ObjectBehavior
 {
-    function let(ClassGenerator $class, ClientMethod $method)
+    private ClientMethod $method;
+
+    function let(ClassGenerator $class)
     {
-        $this->beConstructedWith($class, $method);
+        $destination = new Destination('src/type', 'ParamNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+
+        $this->method = new ClientMethod(
+            'testMethod',
+            [],
+            ReturnType::fromMetaData($namespaceMap, XsdType::create('CreditResponse')),
+            $namespaceMap,
+            new MethodMeta()
+        );
+
+        $this->beConstructedWith($class, $this->method);
     }
 
     function it_is_initializable()
@@ -37,8 +54,8 @@ class ClientMethodContextSpec extends ObjectBehavior
         $this->getClass()->shouldReturn($class);
     }
 
-    function it_has_a_method(ClientMethod $method)
+    function it_has_a_method()
     {
-        $this->getMethod()->shouldReturn($method);
+        $this->getMethod()->shouldReturn($this->method);
     }
 }

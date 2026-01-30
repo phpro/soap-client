@@ -2,6 +2,8 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use PhpSpec\ObjectBehavior;
 use Soap\Engine\Metadata\Model\TypeMeta;
@@ -17,7 +19,9 @@ class ParameterSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('MyParameter', 'MyParameterType', 'MyNamespace', XsdType::create('MyParameter'));
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $this->beConstructedWith('MyParameter', 'MyParameterType', $namespaceMap, XsdType::create('MyParameter'));
     }
 
     function it_is_initializable()

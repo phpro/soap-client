@@ -3,6 +3,8 @@
 namespace spec\Phpro\SoapClient\CodeGenerator;
 
 use Laminas\Code\Generator\Exception\ClassNotFoundException;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\FileContext;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
@@ -16,7 +18,6 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\FileGenerator;
-use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
 
 /**
@@ -45,11 +46,13 @@ class TypeGeneratorSpec extends ObjectBehavior
 
     function it_generates_types(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
     {
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $type = new Type(
-            $namespace = 'MyNamespace',
+            $namespaceMap,
             'MyType',
             'MyType',
-            [new Property('prop1', 'string', $namespace, XsdType::create('string'))],
+            [new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))],
             XsdType::create('MyType')
         );
         $property = $type->getProperties()[0];
@@ -70,11 +73,13 @@ class TypeGeneratorSpec extends ObjectBehavior
 
     function it_generates_types_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
     {
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $type = new Type(
-            $namespace = 'MyNamespace',
+            $namespaceMap,
             'MyType',
             'MyType',
-            [new Property('prop1', 'string', $namespace, XsdType::create('string'))],
+            [new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))],
             XsdType::create('MyType')
         );
         $property = $type->getProperties()[0];

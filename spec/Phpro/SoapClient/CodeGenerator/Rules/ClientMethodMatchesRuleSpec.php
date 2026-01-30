@@ -2,12 +2,13 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Rules;
 
+use Laminas\Code\Generator\ClassGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
-use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
-use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\ClientMethodMatchesRule;
 use PhpSpec\ObjectBehavior;
@@ -43,43 +44,53 @@ class ClientMethodMatchesRuleSpec extends ObjectBehavior
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_can_apply_to_client_method_context(RuleInterface $subRule, ClientMethodContext $context)
+    function it_can_apply_to_client_method_context(RuleInterface $subRule)
     {
-        $context->getMethod()->willReturn(new ClientMethod(
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $method = new ClientMethod(
             'myClientMethod',
             [],
-            ReturnType::fromMetaData('', XsdType::create('string')),
-            '',
+            ReturnType::fromMetaData($namespaceMap, XsdType::create('string')),
+            $namespaceMap,
             new MethodMeta()
-        ));
+        );
+        $context = new ClientMethodContext(new ClassGenerator(), $method);
+
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }
 
-    function it_can_not_apply_on_unmatched_regex(RuleInterface $subRule, ClientMethodContext $context)
+    function it_can_not_apply_on_unmatched_regex(RuleInterface $subRule)
     {
-        $context->getMethod()->willReturn(new ClientMethod(
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $method = new ClientMethod(
             'myInvalidClientMethod',
             [],
-            ReturnType::fromMetaData('', XsdType::create('string')),
-            '',
+            ReturnType::fromMetaData($namespaceMap, XsdType::create('string')),
+            $namespaceMap,
             new MethodMeta()
-        ));
+        );
+        $context = new ClientMethodContext(new ClassGenerator(), $method);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_can_not_apply_if_subrule_does_not_apply(RuleInterface $subRule, ClientMethodContext $context)
+    function it_can_not_apply_if_subrule_does_not_apply(RuleInterface $subRule)
     {
-        $context->getMethod()->willReturn(new ClientMethod(
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $method = new ClientMethod(
             'myClientMethod',
             [],
-            ReturnType::fromMetaData('', XsdType::create('string')),
-            '',
+            ReturnType::fromMetaData($namespaceMap, XsdType::create('string')),
+            $namespaceMap,
             new MethodMeta()
-        ));
-        
+        );
+        $context = new ClientMethodContext(new ClassGenerator(), $method);
+
         $subRule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);
     }

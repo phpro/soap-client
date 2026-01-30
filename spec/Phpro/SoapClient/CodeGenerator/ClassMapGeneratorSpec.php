@@ -3,6 +3,9 @@
 namespace spec\Phpro\SoapClient\CodeGenerator;
 
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\FileContext;
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
@@ -11,6 +14,7 @@ use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Laminas\Code\Generator\FileGenerator;
+use Soap\Engine\Metadata\Collection\TypeCollection;
 
 /**
  * Class ClassMapGeneratorSpec
@@ -22,7 +26,8 @@ class ClassMapGeneratorSpec extends ObjectBehavior
 {
     function let(RuleSetInterface $ruleSet)
     {
-        $this->beConstructedWith($ruleSet, 'ClassMap', 'App\\Mynamespace');
+        $classMapConfig = new ClassMapConfig('ClassMap', new Destination('/app', 'App\\Mynamespace'));
+        $this->beConstructedWith($ruleSet, $classMapConfig);
     }
     
     function it_is_initializable()
@@ -35,11 +40,14 @@ class ClassMapGeneratorSpec extends ObjectBehavior
         $this->shouldImplement(GeneratorInterface::class);
     }
 
-    function it_generates_classmaps(RuleSetInterface $ruleSet, FileGenerator $file, TypeMap $typeMap)
+    function it_generates_classmaps(RuleSetInterface $ruleSet, FileGenerator $file)
     {
         $ruleSet->applyRules(Argument::type(ClassMapContext::class))->shouldBeCalled();
         $ruleSet->applyRules(Argument::type(FileContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
-        $this->generate($file, $typeMap)->shouldReturn('code');
+        $this->generate($file, TypeMap::fromMetadata(
+            TypeNamespaceMap::create(new Destination('/app', 'App\\Mynamespace')),
+            new TypeCollection(),
+        ))->shouldReturn('code');
     }
 }

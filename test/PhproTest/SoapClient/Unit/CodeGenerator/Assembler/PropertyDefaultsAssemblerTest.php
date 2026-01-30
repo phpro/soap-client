@@ -6,6 +6,8 @@ use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssemblerOptions;
 use Phpro\SoapClient\CodeGenerator\Assembler\PropertyDefaultsAssembler;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
@@ -101,13 +103,15 @@ EOCODE,
 
     private static function configureProperty(XsdType $type): Property
     {
-        return Property::fromMetaData('ns1', new MetaProperty('prop1', $type));
+        $namespaces = TypeNamespaceMap::create(new Destination('/generated', 'ns1'));
+        return Property::fromMetaData($namespaces, new MetaProperty('prop1', $type));
     }
 
     private static function createContext(Property $property): PropertyContext
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', 'MyType', [
+        $namespaces = TypeNamespaceMap::create(new Destination('/generated', 'MyNamespace'));
+        $type = new Type($namespaces, 'MyType', 'MyType', [
             $property
         ], XsdType::create('MyType'));
 

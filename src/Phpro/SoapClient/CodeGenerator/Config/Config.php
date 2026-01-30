@@ -182,10 +182,15 @@ final class Config
     }
 
     /**
-     * @param TypesManipulatorInterface|Closure(?TypeNamespaceMap): TypesManipulatorInterface $duplicateTypeIntersectStrategy
+     *
+     * @param (
+     *  TypesManipulatorInterface|
+     *  Closure(?TypeNamespaceMap): TypesManipulatorInterface
+     * ) $duplicateTypeIntersectStrategy
      */
-    public function setDuplicateTypeIntersectStrategy(TypesManipulatorInterface|Closure $duplicateTypeIntersectStrategy): self
-    {
+    public function setDuplicateTypeIntersectStrategy(
+        TypesManipulatorInterface|Closure $duplicateTypeIntersectStrategy
+    ): self {
         $this->duplicateTypeIntersectStrategy = $duplicateTypeIntersectStrategy;
 
         return $this;

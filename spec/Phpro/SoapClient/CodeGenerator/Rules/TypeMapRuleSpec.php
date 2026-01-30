@@ -46,50 +46,79 @@ class TypeMapRuleSpec extends ObjectBehavior
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_can_apply_to_type_context(RuleInterface $rule, TypeContext $context)
+    function it_can_apply_to_type_context(RuleInterface $rule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'SomeType', 'SomeType', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $rule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }
 
-    function it_can_apply_to_property_context(RuleInterface $rule, PropertyContext $context)
+    function it_can_apply_to_property_context(RuleInterface $rule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'SomeType', 'SomeType', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $property = new \Phpro\SoapClient\CodeGenerator\Model\Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'));
+        $type = new Type($namespaceMap, 'SomeType', 'SomeType', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $property);
+
         $rule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }
 
-    function it_can_apply_the_default_assembler_to_unknown_types(RuleInterface $defaultRule, TypeContext $context)
+    function it_can_apply_the_default_assembler_to_unknown_types(RuleInterface $defaultRule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'UnknownType', 'UnknownType', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'UnknownType', 'UnknownType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $defaultRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }
 
-    function it_can_not_apply_to_knwon_types_with_no_rule(TypeContext $context)
+    function it_can_not_apply_to_knwon_types_with_no_rule()
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'NullType', 'NullType', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'NullType', 'NullType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_can_not_apply_if_rule_does_not_apply(RuleInterface $rule, TypeContext $context)
+    function it_can_not_apply_if_rule_does_not_apply(RuleInterface $rule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'SomeType', 'SomeType', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $rule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_applies_a_specified_rule_to_known_types(RuleInterface $rule, TypeContext $context)
+    function it_applies_a_specified_rule_to_known_types(RuleInterface $rule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'SomeType', 'SomeType', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $rule->apply($context)->shouldBeCalled();
         $this->apply($context);
     }
 
-    function it_applies_the_default_rule_to_unknown_types(RuleInterface $defaultRule, TypeContext $context)
+    function it_applies_the_default_rule_to_unknown_types(RuleInterface $defaultRule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'UnknownType', 'UnknownType', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'UnknownType', 'UnknownType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $defaultRule->apply($context)->shouldBeCalled();
         $this->apply($context);
     }

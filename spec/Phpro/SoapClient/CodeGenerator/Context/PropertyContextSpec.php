@@ -2,13 +2,15 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Laminas\Code\Generator\ClassGenerator;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class PropertyContextSpec
@@ -18,11 +20,26 @@ use Laminas\Code\Generator\ClassGenerator;
  */
 class PropertyContextSpec extends ObjectBehavior
 {
-    function let(ClassGenerator $class, Type $type, Property $property)
+    private Type $type;
+    private Property $property;
+
+    function let(ClassGenerator $class)
     {
-        $this->beConstructedWith($class, $type, $property);
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+
+        $this->property = new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'));
+        $this->type = new Type(
+            $namespaceMap,
+            'MyType',
+            'MyType',
+            [$this->property],
+            XsdType::create('MyType')
+        );
+
+        $this->beConstructedWith($class, $this->type, $this->property);
     }
-    
+
     function it_is_initializable()
     {
         $this->shouldHaveType(PropertyContext::class);
@@ -32,19 +49,19 @@ class PropertyContextSpec extends ObjectBehavior
     {
         $this->shouldImplement(ContextInterface::class);
     }
-    
+
     function it_has_a_class_generator(ClassGenerator $class)
     {
         $this->getClass()->shouldReturn($class);
     }
-    
-    function it_has_a_type(Type $type)
+
+    function it_has_a_type()
     {
-        $this->getType()->shouldReturn($type);
+        $this->getType()->shouldReturn($this->type);
     }
-    
-    function it_has_a_property(Property $property)
+
+    function it_has_a_property()
     {
-        $this->getProperty()->shouldReturn($property);
+        $this->getProperty()->shouldReturn($this->property);
     }
 }

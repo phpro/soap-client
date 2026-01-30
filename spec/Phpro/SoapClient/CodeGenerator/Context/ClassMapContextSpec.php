@@ -2,11 +2,13 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Laminas\Code\Generator\FileGenerator;
 
 /**
@@ -17,16 +19,25 @@ use Laminas\Code\Generator\FileGenerator;
  */
 class ClassMapContextSpec extends ObjectBehavior
 {
-    function let(FileGenerator $fileGenerator, TypeMap $typeMap)
+    private TypeMap $typeMap;
+
+    function let(FileGenerator $fileGenerator)
     {
-        $this->beConstructedWith($fileGenerator, $typeMap, 'ClassMap', 'App\\Mynamespace');
+        $typeDestination = new Destination('src/type', 'App\\Mynamespace');
+        $namespaceMap = TypeNamespaceMap::create($typeDestination);
+        $this->typeMap = new TypeMap($namespaceMap, []);
+
+        $classMapDestination = new Destination('src/classmap', 'App\\Mynamespace');
+        $classMapConfig = new ClassMapConfig('ClassMap', $classMapDestination);
+
+        $this->beConstructedWith($fileGenerator, $this->typeMap, $classMapConfig);
     }
 
     function it_is_initializable()
     {
         $this->shouldHaveType(ClassMapContext::class);
     }
-    
+
     function it_is_a_context()
     {
         $this->shouldImplement(ContextInterface::class);
@@ -37,8 +48,8 @@ class ClassMapContextSpec extends ObjectBehavior
         $this->getFile()->shouldReturn($fileGenerator);
     }
 
-    function it_has_a_typemap(TypeMap $typeMap)
+    function it_has_a_typemap()
     {
-        $this->getTypeMap()->shouldReturn($typeMap);
+        $this->getTypeMap()->shouldReturn($this->typeMap);
     }
 }

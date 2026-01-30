@@ -18,7 +18,7 @@ final readonly class ClientConfig
      */
     public function path(): string
     {
-        return $this->destination->path . '/' . $this->name . '.php';
+        return rtrim($this->destination->path, '/') . '/' . $this->name . '.php';
     }
 
     /**

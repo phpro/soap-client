@@ -2,6 +2,9 @@
 
 namespace PhproTest\SoapClient\Unit\CodeGenerator;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +19,11 @@ class ConfigGeneratorTest extends TestCase
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 
@@ -24,14 +31,9 @@ return Config::create()
     ->setEngine(\$engine = DefaultEngineFactory::create(
         EngineOptions::defaults('wsdl.xml')
     ))
-    ->setTypeDestination('src/type')
-    ->setTypeNamespace('App\\\\Type')
-    ->setClientDestination('src/client')
-    ->setClientName('Client')
-    ->setClientNamespace('App\\\\Client')
-    ->setClassmapDestination('src/classmap')
-    ->setClassmapName('Classmap')
-    ->setClassmapNamespace('App\\\\Classmap')
+    ->setTypeNamespaceMap(TypeNamespaceMap::create(new Destination('src/type', 'App\\\\Type')))
+    ->setClient(new ClientConfig('Client', new Destination('src/client', 'App\\\\Client')))
+    ->setClassMap(new ClassMapConfig('Classmap', new Destination('src/classmap', 'App\\\\Classmap')))
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
     ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler(
         new Assembler\ImmutableSetterAssemblerOptions()
@@ -69,16 +71,16 @@ return Config::create()
 
 CONTENT;
         $context = new ConfigContext();
-        $context
-            ->setWsdl('wsdl.xml')
-            ->addSetter('setTypeDestination', 'src/type')
-            ->addSetter('setTypeNamespace', 'App\\\\Type')
-            ->addSetter('setClientDestination', 'src/client')
-            ->addSetter('setClientName', 'Client')
-            ->addSetter('setClientNamespace', 'App\\\\Client')
-            ->addSetter('setClassmapDestination', 'src/classmap')
-            ->addSetter('setClassmapName', 'Classmap')
-            ->addSetter('setClassmapNamespace', 'App\\\\Classmap');
+        $context->setWsdl('wsdl.xml');
+
+        $typeDestination = new Destination('src/type', 'App\\Type');
+        $context->setTypeDestination($typeDestination);
+
+        $clientConfig = new ClientConfig('Client', new Destination('src/client', 'App\\Client'));
+        $context->setClientConfig($clientConfig);
+
+        $classMapConfig = new ClassMapConfig('Classmap', new Destination('src/classmap', 'App\\Classmap'));
+        $context->setClassMapConfig($classMapConfig);
 
         $generator = new ConfigGenerator();
         $generated = $generator->generate(new FileGenerator(), $context);
@@ -92,7 +94,11 @@ CONTENT;
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 

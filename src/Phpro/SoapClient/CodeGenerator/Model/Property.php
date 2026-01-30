@@ -23,7 +23,6 @@ final class Property
      *
      * @param non-empty-string $name
      * @param non-empty-string $type
-     * @param non-empty-string $namespace
      */
     public function __construct(
         private readonly string $name,
@@ -84,7 +83,11 @@ final class Property
             return $this->xsdType->getBaseType();
         }
 
-        return '\\'.$this->namespace.'\\'.Normalizer::normalizeClassname($this->type);
+        $normalized = Normalizer::normalizeClassname($this->type);
+
+        return $this->namespace !== ''
+            ? '\\'.$this->namespace.'\\'.$normalized
+            : '\\'.$normalized;
     }
 
     /**

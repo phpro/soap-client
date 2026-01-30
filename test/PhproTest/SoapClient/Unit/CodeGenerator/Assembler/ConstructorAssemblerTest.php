@@ -8,6 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler\ConstructorAssemblerOptions;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use PhproTest\SoapClient\Unit\CodeGenerator\ConfigurationHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Laminas\Code\Generator\ClassGenerator;
@@ -22,6 +23,7 @@ use Soap\Engine\Metadata\Model\XsdType;
  */
 class ConstructorAssemblerTest extends TestCase
 {
+    use ConfigurationHelper;
     #[Test]
     function it_is_an_assembler()
     {
@@ -73,10 +75,11 @@ CODE;
     {
         $assembler = new ConstructorAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type($namespace = 'MyNamespace', 'MyType', 'MyType', [
-            Property::fromMetaData($namespace, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespace, new MetaProperty('prop2', XsdType::guess('int'))),
-            Property::fromMetaData($namespace, new MetaProperty('prop3', XsdType::guess('SomeClass'))),
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
+            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('int'))),
+            Property::fromMetaData($namespaces, new MetaProperty('prop3', XsdType::guess('SomeClass'))),
         ], XsdType::create('MyType'));
 
         $context =  new TypeContext($class, $type);
@@ -142,9 +145,10 @@ CODE;
     {
         $assembler = new ConstructorAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type($namespace = 'MyNamespace', 'MyType', 'MyType', [
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
             Property::fromMetaData(
-                $namespace,
+                $namespaces,
                 new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                     static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
                 ))
@@ -182,9 +186,10 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type($namespace = 'MyNamespace', 'MyType', 'MyType', [
-            Property::fromMetaData($namespace, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespace, new MetaProperty('prop2', XsdType::guess('int'))),
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
+            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('int'))),
         ], XsdType::create('MyType'));
 
         return new TypeContext($class, $type);
