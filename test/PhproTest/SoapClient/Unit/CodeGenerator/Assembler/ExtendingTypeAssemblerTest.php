@@ -6,6 +6,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\ExtendingTypeAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use PhproTest\SoapClient\Unit\CodeGenerator\ConfigurationHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Laminas\Code\Generator\ClassGenerator;
@@ -19,6 +20,7 @@ use Soap\Engine\Metadata\Model\XsdType;
  */
 class ExtendingTypeAssemblerTest extends TestCase
 {
+    use ConfigurationHelper;
 
     #[Test]
     function it_is_an_assembler()
@@ -82,7 +84,8 @@ CODE;
     {
         $assembler = new ExtendingTypeAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', 'MyType', [], XsdType::create('MyType'));
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [], XsdType::create('MyType'));
 
         $context = new TypeContext($class, $type);
         $assembler->assemble($context);
@@ -105,7 +108,8 @@ CODE;
     {
         $assembler = new ExtendingTypeAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type('MyNamespace', 'MyType', 'MyType', [], XsdType::create('MyType')->withMeta(static fn (TypeMeta $meta) => $meta->withExtends([
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [], XsdType::create('MyType')->withMeta(static fn (TypeMeta $meta) => $meta->withExtends([
             'type' => 'string',
             'namespace' => 'xsd',
             'isSimple' => true,
@@ -133,7 +137,8 @@ CODE;
     private function createContext(?string $importedNamespace = null)
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type($importedNamespace ?? 'MyNamespace', 'MyType', 'MyType', [], XsdType::create('MyType')->withMeta(static fn (TypeMeta $meta) => $meta->withExtends([
+        $namespaces = $this->createTypeNamespaceMap($importedNamespace ?? 'MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [], XsdType::create('MyType')->withMeta(static fn (TypeMeta $meta) => $meta->withExtends([
             'type' => 'MyBaseType',
             'namespace' => 'xxxx'
         ])));

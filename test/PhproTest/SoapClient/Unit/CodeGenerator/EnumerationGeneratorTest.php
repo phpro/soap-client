@@ -15,10 +15,11 @@ use Soap\Engine\Metadata\Model\XsdType;
 
 class EnumerationGeneratorTest extends TestCase
 {
+    use ConfigurationHelper;
     public function testStringBackedEnumGeneration(): void
     {
         $type = new Type(
-            'MyNamespace',
+            $this->createTypeNamespaceMap('MyNamespace'),
             'MyType',
             'MyType',
             [],
@@ -54,7 +55,7 @@ class EnumerationGeneratorTest extends TestCase
     public function testIntBackedEnumGeneration(): void
     {
         $type = new Type(
-            'MyNamespace',
+            $this->createTypeNamespaceMap('MyNamespace'),
             'MyType',
             'MyType',
             [],
@@ -88,7 +89,7 @@ class EnumerationGeneratorTest extends TestCase
     public function testBackedEnumDocblockGeneration(): void
     {
         $type = new Type(
-            'MyNamespace',
+            $this->createTypeNamespaceMap('MyNamespace'),
             'MyType',
             'MyType',
             [],

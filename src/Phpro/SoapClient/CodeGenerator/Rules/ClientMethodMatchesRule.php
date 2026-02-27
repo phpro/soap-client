@@ -5,11 +5,6 @@ namespace Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 
-/**
- * Class ClientMethodMatchesRule
- *
- * @package Phpro\SoapClient\CodeGenerator\Rules
- */
 class ClientMethodMatchesRule implements RuleInterface
 {
     /**

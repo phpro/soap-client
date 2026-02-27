@@ -2,22 +2,26 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethodMap;
-use Phpro\SoapClient\CodeGenerator\Model\Property;
 use PhpSpec\ObjectBehavior;
 
 /**
  * Class ClientSpec
  *
  * @package spec\Phpro\SoapClient\CodeGenerator\Model
- * @mixin Property
+ * @mixin Client
  */
 class ClientSpec extends ObjectBehavior
 {
-    function let(ClientMethodMap $methods)
+    function let()
     {
-        $this->beConstructedWith('MyClient', 'MyNamespace', $methods);
+        $destination = new Destination('src/client', 'MyNamespace');
+        $clientConfig = new ClientConfig('MyClient', $destination);
+        $methods = new ClientMethodMap([]);
+        $this->beConstructedWith($clientConfig, $methods);
     }
 
     function it_is_initializable()

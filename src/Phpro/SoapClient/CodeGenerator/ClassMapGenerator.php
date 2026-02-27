@@ -2,9 +2,9 @@
 
 namespace Phpro\SoapClient\CodeGenerator;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\FileContext;
-use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
 use Laminas\Code\Generator\FileGenerator;
@@ -14,33 +14,10 @@ use Laminas\Code\Generator\FileGenerator;
  */
 class ClassMapGenerator implements GeneratorInterface
 {
-    /**
-     * @var RuleSetInterface
-     */
-    private $ruleSet;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $namespace;
-
-    /**
-     * TypeGenerator constructor.
-     *
-     * @param RuleSetInterface $ruleSet
-     * @param string           $name
-     * @param string           $namespace
-     */
-    public function __construct(RuleSetInterface $ruleSet, string $name, string $namespace)
-    {
-        $this->ruleSet = $ruleSet;
-        $this->name = $name;
-        $this->namespace = $namespace;
+    public function __construct(
+        private RuleSetInterface $ruleSet,
+        private ClassMapConfig $classMap
+    ) {
     }
 
     /**
@@ -51,7 +28,7 @@ class ClassMapGenerator implements GeneratorInterface
      */
     public function generate(FileGenerator $file, $typeMap): string
     {
-        $this->ruleSet->applyRules(new ClassMapContext($file, $typeMap, $this->name, $this->namespace));
+        $this->ruleSet->applyRules(new ClassMapContext($file, $typeMap, $this->classMap));
         $this->ruleSet->applyRules(new FileContext($file));
 
         return $file->generate();

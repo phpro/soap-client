@@ -3,13 +3,14 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
 use Laminas\Code\Generator\ClassGenerator;
-use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
 use Laminas\Code\Generator\FileGenerator;
 
@@ -20,12 +21,18 @@ class ClientFactoryContextSpec extends ObjectBehavior
 {
     function let()
     {
-        $clientContext = new ClientContext(new ClassGenerator(), 'Myclient', 'App\\Client');
+        $clientDestination = new Destination('src/client', 'App\\Client');
+        $clientConfig = new ClientConfig('Myclient', $clientDestination);
+        $clientContext = new ClientContext(new ClassGenerator(), $clientConfig);
+
+        $classMapDestination = new Destination('src/classmap', 'App\\Classmap');
+        $typeDestination = new Destination('src/type', 'ns');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($typeDestination);
+        $classMapConfig = new ClassMapConfig('Myclassmap', $classMapDestination);
         $classMapContext = new ClassMapContext(
             new FileGenerator(),
-            new TypeMap('ns', []),
-            'Myclassmap',
-            'App\\Classmap'
+            new TypeMap($namespaceMap, []),
+            $classMapConfig
         );
         $this->beConstructedWith($clientContext, $classMapContext);
     }

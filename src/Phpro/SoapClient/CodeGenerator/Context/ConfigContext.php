@@ -2,44 +2,25 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Context;
 
-class ConfigContext implements ContextInterface
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+
+final class ConfigContext implements ContextInterface
 {
-    private $setters = [];
-
-    /**
-     * @var string
-     */
-    private $wsdl;
-
+    private string $wsdl = '';
     private bool $generateDocblocks = true;
+    private ?Destination $typeDestination = null;
+    private ?ClientConfig $clientConfig = null;
+    private ?ClassMapConfig $classMapConfig = null;
+    /** @var array<string, string> */
+    private array $detectedXmlNamespaces = [];
 
-    public function addSetter(string $name, string $value): self
-    {
-        $this->setters[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getSetters(): array
-    {
-        return $this->setters;
-    }
-
-    /**
-     * @return string
-     */
     public function getWsdl(): string
     {
         return $this->wsdl;
     }
 
-    /**
-     * @param string $wsdl
-     * @return ConfigContext
-     */
     public function setWsdl(string $wsdl): self
     {
         $this->wsdl = $wsdl;
@@ -57,5 +38,55 @@ class ConfigContext implements ContextInterface
     public function isGenerateDocblocks(): bool
     {
         return $this->generateDocblocks;
+    }
+
+    public function getTypeDestination(): ?Destination
+    {
+        return $this->typeDestination;
+    }
+
+    public function setTypeDestination(Destination $typeDestination): self
+    {
+        $this->typeDestination = $typeDestination;
+
+        return $this;
+    }
+
+    public function getClientConfig(): ?ClientConfig
+    {
+        return $this->clientConfig;
+    }
+
+    public function setClientConfig(ClientConfig $clientConfig): self
+    {
+        $this->clientConfig = $clientConfig;
+
+        return $this;
+    }
+
+    public function getClassMapConfig(): ?ClassMapConfig
+    {
+        return $this->classMapConfig;
+    }
+
+    public function setClassMapConfig(ClassMapConfig $classMapConfig): self
+    {
+        $this->classMapConfig = $classMapConfig;
+
+        return $this;
+    }
+
+    /** @return array<string, string> */
+    public function getDetectedXmlNamespaces(): array
+    {
+        return $this->detectedXmlNamespaces;
+    }
+
+    /** @param array<string, string> $xmlNamespaces */
+    public function setDetectedXmlNamespaces(array $xmlNamespaces): self
+    {
+        $this->detectedXmlNamespaces = $xmlNamespaces;
+
+        return $this;
     }
 }

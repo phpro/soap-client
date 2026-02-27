@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes;
 
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Closure;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\TypesManipulatorInterface;
 use Soap\Engine\Metadata\Collection\PropertyCollection;
 use Soap\Engine\Metadata\Collection\TypeCollection;
@@ -15,26 +16,40 @@ use function Psl\Iter\contains;
 use function Psl\Iter\first;
 use function Psl\Iter\reduce;
 use function Psl\Type\instance_of;
-use function Psl\Type\non_empty_string;
 use function Psl\Vec\flat_map;
 use function Psl\Vec\map;
 use function Psl\Vec\values;
 
 final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
 {
+    public function __construct(
+        private ?TypeNamespaceMap $namespaceMap = null
+    ) {
+    }
+
+    /**
+     * Factory that returns a closure - Config will call it with the namespace map.
+     *
+     * @return Closure(?TypeNamespaceMap): self
+     */
+    public static function create(): Closure
+    {
+        return static fn (?TypeNamespaceMap $map) => new self($map);
+    }
+
     public function __invoke(TypeCollection $allTypes): TypeCollection
     {
         return new TypeCollection(...array_values($allTypes->reduce(
             function (array $result, Type $type) use ($allTypes): array {
-                $name = Normalizer::normalizeClassname(non_empty_string()->assert($type->getName()));
-                if (array_key_exists($name, $result)) {
+                $key = DuplicateTypesKey::forType($type, $this->namespaceMap);
+                if (array_key_exists($key, $result)) {
                     return $result;
                 }
 
                 return array_merge(
                     $result,
                     [
-                        $name => $this->intersectTypes($this->fetchAllTypesNormalizedByName($allTypes, $name))
+                        $key => $this->intersectTypes($this->fetchAllTypesWithSameKey($allTypes, $key))
                     ]
                 );
             },
@@ -54,11 +69,9 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
         );
     }
 
-    private function fetchAllTypesNormalizedByName(TypeCollection $types, string $name): TypeCollection
+    private function fetchAllTypesWithSameKey(TypeCollection $types, string $key): TypeCollection
     {
-        return $types->filter(static function (Type $type) use ($name): bool {
-            return Normalizer::normalizeClassname(non_empty_string()->assert($type->getName())) === $name;
-        });
+        return $types->filter(fn (Type $type): bool => DuplicateTypesKey::forType($type, $this->namespaceMap) === $key);
     }
 
     private function uniqueProperties(PropertyCollection ...$types): PropertyCollection

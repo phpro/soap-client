@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\TypeNameCalculator;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\TypeMeta;
@@ -10,42 +11,24 @@ use Soap\Engine\Metadata\Model\XsdType;
 use Soap\WsdlReader\Metadata\Predicate\IsConsideredScalarType;
 use function Psl\Type\non_empty_string;
 
-final class ReturnType
+final readonly class ReturnType
 {
-    /**
-     * @var non-empty-string
-     */
-    private string $type;
-
-    /**
-     * @var non-empty-string
-     */
-    private string $namespace;
-
-    private XsdType $xsdType;
-
     private TypeMeta $meta;
 
     /**
      * @internal - Use ReturnType::fromMetaData instead
      *
-     * Property constructor.
-     *
      * @param non-empty-string $type
-     * @param non-empty-string $namespace
      */
-    public function __construct(string $type, string $namespace, XsdType $xsdType)
-    {
-        $this->type = $type;
-        $this->namespace = $namespace;
-        $this->xsdType = $xsdType;
+    public function __construct(
+        private string $type,
+        private TypeNamespaceMap $namespaces,
+        private XsdType $xsdType
+    ) {
         $this->meta = $xsdType->getMeta();
     }
 
-    /**
-     * @param non-empty-string $namespace
-     */
-    public static function fromMetaData(string $namespace, XsdType $returnType): self
+    public static function fromMetaData(TypeNamespaceMap $namespaces, XsdType $returnType): self
     {
         // Element types that are referencing complex types, should result in the complexType according to ext-soap:
         $returnType = $returnType->copy($returnType->getXmlTypeName() ?: $returnType->getName());
@@ -54,7 +37,7 @@ final class ReturnType
 
         return new self(
             Normalizer::normalizeDataType(non_empty_string()->assert($typeName)),
-            Normalizer::normalizeNamespace($namespace),
+            $namespaces,
             $returnType
         );
     }
@@ -74,7 +57,15 @@ final class ReturnType
                 ->unwrapOr('mixed');
         }
 
-        return '\\'.$this->namespace.'\\'.Normalizer::normalizeClassname($this->type);
+        return '\\'.$this->getNamespace().'\\'.Normalizer::normalizeClassname($this->type);
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function getNamespace(): string
+    {
+        return $this->namespaces->detectDestinationForType($this->xsdType)->namespace;
     }
 
     public function getXsdType(): XsdType

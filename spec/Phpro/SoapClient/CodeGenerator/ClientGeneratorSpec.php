@@ -5,6 +5,9 @@ namespace spec\Phpro\SoapClient\CodeGenerator;
 use Laminas\Code\Generator\Exception\ClassNotFoundException;
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
 use Phpro\SoapClient\CodeGenerator\ClientGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\FileContext;
@@ -46,13 +49,14 @@ class ClientGeneratorSpec extends ObjectBehavior
         $this->shouldImplement(GeneratorInterface::class);
     }
 
-    function it_generates_clients(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
+    function it_generates_clients(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
     {
+        $typeNamespaceMap = TypeNamespaceMap::create(new Destination('/app', ''));
         $method = new ClientMethod(
             'Test',
-            [new Parameter('parameters', 'Test', '', XsdType::create('Test'))],
-            ReturnType::fromMetaData('', XsdType::create('TestResponse')),
-            '',
+            [new Parameter('parameters', 'Test', $typeNamespaceMap, XsdType::create('Test'))],
+            ReturnType::fromMetaData($typeNamespaceMap, XsdType::create('TestResponse')),
+            $typeNamespaceMap,
             new MethodMeta()
         );
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
@@ -63,33 +67,35 @@ class ClientGeneratorSpec extends ObjectBehavior
         $file->getClass()->willThrow(new ClassNotFoundException('No class is set'));
         $file->setClass(Argument::type(ClassGenerator::class))->shouldBeCalled();
 
-        $client->getMethodMap()->willReturn($map);
-        $map->getMethods()->willReturn([$method]);
-        $client->getNamespace()->willReturn('MyNamespace');
-        $client->getName()->willReturn('MyClient');
+        $client = new Client(
+            new ClientConfig('MyClient', new Destination('', 'MyNamespace')),
+            new ClientMethodMap([$method])
+        );
         $this->generate($file, $client)->shouldReturn('code');
     }
 
-    private function it_generates_clients_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, Client $client, ClientMethodMap $map, ClassGenerator $class)
+    function it_generates_clients_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
     {
+        $typeNamespaceMap = TypeNamespaceMap::create(new Destination('/app', ''));
         $method = new ClientMethod(
             'Test',
-            [new Parameter('parameters', 'Test', '', XsdType::create('Test'))],
-            ReturnType::fromMetaData('', XsdType::create('TestResponse')),
-            '',
+            [new Parameter('parameters', 'Test', $typeNamespaceMap, XsdType::create('Test'))],
+            ReturnType::fromMetaData($typeNamespaceMap, XsdType::create('TestResponse')),
+            $typeNamespaceMap,
             new MethodMeta()
         );
 
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
+        $ruleSet->applyRules(Argument::type(ClientContext::class))->shouldBeCalled();
+        $ruleSet->applyRules(Argument::type(FileContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
 
         $file->getClass()->willReturn($class);
         $file->setClass($class)->shouldBeCalled();
-
-        $client->getMethodMap()->willReturn($map);
-        $map->getMethods()->willReturn([$method]);
-        $client->getNamespace()->willReturn('MyNamespace');
-        $client->getName()->willReturn('MyClient');
+        $client = new Client(
+            new ClientConfig('MyClient', new Destination('', 'MyNamespace')),
+            new ClientMethodMap([$method])
+        );
         $this->generate($file, $client)->shouldReturn('code');
     }
 }

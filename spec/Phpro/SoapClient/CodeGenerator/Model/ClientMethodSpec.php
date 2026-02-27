@@ -2,6 +2,8 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
 use PhpSpec\ObjectBehavior;
@@ -18,11 +20,13 @@ class ClientMethodSpec extends ObjectBehavior
 {
     function let()
     {
+        $destination = new Destination('src/type', 'ParamNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $this->beConstructedWith(
             'testMethod',
             [],
-            ReturnType::fromMetaData('ParamNamespace', XsdType::create('CreditResponse')),
-            'ParamNamespace',
+            ReturnType::fromMetaData($namespaceMap, XsdType::create('CreditResponse')),
+            $namespaceMap,
             new MethodMeta()
         );
     }
@@ -49,14 +53,11 @@ class ClientMethodSpec extends ObjectBehavior
 
     function is_has_a_return_type()
     {
+        $destination = new Destination('src/type', 'ParamNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $this->getReturnType()->shouldBeLike(
-            ReturnType::fromMetaData('ParamNamespace', XsdType::create('CreditResponse'))
+            ReturnType::fromMetaData($namespaceMap, XsdType::create('CreditResponse'))
         );
-    }
-
-    function it_has_a_parameter_namespace()
-    {
-        $this->getParameterNamespace()->shouldBe('ParamNamespace');
     }
 
     public function it_has_type_meta(): void

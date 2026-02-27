@@ -2,11 +2,13 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Config;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
-use Phpro\SoapClient\CodeGenerator\Config\ConfigInterface;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
-use Phpro\SoapClient\Util\Filesystem;
 use PhpSpec\ObjectBehavior;
 use Soap\Engine\Engine;
 
@@ -34,9 +36,9 @@ class ConfigSpec extends ObjectBehavior
         $this->shouldThrow(InvalidArgumentException::class)->duringGetEngine();
     }
 
-    function it_requires_a_typedestination()
+    function it_requires_a_type_namespace_map()
     {
-        $this->shouldThrow(InvalidArgumentException::class)->duringGetTypeDestination();
+        $this->shouldThrow(InvalidArgumentException::class)->duringGetTypeNamespaceMap();
     }
 
     function it_has_a_ruleset()
@@ -45,38 +47,37 @@ class ConfigSpec extends ObjectBehavior
         $this->getRuleSet()->shouldBe($value);
     }
 
-    public function it_has_a_type_destination()
+    public function it_has_a_type_namespace_map()
     {
-        $this->setTypeDestination($value = 'src/type');
-        $this->getTypeDestination()->shouldBe($value);
+        $destination = new Destination('src/type', 'TypeNamespace');
+        $value = TypeNamespaceMap::create($destination);
+        $this->setTypeNamespaceMap($value);
+        $this->getTypeNamespaceMap()->shouldBe($value);
     }
 
-    public function it_has_a_client_destination()
+    public function it_has_a_client_config()
     {
-        $this->setClientDestination($value = 'src/client');
-        $this->getClientDestination()->shouldBe($value);
+        $destination = new Destination('src/client', 'ClientNamespace');
+        $value = new ClientConfig('ClientName', $destination);
+        $this->setClient($value);
+        $this->getClient()->shouldBe($value);
     }
 
-    public function it_has_a_type_namespace()
+    public function it_requires_a_client_config()
     {
-        $this->setTypeNamespace($value = 'TypeNamespace');
-        $this->getTypeNamespace()->shouldBe($value);
+        $this->shouldThrow(InvalidArgumentException::class)->duringGetClient();
     }
 
-    public function it_has_a_client_namespace()
+    public function it_has_a_classmap_config()
     {
-        $this->setClientNamespace($value = 'ClientNamespace');
-        $this->getClientNamespace()->shouldBe($value);
+        $destination = new Destination('src/classmap', 'ClassMapNamespace');
+        $value = new ClassMapConfig('ClassMapName', $destination);
+        $this->setClassMap($value);
+        $this->getClassMap()->shouldBe($value);
     }
 
-    public function it_requires_a_client_namespace()
+    public function it_requires_a_classmap_config()
     {
-        $this->shouldThrow(InvalidArgumentException::class)->duringGetClientNamespace();
-    }
-
-    public function it_has_a_client_name()
-    {
-        $this->setClientName($value = 'ClientName');
-        $this->getClientName()->shouldBe($value);
+        $this->shouldThrow(InvalidArgumentException::class)->duringGetClassMap();
     }
 }

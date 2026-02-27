@@ -1,3 +1,151 @@
+# V4 to V5
+
+## Configuration overhaul
+
+The configuration system has been significantly reworked.
+The `Config` class no longer implements `ConfigInterface` (which has been removed) and uses new value objects for configuring destinations.
+
+### New value objects
+
+Individual string-based configuration (name, namespace, destination) has been replaced by dedicated value objects:
+
+- **`Destination`**: Combines a `path` and `namespace` into a single object.
+- **`ClientConfig`**: Wraps a client name and `Destination`.
+- **`ClassMapConfig`**: Wraps a classmap name and `Destination`.
+- **`TypeNamespaceMap`**: Replaces the old `setTypeNamespace()` / `setTypeDestination()` combination.
+
+### Migration
+
+**Before (v4):**
+
+```php
+use Phpro\SoapClient\CodeGenerator\Config\Config;
+
+return Config::create()
+    ->setEngine($engine = DefaultEngineFactory::create(
+        EngineOptions::defaults('your.wsdl')
+    ))
+    ->setTypeDestination('src/Type')
+    ->setTypeNamespace('App\\Type')
+    ->setClientName('MyClient')
+    ->setClientNamespace('App')
+    ->setClientDestination('src')
+    ->setClassMapName('MyClassmap')
+    ->setClassMapNamespace('App')
+    ->setClassMapDestination('src');
+```
+
+**After (v5):**
+
+```php
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+
+return Config::create()
+    ->setEngine($engine = DefaultEngineFactory::create(
+        EngineOptions::defaults('your.wsdl')
+    ))
+    ->setTypeNamespaceMap(
+        TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
+    )
+    ->setClient(new ClientConfig('MyClient', new Destination('src', 'App')))
+    ->setClassMap(new ClassMapConfig('MyClassmap', new Destination('src', 'App')));
+```
+
+### Removed methods on `Config`
+
+| Removed method | Replacement |
+|---|---|
+| `setTypeDestination()` | `setTypeNamespaceMap(TypeNamespaceMap::create(new Destination(...)))` |
+| `setTypeNamespace()` | (included in `Destination`) |
+| `getTypeDestination()` | `getTypeNamespaceMap()` |
+| `getTypeNamespace()` | (included in `TypeNamespaceMap`) |
+| `setClientName()` | `setClient(new ClientConfig(...))` |
+| `setClientNamespace()` | (included in `ClientConfig`) |
+| `setClientDestination()` | (included in `ClientConfig`) |
+| `getClientName()` | `getClient()->name` |
+| `getClientNamespace()` | `getClient()->destination->namespace` |
+| `getClientDestination()` | `getClient()->destination->path` |
+| `setClassMapName()` | `setClassMap(new ClassMapConfig(...))` |
+| `setClassMapNamespace()` | (included in `ClassMapConfig`) |
+| `setClassMapDestination()` | (included in `ClassMapConfig`) |
+| `getClassMapName()` | `getClassMap()->name` |
+| `getClassMapNamespace()` | `getClassMap()->destination->namespace` |
+| `getClassMapDestination()` | `getClassMap()->destination->path` |
+
+### `ConfigInterface` removed
+
+The `ConfigInterface` has been removed entirely. If you had a custom configuration class implementing `ConfigInterface`, you must now use the `Config` class directly.
+
+## TypeNamespaceMap: XML namespace mapping and strategies
+
+The `TypeNamespaceMap` allows you to map XML namespaces (xmlns) to specific PHP namespace destinations.
+This is useful when a WSDL defines types across multiple XML namespaces and you want to organize them into separate PHP directories/namespaces.
+
+### Explicit mappings
+
+```php
+TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
+    ->withMapping('http://www.opengis.net/gml/3.2', new Destination('src/Type/Gml', 'App\\Type\\Gml'))
+    ->withMapping('http://xoev.de/schemata/xzufi/2_2_0', new Destination('src/Type/Xzufi', 'App\\Type\\Xzufi'))
+```
+
+### Strategy-based resolution
+
+Instead of manually mapping every xmlns, you can use a strategy to automatically resolve destinations.
+A built-in `PrefixBasedTypeNamespaceStrategy` derives a sub-namespace from the XML namespace prefix:
+
+```php
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
+
+TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
+    ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+```
+
+With this strategy, a type in the `gml` xmlns prefix is automatically placed in `src/Type/Gml` with namespace `App\Type\Gml`.
+
+Explicit `withMapping()` entries always take precedence over the strategy. You can combine both:
+
+```php
+TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
+    ->withMapping('http://special.example.com', new Destination('src/Type/Special', 'App\\Type\\Special'))
+    ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+```
+
+You can also implement a custom strategy via `TypeNamespaceMapStrategyInterface` or pass any callable.
+
+### Duplicate type strategies are now namespace-aware
+
+The `IntersectDuplicateTypesStrategy` and `RemoveDuplicateTypesStrategy` now use a factory pattern (`create()`) that accepts the `TypeNamespaceMap`. When types map to different PHP namespaces, they are not considered duplicates.
+
+## Interactive config generator improvements
+
+The `generate:config` command now attempts to load the WSDL and detect XML namespaces automatically.
+Detected namespaces are included as commented-out `withMapping()` suggestions and a commented-out `withStrategy()` line in the generated configuration file.
+If you want to have this mapping in your configuration, you can start out fresh by running:
+
+```
+./vendor/bin/soap-client generate:config --config=config/soap-client.php
+```
+
+## Regenerate classes
+
+After upgrading, regenerate all your classes:
+
+```
+./vendor/bin/soap-client generate:client --config=config/soap-client.php
+./vendor/bin/soap-client generate:classmap --config=config/soap-client.php
+./vendor/bin/soap-client generate:types --config=config/soap-client.php
+./vendor/bin/soap-client generate:clientfactory --config=config/soap-client.php
+```
+
+**Note:** The generated code may have changed for your project due to the namespace-aware type generation. Validate that you are still using the correct methods in your implementation.
+
+---
+
 # V3 to V4
 
 **NOTE:** We now require a `psr/cache-implementation` so that the engine (and WSDL parsing) can be cached. Some examples are: `symfony/cache` or `cache/*-adapter`.

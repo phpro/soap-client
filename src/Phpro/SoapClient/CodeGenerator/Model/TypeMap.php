@@ -2,65 +2,41 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Soap\Engine\Metadata\Collection\TypeCollection;
 use Soap\Engine\Metadata\Model\Type as MetadataType;
 
-/**
- * Class TypeMap
- *
- * @package Phpro\SoapClient\CodeGenerator\Model
- */
-class TypeMap
+final readonly class TypeMap
 {
-
-    /**
-     * @var array|Type[]
-     */
-    private $types;
-
-    /**
-     * @var non-empty-string
-     */
-    private $namespace;
 
     /**
      * @internal - Use TypeMap::fromMetadata instead
      *
-     * TypeMap constructor.
-     *
-     * @param non-empty-string $namespace
-     * @param array|Type[] $types
+     * @param array<array-key, Type> $types
      */
-    public function __construct(string $namespace, array $types)
-    {
-        $this->namespace = Normalizer::normalizeNamespace($namespace);
-        $this->types = $types;
+    public function __construct(
+        private TypeNamespaceMap $namespaces,
+        private array $types
+    ) {
     }
 
-    /**
-     * @param non-empty-string $namespace
-     */
-    public static function fromMetadata(string $namespace, TypeCollection $types): self
+    public static function fromMetadata(TypeNamespaceMap $namespaces, TypeCollection $types): self
     {
         return new self(
-            $namespace,
-            $types->map(function (MetadataType $type) use ($namespace) {
-                return Type::fromMetadata($namespace, $type);
+            $namespaces,
+            $types->map(function (MetadataType $type) use ($namespaces) {
+                return Type::fromMetadata($namespaces, $type);
             })
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getNamespace(): string
+    public function getNamespaces(): TypeNamespaceMap
     {
-        return $this->namespace;
+        return $this->namespaces;
     }
 
     /**
-     * @return array|Type[]
+     * @return array<array-key, Type>
      */
     public function getTypes(): array
     {

@@ -2,12 +2,12 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Config;
 
+use Closure;
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSetInterface;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\InvalidArgumentException;
 use Phpro\SoapClient\Soap\Metadata\Detector\LocalEnumDetector;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
@@ -28,62 +28,23 @@ use Soap\Engine\Metadata\Metadata;
 
 final class Config
 {
-    /**
-     * @var string
-     */
-    protected $clientName = 'Client';
+    protected ?ClientConfig $client = null;
+
+    protected ?TypeNamespaceMap $typeNamespaceMap = null;
+    protected ?Engine $engine = null;
 
     /**
-     * @var string
+     * @var TypesManipulatorInterface|Closure(?TypeNamespaceMap): TypesManipulatorInterface
      */
-    protected $typeNamespace = '';
-
-    /**
-     * @var string
-     */
-    protected $clientNamespace = '';
-
-    /**
-     * @var Engine|null
-     */
-    protected $engine = null;
-
-    /**
-     * @var string
-     */
-    protected $clientDestination = '';
-
-    /**
-     * @var string
-     */
-    protected $typeDestination = '';
-
-    protected TypesManipulatorInterface $duplicateTypeIntersectStrategy;
+    protected TypesManipulatorInterface|Closure $duplicateTypeIntersectStrategy;
 
     protected TypeReplacer $typeReplacementStrategy;
 
     protected ?MetadataOptions $metadataOptions = null;
 
-    /**
-     * @var RuleSetInterface
-     */
-    protected $ruleSet;
+    protected RuleSetInterface $ruleSet;
 
-    /**
-     * @var string
-     */
-    protected $classMapName;
-
-    /**
-     * @var string
-     */
-    protected $classMapNamespace;
-
-    /**
-     * @var string
-     */
-    protected $classMapDestination;
-
+    protected ?ClassMapConfig $classMap = null;
     protected EnumerationGenerationStrategy $enumerationGenerationStrategy;
 
     public function __construct()
@@ -93,7 +54,7 @@ final class Config
         // Working with duplicate types is hard (see FAQ).
         // Therefore, we decided to combine all duplicate types into 1 big intersected type by default instead.
         // The resulting type will always be usable, but might contain some additional empty properties.
-        $this->duplicateTypeIntersectStrategy = new IntersectDuplicateTypesStrategy();
+        $this->duplicateTypeIntersectStrategy = IntersectDuplicateTypesStrategy::create();
 
         // By default, we only generate global enumerations to avoid naming conflicts.
         $this->enumerationGenerationStrategy = EnumerationGenerationStrategy::default();
@@ -106,37 +67,27 @@ final class Config
         ]);
     }
 
-    /**
-     * @return Config
-     */
     public static function create(): self
     {
         return new static();
     }
 
-    /**
-     * @return string
-     */
-    public function getTypeNamespace(): string
+    public function getTypeNamespaceMap(): TypeNamespaceMap
     {
-        return $this->typeNamespace;
+        if (!$this->typeNamespaceMap) {
+            throw InvalidArgumentException::typeNamespaceMapIsMissing();
+        }
+
+        return $this->typeNamespaceMap;
     }
 
-    /**
-     * @param non-empty-string $namespace
-     *
-     * @return Config
-     */
-    public function setTypeNamespace($namespace): self
+    public function setTypeNamespaceMap(TypeNamespaceMap $namespaceMap): self
     {
-        $this->typeNamespace = Normalizer::normalizeNamespace($namespace);
+        $this->typeNamespaceMap = $namespaceMap;
 
         return $this;
     }
 
-    /**
-     * @return Engine
-     */
     public function getEngine(): Engine
     {
         if (!$this->engine instanceof Engine) {
@@ -145,11 +96,6 @@ final class Config
         return $this->engine;
     }
 
-    /**
-     * @param Engine $engine
-     *
-     * @return Config
-     */
     public function setEngine(Engine $engine): self
     {
         $this->engine = $engine;
@@ -157,19 +103,11 @@ final class Config
         return $this;
     }
 
-    /**
-     * @return RuleSetInterface
-     */
     public function getRuleSet(): RuleSetInterface
     {
         return $this->ruleSet;
     }
 
-    /**
-     * @param RuleSetInterface $ruleSet
-     *
-     * @return Config
-     */
     public function setRuleSet(RuleSetInterface $ruleSet): self
     {
         $this->ruleSet = $ruleSet;
@@ -177,11 +115,6 @@ final class Config
         return $this;
     }
 
-    /**
-     * @param RuleInterface $rule
-     *
-     * @return Config
-     */
     public function addRule(RuleInterface $rule): self
     {
         $this->ruleSet->addRule($rule);
@@ -189,90 +122,18 @@ final class Config
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getClientName(): string
+    public function getClient(): ClientConfig
     {
-        return $this->clientName;
-    }
-
-    /**
-     * @param string $clientName
-     * @return $this
-     */
-    public function setClientName($clientName): self
-    {
-        $this->clientName = $clientName;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClientNamespace(): string
-    {
-        if (!$this->clientNamespace) {
-            throw InvalidArgumentException::clientNamespaceIsMissing();
+        if (!$this->client) {
+            throw InvalidArgumentException::clientIsMissing();
         }
 
-        return $this->clientNamespace;
+        return $this->client;
     }
 
-    /**
-     * @param string $clientNamespace
-     * @return Config
-     */
-    public function setClientNamespace($clientNamespace): self
+    public function setClient(ClientConfig $client): self
     {
-        $this->clientNamespace = $clientNamespace;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClientDestination(): string
-    {
-        if (!$this->clientDestination) {
-            throw InvalidArgumentException::clientDestinationIsMissing();
-        }
-
-        return $this->clientDestination;
-    }
-
-    /**
-     * @param string $clientDestination
-     * @return Config
-     */
-    public function setClientDestination($clientDestination): self
-    {
-        $this->clientDestination = $clientDestination;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypeDestination(): string
-    {
-        if (!$this->typeDestination) {
-            throw InvalidArgumentException::typeDestinationIsMissing();
-        }
-
-        return $this->typeDestination;
-    }
-
-    /**
-     * @param string $typeDestination
-     * @return Config
-     */
-    public function setTypeDestination($typeDestination): self
-    {
-        $this->typeDestination = $typeDestination;
+        $this->client = $client;
 
         return $this;
     }
@@ -295,7 +156,7 @@ final class Config
             ->withTypesManipulator(
                 new TypesManipulatorChain(
                     new AppendTypesManipulator($appendTypes),
-                    $this->duplicateTypeIntersectStrategy,
+                    $this->resolveDuplicateTypeStrategy(),
                     new ReplaceTypesManipulator($typeReplacementStrategy),
                 )
             )->withMethodsManipulator(
@@ -320,8 +181,16 @@ final class Config
         return $this;
     }
 
-    public function setDuplicateTypeIntersectStrategy(TypesManipulatorInterface $duplicateTypeIntersectStrategy): self
-    {
+    /**
+     *
+     * @param (
+     *  TypesManipulatorInterface|
+     *  Closure(?TypeNamespaceMap): TypesManipulatorInterface
+     * ) $duplicateTypeIntersectStrategy
+     */
+    public function setDuplicateTypeIntersectStrategy(
+        TypesManipulatorInterface|Closure $duplicateTypeIntersectStrategy
+    ): self {
         $this->duplicateTypeIntersectStrategy = $duplicateTypeIntersectStrategy;
 
         return $this;
@@ -334,71 +203,18 @@ final class Config
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getClassMapName(): string
+    public function getClassMap(): ClassMapConfig
     {
-        if (!$this->classMapName) {
-            throw InvalidArgumentException::classmapNameMissing();
+        if (!$this->classMap) {
+            throw InvalidArgumentException::classmapMissing();
         }
 
-        return $this->classMapName;
+        return $this->classMap;
     }
 
-    /**
-     * @return string
-     */
-    public function getClassMapNamespace(): string
+    public function setClassMap(ClassMapConfig $classMap): self
     {
-        if (!$this->classMapNamespace) {
-            throw InvalidArgumentException::classmapNamespaceMissing();
-        }
-
-        return $this->classMapNamespace;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClassMapDestination(): string
-    {
-        if (!$this->classMapDestination) {
-            throw InvalidArgumentException::classmapDestinationMissing();
-        }
-
-        return $this->classMapDestination;
-    }
-
-    /**
-     * @param string $classMapName
-     * @return Config
-     */
-    public function setClassMapName(string $classMapName): self
-    {
-        $this->classMapName = $classMapName;
-
-        return $this;
-    }
-
-    /**
-     * @param string $classMapNamespace
-     * @return Config
-     */
-    public function setClassMapNamespace(string $classMapNamespace): self
-    {
-        $this->classMapNamespace = $classMapNamespace;
-
-        return $this;
-    }
-
-    /**
-     * @param string $classMapDestination
-     * @return Config
-     */
-    public function setClassMapDestination(string $classMapDestination): self
-    {
-        $this->classMapDestination = $classMapDestination;
+        $this->classMap = $classMap;
 
         return $this;
     }
@@ -413,5 +229,14 @@ final class Config
     public function getEnumerationGenerationStrategy(): EnumerationGenerationStrategy
     {
         return $this->enumerationGenerationStrategy;
+    }
+
+    private function resolveDuplicateTypeStrategy(): TypesManipulatorInterface
+    {
+        if ($this->duplicateTypeIntersectStrategy instanceof Closure) {
+            return ($this->duplicateTypeIntersectStrategy)($this->typeNamespaceMap);
+        }
+
+        return $this->duplicateTypeIntersectStrategy;
     }
 }

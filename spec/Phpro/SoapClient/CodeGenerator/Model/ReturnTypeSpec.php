@@ -2,9 +2,10 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
 
@@ -18,7 +19,9 @@ class ReturnTypeSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('Type', 'My\Namespace', XsdType::create('Type'));
+        $destination = new Destination('src/type', 'My\Namespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $this->beConstructedWith('Type', $namespaceMap, XsdType::create('Type'));
     }
 
     function it_is_initializable()
@@ -33,9 +36,11 @@ class ReturnTypeSpec extends ObjectBehavior
 
     function it_can_fall_back_to_mixed_on_unkown_extension_of_simple_type()
     {
+        $destination = new Destination('src/type', 'My\Namespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $this->beConstructedWith(
             'Type',
-            'My\Namespace',
+            $namespaceMap,
             XsdType::create('Type')
                 ->withMeta(static fn (TypeMeta $meta) => $meta->withIsSimple(true))
         );
@@ -45,9 +50,11 @@ class ReturnTypeSpec extends ObjectBehavior
 
     function it_can_fall_back_to_simple_type()
     {
+        $destination = new Destination('src/type', 'My\Namespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $this->beConstructedWith(
             'Type',
-            'My\Namespace',
+            $namespaceMap,
             XsdType::create('Type')
                 ->withMeta(static fn (TypeMeta $meta) => $meta->withIsSimple(true)->withExtends([
                     'isSimple' => true,
@@ -66,10 +73,12 @@ class ReturnTypeSpec extends ObjectBehavior
 
     public function it_falls_back_to_complex_type_if_its_an_element_referencing_this_type(): void
     {
+        $destination = new Destination('src/type', 'My\Namespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $this->beConstructedThrough(
             'fromMetaData',
             [
-                'My\Namespace',
+                $namespaceMap,
                 XsdType::create('ElementType')
                     ->withXmlTypeName('ComplexType')
             ]

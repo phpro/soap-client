@@ -8,6 +8,7 @@ use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
+use PhproTest\SoapClient\Unit\CodeGenerator\ConfigurationHelper;
 use Laminas\Code\Generator\FileGenerator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -22,6 +23,8 @@ use Soap\Engine\Metadata\Model\XsdType;
  */
 class ClassMapAssemblerTest extends TestCase
 {
+    use ConfigurationHelper;
+
     #[Test]
     function it_is_an_assembler()
     {
@@ -50,7 +53,6 @@ class ClassMapAssemblerTest extends TestCase
 
 namespace ClassMapNamespace;
 
-use MyNamespace as Type;
 use Soap\Encoding\ClassMap\ClassMapCollection;
 use Soap\Encoding\ClassMap\ClassMap;
 
@@ -59,14 +61,14 @@ class MyClassMap
     public static function types(): \Soap\Encoding\ClassMap\ClassMapCollection
     {
         return new ClassMapCollection(
-            new ClassMap('http://my-namespace.com', 'MyType', Type\MyType::class),
+            new ClassMap('http://my-namespace.com', 'MyType', \MyNamespace\MyType::class),
         );
     }
 
     public static function enums(): \Soap\Encoding\ClassMap\ClassMapCollection
     {
         return new ClassMapCollection(
-            new ClassMap('http://my-namespace.com', 'MyEnum', Type\MyEnum::class),
+            new ClassMap('http://my-namespace.com', 'MyEnum', \MyNamespace\MyEnum::class),
         );
     }
 }
@@ -82,14 +84,15 @@ CODE;
     private function createContext()
     {
         $file = new FileGenerator();
-        $typeMap = new TypeMap($namespace = 'MyNamespace', [
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $typeMap = new TypeMap($namespaces, [
             new Type(
-                $namespace,
+                $namespaces,
                 'MyType',
                 'MyType',
                 [
                     Property::fromMetaData(
-                        $namespace,
+                        $namespaces,
                         new MetaProperty('myProperty', XsdType::guess('string'))
                     ),
                 ],
@@ -97,7 +100,7 @@ CODE;
                     ->withXmlNamespace('http://my-namespace.com')
             ),
             new Type(
-                $namespace,
+                $namespaces,
                 'MyEnum',
                 'MyEnum',
                 [],
@@ -111,6 +114,6 @@ CODE;
             ),
         ]);
 
-        return new ClassMapContext($file, $typeMap, 'MyClassMap', 'ClassMapNamespace');
+        return new ClassMapContext($file, $typeMap, $this->createClassMapConfig('MyClassMap', 'ClassMapNamespace'));
     }
 }

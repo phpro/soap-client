@@ -2,10 +2,17 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Console\Validator\NotBlankValidator;
+use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Util\Filesystem;
+use Soap\WsdlReader\Model\Wsdl1;
+use Soap\WsdlReader\Wsdl1Reader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,18 +24,9 @@ class GenerateConfigCommand extends Command
 {
     const COMMAND_NAME = 'generate:config';
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * GenerateConfigCommand constructor.
-     * @param Filesystem $filesystem
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
+    public function __construct(
+        private Filesystem $filesystem
+    ) {
         parent::__construct();
     }
 
@@ -60,7 +58,18 @@ class GenerateConfigCommand extends Command
             );
         }
 
-        $context->setWsdl($io->ask('Wsdl location (URL or path to file)', null, $required));
+        $wsdlUri = $io->ask('Wsdl location (URL or path to file)', null, $required);
+        $context->setWsdl($wsdlUri);
+
+        $io->warning('Attempting to load WSDL... (this might take a while)');
+        $wsdl = $this->loadWsdl($wsdlUri);
+
+        if (!$wsdl) {
+            $io->warning('Could not load the provided WSDL with default engine options.');
+            $io->info('Continuing generating configuration...');
+        }
+
+        $context->setDetectedXmlNamespaces($wsdl?->namespaces->namespaceToNameMap ?? []);
         $context->setGenerateDocblocks($io->confirm('Should methods be generated with docblocks?', true));
         $name = $io->ask(
             'Generic name used to name this client (Results in <name>Client <name>Classmap etc.)',
@@ -68,38 +77,45 @@ class GenerateConfigCommand extends Command
             $required
         );
         $baseDir = $io->ask('Directory where the client should be generated in', null, $required);
-        $namespace = $io->ask('Namespace for your client', null, $required);
+        $namespace = Normalizer::normalizeNamespace($io->ask('Namespace for your client', null, $required));
 
-        // Type
-        $context->addSetter('setTypeDestination', $baseDir.DIRECTORY_SEPARATOR.'Type');
-        $context->addSetter('setTypeNamespace', $namespace.'\\Type');
+        // Create configuration objects
+        $typeDestination = new Destination($baseDir . DIRECTORY_SEPARATOR . 'Type', $namespace . '\\Type');
+        $context->setTypeDestination($typeDestination);
 
-        // Client
-        $this->addNonEmptySetter($context, 'setClientDestination', $baseDir);
-        $this->addNonEmptySetter($context, 'setClientName', $name.'Client');
-        $this->addNonEmptySetter($context, 'setClientNamespace', $namespace);
+        $clientDestination = new Destination($baseDir, $namespace);
+        $clientConfig = new ClientConfig($name . 'Client', $clientDestination);
+        $context->setClientConfig($clientConfig);
 
-        // Classmap
-        $this->addNonEmptySetter($context, 'setClassMapDestination', $baseDir);
-        $this->addNonEmptySetter($context, 'setClassMapName', $name.'Classmap');
-        $this->addNonEmptySetter($context, 'setClassMapNamespace', $namespace);
+        $classMapConfig = new ClassMapConfig($name . 'Classmap', $clientDestination);
+        $context->setClassMapConfig($classMapConfig);
 
         // Create the config
         $generator = new ConfigGenerator();
         $this->filesystem->putFileContents($destination, $generator->generate(new FileGenerator(), $context));
         $io->success('Config has been written to ' . $destination);
 
-        return 0;
+        if (!$wsdl) {
+            $io->warning(
+                'The WSDL could not be loaded with default options.' .
+                'You may need to configure custom engine options or verify the WSDL file manually before continuing.'
+            );
+
+            return self::FAILURE;
+        }
+
+        return self::SUCCESS;
     }
 
-    private function addNonEmptySetter(ConfigContext $context, string $key, string $value)
+    private function loadWsdl(string $wsdl): ?Wsdl1
     {
-        if ($value === '') {
-            return;
+        try {
+            $options = EngineOptions::defaults($wsdl);
+            $loader = $options->getWsdlLoader();
+
+            return (new Wsdl1Reader($loader))($wsdl);
+        } catch (\Throwable) {
+            return null;
         }
-        if (preg_match('/namespace$/i', $key)) {
-            $value = str_replace('/', '\\\\', $value);
-        }
-        $context->addSetter($key, $value);
     }
 }

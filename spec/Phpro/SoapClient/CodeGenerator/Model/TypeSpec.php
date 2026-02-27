@@ -2,11 +2,12 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
 
@@ -20,11 +21,13 @@ class TypeSpec extends ObjectBehavior
 {
     function let()
     {
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $this->beConstructedWith(
-            $namespace = 'MyNamespace',
+            $namespaceMap,
             'myType',
             'MyType',
-            [new Property('prop1', 'string', $namespace, XsdType::create('string'))],
+            [new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))],
             XsdType::create('MyType')
         );
     }
@@ -60,21 +63,25 @@ class TypeSpec extends ObjectBehavior
 
     function it_should_not_replace_underscores_in_paths()
     {
-        $this->beConstructedWith('MyNamespace', 'my_type_3_2', Normalizer::normalizeClassname('my_type_3_2'), ['prop1' => 'string'], XsdType::create('MyType'));
-        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/MyType32.php');
+        $destination = new Destination('my/some_dir', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $this->beConstructedWith($namespaceMap, 'my_type_3_2', Normalizer::normalizeClassname('my_type_3_2'), ['prop1' => 'string'], XsdType::create('MyType'));
+        $this->getFileInfo()->getPathname()->shouldReturn('my/some_dir/MyType32.php');
     }
 
     function it_should_prefix_reserved_keywords()
     {
+        $destination = new Destination('my/some_dir', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
         $this->beConstructedWith(
-            $namespace = 'MyNamespace',
+            $namespaceMap,
             'Final',
             Normalizer::normalizeClassname('Final'),
-            [new Property('xor', 'string', $namespace, XsdType::create('string'))],
+            [new Property('xor', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))],
             XsdType::create('MyType')
         );
 
-        $this->getFileInfo('my/some_dir')->getPathname()->shouldReturn('my/some_dir/FinalType.php');
+        $this->getFileInfo()->getPathname()->shouldReturn('my/some_dir/FinalType.php');
         $this->getName()->shouldReturn('FinalType');
         $this->getProperties()[0]->getName()->shouldReturn('xor');
     }

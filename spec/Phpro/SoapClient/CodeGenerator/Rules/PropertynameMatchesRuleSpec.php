@@ -2,16 +2,16 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Rules;
 
+use Laminas\Code\Generator\ClassGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\PropertynameMatchesRule;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
 
 /**
@@ -43,23 +43,38 @@ class PropertynameMatchesRuleSpec extends ObjectBehavior
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_can_apply_to_property_context( RuleInterface $subRule, PropertyContext $context)
+    function it_can_apply_to_property_context(RuleInterface $subRule)
     {
-        $context->getProperty()->willReturn(new Property('myProperty', 'string', 'ns1', XsdType::create('string')));
+        $destination = new Destination('src/type', 'ns1');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $property = new Property('myProperty', 'string', $namespaceMap, 'ns1', XsdType::create('string'));
+        $type = new Type($namespaceMap, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new ClassGenerator(), $type, $property);
+
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }
 
-    function it_can_not_apply_on_invalid_regex(RuleInterface $subRule, PropertyContext $context)
+    function it_can_not_apply_on_invalid_regex(RuleInterface $subRule)
     {
-        $context->getProperty()->willReturn(new Property('InvalidTypeName', 'string', 'ns1', XsdType::create('string')));
+        $destination = new Destination('src/type', 'ns1');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $property = new Property('InvalidTypeName', 'string', $namespaceMap, 'ns1', XsdType::create('string'));
+        $type = new Type($namespaceMap, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new ClassGenerator(), $type, $property);
+
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_can_apply_if_subrule_does_not_apply(RuleInterface $subRule, PropertyContext $context)
+    function it_can_apply_if_subrule_does_not_apply(RuleInterface $subRule)
     {
-        $context->getProperty()->willReturn(new Property('MyProperty', 'string', 'ns1', XsdType::create('string')));
+        $destination = new Destination('src/type', 'ns1');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $property = new Property('MyProperty', 'string', $namespaceMap, 'ns1', XsdType::create('string'));
+        $type = new Type($namespaceMap, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new ClassGenerator(), $type, $property);
+
         $subRule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);
     }

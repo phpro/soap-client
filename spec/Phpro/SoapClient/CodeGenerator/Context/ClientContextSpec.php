@@ -3,21 +3,24 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
 use Laminas\Code\Generator\ClassGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
-use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use PhpSpec\ObjectBehavior;
 
 /**
- * Class TypeContextSpec
+ * Class ClientContextSpec
  *
  * @package spec\Phpro\SoapClient\CodeGenerator\Context
- * @mixin TypeContext
+ * @mixin ClientContext
  */
 class ClientContextSpec extends ObjectBehavior
 {
     function let(ClassGenerator $class)
     {
-        $this->beConstructedWith($class, 'MyClient', 'App\Client');
+        $destination = new Destination('src/client', 'App\Client');
+        $clientConfig = new ClientConfig('MyClient', $destination);
+        $this->beConstructedWith($class, $clientConfig);
     }
 
     function it_is_initializable()

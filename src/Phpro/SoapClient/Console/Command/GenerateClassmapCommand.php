@@ -14,42 +14,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Laminas\Code\Generator\FileGenerator;
 use function Psl\Type\instance_of;
-use function Psl\Type\non_empty_string;
 
-/**
- * Class GenerateTypesCommand
- *
- * @package Phpro\SoapClient\Console\Command
- */
 class GenerateClassmapCommand extends Command
 {
-
     const COMMAND_NAME = 'generate:classmap';
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
-     * GenerateClassmapCommand constructor.
-     *
-     * @param Filesystem $filesystem
-     */
-    public function __construct(Filesystem $filesystem)
-    {
+    public function __construct(
+        private Filesystem $filesystem
+    ) {
         parent::__construct();
-        $this->filesystem = $filesystem;
     }
 
-    /**
-     * Configure the command.
-     */
     protected function configure(): void
     {
         $this
@@ -64,12 +39,10 @@ class GenerateClassmapCommand extends Command
     }
 
     /**
-     * {@inheritdoc}
      * @throws \Phpro\SoapClient\Exception\InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->output = $output;
         $io = new SymfonyStyle($input, $output);
 
         $config = $this->getConfigHelper()->load($input);
@@ -78,69 +51,25 @@ class GenerateClassmapCommand extends Command
         $config->setDuplicateTypeIntersectStrategy(new TypesManipulatorChain());
 
         $typeMap = TypeMap::fromMetadata(
-            non_empty_string()->assert($config->getTypeNamespace()),
+            $config->getTypeNamespaceMap(),
             $config->getManipulatedMetadata()->getTypes(),
         );
 
         $generator = new ClassMapGenerator(
             $config->getRuleSet(),
-            $config->getClassMapName(),
-            $config->getClassMapNamespace()
+            $config->getClassMap(),
         );
-        $path = $config->getClassMapDestination().DIRECTORY_SEPARATOR.$config->getClassMapName().'.php';
-        $this->handleClassmap($generator, $typeMap, $path);
+        $path = $config->getClassMap()->path();
+        $this->filesystem->putFileContents(
+            $path,
+            $generator->generate(new FileGenerator(), $typeMap)
+        );
 
         $io->success('Generated classmap at ' . $path);
 
-        return 0;
+        return self::SUCCESS;
     }
 
-
-    /**
-     * Generates one type class
-     *
-     * @param FileGenerator $file
-     * @param ClassMapGenerator $generator
-     * @param TypeMap $typeMap
-     * @param string $path
-     */
-    protected function generateClassmap(
-        FileGenerator $file,
-        ClassMapGenerator $generator,
-        TypeMap $typeMap,
-        string $path
-    ) {
-        $code = $generator->generate($file, $typeMap);
-        $this->filesystem->putFileContents($path, $code);
-    }
-
-    /**
-     * Try to create a class for a type.
-     *
-     * @param ClassMapGenerator $generator
-     * @param TypeMap           $typeMap
-     * @param string            $path
-     *
-     * @return bool
-     */
-    protected function handleClassmap(ClassMapGenerator $generator, TypeMap $typeMap, string $path): bool
-    {
-        // Try to create a new class:
-        try {
-            $file = new FileGenerator();
-            $this->generateClassmap($file, $generator, $typeMap, $path);
-        } catch (\Exception $e) {
-            $this->output->writeln('<fg=red>'.$e->getMessage().'</fg=red>');
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Function for added type hint
-     */
     public function getConfigHelper(): ConfigHelper
     {
         return instance_of(ConfigHelper::class)->assert($this->getHelper('config'));

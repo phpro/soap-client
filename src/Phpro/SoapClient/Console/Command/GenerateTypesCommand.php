@@ -9,7 +9,6 @@ use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use Phpro\SoapClient\CodeGenerator\TypeGenerator;
 use Phpro\SoapClient\Console\Helper\ConfigHelper;
-use Phpro\SoapClient\Soap\Metadata\MetadataFactory;
 use Phpro\SoapClient\Util\Filesystem;
 use Soap\WsdlReader\Metadata\Predicate\IsConsideredScalarType;
 use SplFileInfo;
@@ -20,40 +19,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Laminas\Code\Generator\FileGenerator;
 use function Psl\Type\instance_of;
-use function Psl\Type\non_empty_string;
 
-/**
- * Class GenerateTypesCommand
- *
- * @package Phpro\SoapClient\Console\Command
- */
 class GenerateTypesCommand extends Command
 {
-
     const COMMAND_NAME = 'generate:types';
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
+    private OutputInterface $output;
 
-    /**
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
-     * @param Filesystem $filesystem
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        parent::__construct(null);
-        $this->filesystem = $filesystem;
-    }
-
-    /**
-     * Configure the command.
-     */
     protected function configure(): void
     {
         $this
@@ -67,9 +39,12 @@ class GenerateTypesCommand extends Command
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function __construct(
+        private Filesystem $filesystem
+    ) {
+        parent::__construct();
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
@@ -77,13 +52,12 @@ class GenerateTypesCommand extends Command
 
         $config = $this->getConfigHelper()->load($input);
         $typeMap = TypeMap::fromMetadata(
-            non_empty_string()->assert($config->getTypeNamespace()),
+            $config->getTypeNamespaceMap(),
             $config->getManipulatedMetadata()->getTypes(),
         );
 
-        $typesDestination = non_empty_string()->assert($config->getTypeDestination());
         foreach ($typeMap->getTypes() as $type) {
-            $fileInfo = $type->getFileInfo($typesDestination);
+            $fileInfo = $type->getFileInfo();
             if ($this->handleType($config, $type, $fileInfo)) {
                 $this->output->writeln(
                     sprintf('Generated class %s to %s', $type->getFullName(), $fileInfo->getPathname())
@@ -93,7 +67,7 @@ class GenerateTypesCommand extends Command
 
         $io->success('All SOAP types generated');
 
-        return 0;
+        return self::SUCCESS;
     }
 
     /**
@@ -110,9 +84,6 @@ class GenerateTypesCommand extends Command
         };
     }
 
-    /**
-     * Try to create a class for a type.
-     */
     protected function handleType(Config $config, Type $type, SplFileInfo $fileInfo): bool
     {
         $generator = $this->detectCodeGeneratorForType($config, $type);
@@ -130,8 +101,8 @@ class GenerateTypesCommand extends Command
 
         // Try to create a blanco class:
         try {
-            $file = new FileGenerator();
-            $this->generateType($file, $generator, $type, $fileInfo);
+            $code = $generator->generate(new FileGenerator(), $type);
+            $this->filesystem->putFileContents($fileInfo->getPathname(), $code);
         } catch (\Exception $e) {
             $this->output->writeln('<fg=red>Error generating '.$type->getFullName().':'.$e->getMessage().'</fg=red>');
             if ($this->output->isVeryVerbose()) {
@@ -144,22 +115,6 @@ class GenerateTypesCommand extends Command
         return true;
     }
 
-    /**
-     * @param GeneratorInterface<Type> $generator
-     */
-    protected function generateType(
-        FileGenerator $file,
-        GeneratorInterface $generator,
-        Type $type,
-        SplFileInfo $fileInfo
-    ): void {
-        $code = $generator->generate($file, $type);
-        $this->filesystem->putFileContents($fileInfo->getPathname(), $code);
-    }
-
-    /**
-     * Function for added type hint
-     */
     public function getConfigHelper(): ConfigHelper
     {
         return instance_of(ConfigHelper::class)->assert($this->getHelper('config'));

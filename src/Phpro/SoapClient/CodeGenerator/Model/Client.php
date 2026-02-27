@@ -2,67 +2,39 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 
-/**
- * Class Client
- *
- * @package Phpro\SoapClient\CodeGenerator\Model
- */
-class Client
+final readonly class Client
 {
-    /**
-     * @var ClientMethodMap
-     */
-    private $methodMap;
+    public function __construct(
+        private ClientConfig $clientConfig,
+        private ClientMethodMap $methods
+    ) {
+    }
 
-    /**
-     * @var non-empty-string
-     */
-    private $namespace;
-
-    /**
-     * @var non-empty-string
-     */
-    private $name;
-
-    /**
-     * TypeModel constructor.
-     *
-     * @param non-empty-string $name
-     * @param non-empty-string $namespace
-     * @param ClientMethodMap $methods
-     * @internal param string $xsdName
-     * @internal param Property[] $properties
-     */
-    public function __construct(string $name, string $namespace, ClientMethodMap $methods)
+    public function config(): ClientConfig
     {
-        $this->name = $name;
-        $this->namespace = Normalizer::normalizeNamespace($namespace);
-        $this->methodMap = $methods;
+        return $this->clientConfig;
     }
 
     /**
      * @return non-empty-string
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
-        return $this->namespace;
+        return $this->clientConfig->destination->namespace;
     }
 
     /**
      * @return non-empty-string
      */
-    public function getName()
+    public function getName(): string
     {
-        return $this->name;
+        return $this->clientConfig->name;
     }
 
-    /**
-     * @return ClientMethodMap
-     */
-    public function getMethodMap()
+    public function getMethodMap(): ClientMethodMap
     {
-        return $this->methodMap;
+        return $this->methods;
     }
 }

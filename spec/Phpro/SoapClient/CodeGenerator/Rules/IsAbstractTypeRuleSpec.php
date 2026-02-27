@@ -56,30 +56,47 @@ class IsAbstractTypeRuleSpec extends ObjectBehavior
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_can_apply_to_type_context(RuleInterface $subRule, TypeContext $context)
+    function it_can_apply_to_type_context(RuleInterface $subRule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }
 
-    function it_can_apply_to_property_context(RuleInterface $subRule, PropertyContext $context)
+    function it_can_apply_to_property_context(RuleInterface $subRule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $property = new \Phpro\SoapClient\CodeGenerator\Model\Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'));
+        $type = new Type($namespaceMap, 'MyAbstract', 'MyAbstract', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $property);
+
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
     }
 
-    function it_can_not_apply_on_invalid_type(RuleInterface $subRule, TypeContext $context)
+    function it_can_not_apply_on_invalid_type(RuleInterface $subRule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'NotAbstract', 'NotAbstract', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'NotAbstract', 'NotAbstract', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(false);
     }
 
-    function it_can_apply_if_subrule_does_not_apply(RuleInterface $subRule, TypeContext $context)
+    function it_can_apply_if_subrule_does_not_apply(RuleInterface $subRule)
     {
-        $context->getType()->willReturn(new Type('MyNamespace', 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType')));
+        $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
+        $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
+        $type = new Type($namespaceMap, 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+
         $subRule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);
     }

@@ -7,11 +7,14 @@ use Phpro\SoapClient\CodeGenerator\Assembler\ClientConstructorAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\Exception\AssemblerException;
+use PhproTest\SoapClient\Unit\CodeGenerator\ConfigurationHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 class ClientConstructorAssemblerTest extends TestCase
 {
+    use ConfigurationHelper;
+
     #[Test]
     function it_is_an_assembler()
     {
@@ -31,12 +34,10 @@ class ClientConstructorAssemblerTest extends TestCase
     {
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
-        $typeNamespace = 'Vendor\\MyTypeNamespace';
 
         return new ClientContext(
             $class,
-            'MyClient',
-            $typeNamespace
+            $this->createClientConfig('MyClient', 'Vendor\\MyNamespace')
         );
     }
 
@@ -69,12 +70,12 @@ CODE;
     #[Test]
     function it_throws_an_exception_when_wrong_context_is_passed() {
         $clientMethodAssembler = new ClientConstructorAssembler();
-        $context = $this->createMock(ContextInterface::class);
+        $context = $this->createStub(ContextInterface::class);
         $this->expectException(AssemblerException::class);
         $this->expectExceptionMessage(sprintf(
                 'Phpro\SoapClient\CodeGenerator\Assembler\ClientConstructorAssembler::assemble '.
                 'expects an Phpro\SoapClient\CodeGenerator\Context\ClientContext as input %s given',
-                get_class($context)
+                $context::class
             )
         );
         $clientMethodAssembler->assemble($context);

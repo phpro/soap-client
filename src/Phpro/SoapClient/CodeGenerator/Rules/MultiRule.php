@@ -4,11 +4,6 @@ namespace Phpro\SoapClient\CodeGenerator\Rules;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 
-/**
- * Class MultiRule
- *
- * @package Phpro\SoapClient\CodeGenerator\Rules
- */
 class MultiRule implements RuleInterface
 {
     /**

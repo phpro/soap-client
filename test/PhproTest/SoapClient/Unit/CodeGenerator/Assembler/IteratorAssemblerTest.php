@@ -7,6 +7,7 @@ use Phpro\SoapClient\CodeGenerator\Assembler\IteratorAssembler;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
+use PhproTest\SoapClient\Unit\CodeGenerator\ConfigurationHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Laminas\Code\Generator\ClassGenerator;
@@ -22,6 +23,7 @@ use function Psl\Fun\identity;
  */
 class IteratorAssemblerTest extends TestCase
 {
+    use ConfigurationHelper;
 
     #[Test]
     function it_is_an_assembler()
@@ -119,8 +121,9 @@ CODE;
     {
         $metaConfigurator ??= identity();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $type = new Type($namespace = 'MyNamespace', 'MyType', 'MyType', [
-            Property::fromMetaData($namespace, new MetaProperty('prop1', XsdType::guess('string')->withMeta(
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
+            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $metaConfigurator($meta
                     ->withIsList(true)
                     ->withMinOccurs(1)

@@ -2,12 +2,14 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Laminas\Code\Generator\ClassGenerator;
+use Soap\Engine\Metadata\Model\XsdType;
 
 /**
  * Class TypeContextSpec
@@ -17,9 +19,20 @@ use Laminas\Code\Generator\ClassGenerator;
  */
 class TypeContextSpec extends ObjectBehavior
 {
-    function let(ClassGenerator $class, Type $type)
+    private Type $type;
+
+    function let(ClassGenerator $class)
     {
-        $this->beConstructedWith($class, $type);
+        $destination = new Destination('src/type', 'MyNamespace');
+        $namespaceMap = TypeNamespaceMap::create($destination);
+        $this->type = new Type(
+            $namespaceMap,
+            'MyType',
+            'MyType',
+            [],
+            XsdType::create('MyType')
+        );
+        $this->beConstructedWith($class, $this->type);
     }
 
     function it_is_initializable()
@@ -37,8 +50,8 @@ class TypeContextSpec extends ObjectBehavior
         $this->getClass()->shouldReturn($class);
     }
 
-    function it_has_a_type(Type $type)
+    function it_has_a_type()
     {
-        $this->getType()->shouldReturn($type);
+        $this->getType()->shouldReturn($this->type);
     }
 }

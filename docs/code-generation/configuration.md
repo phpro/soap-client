@@ -8,7 +8,12 @@ The code generation commands require a configuration file to determine how the S
 
 use Phpro\SoapClient\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Rules;
+use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
+use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
 use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 
@@ -22,14 +27,16 @@ return Config::create()
                     ->addBackedEnumClassMapCollection(SomeClassmap::enums())
             )
     ))
-    ->setTypeDestination('src/SoapTypes')
-    ->setTypeNamespace('SoapTypes')
-    ->setClientDestination('src/SoapClient')
-    ->setClientNamespace('SoapClient')
-    ->setClientName('MySoapClient')
-    ->setClassMapNamespace('Acme\\Classmap')
-    ->setClassMapDestination('src/acme/classmap')
-    ->setClassMapName('AcmeClassmap')
+    ->setTypeNamespaceMap(
+        TypeNamespaceMap::create(new Destination('SoapTypes', 'src/SoapTypes'))
+            // You can add explicit XML xmlns -> PHP namespace mappings here:
+            ->withMapping('http://www.xmlns.mapping', new Destination('src/Type/OtherDir', 'App\\Type\\OtherDir'))
+            // Or use a strategy to automatically resolve destinations from xmlns prefixes:
+            // This strategy will only be called for XML namespaces that don't have an explicit mapping configured.
+            ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+    )
+    ->setClient(new ClientConfig('MySoapClient', new Destination('SoapClient', 'src/SoapClient')))
+    ->setClassMap(new ClassMapConfig('AcmeClassmap', new Destination('Acme\\Classmap', 'src/acme/classmap')))
     ->addRule(new Rules\AssembleRule(new Assembler\GetterAssembler(new Assembler\GetterAssemblerOptions())))
     ->addRule(new Rules\AssembleRule(new Assembler\ImmutableSetterAssembler(
         new Assembler\ImmutableSetterAssemblerOptions()
@@ -104,48 +111,51 @@ DefaultEngineFactory::create(
 );
 ```
 
-**type destination**
+**Type Namespace Map**
 
-String - REQUIRED
+Use `setTypeNamespaceMap(TypeNamespaceMap::create($namespace, $destination))` to configure the namespace and destination for generated types.
 
-The destination of the generated PHP classes. 
+You can add specific XML namespace to PHP namespace mappings by using the `withMapping($xmlNamespace, Destination)` method on the created TypeNamespaceMap instance.
 
-**client destination**
+Alternatively, you can use `withStrategy()` to automatically resolve destinations based on the xmlns prefix.
+A strategy will only be called for XML namespaces that don't have an explicit mapping configured.
+A built-in `PrefixBasedTypeNamespaceStrategy` is provided that derives a sub-namespace from the XML namespace prefix:
 
-String - REQUIRED
+```php
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
 
-The destination of the generated soap client. 
+TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
+    ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+```
 
-**type namespace**
+With this strategy, a type in the `gml` xmlns prefix would automatically be placed in `src/Type/Gml` with namespace `App\Type\Gml`.
 
-String - OPTIONAL
+Explicit `withMapping()` entries always take precedence over the strategy.
+You can also provide your own strategy by implementing `TypeNamespaceMapStrategyInterface` or passing any callable:
 
-The namespace of the PHP Classes you want to generate.
+```php
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\TypeNamespaceMapStrategyInterface;
 
+final readonly class MyCustomStrategy implements TypeNamespaceMapStrategyInterface
+{
+    public function __invoke(string $xmlns, string $xmlNamespaceName, Destination $fallback): Destination
+    {
+        // Your custom resolution logic here
+        return $fallback;
+    }
+}
+```
 
-**client namespace**
+**Client Configuration**
 
-String - OPTIONAL
+Use `setClient(new ClientConfig($name, $destination))` to configure the generated client class.
 
-The namespace of the generated client.
+**Classmap Configuration**
 
-**client name**
-
-String - OPTIONAL
-
-The class name of the client, defaults to 'Client'.
-
-**classmap name**
-
-Name of the classmap class
-
-**classmap destination**
-
-The location of a directory the classmap should be generated in.
-
-**classmap namespace**
-
-Name for the classmap
+Use `setClassMap(new ClassMapConfig($name, $destination))` to configure the classmap.
 
 **rules**
 
@@ -154,7 +164,7 @@ RuleInterface - OPTIONAL
 You can specify how you want to generate your code.
 More information about the topic is available in the [rules](rules.md) and [assemblers](assemblers.md) section.
 
-The pre-defined rules are override-able by calling `setRuleSet` on the constucted object.
+The pre-defined rules are override-able by calling `setRuleSet` on the constructed object.
 
 For example, to make all your properties protected:
 ```php
@@ -179,12 +189,20 @@ Examples:
 ```php
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
+use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\TypeReplacer\TypeReplacers;
 
 Config::create()
-    ->setDuplicateTypeIntersectStrategy(new IntersectDuplicateTypesStrategy())
+    // Use the factory method - this is namespace-aware when TypeNamespaceMap is configured
+    ->setDuplicateTypeIntersectStrategy(IntersectDuplicateTypesStrategy::create())
+    // Or use the remove strategy instead:
+    // ->setDuplicateTypeIntersectStrategy(RemoveDuplicateTypesStrategy::create())
     ->setTypeReplacementStrategy(TypeReplacers::defaults()->add(new MyDateReplacer()));
 ```
+
+The duplicate type strategies use a factory pattern (`create()`) that returns a closure.
+This closure receives the `TypeNamespaceMap` from the configuration, enabling namespace-aware duplicate detection.
+When types map to different PHP namespaces, they are not considered duplicates.
 
 **Enumeration options**
 
