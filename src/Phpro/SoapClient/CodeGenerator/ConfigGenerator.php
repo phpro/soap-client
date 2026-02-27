@@ -8,6 +8,8 @@ use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
+use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Laminas\Code\Generator\FileGenerator;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 use Phpro\SoapClient\Soap\EngineOptions;
@@ -41,14 +43,44 @@ EOENGINE;
 
     /**
      * Generate code for TypeNamespaceMap configuration
+     *
+     * @param array<string, string> $detectedXmlNamespaces
      */
-    private function generateTypeNamespaceMapCode(Destination $fallback): string
-    {
-        return sprintf(
+    private function generateTypeNamespaceMapCode(
+        Destination $fallback,
+        array $detectedXmlNamespaces,
+        string $indentation
+    ): string {
+        $createCall = sprintf(
             'TypeNamespaceMap::create(new Destination(%s, %s))',
             var_export($fallback->path, true),
             var_export($fallback->namespace, true)
         );
+
+        $lines = [];
+        $lines[] = GeneratorInterface::EOL . $indentation . $indentation . $createCall;
+        foreach ($detectedXmlNamespaces as $xmlns => $prefix) {
+            $segment = Normalizer::normalizeNamespaceSegment($prefix);
+            $suggestedPath = $fallback->path . ($segment !== null ? '/' . $segment : '');
+            $suggestedNamespace = $fallback->namespace . ($segment !== null ? '\\' . $segment : '');
+
+            $lines[] = sprintf(
+                '%s%s// ->withMapping(%s, new Destination(%s, %s))',
+                $indentation,
+                $indentation,
+                var_export($xmlns, true),
+                var_export($suggestedPath, true),
+                var_export($suggestedNamespace, true)
+            );
+        }
+
+        $lines[] = sprintf(
+            '%s%s// ->withStrategy(new PrefixBasedTypeNamespaceStrategy())',
+            $indentation,
+            $indentation
+        );
+
+        return implode(GeneratorInterface::EOL, $lines) . GeneratorInterface::EOL . $indentation;
     }
 
     /**
@@ -115,10 +147,12 @@ EOENGINE;
 
         // Generate TypeNamespaceMap setter
         if ($typeDestination = $context->getTypeDestination()) {
+            $file->setUse(PrefixBasedTypeNamespaceStrategy::class);
+            $detectedXmlNamespaces = $context->getDetectedXmlNamespaces();
             $body .= sprintf(
                 "%s->setTypeNamespaceMap(%s)".GeneratorInterface::EOL,
                 $file->getIndentation(),
-                $this->generateTypeNamespaceMapCode($typeDestination)
+                $this->generateTypeNamespaceMapCode($typeDestination, $detectedXmlNamespaces, $file->getIndentation())
             );
         }
 

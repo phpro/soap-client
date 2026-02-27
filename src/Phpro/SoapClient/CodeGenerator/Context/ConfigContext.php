@@ -13,6 +13,8 @@ final class ConfigContext implements ContextInterface
     private ?Destination $typeDestination = null;
     private ?ClientConfig $clientConfig = null;
     private ?ClassMapConfig $classMapConfig = null;
+    /** @var array<string, string> */
+    private array $detectedXmlNamespaces = [];
 
     public function getWsdl(): string
     {
@@ -70,6 +72,20 @@ final class ConfigContext implements ContextInterface
     public function setClassMapConfig(ClassMapConfig $classMapConfig): self
     {
         $this->classMapConfig = $classMapConfig;
+
+        return $this;
+    }
+
+    /** @return array<string, string> */
+    public function getDetectedXmlNamespaces(): array
+    {
+        return $this->detectedXmlNamespaces;
+    }
+
+    /** @param array<string, string> $xmlNamespaces */
+    public function setDetectedXmlNamespaces(array $xmlNamespaces): self
+    {
+        $this->detectedXmlNamespaces = $xmlNamespaces;
 
         return $this;
     }

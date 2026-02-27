@@ -2,19 +2,20 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Config;
 
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\TypeNamespaceMapStrategyInterface;
 use Soap\Engine\Metadata\Model\XsdType;
 
 /**
- * @psalm-type Strategy = \Closure(string $xmlns, Destination $fallback): Destination
+ * @psalm-import-type StrategyCallable from TypeNamespaceMapStrategyInterface
  */
 final readonly class TypeNamespaceMap
 {
     /**
      * @param Destination $fallback
      * @param array<non-empty-string, Destination> $map
-     * @param Strategy|null $strategy
+     * @param (\Closure&StrategyCallable)|null $strategy
      */
-    public function __construct(
+    private function __construct(
         private Destination $fallback,
         private array $map = [],
         private ?\Closure $strategy = null,
@@ -43,23 +44,27 @@ final readonly class TypeNamespaceMap
      * If the xmlns does not exist in the map,
      * the strategy will be called with the xmlns and the fallback destination as arguments.
      *
-     * @param Strategy|null $strategy
+     * @param StrategyCallable|null $strategy
      */
-    public function withStrategy(?\Closure $strategy): self
+    public function withStrategy(?callable $strategy): self
     {
-        return new self($this->fallback, $this->map, $strategy);
+        return new self(
+            $this->fallback,
+            $this->map,
+            ($strategy ? $strategy(...) : null),
+        );
     }
 
     public function detectDestinationForType(XsdType $type): Destination
     {
-        $xmlns = $type->getXmlNamespace(); // TODO : Is this the correct one?
+        $xmlns = $type->getXmlNamespace();
         if ($xmlns && array_key_exists($xmlns, $this->map)) {
             return $this->map[$xmlns];
         }
 
         $fallback = $this->fallback;
         if ($this->strategy !== null) {
-            $fallback = ($this->strategy)($xmlns, $fallback);
+            $fallback = ($this->strategy)($xmlns, $type->getXmlNamespaceName(), $fallback);
         }
 
         return $fallback;

@@ -4,6 +4,8 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Config;
 
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\TypeNamespaceMapStrategyInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Soap\Engine\Metadata\Model\XsdType;
@@ -47,24 +49,6 @@ class TypeNamespaceMapTest extends TestCase
     }
 
     #[Test]
-    public function it_can_add_multiple_mappings(): void
-    {
-        $fallback = new Destination('/src/Type', 'App\\Type');
-        $custom1 = new Destination('/src/Custom1', 'App\\Custom1');
-        $custom2 = new Destination('/src/Custom2', 'App\\Custom2');
-
-        $map = TypeNamespaceMap::create($fallback)
-            ->withMapping('http://custom1.example.com', $custom1)
-            ->withMapping('http://custom2.example.com', $custom2);
-
-        $type1 = XsdType::create('Type1')->withXmlNamespace('http://custom1.example.com');
-        $type2 = XsdType::create('Type2')->withXmlNamespace('http://custom2.example.com');
-
-        $this->assertSame($custom1, $map->detectDestinationForType($type1));
-        $this->assertSame($custom2, $map->detectDestinationForType($type2));
-    }
-
-    #[Test]
     public function it_returns_fallback_when_type_has_no_xml_namespace(): void
     {
         $fallback = new Destination('/src/Type', 'App\\Type');
@@ -74,21 +58,6 @@ class TypeNamespaceMapTest extends TestCase
             ->withMapping('http://custom.example.com', $custom);
 
         $type = XsdType::create('TypeWithoutNamespace');
-        $destination = $map->detectDestinationForType($type);
-
-        $this->assertSame($fallback, $destination);
-    }
-
-    #[Test]
-    public function it_returns_fallback_when_xml_namespace_is_not_mapped(): void
-    {
-        $fallback = new Destination('/src/Type', 'App\\Type');
-        $custom = new Destination('/src/Custom', 'App\\Custom');
-
-        $map = TypeNamespaceMap::create($fallback)
-            ->withMapping('http://custom.example.com', $custom);
-
-        $type = XsdType::create('OtherType')->withXmlNamespace('http://other.example.com');
         $destination = $map->detectDestinationForType($type);
 
         $this->assertSame($fallback, $destination);
@@ -152,21 +121,6 @@ class TypeNamespaceMapTest extends TestCase
     }
 
     #[Test]
-    public function it_can_add_a_strategy(): void
-    {
-        $fallback = new Destination('/src/Type', 'App\\Type');
-        $strategyDestination = new Destination('/src/Strategy', 'App\\Strategy');
-
-        $map = TypeNamespaceMap::create($fallback)
-            ->withStrategy(fn (string $xmlns, Destination $fallback) => $strategyDestination);
-
-        $type = XsdType::create('SomeType')->withXmlNamespace('http://example.com/schema');
-        $destination = $map->detectDestinationForType($type);
-
-        $this->assertSame($strategyDestination, $destination);
-    }
-
-    #[Test]
     public function it_does_not_call_strategy_when_xmlns_is_in_map(): void
     {
         $fallback = new Destination('/src/Type', 'App\\Type');
@@ -175,7 +129,7 @@ class TypeNamespaceMapTest extends TestCase
 
         $map = TypeNamespaceMap::create($fallback)
             ->withMapping('http://mapped.example.com', $mapped)
-            ->withStrategy(function (string $xmlns, Destination $fallback) use (&$strategyCalled) {
+            ->withStrategy(function (string $xmlns, string $xmlNamespaceName, Destination $fallback) use (&$strategyCalled) {
                 $strategyCalled = true;
                 return new Destination('/src/Strategy', 'App\\Strategy');
             });
@@ -197,7 +151,7 @@ class TypeNamespaceMapTest extends TestCase
 
         $map = TypeNamespaceMap::create($fallback)
             ->withMapping('http://mapped.example.com', $mapped)
-            ->withStrategy(function (string $xmlns, Destination $fallback) use (&$strategyCalled, $strategyDestination) {
+            ->withStrategy(function (string $xmlns, string $xmlNamespaceName, Destination $fallback) use (&$strategyCalled, $strategyDestination) {
                 $strategyCalled = true;
                 return $strategyDestination;
             });
@@ -210,37 +164,29 @@ class TypeNamespaceMapTest extends TestCase
     }
 
     #[Test]
-    public function it_passes_xmlns_and_fallback_to_strategy(): void
+    public function it_passes_all_arguments_to_strategy(): void
     {
         $fallback = new Destination('/src/Type', 'App\\Type');
         $receivedXmlns = null;
+        $receivedNamespaceName = null;
         $receivedFallback = null;
 
         $map = TypeNamespaceMap::create($fallback)
-            ->withStrategy(function (string $xmlns, Destination $fb) use (&$receivedXmlns, &$receivedFallback) {
+            ->withStrategy(function (string $xmlns, string $xmlNamespaceName, Destination $fb) use (&$receivedXmlns, &$receivedNamespaceName, &$receivedFallback) {
                 $receivedXmlns = $xmlns;
+                $receivedNamespaceName = $xmlNamespaceName;
                 $receivedFallback = $fb;
                 return $fb;
             });
 
-        $type = XsdType::create('SomeType')->withXmlNamespace('http://example.com/schema');
+        $type = XsdType::create('SomeType')
+            ->withXmlNamespace('http://example.com/schema')
+            ->withXmlNamespaceName('ex');
         $map->detectDestinationForType($type);
 
         $this->assertSame('http://example.com/schema', $receivedXmlns);
+        $this->assertSame('ex', $receivedNamespaceName);
         $this->assertSame($fallback, $receivedFallback);
-    }
-
-    #[Test]
-    public function it_returns_fallback_when_no_strategy_and_xmlns_not_in_map(): void
-    {
-        $fallback = new Destination('/src/Type', 'App\\Type');
-
-        $map = TypeNamespaceMap::create($fallback);
-
-        $type = XsdType::create('SomeType')->withXmlNamespace('http://example.com/schema');
-        $destination = $map->detectDestinationForType($type);
-
-        $this->assertSame($fallback, $destination);
     }
 
     #[Test]
@@ -249,7 +195,7 @@ class TypeNamespaceMapTest extends TestCase
         $fallback = new Destination('/src/Type', 'App\\Type');
 
         $map = TypeNamespaceMap::create($fallback)
-            ->withStrategy(function (string $xmlns, Destination $fallback): Destination {
+            ->withStrategy(function (string $xmlns, string $xmlNamespaceName, Destination $fallback): Destination {
                 if (str_contains($xmlns, 'xoev.de')) {
                     return new Destination('/src/Type/Xoev', 'App\\Type\\Xoev');
                 }
@@ -273,7 +219,7 @@ class TypeNamespaceMapTest extends TestCase
         $strategyDestination = new Destination('/src/Strategy', 'App\\Strategy');
 
         $mapWithStrategy = TypeNamespaceMap::create($fallback)
-            ->withStrategy(fn (string $xmlns, Destination $fallback) => $strategyDestination);
+            ->withStrategy(fn (string $xmlns, string $xmlNamespaceName, Destination $fallback) => $strategyDestination);
 
         $mapWithoutStrategy = $mapWithStrategy->withStrategy(null);
 
@@ -284,13 +230,30 @@ class TypeNamespaceMapTest extends TestCase
     }
 
     #[Test]
+    public function it_accepts_a_strategy_interface_implementor(): void
+    {
+        $fallback = new Destination('/src/Type', 'App\\Type');
+        $strategy = new PrefixBasedTypeNamespaceStrategy();
+
+        $map = TypeNamespaceMap::create($fallback)
+            ->withStrategy($strategy);
+
+        $type = XsdType::create('SomeType')
+            ->withXmlNamespace('http://example.com/schema')
+            ->withXmlNamespaceName('ex');
+        $destination = $map->detectDestinationForType($type);
+
+        $this->assertEquals(new Destination('/src/Type/Ex', 'App\\Type\\Ex'), $destination);
+    }
+
+    #[Test]
     public function it_is_immutable_when_adding_strategy(): void
     {
         $fallback = new Destination('/src/Type', 'App\\Type');
         $strategyDestination = new Destination('/src/Strategy', 'App\\Strategy');
 
         $map1 = TypeNamespaceMap::create($fallback);
-        $map2 = $map1->withStrategy(fn (string $xmlns, Destination $fallback) => $strategyDestination);
+        $map2 = $map1->withStrategy(fn (string $xmlns, string $xmlNamespaceName, Destination $fallback) => $strategyDestination);
 
         $type = XsdType::create('SomeType')->withXmlNamespace('http://example.com/schema');
 

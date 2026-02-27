@@ -13,6 +13,7 @@ use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Config;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
 use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 
@@ -28,9 +29,11 @@ return Config::create()
     ))
     ->setTypeNamespaceMap(
         TypeNamespaceMap::create(new Destination('SoapTypes', 'src/SoapTypes'))
-            // You can add specific XML xmlns -> PHP namespace mappings here:
-            // If no mapping is found, the default destination + namespace will be used.
+            // You can add explicit XML xmlns -> PHP namespace mappings here:
             ->withMapping('http://www.xmlns.mapping', new Destination('src/Type/OtherDir', 'App\\Type\\OtherDir'))
+            // Or use a strategy to automatically resolve destinations from xmlns prefixes:
+            // This strategy will only be called for XML namespaces that don't have an explicit mapping configured.
+            ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
     )
     ->setClient(new ClientConfig('MySoapClient', new Destination('SoapClient', 'src/SoapClient')))
     ->setClassMap(new ClassMapConfig('AcmeClassmap', new Destination('Acme\\Classmap', 'src/acme/classmap')))
@@ -112,7 +115,39 @@ DefaultEngineFactory::create(
 
 Use `setTypeNamespaceMap(TypeNamespaceMap::create($namespace, $destination))` to configure the namespace and destination for generated types.
 
-You can also add specific XML namespace to PHP namespace mappings by using the `withMapping($xmlNamespace, Destination)` method on the created TypeNamespaceMap instance.
+You can add specific XML namespace to PHP namespace mappings by using the `withMapping($xmlNamespace, Destination)` method on the created TypeNamespaceMap instance.
+
+Alternatively, you can use `withStrategy()` to automatically resolve destinations based on the xmlns prefix.
+A strategy will only be called for XML namespaces that don't have an explicit mapping configured.
+A built-in `PrefixBasedTypeNamespaceStrategy` is provided that derives a sub-namespace from the XML namespace prefix:
+
+```php
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
+
+TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
+    ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+```
+
+With this strategy, a type in the `gml` xmlns prefix would automatically be placed in `src/Type/Gml` with namespace `App\Type\Gml`.
+
+Explicit `withMapping()` entries always take precedence over the strategy.
+You can also provide your own strategy by implementing `TypeNamespaceMapStrategyInterface` or passing any callable:
+
+```php
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\TypeNamespaceMapStrategyInterface;
+
+final readonly class MyCustomStrategy implements TypeNamespaceMapStrategyInterface
+{
+    public function __invoke(string $xmlns, string $xmlNamespaceName, Destination $fallback): Destination
+    {
+        // Your custom resolution logic here
+        return $fallback;
+    }
+}
+```
 
 **Client Configuration**
 

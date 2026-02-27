@@ -9,7 +9,10 @@ use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Console\Validator\NotBlankValidator;
+use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Util\Filesystem;
+use Soap\WsdlReader\Model\Wsdl1;
+use Soap\WsdlReader\Wsdl1Reader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -55,7 +58,18 @@ class GenerateConfigCommand extends Command
             );
         }
 
-        $context->setWsdl($io->ask('Wsdl location (URL or path to file)', null, $required));
+        $wsdlUri = $io->ask('Wsdl location (URL or path to file)', null, $required);
+        $context->setWsdl($wsdlUri);
+
+        $io->warning('Attempting to load WSDL... (this might take a while)');
+        $wsdl = $this->loadWsdl($wsdlUri);
+
+        if (!$wsdl) {
+            $io->warning('Could not load the provided WSDL with default engine options.');
+            $io->info('Continuing generating configuration...');
+        }
+
+        $context->setDetectedXmlNamespaces($wsdl?->namespaces->namespaceToNameMap ?? []);
         $context->setGenerateDocblocks($io->confirm('Should methods be generated with docblocks?', true));
         $name = $io->ask(
             'Generic name used to name this client (Results in <name>Client <name>Classmap etc.)',
@@ -81,6 +95,27 @@ class GenerateConfigCommand extends Command
         $this->filesystem->putFileContents($destination, $generator->generate(new FileGenerator(), $context));
         $io->success('Config has been written to ' . $destination);
 
+        if (!$wsdl) {
+            $io->warning(
+                'The WSDL could not be loaded with default options.' .
+                'You may need to configure custom engine options or verify the WSDL file manually before continuing.'
+            );
+
+            return self::FAILURE;
+        }
+
         return self::SUCCESS;
+    }
+
+    private function loadWsdl(string $wsdl): ?Wsdl1
+    {
+        try {
+            $options = EngineOptions::defaults($wsdl);
+            $loader = $options->getWsdlLoader();
+
+            return (new Wsdl1Reader($loader))($wsdl);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

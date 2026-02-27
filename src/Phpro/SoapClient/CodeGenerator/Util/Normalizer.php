@@ -239,6 +239,21 @@ class Normalizer
         return $normalized;
     }
 
+    public static function normalizeNamespaceSegment(string $segment): ?string
+    {
+        if ($segment === '') {
+            return null;
+        }
+
+        $normalized = self::normalizeClassname($segment);
+
+        if (preg_match('/^[0-9]/', $normalized)) {
+            $normalized = 'Ns' . $normalized;
+        }
+
+        return $normalized;
+    }
+
     /**
      * @param non-empty-string $type
      *
