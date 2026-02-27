@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Soap\Engine\Metadata\Collection\MethodCollection;
 use Soap\Engine\Metadata\Model\Method;
 
@@ -19,11 +19,11 @@ final readonly class ClientMethodMap
     }
 
     public static function fromMetadata(
-        TypeNamespaceMap $typeNamespaces,
-        MethodCollection $collection
+        CodeGeneratorContext $codeGeneratorContext,
+        MethodCollection $collection,
     ): self {
-        return new self($collection->map(function (Method $method) use ($typeNamespaces) {
-            return ClientMethod::fromMetadata($typeNamespaces, $method);
+        return new self($collection->map(function (Method $method) use ($codeGeneratorContext) {
+            return ClientMethod::fromMetadata($codeGeneratorContext, $method);
         }));
     }
 

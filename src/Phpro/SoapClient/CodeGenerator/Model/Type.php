@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Property as MetadataProperty;
 use Soap\Engine\Metadata\Model\Type as MetadataType;
@@ -23,28 +23,30 @@ final readonly class Type
      * @param array<array-key, Property> $properties
      */
     public function __construct(
-        private TypeNamespaceMap $namespaces,
+        private CodeGeneratorContext $codeGeneratorContext,
         private string $xsdName,
         private string $name,
         private array $properties,
-        private XsdType $xsdType
+        private XsdType $xsdType,
     ) {
         $this->meta = $xsdType->getMeta();
     }
 
-    public static function fromMetadata(TypeNamespaceMap $namespaces, MetadataType $type): self
-    {
+    public static function fromMetadata(
+        CodeGeneratorContext $codeGeneratorContext,
+        MetadataType $type,
+    ): self {
         $xsdName = non_empty_string()->assert($type->getName());
 
         return new self(
-            $namespaces,
+            $codeGeneratorContext,
             $xsdName,
-            Normalizer::normalizeClassname($xsdName),
+            $codeGeneratorContext->codingStandards->normalizeTypeName($xsdName),
             array_map(
-                function (MetadataProperty $property) use ($namespaces) {
+                function (MetadataProperty $property) use ($codeGeneratorContext) {
                     return Property::fromMetaData(
-                        $namespaces,
-                        $property
+                        $codeGeneratorContext,
+                        $property,
                     );
                 },
                 iterator_to_array($type->getProperties())
@@ -53,12 +55,17 @@ final readonly class Type
         );
     }
 
+    public function getCodeGeneratorContext(): CodeGeneratorContext
+    {
+        return $this->codeGeneratorContext;
+    }
+
     /**
      * @return non-empty-string
      */
     public function getNamespace(): string
     {
-        return $this->namespaces->detectDestinationForType($this->xsdType)->namespace;
+        return $this->codeGeneratorContext->typeNamespaceMap->detectDestinationForType($this->xsdType)->namespace;
     }
 
     /**
@@ -79,8 +86,8 @@ final readonly class Type
 
     public function getFileInfo(): SplFileInfo
     {
-        $destination = $this->namespaces->detectDestinationForType($this->xsdType);
-        $name = Normalizer::normalizeClassname($this->getName());
+        $destination = $this->codeGeneratorContext->typeNamespaceMap->detectDestinationForType($this->xsdType);
+        $name = $this->getName();
         $path = rtrim($destination->path, '/\\').'/'.$name.'.php';
 
         return new SplFileInfo($path);

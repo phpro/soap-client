@@ -4,6 +4,7 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator;
 
 use Laminas\Code\Generator\ClassGenerator;
 use Phpro\SoapClient\CodeGenerator\ClientFactoryGenerator;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
 use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
@@ -11,6 +12,7 @@ use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientFactoryContext;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use PHPUnit\Framework\TestCase;
 use Laminas\Code\Generator\FileGenerator;
@@ -73,11 +75,13 @@ BODY;
         $clientContext = new ClientContext(new ClassGenerator(), $clientConfig);
 
         $typeNamespaceMap = TypeNamespaceMap::create(new Destination('/app/types', 'App\\Types'));
+        $codeGeneratorContext = new CodeGeneratorContext($typeNamespaceMap, new DefaultCodingStandardsStrategy());
         $classMapConfig = new ClassMapConfig('SomeClassmap', new Destination('/app/classmap', 'App\\Classmap'));
         $classMapContext = new ClassMapContext(
             new FileGenerator(),
-            new TypeMap($typeNamespaceMap, []),
-            $classMapConfig
+            new TypeMap($codeGeneratorContext, []),
+            $classMapConfig,
+            $codeGeneratorContext
         );
         $context = new ClientFactoryContext($clientContext, $classMapContext);
         $generator = new ClientFactoryGenerator();

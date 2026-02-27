@@ -51,8 +51,9 @@ class GenerateTypesCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $config = $this->getConfigHelper()->load($input);
+        $generatorContext = $config->getCodeGeneratorContext();
         $typeMap = TypeMap::fromMetadata(
-            $config->getTypeNamespaceMap(),
+            $generatorContext,
             $config->getManipulatedMetadata()->getTypes(),
         );
 

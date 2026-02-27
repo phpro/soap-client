@@ -2,8 +2,10 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
@@ -22,9 +24,10 @@ class TypeMapSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $this->beConstructedWith($namespaceMap, [
-            new Type($namespaceMap, 'type1', 'type1', [
-                new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $this->beConstructedWith($context, [
+            new Type($context, 'type1', 'type1', [
+                new Property('prop1', 'string', $context, 'MyNamespace', XsdType::create('string'))
             ], XsdType::create('MyType'))
         ]);
     }

@@ -84,7 +84,7 @@ class ConstructorAssembler implements AssemblerInterface
         $body = [];
         foreach ($entries as $entry) {
             $property = $entry['property'];
-            $param = new ParameterGenerator($property->getName());
+            $param = new ParameterGenerator($property->parameterName());
 
             if ($this->options->useTypeHints()) {
                 $param->setType($property->getPhpType());
@@ -95,12 +95,12 @@ class ConstructorAssembler implements AssemblerInterface
             }
 
             $constructor->setParameter($param);
-            $body[] = sprintf('$this->%1$s = $%1$s;', $property->getName());
+            $body[] = sprintf('$this->%s = $%s;', $property->getName(), $property->parameterName());
 
             if ($this->options->useDocBlocks()) {
                 $docblock->setTag([
                     'name' => 'param',
-                    'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName())
+                    'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->parameterName())
                 ]);
             }
         }

@@ -45,10 +45,12 @@ class GenerateClientFactoryCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $config = $this->getConfigHelper()->load($input);
+        $generatorContext = $config->getCodeGeneratorContext();
         $classmapContext = new ClassMapContext(
             new FileGenerator(),
-            new TypeMap($config->getTypeNamespaceMap(), []),
+            new TypeMap($generatorContext, []),
             $config->getClassMap(),
+            $generatorContext,
         );
         $clientContext = new ClientContext(
             new ClassGenerator(),

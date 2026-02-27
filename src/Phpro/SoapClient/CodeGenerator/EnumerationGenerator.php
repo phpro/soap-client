@@ -3,8 +3,8 @@
 namespace Phpro\SoapClient\CodeGenerator;
 
 use Laminas\Code\Generator\DocBlockGenerator;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\CodingStandardsStrategyInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Laminas\Code\Generator\EnumGenerator\EnumGenerator;
 use Laminas\Code\Generator\FileGenerator;
 use Soap\Engine\Metadata\Model\XsdType;
@@ -33,16 +33,17 @@ class EnumerationGenerator implements GeneratorInterface
     {
         $xsdType = $type->getXsdType();
         $xsdMeta = $xsdType->getMeta();
+        $codingStandards = $type->getCodeGeneratorContext()->codingStandards;
         $enumType = match ($xsdType->getBaseType()) {
             'int', 'integer' => 'int',
             default => 'string',
         };
 
         $body = EnumGenerator::withConfig([
-            'name' => Normalizer::normalizeClassname($type->getName()),
+            'name' => $type->getName(),
             'backedCases' => [
                 'type' => $enumType,
-                'cases' => $this->buildCases($xsdType, $enumType),
+                'cases' => $this->buildCases($xsdType, $enumType, $codingStandards),
             ]
         ])->generate();
 
@@ -61,8 +62,11 @@ class EnumerationGenerator implements GeneratorInterface
      * @param 'string'|'int' $enumType
      * @return array<string, int|string>
      */
-    private function buildCases(XsdType $xsdType, string $enumType): array
-    {
+    private function buildCases(
+        XsdType $xsdType,
+        string $enumType,
+        CodingStandardsStrategyInterface $codingStandards
+    ): array {
         $enums = $xsdType->getMeta()->enums()->unwrapOr([]);
 
         return pull(
@@ -71,7 +75,7 @@ class EnumerationGenerator implements GeneratorInterface
                 'int' => int()->coerce($value),
                 'string' => $value,
             },
-            static fn(string $value): string => Normalizer::normalizeEnumCaseName($value)
+            static fn(string $value): string => $codingStandards->normalizeEnumCaseName($value)
         );
     }
 }

@@ -240,17 +240,17 @@ CODE;
     {
         $assembler = new GetterAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
             $property = Property::fromMetaData(
-                $namespaces,
+                $codeGenContext,
                 new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                     static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
                 ))
             ),
         ], XsdType::create('MyType'));
 
-        $context =  new PropertyContext($class, $type, $property);
+        $context =  new PropertyContext($class, $type, $property, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -279,20 +279,20 @@ CODE;
      */
     private function createContext($propertyName = 'prop1')
     {
-        $ns1Namespaces = $this->createTypeNamespaceMap('ns1');
+        $ns1Context = $this->createCodeGeneratorContext('ns1');
         $properties = [
-            'prop1' => Property::fromMetaData($ns1Namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            'prop2' => Property::fromMetaData($ns1Namespaces, new MetaProperty('prop2', XsdType::guess('int'))),
-            'prop3' => Property::fromMetaData($ns1Namespaces, new MetaProperty('prop3', XsdType::guess('bool'))),
-            'prop4' => Property::fromMetaData($ns1Namespaces, new MetaProperty('prop4', XsdType::guess('My_Response'))),
+            'prop1' => Property::fromMetaData($ns1Context, new MetaProperty('prop1', XsdType::guess('string'))),
+            'prop2' => Property::fromMetaData($ns1Context, new MetaProperty('prop2', XsdType::guess('int'))),
+            'prop3' => Property::fromMetaData($ns1Context, new MetaProperty('prop3', XsdType::guess('bool'))),
+            'prop4' => Property::fromMetaData($ns1Context, new MetaProperty('prop4', XsdType::guess('My_Response'))),
         ];
 
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', array_values($properties), XsdType::create('MyType'));
+        $context = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($context, 'MyType', 'MyType', array_values($properties), XsdType::create('MyType'));
         $property = $properties[$propertyName];
 
-        return new PropertyContext($class, $type, $property);
+        return new PropertyContext($class, $type, $property, $context);
     }
 
     /**
@@ -300,17 +300,17 @@ CODE;
      */
     private function createContextWithLongType()
     {
-        $longNamespaces = $this->createTypeNamespaceMap('This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever');
+        $longContext = $this->createCodeGeneratorContext('This\\Is\\My\\Very\\Very\\Long\\Namespace\\And\\Class\\Name\\That\\Should\\Not\\Never\\Ever');
         $properties = [
             'prop1' => Property::fromMetaData(
-                $longNamespaces,
+                $longContext,
                 new MetaProperty('prop1', XsdType::guess('Wrap'))
             ),
         ];
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', array_values($properties), XsdType::create('MyType'));
+        $context = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($context, 'MyType', 'MyType', array_values($properties), XsdType::create('MyType'));
         $property = $properties['prop1'];
-        return new PropertyContext($class, $type, $property);
+        return new PropertyContext($class, $type, $property, $context);
     }
 }

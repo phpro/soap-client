@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Soap\Engine\Metadata\Collection\TypeCollection;
 use Soap\Engine\Metadata\Model\Type as MetadataType;
 
@@ -15,24 +15,26 @@ final readonly class TypeMap
      * @param array<array-key, Type> $types
      */
     public function __construct(
-        private TypeNamespaceMap $namespaces,
+        private CodeGeneratorContext $codeGeneratorContext,
         private array $types
     ) {
     }
 
-    public static function fromMetadata(TypeNamespaceMap $namespaces, TypeCollection $types): self
-    {
+    public static function fromMetadata(
+        CodeGeneratorContext $codeGeneratorContext,
+        TypeCollection $types,
+    ): self {
         return new self(
-            $namespaces,
-            $types->map(function (MetadataType $type) use ($namespaces) {
-                return Type::fromMetadata($namespaces, $type);
+            $codeGeneratorContext,
+            $types->map(function (MetadataType $type) use ($codeGeneratorContext) {
+                return Type::fromMetadata($codeGeneratorContext, $type);
             })
         );
     }
 
-    public function getNamespaces(): TypeNamespaceMap
+    public function getCodeGeneratorContext(): CodeGeneratorContext
     {
-        return $this->namespaces;
+        return $this->codeGeneratorContext;
     }
 
     /**

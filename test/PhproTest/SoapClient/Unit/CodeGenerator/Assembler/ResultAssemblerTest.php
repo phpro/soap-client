@@ -67,12 +67,12 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('int'))),
+        $context = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($context, 'MyType', 'MyType', [
+            Property::fromMetaData($context, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($context, new MetaProperty('prop2', XsdType::guess('int'))),
         ], XsdType::create('MyType'));
 
-        return new TypeContext($class, $type);
+        return new TypeContext($class, $type, $context);
     }
 }

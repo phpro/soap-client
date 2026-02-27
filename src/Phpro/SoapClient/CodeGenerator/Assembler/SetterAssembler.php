@@ -6,7 +6,6 @@ use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\ParameterGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\MethodGenerator;
 
@@ -50,10 +49,10 @@ class SetterAssembler implements AssemblerInterface
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
-            $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
+            $methodName = $property->methodName('set');
             $class->removeMethod($methodName);
 
-            $param = (new ParameterGenerator($property->getName()));
+            $param = (new ParameterGenerator($property->parameterName()));
             if ($this->options->useTypeHints()) {
                 $param->setType($property->getPhpType());
             }
@@ -62,7 +61,7 @@ class SetterAssembler implements AssemblerInterface
             $methodGenerator->setReturnType('void');
             $methodGenerator->setParameter($param);
             $methodGenerator->setVisibility(MethodGenerator::VISIBILITY_PUBLIC);
-            $methodGenerator->setBody(sprintf('$this->%1$s = $%1$s;', $property->getName()));
+            $methodGenerator->setBody(sprintf('$this->%s = $%s;', $property->getName(), $property->parameterName()));
             if ($this->options->useDocBlocks()) {
                 $methodGenerator->setDocBlock(
                     (new DocBlockGenerator())
@@ -70,7 +69,11 @@ class SetterAssembler implements AssemblerInterface
                         ->setTags([
                             [
                                 'name' => 'param',
-                                'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName()),
+                                'description' => sprintf(
+                                    '%s $%s',
+                                    $property->getDocBlockType(),
+                                    $property->parameterName()
+                                ),
                             ]
                         ])
                 );

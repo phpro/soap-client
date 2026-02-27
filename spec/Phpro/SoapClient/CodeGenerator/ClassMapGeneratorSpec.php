@@ -3,10 +3,12 @@
 namespace spec\Phpro\SoapClient\CodeGenerator;
 
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\FileContext;
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
@@ -45,8 +47,10 @@ class ClassMapGeneratorSpec extends ObjectBehavior
         $ruleSet->applyRules(Argument::type(ClassMapContext::class))->shouldBeCalled();
         $ruleSet->applyRules(Argument::type(FileContext::class))->shouldBeCalled();
         $file->generate()->willReturn('code');
+        $namespaceMap = TypeNamespaceMap::create(new Destination('/app', 'App\\Mynamespace'));
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->generate($file, TypeMap::fromMetadata(
-            TypeNamespaceMap::create(new Destination('/app', 'App\\Mynamespace')),
+            $codeGeneratorContext,
             new TypeCollection(),
         ))->shouldReturn('code');
     }

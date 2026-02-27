@@ -2,14 +2,10 @@
 
 namespace PhproTest\SoapClient\Unit\CodeGenerator;
 
-use Phpro\SoapClient\CodeGenerator\ConfigGenerator;
-use Phpro\SoapClient\CodeGenerator\Context\ConfigContext;
 use Phpro\SoapClient\CodeGenerator\EnumerationGenerator;
-use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use PHPUnit\Framework\TestCase;
 use Laminas\Code\Generator\FileGenerator;
-use Soap\Engine\Metadata\Model\Property as MetaProperty;
 use Soap\Engine\Metadata\Model\TypeMeta;
 use Soap\Engine\Metadata\Model\XsdType;
 
@@ -19,7 +15,7 @@ class EnumerationGeneratorTest extends TestCase
     public function testStringBackedEnumGeneration(): void
     {
         $type = new Type(
-            $this->createTypeNamespaceMap('MyNamespace'),
+            $this->createCodeGeneratorContext('MyNamespace'),
             'MyType',
             'MyType',
             [],
@@ -55,7 +51,7 @@ class EnumerationGeneratorTest extends TestCase
     public function testIntBackedEnumGeneration(): void
     {
         $type = new Type(
-            $this->createTypeNamespaceMap('MyNamespace'),
+            $this->createCodeGeneratorContext('MyNamespace'),
             'MyType',
             'MyType',
             [],
@@ -89,7 +85,7 @@ class EnumerationGeneratorTest extends TestCase
     public function testBackedEnumDocblockGeneration(): void
     {
         $type = new Type(
-            $this->createTypeNamespaceMap('MyNamespace'),
+            $this->createCodeGeneratorContext('MyNamespace'),
             'MyType',
             'MyType',
             [],

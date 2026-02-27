@@ -71,7 +71,7 @@ return Config::create()
     // ...
 ```
 
-The `create()` factory method returns a closure that receives the `TypeNamespaceMap` from the configuration,
+The `create()` factory method returns a closure that receives the `CodeGeneratorContext` from the configuration,
 enabling the strategy to determine target PHP namespaces for each type.
 
 ### Type replacements

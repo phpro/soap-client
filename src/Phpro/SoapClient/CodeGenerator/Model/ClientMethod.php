@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Soap\Engine\Metadata\Model\Method as MetadataMethod;
 use Soap\Engine\Metadata\Model\MethodMeta;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
@@ -21,27 +21,32 @@ final readonly class ClientMethod
         private string $methodName,
         private array $parameters,
         private ReturnType $returnType,
-        private TypeNamespaceMap $typeNamespaceMap,
-        private MethodMeta $meta
+        private CodeGeneratorContext $codeGeneratorContext,
+        private MethodMeta $meta,
     ) {
     }
 
     public static function fromMetadata(
-        TypeNamespaceMap $typeNamespaceMap,
-        MetadataMethod $method
+        CodeGeneratorContext $codeGeneratorContext,
+        MetadataMethod $method,
     ): self {
         return new self(
             non_empty_string()->assert($method->getName()),
             array_map(
-                function (MetadataParameter $parameter) use ($typeNamespaceMap) {
-                    return Parameter::fromMetadata($typeNamespaceMap, $parameter);
+                function (MetadataParameter $parameter) use ($codeGeneratorContext) {
+                    return Parameter::fromMetadata($codeGeneratorContext, $parameter);
                 },
                 iterator_to_array($method->getParameters())
             ),
-            ReturnType::fromMetaData($typeNamespaceMap, $method->getReturnType()),
-            $typeNamespaceMap,
-            $method->getMeta()
+            ReturnType::fromMetaData($codeGeneratorContext, $method->getReturnType()),
+            $codeGeneratorContext,
+            $method->getMeta(),
         );
+    }
+
+    public function getCodeGeneratorContext(): CodeGeneratorContext
+    {
+        return $this->codeGeneratorContext;
     }
 
     /**
@@ -63,11 +68,6 @@ final readonly class ClientMethod
     public function getMethodName(): string
     {
         return $this->methodName;
-    }
-
-    public function getTypeNamespaceMap(): TypeNamespaceMap
-    {
-        return $this->typeNamespaceMap;
     }
 
     public function getReturnType(): ReturnType

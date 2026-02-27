@@ -11,7 +11,8 @@ final readonly class PropertyContext implements ContextInterface
     public function __construct(
         private ClassGenerator $class,
         private Type $type,
-        private Property $property
+        private Property $property,
+        private CodeGeneratorContext $codeGeneratorContext,
     ) {
     }
 
@@ -28,5 +29,10 @@ final readonly class PropertyContext implements ContextInterface
     public function getProperty(): Property
     {
         return $this->property;
+    }
+
+    public function getCodeGeneratorContext(): CodeGeneratorContext
+    {
+        return $this->codeGeneratorContext;
     }
 }

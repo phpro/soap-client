@@ -3,6 +3,8 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Rules;
 
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
@@ -50,8 +52,9 @@ class TypeMapRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $rule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -61,9 +64,10 @@ class TypeMapRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $property = new \Phpro\SoapClient\CodeGenerator\Model\Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'));
-        $type = new Type($namespaceMap, 'SomeType', 'SomeType', [$property], XsdType::create('MyType'));
-        $context = new PropertyContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $property);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $property = new \Phpro\SoapClient\CodeGenerator\Model\Property('prop1', 'string', $codeGeneratorContext, 'MyNamespace', XsdType::create('string'));
+        $type = new Type($codeGeneratorContext, 'SomeType', 'SomeType', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $property, $codeGeneratorContext);
 
         $rule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -73,8 +77,9 @@ class TypeMapRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'UnknownType', 'UnknownType', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'UnknownType', 'UnknownType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $defaultRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -84,8 +89,9 @@ class TypeMapRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'NullType', 'NullType', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'NullType', 'NullType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $this->appliesToContext($context)->shouldReturn(false);
     }
@@ -94,8 +100,9 @@ class TypeMapRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $rule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);
@@ -105,8 +112,9 @@ class TypeMapRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'SomeType', 'SomeType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $rule->apply($context)->shouldBeCalled();
         $this->apply($context);
@@ -116,8 +124,9 @@ class TypeMapRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'UnknownType', 'UnknownType', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'UnknownType', 'UnknownType', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $defaultRule->apply($context)->shouldBeCalled();
         $this->apply($context);

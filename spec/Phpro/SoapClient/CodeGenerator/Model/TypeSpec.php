@@ -2,8 +2,10 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
@@ -23,11 +25,12 @@ class TypeSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->beConstructedWith(
-            $namespaceMap,
+            $context,
             'myType',
             'MyType',
-            [new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))],
+            [new Property('prop1', 'string', $context, 'MyNamespace', XsdType::create('string'))],
             XsdType::create('MyType')
         );
     }
@@ -65,7 +68,8 @@ class TypeSpec extends ObjectBehavior
     {
         $destination = new Destination('my/some_dir', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $this->beConstructedWith($namespaceMap, 'my_type_3_2', Normalizer::normalizeClassname('my_type_3_2'), ['prop1' => 'string'], XsdType::create('MyType'));
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $this->beConstructedWith($context, 'my_type_3_2', Normalizer::normalizeClassname('my_type_3_2'), ['prop1' => 'string'], XsdType::create('MyType'));
         $this->getFileInfo()->getPathname()->shouldReturn('my/some_dir/MyType32.php');
     }
 
@@ -73,11 +77,12 @@ class TypeSpec extends ObjectBehavior
     {
         $destination = new Destination('my/some_dir', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->beConstructedWith(
-            $namespaceMap,
+            $context,
             'Final',
             Normalizer::normalizeClassname('Final'),
-            [new Property('xor', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))],
+            [new Property('xor', 'string', $context, 'MyNamespace', XsdType::create('string'))],
             XsdType::create('MyType')
         );
 

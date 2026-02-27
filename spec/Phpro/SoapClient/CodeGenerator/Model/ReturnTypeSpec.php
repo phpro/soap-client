@@ -2,8 +2,10 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
 use PhpSpec\ObjectBehavior;
 use Soap\Engine\Metadata\Model\TypeMeta;
@@ -21,7 +23,8 @@ class ReturnTypeSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'My\Namespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $this->beConstructedWith('Type', $namespaceMap, XsdType::create('Type'));
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $this->beConstructedWith('Type', $context, XsdType::create('Type'));
     }
 
     function it_is_initializable()
@@ -38,9 +41,10 @@ class ReturnTypeSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'My\Namespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->beConstructedWith(
             'Type',
-            $namespaceMap,
+            $context,
             XsdType::create('Type')
                 ->withMeta(static fn (TypeMeta $meta) => $meta->withIsSimple(true))
         );
@@ -52,9 +56,10 @@ class ReturnTypeSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'My\Namespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->beConstructedWith(
             'Type',
-            $namespaceMap,
+            $context,
             XsdType::create('Type')
                 ->withMeta(static fn (TypeMeta $meta) => $meta->withIsSimple(true)->withExtends([
                     'isSimple' => true,
@@ -75,10 +80,11 @@ class ReturnTypeSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'My\Namespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->beConstructedThrough(
             'fromMetaData',
             [
-                $namespaceMap,
+                $context,
                 XsdType::create('ElementType')
                     ->withXmlTypeName('ComplexType')
             ]

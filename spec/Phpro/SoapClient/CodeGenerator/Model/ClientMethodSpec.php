@@ -2,8 +2,10 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
 use Phpro\SoapClient\CodeGenerator\Model\ReturnType;
 use PhpSpec\ObjectBehavior;
@@ -22,11 +24,12 @@ class ClientMethodSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'ParamNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->beConstructedWith(
             'testMethod',
             [],
-            ReturnType::fromMetaData($namespaceMap, XsdType::create('CreditResponse')),
-            $namespaceMap,
+            ReturnType::fromMetaData($context, XsdType::create('CreditResponse')),
+            $context,
             new MethodMeta()
         );
     }
@@ -55,8 +58,9 @@ class ClientMethodSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'ParamNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->getReturnType()->shouldBeLike(
-            ReturnType::fromMetaData($namespaceMap, XsdType::create('CreditResponse'))
+            ReturnType::fromMetaData($context, XsdType::create('CreditResponse'))
         );
     }
 

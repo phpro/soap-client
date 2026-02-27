@@ -47,11 +47,12 @@ class TypeGenerator implements GeneratorInterface
         $class->setNamespaceName($type->getNamespace());
         $class->setName($type->getName());
 
-        $this->ruleSet->applyRules(new TypeContext($class, $type));
+        $context = $type->getCodeGeneratorContext();
+        $this->ruleSet->applyRules(new TypeContext($class, $type, $context));
         $this->ruleSet->applyRules(new FileContext($file));
 
         foreach ($type->getProperties() as $property) {
-            $this->ruleSet->applyRules(new PropertyContext($class, $type, $property));
+            $this->ruleSet->applyRules(new PropertyContext($class, $type, $property, $context));
         }
 
         $file->setClass($class);

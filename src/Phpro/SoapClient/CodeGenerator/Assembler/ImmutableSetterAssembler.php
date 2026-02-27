@@ -6,7 +6,6 @@ use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\ParameterGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\MethodGenerator;
 
@@ -55,16 +54,16 @@ class ImmutableSetterAssembler implements AssemblerInterface
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
-            $methodName = Normalizer::generatePropertyMethod('with', $property->getName());
+            $methodName = $property->methodName('with');
             $class->removeMethod($methodName);
             $lines = [
                 sprintf('$new = clone $this;'),
-                sprintf('$new->%1$s = $%1$s;', $property->getName()),
+                sprintf('$new->%s = $%s;', $property->getName(), $property->parameterName()),
                 '',
                 sprintf('return $new;'),
             ];
 
-            $param = (new ParameterGenerator($property->getName()));
+            $param = (new ParameterGenerator($property->parameterName()));
             if ($this->options->useTypeHints()) {
                 $param->setType($property->getPhpType());
             }
@@ -82,7 +81,11 @@ class ImmutableSetterAssembler implements AssemblerInterface
                         ->setTags([
                             [
                                 'name' => 'param',
-                                'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName()),
+                                'description' => sprintf(
+                                    '%s $%s',
+                                    $property->getDocBlockType(),
+                                    $property->parameterName()
+                                ),
                             ],
                             [
                                 'name' => 'return',

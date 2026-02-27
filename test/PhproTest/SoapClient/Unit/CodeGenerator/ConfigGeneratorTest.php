@@ -28,13 +28,13 @@ use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
 
-return Config::create()
+return (\$config = Config::create())
     ->setEngine(\$engine = DefaultEngineFactory::create(
         EngineOptions::defaults('wsdl.xml')
     ))
     ->setTypeNamespaceMap(
         TypeNamespaceMap::create(new Destination('src/type', 'App\\\\Type'))
-        // ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+        // ->withStrategy(new PrefixBasedTypeNamespaceStrategy(\$config->getCodingStandards()))
     )
     ->setClient(new ClientConfig('Client', new Destination('src/client', 'App\\\\Client')))
     ->setClassMap(new ClassMapConfig('Classmap', new Destination('src/classmap', 'App\\\\Classmap')))
@@ -107,7 +107,7 @@ use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
 
-return Config::create()
+return (\$config = Config::create())
     ->setEngine(\$engine = DefaultEngineFactory::create(
         EngineOptions::defaults('wsdl.xml')
     ))
@@ -115,7 +115,7 @@ return Config::create()
         TypeNamespaceMap::create(new Destination('src/type', 'App\\\\Type'))
         // ->withMapping('http://www.opengis.net/gml/3.2', new Destination('src/type/Gml', 'App\\\\Type\\\\Gml'))
         // ->withMapping('http://xoev.de/schemata/xzufi/2_2_0', new Destination('src/type/Xzufi', 'App\\\\Type\\\\Xzufi'))
-        // ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+        // ->withStrategy(new PrefixBasedTypeNamespaceStrategy(\$config->getCodingStandards()))
     )
     ->setClient(new ClientConfig('Client', new Destination('src/client', 'App\\\\Client')))
     ->setClassMap(new ClassMapConfig('Classmap', new Destination('src/classmap', 'App\\\\Classmap')))
@@ -191,7 +191,7 @@ use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 
-return Config::create()
+return (\$config = Config::create())
     ->setEngine(\$engine = DefaultEngineFactory::create(
         EngineOptions::defaults('wsdl.xml')
     ))

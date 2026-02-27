@@ -5,11 +5,13 @@ namespace spec\Phpro\SoapClient\CodeGenerator;
 use Laminas\Code\Generator\Exception\ClassNotFoundException;
 use Phpro\SoapClient\CodeGenerator\ClassMapGenerator;
 use Phpro\SoapClient\CodeGenerator\ClientGenerator;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\FileContext;
 use Phpro\SoapClient\CodeGenerator\GeneratorInterface;
 use Phpro\SoapClient\CodeGenerator\Model\Client;
@@ -52,11 +54,12 @@ class ClientGeneratorSpec extends ObjectBehavior
     function it_generates_clients(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
     {
         $typeNamespaceMap = TypeNamespaceMap::create(new Destination('/app', ''));
+        $codeGeneratorContext = new CodeGeneratorContext($typeNamespaceMap, new DefaultCodingStandardsStrategy());
         $method = new ClientMethod(
             'Test',
-            [new Parameter('parameters', 'Test', $typeNamespaceMap, XsdType::create('Test'))],
-            ReturnType::fromMetaData($typeNamespaceMap, XsdType::create('TestResponse')),
-            $typeNamespaceMap,
+            [new Parameter('parameters', 'Test', $codeGeneratorContext, XsdType::create('Test'))],
+            ReturnType::fromMetaData($codeGeneratorContext, XsdType::create('TestResponse')),
+            $codeGeneratorContext,
             new MethodMeta()
         );
         $ruleSet->applyRules(Argument::type(ClientMethodContext::class))->shouldBeCalled();
@@ -77,11 +80,12 @@ class ClientGeneratorSpec extends ObjectBehavior
     function it_generates_clients_for_file_without_classes(RuleSetInterface $ruleSet, FileGenerator $file, ClassGenerator $class)
     {
         $typeNamespaceMap = TypeNamespaceMap::create(new Destination('/app', ''));
+        $codeGeneratorContext = new CodeGeneratorContext($typeNamespaceMap, new DefaultCodingStandardsStrategy());
         $method = new ClientMethod(
             'Test',
-            [new Parameter('parameters', 'Test', $typeNamespaceMap, XsdType::create('Test'))],
-            ReturnType::fromMetaData($typeNamespaceMap, XsdType::create('TestResponse')),
-            $typeNamespaceMap,
+            [new Parameter('parameters', 'Test', $codeGeneratorContext, XsdType::create('Test'))],
+            ReturnType::fromMetaData($codeGeneratorContext, XsdType::create('TestResponse')),
+            $codeGeneratorContext,
             new MethodMeta()
         );
 

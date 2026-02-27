@@ -3,8 +3,10 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Rules;
 
 use Laminas\Code\Generator\ClassGenerator;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
@@ -48,8 +50,9 @@ class TypenameMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'TypeName', 'TypeName', [], XsdType::create('MyType'));
-        $context = new TypeContext(new ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'TypeName', 'TypeName', [], XsdType::create('MyType'));
+        $context = new TypeContext(new ClassGenerator(), $type, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -59,9 +62,10 @@ class TypenameMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $property = new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'));
-        $type = new Type($namespaceMap, 'TypeName', 'TypeName', [$property], XsdType::create('MyType'));
-        $context = new PropertyContext(new ClassGenerator(), $type, $property);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $property = new Property('prop1', 'string', $codeGeneratorContext, 'MyNamespace', XsdType::create('string'));
+        $type = new Type($codeGeneratorContext, 'TypeName', 'TypeName', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new ClassGenerator(), $type, $property, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -71,8 +75,9 @@ class TypenameMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'InvalidTypeName', 'InvalidTypeName', [], XsdType::create('MyType'));
-        $context = new TypeContext(new ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'InvalidTypeName', 'InvalidTypeName', [], XsdType::create('MyType'));
+        $context = new TypeContext(new ClassGenerator(), $type, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(false);
@@ -82,8 +87,9 @@ class TypenameMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'TypeName', 'TypeName', [], XsdType::create('MyType'));
-        $context = new TypeContext(new ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'TypeName', 'TypeName', [], XsdType::create('MyType'));
+        $context = new TypeContext(new ClassGenerator(), $type, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);

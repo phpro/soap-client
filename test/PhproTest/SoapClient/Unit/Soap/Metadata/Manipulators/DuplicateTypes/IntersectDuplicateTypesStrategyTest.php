@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Unit\Soap\Metadata\Manipulators\DuplicateTypes;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\IntersectDuplicateTypesStrategy;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\TypesManipulatorInterface;
 use PHPUnit\Framework\TestCase;
@@ -19,10 +21,18 @@ use Soap\Engine\Metadata\Model\XsdType;
 
 class IntersectDuplicateTypesStrategyTest extends TestCase
 {
+    private function createContext(?TypeNamespaceMap $namespaceMap = null): CodeGeneratorContext
+    {
+        return new CodeGeneratorContext(
+            $namespaceMap ?? TypeNamespaceMap::create(new Destination('/generated', 'Generated')),
+            new DefaultCodingStandardsStrategy(),
+        );
+    }
+
     #[Test]
     public function it_is_a_types_manipulator(): void
     {
-        $strategy = new IntersectDuplicateTypesStrategy();
+        $strategy = new IntersectDuplicateTypesStrategy($this->createContext());
         self::assertInstanceOf(TypesManipulatorInterface::class, $strategy);
     }
 
@@ -32,14 +42,14 @@ class IntersectDuplicateTypesStrategyTest extends TestCase
         $factory = IntersectDuplicateTypesStrategy::create();
         self::assertInstanceOf(\Closure::class, $factory);
 
-        $strategy = $factory(null);
+        $strategy = $factory($this->createContext());
         self::assertInstanceOf(IntersectDuplicateTypesStrategy::class, $strategy);
     }
 
     #[Test]
     public function it_can_intersect_duplicate_types(): void
     {
-        $strategy = new IntersectDuplicateTypesStrategy();
+        $strategy = new IntersectDuplicateTypesStrategy($this->createContext());
         $types = new TypeCollection(
             new Type(XsdType::create('file'), new PropertyCollection(
                 new Property('prop1', XsdType::create('string')),
@@ -88,7 +98,7 @@ class IntersectDuplicateTypesStrategyTest extends TestCase
             ->withMapping('http://ns-a.com', new Destination('/path/a', 'App\\Types\\A'))
             ->withMapping('http://ns-b.com', new Destination('/path/b', 'App\\Types\\B'));
 
-        $strategy = new IntersectDuplicateTypesStrategy($namespaceMap);
+        $strategy = new IntersectDuplicateTypesStrategy($this->createContext($namespaceMap));
 
         $types = new TypeCollection(
             new Type(
@@ -111,7 +121,7 @@ class IntersectDuplicateTypesStrategyTest extends TestCase
     {
         $namespaceMap = TypeNamespaceMap::create(new Destination('/path', 'App\\Types'));
 
-        $strategy = new IntersectDuplicateTypesStrategy($namespaceMap);
+        $strategy = new IntersectDuplicateTypesStrategy($this->createContext($namespaceMap));
 
         $types = new TypeCollection(
             new Type(
@@ -127,28 +137,6 @@ class IntersectDuplicateTypesStrategyTest extends TestCase
         $manipulated = $strategy($types);
 
         // Both map to fallback namespace, so they ARE duplicates
-        self::assertCount(1, iterator_to_array($manipulated));
-    }
-
-    #[Test]
-    public function it_behaves_as_before_without_namespace_map(): void
-    {
-        $strategy = new IntersectDuplicateTypesStrategy(); // No namespace map
-
-        $types = new TypeCollection(
-            new Type(
-                XsdType::create('Item')->withXmlNamespace('http://ns-a.com'),
-                new PropertyCollection()
-            ),
-            new Type(
-                XsdType::create('Item')->withXmlNamespace('http://ns-b.com'),
-                new PropertyCollection()
-            ),
-        );
-
-        $manipulated = $strategy($types);
-
-        // Without namespace map, these are considered duplicates (legacy behavior)
         self::assertCount(1, iterator_to_array($manipulated));
     }
 }

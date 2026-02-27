@@ -2,6 +2,8 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Rules;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
@@ -60,8 +62,9 @@ class IsAbstractTypeRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -71,9 +74,10 @@ class IsAbstractTypeRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $property = new \Phpro\SoapClient\CodeGenerator\Model\Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'));
-        $type = new Type($namespaceMap, 'MyAbstract', 'MyAbstract', [$property], XsdType::create('MyType'));
-        $context = new PropertyContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $property);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $property = new \Phpro\SoapClient\CodeGenerator\Model\Property('prop1', 'string', $codeGeneratorContext, 'MyNamespace', XsdType::create('string'));
+        $type = new Type($codeGeneratorContext, 'MyAbstract', 'MyAbstract', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $property, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -83,8 +87,9 @@ class IsAbstractTypeRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'NotAbstract', 'NotAbstract', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'NotAbstract', 'NotAbstract', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(false);
@@ -94,8 +99,9 @@ class IsAbstractTypeRuleSpec extends ObjectBehavior
     {
         $destination = new \Phpro\SoapClient\CodeGenerator\Config\Destination('src/type', 'MyNamespace');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($destination);
-        $type = new Type($namespaceMap, 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType'));
-        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $type = new Type($codeGeneratorContext, 'MyAbstract', 'MyAbstract', [], XsdType::create('MyType'));
+        $context = new TypeContext(new \Laminas\Code\Generator\ClassGenerator(), $type, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);

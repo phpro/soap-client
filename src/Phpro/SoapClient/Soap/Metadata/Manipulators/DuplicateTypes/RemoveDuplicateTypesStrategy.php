@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes;
 
 use Closure;
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\TypesManipulatorInterface;
 use Soap\Engine\Metadata\Collection\TypeCollection;
 use Soap\Engine\Metadata\Model\Type;
@@ -13,18 +13,18 @@ use Soap\Engine\Metadata\Model\Type;
 final class RemoveDuplicateTypesStrategy implements TypesManipulatorInterface
 {
     public function __construct(
-        private ?TypeNamespaceMap $namespaceMap = null
+        private CodeGeneratorContext $context
     ) {
     }
 
     /**
-     * Factory that returns a closure - Config will call it with the namespace map.
+     * Factory that returns a closure - Config will call it with the context.
      *
-     * @return Closure(?TypeNamespaceMap): self
+     * @return Closure(CodeGeneratorContext): self
      */
     public static function create(): Closure
     {
-        return static fn (?TypeNamespaceMap $map) => new self($map);
+        return static fn (CodeGeneratorContext $context) => new self($context);
     }
 
     public function __invoke(TypeCollection $types): TypeCollection
@@ -33,7 +33,7 @@ final class RemoveDuplicateTypesStrategy implements TypesManipulatorInterface
 
         return $types->filter(
             fn (Type $type): bool => !in_array(
-                DuplicateTypesKey::forType($type, $this->namespaceMap),
+                DuplicateTypesKey::forType($type, $this->context),
                 $duplicateKeys,
                 true
             )
@@ -47,7 +47,7 @@ final class RemoveDuplicateTypesStrategy implements TypesManipulatorInterface
     {
         $keyCounts = [];
         foreach ($types as $type) {
-            $key = DuplicateTypesKey::forType($type, $this->namespaceMap);
+            $key = DuplicateTypesKey::forType($type, $this->context);
             $keyCounts[$key] = ($keyCounts[$key] ?? 0) + 1;
         }
 

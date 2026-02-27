@@ -6,7 +6,6 @@ use Laminas\Code\Generator\DocBlockGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\MethodGenerator;
 use Soap\Engine\Metadata\Model\TypeMeta;
@@ -58,7 +57,7 @@ class GetterAssembler implements AssemblerInterface
 
         try {
             $prefix = $this->getPrefix($property);
-            $methodName = Normalizer::generatePropertyMethod($prefix, $property->getName());
+            $methodName = $property->methodName($prefix);
             $class->removeMethod($methodName);
 
             $methodGenerator = new MethodGenerator($methodName);

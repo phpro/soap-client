@@ -3,8 +3,10 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Rules;
 
 use Laminas\Code\Generator\ClassGenerator;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
@@ -48,14 +50,15 @@ class ClientMethodMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $method = new ClientMethod(
             'myClientMethod',
             [],
-            ReturnType::fromMetaData($namespaceMap, XsdType::create('string')),
-            $namespaceMap,
+            ReturnType::fromMetaData($codeGeneratorContext, XsdType::create('string')),
+            $codeGeneratorContext,
             new MethodMeta()
         );
-        $context = new ClientMethodContext(new ClassGenerator(), $method);
+        $context = new ClientMethodContext(new ClassGenerator(), $method, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -65,14 +68,15 @@ class ClientMethodMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $method = new ClientMethod(
             'myInvalidClientMethod',
             [],
-            ReturnType::fromMetaData($namespaceMap, XsdType::create('string')),
-            $namespaceMap,
+            ReturnType::fromMetaData($codeGeneratorContext, XsdType::create('string')),
+            $codeGeneratorContext,
             new MethodMeta()
         );
-        $context = new ClientMethodContext(new ClassGenerator(), $method);
+        $context = new ClientMethodContext(new ClassGenerator(), $method, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(false);
@@ -82,14 +86,15 @@ class ClientMethodMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $method = new ClientMethod(
             'myClientMethod',
             [],
-            ReturnType::fromMetaData($namespaceMap, XsdType::create('string')),
-            $namespaceMap,
+            ReturnType::fromMetaData($codeGeneratorContext, XsdType::create('string')),
+            $codeGeneratorContext,
             new MethodMeta()
         );
-        $context = new ClientMethodContext(new ClassGenerator(), $method);
+        $context = new ClientMethodContext(new ClassGenerator(), $method, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);

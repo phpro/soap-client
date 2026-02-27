@@ -3,8 +3,10 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Rules;
 
 use Laminas\Code\Generator\ClassGenerator;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
@@ -47,9 +49,10 @@ class PropertynameMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'ns1');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $property = new Property('myProperty', 'string', $namespaceMap, 'ns1', XsdType::create('string'));
-        $type = new Type($namespaceMap, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
-        $context = new PropertyContext(new ClassGenerator(), $type, $property);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $property = new Property('myProperty', 'string', $codeGeneratorContext, 'ns1', XsdType::create('string'));
+        $type = new Type($codeGeneratorContext, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new ClassGenerator(), $type, $property, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(true);
@@ -59,9 +62,10 @@ class PropertynameMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'ns1');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $property = new Property('InvalidTypeName', 'string', $namespaceMap, 'ns1', XsdType::create('string'));
-        $type = new Type($namespaceMap, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
-        $context = new PropertyContext(new ClassGenerator(), $type, $property);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $property = new Property('InvalidTypeName', 'string', $codeGeneratorContext, 'ns1', XsdType::create('string'));
+        $type = new Type($codeGeneratorContext, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new ClassGenerator(), $type, $property, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(true);
         $this->appliesToContext($context)->shouldReturn(false);
@@ -71,9 +75,10 @@ class PropertynameMatchesRuleSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'ns1');
         $namespaceMap = TypeNamespaceMap::create($destination);
-        $property = new Property('MyProperty', 'string', $namespaceMap, 'ns1', XsdType::create('string'));
-        $type = new Type($namespaceMap, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
-        $context = new PropertyContext(new ClassGenerator(), $type, $property);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
+        $property = new Property('MyProperty', 'string', $codeGeneratorContext, 'ns1', XsdType::create('string'));
+        $type = new Type($codeGeneratorContext, 'MyType', 'MyType', [$property], XsdType::create('MyType'));
+        $context = new PropertyContext(new ClassGenerator(), $type, $property, $codeGeneratorContext);
 
         $subRule->appliesToContext($context)->willReturn(false);
         $this->appliesToContext($context)->shouldReturn(false);

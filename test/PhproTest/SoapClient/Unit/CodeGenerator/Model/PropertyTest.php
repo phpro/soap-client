@@ -2,8 +2,10 @@
 
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Model;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -20,15 +22,18 @@ use Soap\Engine\Metadata\Model\XsdType;
  */
 class PropertyTest extends TestCase
 {
-    private static function createTypeNamespaceMap(string $namespace): TypeNamespaceMap
+    private static function createCodeGeneratorContext(string $namespace): CodeGeneratorContext
     {
-        return TypeNamespaceMap::create(new Destination('/generated', $namespace));
+        return new CodeGeneratorContext(
+            TypeNamespaceMap::create(new Destination('/generated', $namespace)),
+            new DefaultCodingStandardsStrategy(),
+        );
     }
 
     #[Test]
     public function it_returns_mixed_type_post_php8(): void
     {
-        $property = new Property('test', 'mixed', self::createTypeNamespaceMap('App'), 'App', XsdType::create('mixed'));
+        $property = new Property('test', 'mixed', self::createCodeGeneratorContext('App'), 'App', XsdType::create('mixed'));
         self::assertEquals('mixed', $property->getPhpType());
         self::assertEquals('mixed', $property->getType());
     }
@@ -37,7 +42,7 @@ class PropertyTest extends TestCase
     public function it_can_use_fqcn_to_3rd_party_classes_as_type_name(): void
     {
         $property = Property::fromMetaData(
-            self::createTypeNamespaceMap('MyApp'),
+            self::createCodeGeneratorContext('MyApp'),
             new EngineProperty(
                 'property',
                 $xsdType = XsdType::create(Option::class)
@@ -54,7 +59,7 @@ class PropertyTest extends TestCase
     public function it_can_use_a_php_built_in_class_as_type_name(): void
     {
         $property = Property::fromMetaData(
-            self::createTypeNamespaceMap('MyApp'),
+            self::createCodeGeneratorContext('MyApp'),
             new EngineProperty(
                 'property',
                 $xsdType = XsdType::create('\\'. \DateInterval::class)
@@ -78,7 +83,7 @@ class PropertyTest extends TestCase
     {
         yield 'known_simple_type' => [
             Property::fromMetaData(
-                self::createTypeNamespaceMap('MyApp'),
+                self::createCodeGeneratorContext('MyApp'),
                 new EngineProperty(
                     'property',
                     XsdType::create('string')
@@ -89,7 +94,7 @@ class PropertyTest extends TestCase
 
         yield 'known_simple_base_type' => [
             Property::fromMetaData(
-                self::createTypeNamespaceMap('MyApp'),
+                self::createCodeGeneratorContext('MyApp'),
                 new EngineProperty(
                     'property',
                     XsdType::create('language')
@@ -105,7 +110,7 @@ class PropertyTest extends TestCase
 
         yield 'known_simple_base_type_with_enums' => [
             Property::fromMetaData(
-                self::createTypeNamespaceMap('MyApp'),
+                self::createCodeGeneratorContext('MyApp'),
                 new EngineProperty(
                     'property',
                     XsdType::create('languageEnum')
@@ -122,7 +127,7 @@ class PropertyTest extends TestCase
 
         yield 'root namespace' => [
             Property::fromMetaData(
-                self::createTypeNamespaceMap(''),
+                self::createCodeGeneratorContext(''),
                 new EngineProperty(
                     'property',
                     XsdType::create('MyType')
@@ -133,7 +138,7 @@ class PropertyTest extends TestCase
 
         yield 'namespaced' => [
             Property::fromMetaData(
-                self::createTypeNamespaceMap('MyApp'),
+                self::createCodeGeneratorContext('MyApp'),
                 new EngineProperty(
                     'property',
                     XsdType::create('MyType')

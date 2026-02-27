@@ -17,7 +17,7 @@ use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeName
 use Phpro\SoapClient\Soap\EngineOptions;
 use Phpro\SoapClient\Soap\DefaultEngineFactory;
 
-return Config::create()
+return ($config = Config::create())
     ->setEngine(DefaultEngineFactory::create(
         EngineOptions::defaults($wsdl)
             ->withWsdlLoader(new FlatteningLoader(new StreamWrapperLoader()))
@@ -33,7 +33,7 @@ return Config::create()
             ->withMapping('http://www.xmlns.mapping', new Destination('src/Type/OtherDir', 'App\\Type\\OtherDir'))
             // Or use a strategy to automatically resolve destinations from xmlns prefixes:
             // This strategy will only be called for XML namespaces that don't have an explicit mapping configured.
-            ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+            ->withStrategy(new PrefixBasedTypeNamespaceStrategy($config->getCodingStandards()))
     )
     ->setClient(new ClientConfig('MySoapClient', new Destination('SoapClient', 'src/SoapClient')))
     ->setClassMap(new ClassMapConfig('AcmeClassmap', new Destination('Acme\\Classmap', 'src/acme/classmap')))
@@ -201,8 +201,15 @@ Config::create()
 ```
 
 The duplicate type strategies use a factory pattern (`create()`) that returns a closure.
-This closure receives the `TypeNamespaceMap` from the configuration, enabling namespace-aware duplicate detection.
+This closure receives the `CodeGeneratorContext` from the configuration, enabling namespace-aware duplicate detection.
 When types map to different PHP namespaces, they are not considered duplicates.
+
+**Coding standards**
+
+Use `setCodingStandards(CodingStandardsStrategyInterface)` to customize how names are normalized in generated code.
+By default, `DefaultCodingStandardsStrategy` is used, which matches the existing behavior.
+
+[Read more about coding standards customization.](coding-standards.md)
 
 **Enumeration options**
 

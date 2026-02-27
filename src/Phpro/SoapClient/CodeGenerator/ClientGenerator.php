@@ -54,7 +54,7 @@ class ClientGenerator implements GeneratorInterface
 
         $methods = $client->getMethodMap();
         foreach ($methods->getMethods() as $method) {
-            $this->ruleSet->applyRules(new ClientMethodContext($class, $method));
+            $this->ruleSet->applyRules(new ClientMethodContext($class, $method, $method->getCodeGeneratorContext()));
         }
 
         $this->ruleSet->applyRules(new FileContext($file));

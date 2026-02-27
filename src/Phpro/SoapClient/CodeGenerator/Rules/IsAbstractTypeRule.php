@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\CodeGenerator\Rules;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\CodingStandardsStrategyInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Metadata;
 use Soap\Engine\Metadata\Model\Type;
 use function Psl\Type\non_empty_string;
 
 class IsAbstractTypeRule implements RuleInterface
 {
-    private Metadata $metadata;
-    private RuleInterface $subRule;
-
     /**
      * @var list<string>|null
      */
     private $abstractTypes = null;
 
-    public function __construct(Metadata $metadata, RuleInterface $subRule)
-    {
-        $this->metadata = $metadata;
-        $this->subRule = $subRule;
+    public function __construct(
+        private Metadata $metadata,
+        private RuleInterface $subRule,
+    ) {
     }
 
     public function appliesToContext(ContextInterface $context): bool
@@ -35,7 +32,8 @@ class IsAbstractTypeRule implements RuleInterface
         }
 
         $type = $context->getType();
-        if (!in_array($type->getName(), $this->listAbstractTypes(), true)) {
+        $codingStandards = $context->getCodeGeneratorContext()->codingStandards;
+        if (!in_array($type->getName(), $this->listAbstractTypes($codingStandards), true)) {
             return false;
         }
 
@@ -50,7 +48,7 @@ class IsAbstractTypeRule implements RuleInterface
     /**
      * @return list<string>
      */
-    private function listAbstractTypes(): array
+    private function listAbstractTypes(CodingStandardsStrategyInterface $codingStandards): array
     {
         if (null === $this->abstractTypes) {
             $this->abstractTypes = $this->metadata->getTypes()->reduce(
@@ -58,14 +56,14 @@ class IsAbstractTypeRule implements RuleInterface
                  * @param list<string> $abstractTypes
                  * @return list<string>
                  */
-                static function (array $abstractTypes, Type $type): array {
+                static function (array $abstractTypes, Type $type) use ($codingStandards): array {
                     if (!$type->getXsdType()->getMeta()->isAbstract()->unwrapOr(false)) {
                         return $abstractTypes;
                     }
 
                     return [
                         ...$abstractTypes,
-                        Normalizer::normalizeClassname(non_empty_string()->assert($type->getName())),
+                        $codingStandards->normalizeTypeName(non_empty_string()->assert($type->getName())),
                     ];
                 },
                 []

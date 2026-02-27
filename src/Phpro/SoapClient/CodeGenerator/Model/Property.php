@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\TypeNameCalculator;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\MetaTypeEnhancer;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\TypeEnhancer;
@@ -27,20 +27,22 @@ final class Property
     public function __construct(
         private readonly string $name,
         private readonly string $type,
-        private readonly TypeNamespaceMap $namespaces,
+        private readonly CodeGeneratorContext $codeGeneratorContext,
         private readonly string $namespace,
-        private readonly XsdType $xsdType
+        private readonly XsdType $xsdType,
     ) {
         $this->meta = $xsdType->getMeta();
         $this->typeEnhancer = new MetaTypeEnhancer($this->meta);
     }
 
-    public static function fromMetaData(TypeNamespaceMap $namespaces, MetadataProperty $property): self
-    {
+    public static function fromMetaData(
+        CodeGeneratorContext $codeGeneratorContext,
+        MetadataProperty $property,
+    ): self {
         $type = $property->getType();
         $typeName = $type->getName();
         $calculatedTypeName = Normalizer::normalizeDataType((new TypeNameCalculator())($type));
-        $namespace = $namespaces->detectDestinationForType($type)->namespace;
+        $namespace = $codeGeneratorContext->typeNamespaceMap->detectDestinationForType($type)->namespace;
 
         // This makes it possible to set FQCN as type names in the metadata through TypeReplacers.
         if (Normalizer::isConsideredExistingThirdPartyClass($typeName)) {
@@ -53,10 +55,15 @@ final class Property
         return new self(
             Normalizer::normalizeProperty(non_empty_string()->assert($property->getName())),
             non_empty_string()->assert($calculatedTypeName),
-            $namespaces,
+            $codeGeneratorContext,
             Normalizer::normalizeNamespace($namespace),
-            $type
+            $type,
         );
+    }
+
+    public function getCodeGeneratorContext(): CodeGeneratorContext
+    {
+        return $this->codeGeneratorContext;
     }
 
     /**
@@ -83,7 +90,7 @@ final class Property
             return $this->xsdType->getBaseType();
         }
 
-        $normalized = Normalizer::normalizeClassname($this->type);
+        $normalized = $this->codeGeneratorContext->codingStandards->normalizeTypeName($this->type);
 
         return $this->namespace !== ''
             ? '\\'.$this->namespace.'\\'.$normalized
@@ -111,7 +118,8 @@ final class Property
      */
     public function getterName(): string
     {
-        return Normalizer::generatePropertyMethod('get', $this->getName());
+        return $this->codeGeneratorContext->codingStandards
+            ->generatePropertyAccessorMethodName('get', $this->getName());
     }
 
     /**
@@ -119,7 +127,26 @@ final class Property
      */
     public function setterName(): string
     {
-        return Normalizer::generatePropertyMethod('set', $this->getName());
+        return $this->codeGeneratorContext->codingStandards
+            ->generatePropertyAccessorMethodName('set', $this->getName());
+    }
+
+    /**
+     * @param non-empty-string $prefix
+     * @return non-empty-string
+     */
+    public function methodName(string $prefix): string
+    {
+        return $this->codeGeneratorContext->codingStandards
+            ->generatePropertyAccessorMethodName($prefix, $this->getName());
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function parameterName(): string
+    {
+        return $this->codeGeneratorContext->codingStandards->normalizeParameterName($this->getName());
     }
 
     public function getXsdType(): XsdType
@@ -130,11 +157,6 @@ final class Property
     public function getMeta(): TypeMeta
     {
         return $this->meta;
-    }
-
-    public function getNamespaces(): TypeNamespaceMap
-    {
-        return $this->namespaces;
     }
 
     /**

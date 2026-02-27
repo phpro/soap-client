@@ -4,7 +4,6 @@ namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
@@ -38,7 +37,7 @@ class ExtendingTypeAssembler implements AssemblerInterface
         }
 
         $namespace = $type->getNamespace();
-        $typeName = Normalizer::normalizeClassname($extending['type']);
+        $typeName = $type->getCodeGeneratorContext()->codingStandards->normalizeTypeName($extending['type']);
         $extendedClassName = sprintf('%s\\%s', $namespace, $typeName);
 
         try {

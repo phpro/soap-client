@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Unit\Soap\Metadata\Manipulators\DuplicateTypes;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\RemoveDuplicateTypesStrategy;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\TypesManipulatorInterface;
 use PHPUnit\Framework\TestCase;
@@ -17,10 +19,18 @@ use Soap\Engine\Metadata\Model\XsdType;
 
 class RemoveDuplicateTypesStrategyTest extends TestCase
 {
+    private function createContext(?TypeNamespaceMap $namespaceMap = null): CodeGeneratorContext
+    {
+        return new CodeGeneratorContext(
+            $namespaceMap ?? TypeNamespaceMap::create(new Destination('/generated', 'Generated')),
+            new DefaultCodingStandardsStrategy(),
+        );
+    }
+
     #[Test]
     public function it_is_a_types_manipulator(): void
     {
-        $strategy = new RemoveDuplicateTypesStrategy();
+        $strategy = new RemoveDuplicateTypesStrategy($this->createContext());
         self::assertInstanceOf(TypesManipulatorInterface::class, $strategy);
     }
 
@@ -30,14 +40,14 @@ class RemoveDuplicateTypesStrategyTest extends TestCase
         $factory = RemoveDuplicateTypesStrategy::create();
         self::assertInstanceOf(\Closure::class, $factory);
 
-        $strategy = $factory(null);
+        $strategy = $factory($this->createContext());
         self::assertInstanceOf(RemoveDuplicateTypesStrategy::class, $strategy);
     }
 
     #[Test]
     public function it_can_remove_duplicate_types(): void
     {
-        $strategy = new RemoveDuplicateTypesStrategy();
+        $strategy = new RemoveDuplicateTypesStrategy($this->createContext());
         $types = new TypeCollection(
             new Type(XsdType::create('file'), new PropertyCollection()),
             new Type(XsdType::create('file'), new PropertyCollection()),
@@ -70,7 +80,7 @@ class RemoveDuplicateTypesStrategyTest extends TestCase
             ->withMapping('http://ns-a.com', new Destination('/path/a', 'App\\Types\\A'))
             ->withMapping('http://ns-b.com', new Destination('/path/b', 'App\\Types\\B'));
 
-        $strategy = new RemoveDuplicateTypesStrategy($namespaceMap);
+        $strategy = new RemoveDuplicateTypesStrategy($this->createContext($namespaceMap));
 
         $types = new TypeCollection(
             new Type(
@@ -98,7 +108,7 @@ class RemoveDuplicateTypesStrategyTest extends TestCase
     {
         $namespaceMap = TypeNamespaceMap::create(new Destination('/path', 'App\\Types'));
 
-        $strategy = new RemoveDuplicateTypesStrategy($namespaceMap);
+        $strategy = new RemoveDuplicateTypesStrategy($this->createContext($namespaceMap));
 
         $types = new TypeCollection(
             new Type(
@@ -118,34 +128,6 @@ class RemoveDuplicateTypesStrategyTest extends TestCase
         $manipulated = $strategy($types);
 
         // Both Items map to fallback namespace, so they ARE duplicates and get removed
-        // Only UniqueType remains
-        self::assertCount(1, iterator_to_array($manipulated));
-        self::assertEquals('UniqueType', iterator_to_array($manipulated)[0]->getName());
-    }
-
-    #[Test]
-    public function it_behaves_as_before_without_namespace_map(): void
-    {
-        $strategy = new RemoveDuplicateTypesStrategy(); // No namespace map
-
-        $types = new TypeCollection(
-            new Type(
-                XsdType::create('Item')->withXmlNamespace('http://ns-a.com'),
-                new PropertyCollection()
-            ),
-            new Type(
-                XsdType::create('Item')->withXmlNamespace('http://ns-b.com'),
-                new PropertyCollection()
-            ),
-            new Type(
-                XsdType::create('UniqueType'),
-                new PropertyCollection()
-            ),
-        );
-
-        $manipulated = $strategy($types);
-
-        // Without namespace map, Items are considered duplicates (legacy behavior)
         // Only UniqueType remains
         self::assertCount(1, iterator_to_array($manipulated));
         self::assertEquals('UniqueType', iterator_to_array($manipulated)[0]->getName());
