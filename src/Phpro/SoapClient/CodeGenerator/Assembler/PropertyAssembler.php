@@ -3,10 +3,13 @@
 namespace Phpro\SoapClient\CodeGenerator\Assembler;
 
 use Laminas\Code\Generator\DocBlockGenerator;
+use Laminas\Code\Generator\PropertyValueGenerator;
 use Laminas\Code\Generator\TypeGenerator;
+use Phpro\SoapClient\CodeGenerator\Config\DefaultValuesStrategy;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\LaminasCodeFactory\DocBlockGeneratorFactory;
+use Phpro\SoapClient\CodeGenerator\Provider\ScalarDefaultProvider;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\PropertyGenerator;
 use Soap\Engine\Metadata\Model\TypeMeta;
@@ -78,6 +81,19 @@ class PropertyAssembler implements AssemblerInterface
 
             if ($this->options->useTypeHints()) {
                 $propertyGenerator->setType(TypeGenerator::fromTypeString($property->getPhpType()));
+            }
+
+            if ($this->options->defaultValues() === DefaultValuesStrategy::All) {
+                $defaultValue = (new ScalarDefaultProvider())($property);
+                if ($defaultValue->isSucceeded()) {
+                    $propertyGenerator
+                        ->setDefaultValue(
+                            $defaultValue->getResult(),
+                            PropertyValueGenerator::TYPE_AUTO,
+                            PropertyValueGenerator::OUTPUT_SINGLE_LINE
+                        )
+                        ->omitDefaultValue(false);
+                }
             }
 
             $class->addPropertyFromGenerator($propertyGenerator);

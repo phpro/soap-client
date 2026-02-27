@@ -5,6 +5,9 @@ namespace PhproTest\SoapClient\Unit\CodeGenerator\Assembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssembler;
 use Phpro\SoapClient\CodeGenerator\Assembler\PropertyAssemblerOptions;
+use Phpro\SoapClient\CodeGenerator\Config\DefaultValuesStrategy;
+use Phpro\SoapClient\CodeGenerator\Config\Destination;
+use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
@@ -34,7 +37,7 @@ class PropertyAssemblerTest extends TestCase
     }
 
     #[Test]
-    function it_assembles_property_without_default_value()
+    function it_assembles_property()
     {
         $assembler = new PropertyAssembler();
         $context = $this->createContext();
@@ -87,7 +90,7 @@ CODE;
 
 
     #[Test]
-    function it_assembles_with_visibility_without_default_value()
+    function it_assembles_with_visibility()
     {
         $assembler = new PropertyAssembler(
             PropertyAssemblerOptions::create()->withVisibility(PropertyGenerator::VISIBILITY_PUBLIC)
@@ -280,6 +283,133 @@ CODE;
     }
 
 
+    #[Test]
+    function it_assembles_property_without_defaults()
+    {
+        $assembler = new PropertyAssembler(
+            PropertyAssemblerOptions::create()->withDefaultValues(DefaultValuesStrategy::None)
+        );
+        $context = $this->createContext();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * Type specific docs
+     *
+     * @var string
+     */
+    private string \$prop1;
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    #[Test]
+    function it_assembles_property_with_defaults_and_optional_value()
+    {
+        $assembler = new PropertyAssembler(
+            PropertyAssemblerOptions::create()->withDefaultValues()->withOptionalValue()
+        );
+        $context = $this->createContext();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * Type specific docs
+     *
+     * @var null | string
+     */
+    private ?string \$prop1 = null;
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    #[Test]
+    function it_assembles_nullable_complex_type_with_defaults()
+    {
+        $assembler = new PropertyAssembler();
+        $context = $this->createContextWithNullableComplexType();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * @var null | \MyNamespace\SomeClass
+     */
+    private ?\MyNamespace\SomeClass \$prop1 = null;
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    #[Test]
+    function it_assembles_non_nullable_complex_type_without_default()
+    {
+        $assembler = new PropertyAssembler();
+        $context = $this->createContextWithComplexType();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * @var \MyNamespace\SomeClass
+     */
+    private \MyNamespace\SomeClass \$prop1;
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
+    #[Test]
+    function it_assembles_property_with_all_defaults()
+    {
+        $assembler = new PropertyAssembler(
+            PropertyAssemblerOptions::create()->withDefaultValues(DefaultValuesStrategy::All)
+        );
+        $context = $this->createContext();
+        $assembler->assemble($context);
+        $code = $context->getClass()->generate();
+        $expected = <<<CODE
+namespace MyNamespace;
+
+class MyType
+{
+    /**
+     * Type specific docs
+     *
+     * @var string
+     */
+    private string \$prop1 = '';
+}
+
+CODE;
+
+        $this->assertEquals($expected, $code);
+    }
+
     /**
      * @return PropertyContext
      */
@@ -323,6 +453,30 @@ CODE;
             $property = Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withDocs('Type specific docs')->withIsNullable(true)
             ))),
+        ], XsdType::create('MyType'));
+
+        return new PropertyContext($class, $type, $property);
+    }
+
+    private function createContextWithNullableComplexType(): PropertyContext
+    {
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
+            $property = Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('SomeClass')->withMeta(
+                static fn (TypeMeta $meta): TypeMeta => $meta->withIsNullable(true)
+            ))),
+        ], XsdType::create('MyType'));
+
+        return new PropertyContext($class, $type, $property);
+    }
+
+    private function createContextWithComplexType(): PropertyContext
+    {
+        $class = new ClassGenerator('MyType', 'MyNamespace');
+        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
+        $type = new Type($namespaces, 'MyType', 'MyType', [
+            $property = Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('SomeClass'))),
         ], XsdType::create('MyType'));
 
         return new PropertyContext($class, $type, $property);
