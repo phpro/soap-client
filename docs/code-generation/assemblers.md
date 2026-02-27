@@ -19,7 +19,6 @@ to generate the code you want to add to the generated SOAP types.
 - [IteratorAssembler](#iteratorassembler)
 - [JsonSerializableAssembler](#jsonserializableassembler)
 - [PropertyAssembler](#propertyassembler)
-- [PropertyDefaultsAssembler](#propertydefaultsassembler)
 - [RequestAssembler](#requestassembler)
 - [ResultAssembler](#resultassembler)
 - [ResultProviderAssembler](#resultproviderassembler)
@@ -120,6 +119,64 @@ new ConstructorAssembler((new ConstructorAssemblerOptions())->withDocBlocks(fals
         $this->prop2 = $prop2;
     }
 ```
+
+Default values use a `DefaultValuesStrategy` enum with three modes:
+
+- **`OptionalOnly`** (default): Only WSDL-optional/nullable parameters get `= null`. Parameters with defaults are reordered to the end.
+- **`All`**: All scalar parameters get type-appropriate defaults (`''`, `0`, `false`, `0.0`, `[]`), nullable parameters get `= null`. Parameters with defaults are reordered to the end.
+- **`None`**: No defaults are applied.
+
+```php
+use Phpro\SoapClient\CodeGenerator\Config\DefaultValuesStrategy;
+
+// Default (OptionalOnly) — only nullable params get = null:
+new ConstructorAssembler((new ConstructorAssemblerOptions())->withTypeHints())
+```
+
+```php
+    public function __construct(string $name, SomeClass $obj, ?Contact $contact = null)
+    {
+        $this->name = $name;
+        $this->obj = $obj;
+        $this->contact = $contact;
+    }
+```
+
+```php
+// All scalars get defaults:
+new ConstructorAssembler((new ConstructorAssemblerOptions())->withTypeHints()->withDefaultValues(DefaultValuesStrategy::All))
+```
+
+```php
+    public function __construct(SomeClass $obj, string $prop1 = '', int $prop2 = 0)
+    {
+        $this->obj = $obj;
+        $this->prop1 = $prop1;
+        $this->prop2 = $prop2;
+    }
+```
+
+To disable default values entirely:
+```php
+new ConstructorAssembler((new ConstructorAssemblerOptions())->withDefaultValues(DefaultValuesStrategy::None))
+```
+
+Optional values can be enabled with `withOptionalValue()`. This forces ALL parameters to be nullable with `= null`, regardless of WSDL metadata. This is useful when you want to construct objects without providing all values upfront.
+
+Example
+```php
+new ConstructorAssembler((new ConstructorAssemblerOptions())->withOptionalValue())
+```
+
+```php
+    public function __construct(?string $prop1 = null, ?SomeClass $prop2 = null)
+    {
+        $this->prop1 = $prop1;
+        $this->prop2 = $prop2;
+    }
+```
+
+`withOptionalValue()` takes precedence over `withDefaultValues()`: when both are enabled, all parameters become `?Type = null`.
 
 ## FluentSetterAssembler
 
@@ -306,31 +363,40 @@ Example output:
     /**
      * @var string
      */
-    private $prop1 = null;
+    private string $prop1 = '';
 ```
 
-You can adjust the visibility of the property by injecting the visibility in the constructor.
+You can adjust the visibility of the property by injecting `PropertyAssemblerOptions` in the constructor.
 
 ```php
-new PropertyAssembler(PropertyGenerator::VISIBILITY_PROTECTED)
+new PropertyAssembler(PropertyAssemblerOptions::create()->withVisibility(PropertyGenerator::VISIBILITY_PROTECTED))
 ```
 
 Please note that the default ruleset has a visibility of private.
 If you want to override this, you will have to override all rules by calling `Phpro\SoapClient\CodeGenerator\Config\Config::setRuleSet`.
 
-## PropertyDefaultsAssembler
+Default values use a `DefaultValuesStrategy` enum with three modes:
 
-This `PropertyDefaultsAssembler` can be used together with the default `PropertyAssembler` and can be used to determine basic default values for specific properties.
-It adds default values for following scalar types: `string`, `int`, `float`, `bool`, `array`, `mixed`.
-
-Example output:
+- **`OptionalOnly`** (default): Only WSDL-optional/nullable properties get `= null`. Non-nullable properties have no default.
+- **`All`**: Scalar properties get type-appropriate defaults (`''`, `0`, `false`, `0.0`, `[]`), nullable types get `= null`, and non-nullable complex types get no default.
+- **`None`**: No defaults are applied from this option.
 
 ```php
-    /**
-     * @var string
-     */
-    private $prop1 = '';
+use Phpro\SoapClient\CodeGenerator\Config\DefaultValuesStrategy;
+
+// All scalars get defaults:
+new PropertyAssembler(PropertyAssemblerOptions::create()->withDefaultValues(DefaultValuesStrategy::All))
 ```
+
+To disable default values entirely:
+```php
+new PropertyAssembler(PropertyAssemblerOptions::create()->withDefaultValues(DefaultValuesStrategy::None))
+```
+
+This differs from `withOptionalValue()`:
+- `withOptionalValue()`: forces ALL properties to `?Type = null` regardless of WSDL metadata.
+- `withDefaultValues()`: applies defaults based on the chosen strategy respecting the WSDL schema.
+- When both are enabled, `withOptionalValue()` takes precedence (everything becomes `?Type = null`).
 
 ## RequestAssembler
 

@@ -131,6 +131,31 @@ If you want to have this mapping in your configuration, you can start out fresh 
 ./vendor/bin/soap-client generate:config --config=config/soap-client.php
 ```
 
+## Constructor and property default values
+
+The `withDefaultValues()` method on both `ConstructorAssemblerOptions` and `PropertyAssemblerOptions` now accepts a `DefaultValuesStrategy`:
+
+```php
+use Phpro\SoapClient\CodeGenerator\Config\DefaultValuesStrategy;
+
+(new ConstructorAssemblerOptions())->withDefaultValues(DefaultValuesStrategy::OptionalOnly)
+(new ConstructorAssemblerOptions())->withDefaultValues(DefaultValuesStrategy::All)
+(new ConstructorAssemblerOptions())->withDefaultValues(DefaultValuesStrategy::None)
+```
+
+The three strategies are:
+- **`OptionalOnly`** (new default): Only WSDL-optional/nullable properties get `= null`. Required properties have no default, preventing silent construction without providing them.
+- **`All`** (previous default): All scalar types get zero-value defaults (`''`, `0`, `false`, `0.0`, `[]`), nullable types get `= null`.
+- **`None`**: No defaults are applied.
+
+The `ConstructorAssembler` also supports a `withOptionalValue()` option that forces all parameters to `?Type = null`, matching the `PropertyAssembler` behavior.
+
+The `PropertyDefaultsAssembler` has been removed. Its functionality is now built into `PropertyAssembler` via `PropertyAssemblerOptions::create()->withDefaultValues()`. To restore the old behavior where all scalars get defaults:
+
+```php
+new PropertyAssembler(PropertyAssemblerOptions::create()->withDefaultValues(DefaultValuesStrategy::All))
+```
+
 ## Regenerate classes
 
 After upgrading, regenerate all your classes:
