@@ -2,8 +2,10 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ClientMethodContext;
 use Phpro\SoapClient\CodeGenerator\Model\ClientMethod;
@@ -27,16 +29,17 @@ class ClientMethodContextSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'ParamNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
 
         $this->method = new ClientMethod(
             'testMethod',
             [],
-            ReturnType::fromMetaData($namespaceMap, XsdType::create('CreditResponse')),
-            $namespaceMap,
+            ReturnType::fromMetaData($context, XsdType::create('CreditResponse')),
+            $context,
             new MethodMeta()
         );
 
-        $this->beConstructedWith($class, $this->method);
+        $this->beConstructedWith($class, $this->method, $context);
     }
 
     function it_is_initializable()

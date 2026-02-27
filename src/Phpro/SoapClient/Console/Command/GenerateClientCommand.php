@@ -46,8 +46,9 @@ class GenerateClientCommand extends Command
 
         $clientConfig = $config->getClient();
         $destination = $clientConfig->path();
+        $generatorContext = $config->getCodeGeneratorContext();
         $methodMap = ClientMethodMap::fromMetadata(
-            $config->getTypeNamespaceMap(),
+            $generatorContext,
             $config->getManipulatedMetadata()->getMethods(),
         );
 

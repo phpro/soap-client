@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Phpro\SoapClient\CodeGenerator\Rules;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\CodingStandardsStrategyInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Soap\Metadata\Detector\RequestTypesDetector;
 use Soap\Engine\Metadata\Metadata;
 use function Psl\Type\non_empty_string;
@@ -15,24 +15,14 @@ use function Psl\Type\non_empty_string;
 class IsRequestRule implements RuleInterface
 {
     /**
-     * @var Metadata
-     */
-    private $metadata;
-
-    /**
-     * @var RuleInterface
-     */
-    private $subRule;
-
-    /**
      * @var array|null
      */
     private $requestTypes;
 
-    public function __construct(Metadata $metadata, RuleInterface $subRule)
-    {
-        $this->metadata = $metadata;
-        $this->subRule = $subRule;
+    public function __construct(
+        private Metadata $metadata,
+        private RuleInterface $subRule,
+    ) {
     }
 
     public function appliesToContext(ContextInterface $context): bool
@@ -42,7 +32,8 @@ class IsRequestRule implements RuleInterface
         }
 
         $type = $context->getType();
-        if (!in_array($type->getName(), $this->listRequestTypes(), true)) {
+        $codingStandards = $context->getCodeGeneratorContext()->codingStandards;
+        if (!in_array($type->getName(), $this->listRequestTypes($codingStandards), true)) {
             return false;
         }
 
@@ -54,13 +45,11 @@ class IsRequestRule implements RuleInterface
         $this->subRule->apply($context);
     }
 
-    private function listRequestTypes(): array
+    private function listRequestTypes(CodingStandardsStrategyInterface $codingStandards): array
     {
         if (null === $this->requestTypes) {
             $this->requestTypes = array_map(
-                static function (string $type) {
-                    return Normalizer::normalizeClassname(non_empty_string()->assert($type));
-                },
+                fn (string $type) => $codingStandards->normalizeTypeName(non_empty_string()->assert($type)),
                 (new RequestTypesDetector())($this->metadata->getMethods())
             );
         }

@@ -261,4 +261,7 @@ Possible contexts:
 - `ClassMapContext`: Triggered during the `generate:classmap` command.
 - `TypeContext`: Triggered during the `generate:types` command for every type in the SOAP scheme.
 - `PropertyContext`: Triggered during the `generate:types` command for every property in a SOAP type.
+- `ClientMethodContext`: Triggered during the `generate:client` command for every method.
 - `FileContext`: Triggered during every generate command.
+
+`TypeContext`, `PropertyContext`, `ClientMethodContext`, and `ClassMapContext` expose `getCodeGeneratorContext(): CodeGeneratorContext` for accessing the `TypeNamespaceMap` and `CodingStandardsStrategyInterface`.

@@ -76,14 +76,14 @@ CODE;
     {
         $assembler = new ConstructorAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('int'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop3', XsdType::guess('SomeClass'))),
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop2', XsdType::guess('int'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop3', XsdType::guess('SomeClass'))),
         ], XsdType::create('MyType'));
 
-        $context =  new TypeContext($class, $type);
+        $context =  new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -146,17 +146,17 @@ CODE;
     {
         $assembler = new ConstructorAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
             Property::fromMetaData(
-                $namespaces,
+                $codeGenContext,
                 new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                     static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
                 ))
             ),
         ], XsdType::create('MyType'));
 
-        $context =  new TypeContext($class, $type);
+        $context =  new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -188,14 +188,14 @@ CODE;
             (new ConstructorAssemblerOptions())->withDefaultValues(DefaultValuesStrategy::None)
         );
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('int'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop3', XsdType::guess('SomeClass'))),
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop2', XsdType::guess('int'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop3', XsdType::guess('SomeClass'))),
         ], XsdType::create('MyType'));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -229,19 +229,19 @@ CODE;
     {
         $assembler = new ConstructorAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('name', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('contact', XsdType::guess('Contact')->withMeta(
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('name', XsdType::guess('string'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('contact', XsdType::guess('Contact')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withIsNullable(true)
             ))),
-            Property::fromMetaData($namespaces, new MetaProperty('address', XsdType::guess('Address'))),
-            Property::fromMetaData($namespaces, new MetaProperty('note', XsdType::guess('string')->withMeta(
+            Property::fromMetaData($codeGenContext, new MetaProperty('address', XsdType::guess('Address'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('note', XsdType::guess('string')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withIsNullable(true)
             ))),
         ], XsdType::create('MyType'));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -277,15 +277,15 @@ CODE;
     {
         $assembler = new ConstructorAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('address', XsdType::guess('Address'))),
-            Property::fromMetaData($namespaces, new MetaProperty('contact', XsdType::guess('Contact')->withMeta(
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('address', XsdType::guess('Address'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('contact', XsdType::guess('Contact')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withIsNullable(true)
             ))),
         ], XsdType::create('MyType'));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -319,13 +319,13 @@ CODE;
             (new ConstructorAssemblerOptions())->withTypeHints(false)->withDefaultValues(DefaultValuesStrategy::All)
         );
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('SomeClass'))),
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop2', XsdType::guess('SomeClass'))),
         ], XsdType::create('MyType'));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -359,13 +359,13 @@ CODE;
             (new ConstructorAssemblerOptions())->withOptionalValue()
         );
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('SomeClass'))),
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop2', XsdType::guess('SomeClass'))),
         ], XsdType::create('MyType'));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -399,13 +399,13 @@ CODE;
             (new ConstructorAssemblerOptions())->withOptionalValue()->withDefaultValues(DefaultValuesStrategy::None)
         );
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('SomeClass'))),
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop2', XsdType::guess('SomeClass'))),
         ], XsdType::create('MyType'));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -439,14 +439,14 @@ CODE;
             (new ConstructorAssemblerOptions())->withDefaultValues(DefaultValuesStrategy::All)
         );
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('int'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop3', XsdType::guess('SomeClass'))),
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop2', XsdType::guess('int'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop3', XsdType::guess('SomeClass'))),
         ], XsdType::create('MyType'));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -481,12 +481,12 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string'))),
-            Property::fromMetaData($namespaces, new MetaProperty('prop2', XsdType::guess('int'))),
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop1', XsdType::guess('string'))),
+            Property::fromMetaData($codeGenContext, new MetaProperty('prop2', XsdType::guess('int'))),
         ], XsdType::create('MyType'));
 
-        return new TypeContext($class, $type);
+        return new TypeContext($class, $type, $codeGenContext);
     }
 }

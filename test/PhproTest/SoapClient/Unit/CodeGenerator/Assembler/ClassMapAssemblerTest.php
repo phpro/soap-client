@@ -84,15 +84,15 @@ CODE;
     private function createContext()
     {
         $file = new FileGenerator();
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $typeMap = new TypeMap($namespaces, [
+        $context = $this->createCodeGeneratorContext('MyNamespace');
+        $typeMap = new TypeMap($context, [
             new Type(
-                $namespaces,
+                $context,
                 'MyType',
                 'MyType',
                 [
                     Property::fromMetaData(
-                        $namespaces,
+                        $context,
                         new MetaProperty('myProperty', XsdType::guess('string'))
                     ),
                 ],
@@ -100,7 +100,7 @@ CODE;
                     ->withXmlNamespace('http://my-namespace.com')
             ),
             new Type(
-                $namespaces,
+                $context,
                 'MyEnum',
                 'MyEnum',
                 [],
@@ -114,6 +114,6 @@ CODE;
             ),
         ]);
 
-        return new ClassMapContext($file, $typeMap, $this->createClassMapConfig('MyClassMap', 'ClassMapNamespace'));
+        return new ClassMapContext($file, $typeMap, $this->createClassMapConfig('MyClassMap', 'ClassMapNamespace'), $context);
     }
 }

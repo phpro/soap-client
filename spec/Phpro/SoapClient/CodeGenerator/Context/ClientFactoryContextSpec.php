@@ -3,11 +3,13 @@
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
 use Laminas\Code\Generator\ClassGenerator;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Context\ClassMapContext;
 use Phpro\SoapClient\CodeGenerator\Context\ClientContext;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Model\TypeMap;
 use PhpSpec\ObjectBehavior;
@@ -28,11 +30,13 @@ class ClientFactoryContextSpec extends ObjectBehavior
         $classMapDestination = new Destination('src/classmap', 'App\\Classmap');
         $typeDestination = new Destination('src/type', 'ns');
         $namespaceMap = \Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap::create($typeDestination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $classMapConfig = new ClassMapConfig('Myclassmap', $classMapDestination);
         $classMapContext = new ClassMapContext(
             new FileGenerator(),
-            new TypeMap($namespaceMap, []),
-            $classMapConfig
+            new TypeMap($context, []),
+            $classMapConfig,
+            $context
         );
         $this->beConstructedWith($clientContext, $classMapContext);
     }

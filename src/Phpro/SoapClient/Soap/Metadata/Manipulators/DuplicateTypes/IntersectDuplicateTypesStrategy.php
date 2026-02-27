@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes;
 
 use Closure;
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\TypesManipulatorInterface;
 use Soap\Engine\Metadata\Collection\PropertyCollection;
 use Soap\Engine\Metadata\Collection\TypeCollection;
@@ -23,25 +23,25 @@ use function Psl\Vec\values;
 final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
 {
     public function __construct(
-        private ?TypeNamespaceMap $namespaceMap = null
+        private CodeGeneratorContext $context,
     ) {
     }
 
     /**
-     * Factory that returns a closure - Config will call it with the namespace map.
+     * Factory that returns a closure - Config will call it with the context.
      *
-     * @return Closure(?TypeNamespaceMap): self
+     * @return Closure(CodeGeneratorContext): self
      */
     public static function create(): Closure
     {
-        return static fn (?TypeNamespaceMap $map) => new self($map);
+        return static fn (CodeGeneratorContext $context) => new self($context);
     }
 
     public function __invoke(TypeCollection $allTypes): TypeCollection
     {
         return new TypeCollection(...array_values($allTypes->reduce(
             function (array $result, Type $type) use ($allTypes): array {
-                $key = DuplicateTypesKey::forType($type, $this->namespaceMap);
+                $key = DuplicateTypesKey::forType($type, $this->context);
                 if (array_key_exists($key, $result)) {
                     return $result;
                 }
@@ -71,7 +71,7 @@ final class IntersectDuplicateTypesStrategy implements TypesManipulatorInterface
 
     private function fetchAllTypesWithSameKey(TypeCollection $types, string $key): TypeCollection
     {
-        return $types->filter(fn (Type $type): bool => DuplicateTypesKey::forType($type, $this->namespaceMap) === $key);
+        return $types->filter(fn (Type $type): bool => DuplicateTypesKey::forType($type, $this->context) === $key);
     }
 
     private function uniqueProperties(PropertyCollection ...$types): PropertyCollection

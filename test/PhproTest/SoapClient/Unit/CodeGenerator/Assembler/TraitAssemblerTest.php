@@ -89,9 +89,9 @@ CODE;
     private function createContext()
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [], XsdType::create('MyType'));
+        $context = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($context, 'MyType', 'MyType', [], XsdType::create('MyType'));
 
-        return new TypeContext($class, $type);
+        return new TypeContext($class, $type, $context);
     }
 }

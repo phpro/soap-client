@@ -49,18 +49,18 @@ class ClientMethodAssemblerTest extends TestCase
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
-        $namespaces = $this->createTypeNamespaceMap($typeNamespace);
+        $context = $this->createCodeGeneratorContext($typeNamespace);
         $method = new ClientMethod(
             'functionName',
             [
-                new Parameter('param', 'ParamType', $namespaces, XsdType::create('ParamType')),
+                new Parameter('param', 'ParamType', $context, XsdType::create('ParamType')),
             ],
-            ReturnType::fromMetaData($namespaces, XsdType::create('ReturnType')),
-            $namespaces,
+            ReturnType::fromMetaData($context, XsdType::create('ReturnType')),
+            $context,
             (new MethodMeta())->withDocs('This is an awesome function.')
         );
 
-        return new ClientMethodContext($class, $method);
+        return new ClientMethodContext($class, $method, $context);
     }
 
     /**
@@ -72,19 +72,19 @@ class ClientMethodAssemblerTest extends TestCase
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
-        $namespaces = $this->createTypeNamespaceMap($typeNamespace);
+        $context = $this->createCodeGeneratorContext($typeNamespace);
         $method = new ClientMethod(
             'functionName',
             [
-                new Parameter('param', 'ParamType', $namespaces, XsdType::create('ParamType')),
-                new Parameter('param2', 'OtherParamType', $namespaces, XsdType::create('OtherParamType')),
+                new Parameter('param', 'ParamType', $context, XsdType::create('ParamType')),
+                new Parameter('param2', 'OtherParamType', $context, XsdType::create('OtherParamType')),
             ],
-            ReturnType::fromMetaData($namespaces, XsdType::create('ReturnType')),
-            $namespaces,
+            ReturnType::fromMetaData($context, XsdType::create('ReturnType')),
+            $context,
             (new MethodMeta())->withDocs('This is an awesome function.')
         );
 
-        return new ClientMethodContext($class, $method);
+        return new ClientMethodContext($class, $method, $context);
     }
 
     /**
@@ -96,16 +96,16 @@ class ClientMethodAssemblerTest extends TestCase
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
-        $namespaces = $this->createTypeNamespaceMap($typeNamespace);
+        $context = $this->createCodeGeneratorContext($typeNamespace);
         $method = new ClientMethod(
             'functionName',
             [],
-            ReturnType::fromMetaData($namespaces, XsdType::create('ReturnType')),
-            $namespaces,
+            ReturnType::fromMetaData($context, XsdType::create('ReturnType')),
+            $context,
             new MethodMeta()
         );
 
-        return new ClientMethodContext($class, $method);
+        return new ClientMethodContext($class, $method, $context);
     }
 
     #[Test]
@@ -238,18 +238,18 @@ CODE;
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
-        $namespaces = $this->createTypeNamespaceMap($typeNamespace);
+        $context = $this->createCodeGeneratorContext($typeNamespace);
         $method = new ClientMethod(
             'Function_name',
             [
-                new Parameter('param', 'param_type', $namespaces, XsdType::create('param_type')),
+                new Parameter('param', 'param_type', $context, XsdType::create('param_type')),
             ],
-            ReturnType::fromMetaData($namespaces, XsdType::create('return_type')),
-            $namespaces,
+            ReturnType::fromMetaData($context, XsdType::create('return_type')),
+            $context,
             new MethodMeta()
         );
 
-        $context = new ClientMethodContext($class, $method);
+        $context = new ClientMethodContext($class, $method, $context);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -305,18 +305,18 @@ CODE;
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
-        $namespaces = $this->createTypeNamespaceMap($typeNamespace);
+        $context = $this->createCodeGeneratorContext($typeNamespace);
         $method = new ClientMethod(
             'Function_name',
             [
-                new Parameter('param', 'string', $namespaces, XsdType::create('string')->withMeta(static fn (TypeMeta $meta) => $meta->withIsSimple(true))),
+                new Parameter('param', 'string', $context, XsdType::create('string')->withMeta(static fn (TypeMeta $meta) => $meta->withIsSimple(true))),
             ],
-            ReturnType::fromMetaData($namespaces, XsdType::create('ReturnType')),
-            $namespaces,
+            ReturnType::fromMetaData($context, XsdType::create('ReturnType')),
+            $context,
             new MethodMeta()
         );
 
-        $context = new ClientMethodContext($class, $method);
+        $context = new ClientMethodContext($class, $method, $context);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -362,18 +362,18 @@ CODE;
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
-        $namespaces = $this->createTypeNamespaceMap($typeNamespace);
+        $context = $this->createCodeGeneratorContext($typeNamespace);
         $method = new ClientMethod(
             'functionName',
             [],
-            ReturnType::fromMetaData($namespaces, XsdType::create('string')->withMeta(
+            ReturnType::fromMetaData($context, XsdType::create('string')->withMeta(
                 fn (TypeMeta $meta): TypeMeta => $meta->withIsSimple(true)
             )),
-            $namespaces,
+            $context,
             new MethodMeta()
         );
 
-        $context = new ClientMethodContext($class, $method);
+        $context = new ClientMethodContext($class, $method, $context);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -414,21 +414,21 @@ CODE;
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
-        $namespaces = $this->createTypeNamespaceMap($typeNamespace);
+        $context = $this->createCodeGeneratorContext($typeNamespace);
         $method = new ClientMethod(
             'functionName',
             [
-                new Parameter('param1', 'string', $namespaces, XsdType::create('string')),
-                new Parameter('param2', 'string', $namespaces, XsdType::create('string')),
+                new Parameter('param1', 'string', $context, XsdType::create('string')),
+                new Parameter('param2', 'string', $context, XsdType::create('string')),
             ],
-            ReturnType::fromMetaData($namespaces, XsdType::create('string')->withMeta(
+            ReturnType::fromMetaData($context, XsdType::create('string')->withMeta(
                 fn (TypeMeta $meta): TypeMeta => $meta->withIsSimple(true)
             )),
-            $namespaces,
+            $context,
             new MethodMeta()
         );
 
-        $context = new ClientMethodContext($class, $method);
+        $context = new ClientMethodContext($class, $method, $context);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -475,16 +475,16 @@ CODE;
         $class = new ClassGenerator();
         $class->setName('Vendor\\MyNamespace\\MyClient');
         $typeNamespace = 'Vendor\\MyTypeNamespace';
-        $namespaces = $this->createTypeNamespaceMap($typeNamespace);
+        $context = $this->createCodeGeneratorContext($typeNamespace);
         $method = new ClientMethod(
             'functionName',
             [],
-            ReturnType::fromMetaData($namespaces, XsdType::create('ReturnTypeElement')->withXmlTypeName('ReturnType')),
-            $namespaces,
+            ReturnType::fromMetaData($context, XsdType::create('ReturnTypeElement')->withXmlTypeName('ReturnType')),
+            $context,
             new MethodMeta()
         );
 
-        $context = new ClientMethodContext($class, $method);
+        $context = new ClientMethodContext($class, $method, $context);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();

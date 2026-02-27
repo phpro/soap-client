@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Unit\CodeGenerator\Provider;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
 use Phpro\SoapClient\CodeGenerator\Provider\ScalarDefaultProvider;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -34,34 +36,34 @@ class ScalarDefaultProviderTest extends TestCase
 
     public static function provideDefaults(): iterable
     {
-        $namespaces = TypeNamespaceMap::create(new Destination('/generated', 'ns1'));
+        $context = new CodeGeneratorContext(TypeNamespaceMap::create(new Destination('/generated', 'ns1')), new DefaultCodingStandardsStrategy());
 
         yield 'string' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::create('string'))),
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::create('string'))),
             true,
             '',
         ];
 
         yield 'int' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::create('int'))),
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::create('int'))),
             true,
             0,
         ];
 
         yield 'bool' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::create('bool'))),
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::create('bool'))),
             true,
             false,
         ];
 
         yield 'float' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::create('float'))),
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::create('float'))),
             true,
             0.0,
         ];
 
         yield 'array (list)' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::guess('string')->withMeta(
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::guess('string')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withIsList(true)
             ))),
             true,
@@ -69,13 +71,13 @@ class ScalarDefaultProviderTest extends TestCase
         ];
 
         yield 'mixed' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::create('mixed'))),
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::create('mixed'))),
             true,
             null,
         ];
 
         yield 'nullable complex type' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::create('SomeClass')->withMeta(
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::create('SomeClass')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withIsNullable(true)
             ))),
             true,
@@ -83,12 +85,12 @@ class ScalarDefaultProviderTest extends TestCase
         ];
 
         yield 'non-nullable complex type' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::create('SomeClass'))),
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::create('SomeClass'))),
             false,
         ];
 
         yield 'nullable scalar (nullable check wins)' => [
-            Property::fromMetaData($namespaces, new MetaProperty('prop', XsdType::create('string')->withMeta(
+            Property::fromMetaData($context, new MetaProperty('prop', XsdType::create('string')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $meta->withIsNullable(true)
             ))),
             true,

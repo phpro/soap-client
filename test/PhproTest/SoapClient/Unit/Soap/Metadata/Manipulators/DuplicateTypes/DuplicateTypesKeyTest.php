@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PhproTest\SoapClient\Unit\Soap\Metadata\Manipulators\DuplicateTypes;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\Soap\Metadata\Manipulators\DuplicateTypes\DuplicateTypesKey;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -15,24 +17,34 @@ use Soap\Engine\Metadata\Model\XsdType;
 
 class DuplicateTypesKeyTest extends TestCase
 {
+    private function createContext(?TypeNamespaceMap $namespaceMap = null): CodeGeneratorContext
+    {
+        return new CodeGeneratorContext(
+            $namespaceMap ?? TypeNamespaceMap::create(new Destination('/generated', 'Generated')),
+            new DefaultCodingStandardsStrategy(),
+        );
+    }
+
     #[Test]
-    public function it_returns_normalized_name_without_namespace_map(): void
+    public function it_returns_namespaced_normalized_name(): void
     {
         $type = new Type(XsdType::create('MyType'), new PropertyCollection());
+        $context = $this->createContext();
 
-        $key = DuplicateTypesKey::forType($type, null);
+        $key = DuplicateTypesKey::forType($type, $context);
 
-        self::assertEquals('MyType', $key);
+        self::assertEquals('Generated\\MyType', $key);
     }
 
     #[Test]
     public function it_normalizes_class_name(): void
     {
         $type = new Type(XsdType::create('my-type'), new PropertyCollection());
+        $context = $this->createContext();
 
-        $key = DuplicateTypesKey::forType($type, null);
+        $key = DuplicateTypesKey::forType($type, $context);
 
-        self::assertEquals('MyType', $key);
+        self::assertEquals('Generated\\MyType', $key);
     }
 
     #[Test]
@@ -46,7 +58,9 @@ class DuplicateTypesKeyTest extends TestCase
         $namespaceMap = TypeNamespaceMap::create(new Destination('/path', 'App\\Types'))
             ->withMapping('http://ns-a.com', new Destination('/path/a', 'App\\Types\\A'));
 
-        $key = DuplicateTypesKey::forType($type, $namespaceMap);
+        $context = $this->createContext($namespaceMap);
+
+        $key = DuplicateTypesKey::forType($type, $context);
 
         self::assertEquals('App\\Types\\A\\MyType', $key);
     }
@@ -62,7 +76,9 @@ class DuplicateTypesKeyTest extends TestCase
         $namespaceMap = TypeNamespaceMap::create(new Destination('/path', 'App\\Types'))
             ->withMapping('http://ns-a.com', new Destination('/path/a', 'App\\Types\\A'));
 
-        $key = DuplicateTypesKey::forType($type, $namespaceMap);
+        $context = $this->createContext($namespaceMap);
+
+        $key = DuplicateTypesKey::forType($type, $context);
 
         self::assertEquals('App\\Types\\MyType', $key);
     }
@@ -83,8 +99,10 @@ class DuplicateTypesKeyTest extends TestCase
             ->withMapping('http://ns-a.com', new Destination('/path/a', 'App\\Types\\A'))
             ->withMapping('http://ns-b.com', new Destination('/path/b', 'App\\Types\\B'));
 
-        $keyA = DuplicateTypesKey::forType($typeA, $namespaceMap);
-        $keyB = DuplicateTypesKey::forType($typeB, $namespaceMap);
+        $context = $this->createContext($namespaceMap);
+
+        $keyA = DuplicateTypesKey::forType($typeA, $context);
+        $keyB = DuplicateTypesKey::forType($typeB, $context);
 
         self::assertNotEquals($keyA, $keyB);
         self::assertEquals('App\\Types\\A\\Item', $keyA);
@@ -105,9 +123,10 @@ class DuplicateTypesKeyTest extends TestCase
 
         // Both namespaces map to fallback (no specific mappings)
         $namespaceMap = TypeNamespaceMap::create(new Destination('/path', 'App\\Types'));
+        $context = $this->createContext($namespaceMap);
 
-        $keyA = DuplicateTypesKey::forType($typeA, $namespaceMap);
-        $keyB = DuplicateTypesKey::forType($typeB, $namespaceMap);
+        $keyA = DuplicateTypesKey::forType($typeA, $context);
+        $keyB = DuplicateTypesKey::forType($typeB, $context);
 
         self::assertEquals($keyA, $keyB);
         self::assertEquals('App\\Types\\Item', $keyA);

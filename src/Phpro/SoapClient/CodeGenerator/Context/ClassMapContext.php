@@ -11,7 +11,8 @@ final readonly class ClassMapContext implements ContextInterface
     public function __construct(
         private FileGenerator $file,
         private TypeMap $typeMap,
-        private ClassMapConfig $classMap
+        private ClassMapConfig $classMap,
+        private CodeGeneratorContext $codeGeneratorContext,
     ) {
     }
 
@@ -47,5 +48,10 @@ final readonly class ClassMapContext implements ContextInterface
     public function getFqcn(): string
     {
         return $this->classMap->fqcn();
+    }
+
+    public function getCodeGeneratorContext(): CodeGeneratorContext
+    {
+        return $this->codeGeneratorContext;
     }
 }

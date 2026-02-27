@@ -121,9 +121,9 @@ CODE;
     {
         $metaConfigurator ??= identity();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [
-            Property::fromMetaData($namespaces, new MetaProperty('prop1', XsdType::guess('string')->withMeta(
+        $context = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($context, 'MyType', 'MyType', [
+            Property::fromMetaData($context, new MetaProperty('prop1', XsdType::guess('string')->withMeta(
                 static fn (TypeMeta $meta): TypeMeta => $metaConfigurator($meta
                     ->withIsList(true)
                     ->withMinOccurs(1)
@@ -131,6 +131,6 @@ CODE;
             )))),
         ], XsdType::create('MyType'));
 
-        return new TypeContext($class, $type);
+        return new TypeContext($class, $type, $context);
     }
 }

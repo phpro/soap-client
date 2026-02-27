@@ -84,10 +84,10 @@ CODE;
     {
         $assembler = new ExtendingTypeAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [], XsdType::create('MyType'));
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [], XsdType::create('MyType'));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -108,14 +108,14 @@ CODE;
     {
         $assembler = new ExtendingTypeAssembler();
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap('MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [], XsdType::create('MyType')->withMeta(static fn (TypeMeta $meta) => $meta->withExtends([
+        $codeGenContext = $this->createCodeGeneratorContext('MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [], XsdType::create('MyType')->withMeta(static fn (TypeMeta $meta) => $meta->withExtends([
             'type' => 'string',
             'namespace' => 'xsd',
             'isSimple' => true,
         ])));
 
-        $context = new TypeContext($class, $type);
+        $context = new TypeContext($class, $type, $codeGenContext);
         $assembler->assemble($context);
 
         $code = $context->getClass()->generate();
@@ -137,12 +137,12 @@ CODE;
     private function createContext(?string $importedNamespace = null)
     {
         $class = new ClassGenerator('MyType', 'MyNamespace');
-        $namespaces = $this->createTypeNamespaceMap($importedNamespace ?? 'MyNamespace');
-        $type = new Type($namespaces, 'MyType', 'MyType', [], XsdType::create('MyType')->withMeta(static fn (TypeMeta $meta) => $meta->withExtends([
+        $codeGenContext = $this->createCodeGeneratorContext($importedNamespace ?? 'MyNamespace');
+        $type = new Type($codeGenContext, 'MyType', 'MyType', [], XsdType::create('MyType')->withMeta(static fn (TypeMeta $meta) => $meta->withExtends([
             'type' => 'MyBaseType',
             'namespace' => 'xxxx'
         ])));
 
-        return new TypeContext($class, $type);
+        return new TypeContext($class, $type, $codeGenContext);
     }
 }

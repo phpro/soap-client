@@ -1,5 +1,40 @@
 # V4 to V5
 
+## Coding standards strategy
+
+A new `CodingStandardsStrategyInterface` lets you customize naming conventions for all generated code.
+By default, `DefaultCodingStandardsStrategy` is used, which matches the existing `Normalizer` behavior -- no changes required for existing users.
+
+Configure it via `Config::setCodingStandards()`:
+
+```php
+use Phpro\SoapClient\CodeGenerator\CodingStandards\CodingStandardsStrategyInterface;
+use Phpro\SoapClient\CodeGenerator\Config\Config;
+
+return ($config = Config::create())
+    ->setCodingStandards(new MyCodingStandards())
+    ->setEngine(...)
+    ->setTypeNamespaceMap(...)
+    // ...
+```
+
+[Read more about coding standards customization.](/docs/code-generation/coding-standards.md)
+
+### Context classes require CodeGeneratorContext
+
+`TypeContext`, `PropertyContext`, `ClientMethodContext`, and `ClassMapContext` now require `CodeGeneratorContext` as an additional last constructor parameter and expose `getCodeGeneratorContext(): CodeGeneratorContext`.
+
+### New convenience methods on Property
+
+`Property` has new convenience methods that use the configured coding standards:
+
+- `$property->methodName(string $prefix)`: Generates an accessor method name (e.g. `methodName('with')` returns `withFirstName`).
+- `$property->parameterName()`: Normalizes the property name for use as a PHP parameter name.
+
+### Generated config pattern
+
+The generated configuration now uses `return ($config = Config::create())` so that `$config` can be referenced in nested calls (e.g. `$config->getCodingStandards()`).
+
 ## Configuration overhaul
 
 The configuration system has been significantly reworked.
@@ -102,7 +137,7 @@ A built-in `PrefixBasedTypeNamespaceStrategy` derives a sub-namespace from the X
 use Phpro\SoapClient\CodeGenerator\TypeNamespaceMap\Strategy\PrefixBasedTypeNamespaceStrategy;
 
 TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
-    ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+    ->withStrategy(new PrefixBasedTypeNamespaceStrategy($config->getCodingStandards()))
 ```
 
 With this strategy, a type in the `gml` xmlns prefix is automatically placed in `src/Type/Gml` with namespace `App\Type\Gml`.
@@ -112,14 +147,14 @@ Explicit `withMapping()` entries always take precedence over the strategy. You c
 ```php
 TypeNamespaceMap::create(new Destination('src/Type', 'App\\Type'))
     ->withMapping('http://special.example.com', new Destination('src/Type/Special', 'App\\Type\\Special'))
-    ->withStrategy(new PrefixBasedTypeNamespaceStrategy())
+    ->withStrategy(new PrefixBasedTypeNamespaceStrategy($config->getCodingStandards()))
 ```
 
 You can also implement a custom strategy via `TypeNamespaceMapStrategyInterface` or pass any callable.
 
 ### Duplicate type strategies are now namespace-aware
 
-The `IntersectDuplicateTypesStrategy` and `RemoveDuplicateTypesStrategy` now use a factory pattern (`create()`) that accepts the `TypeNamespaceMap`. When types map to different PHP namespaces, they are not considered duplicates.
+The `IntersectDuplicateTypesStrategy` and `RemoveDuplicateTypesStrategy` now use a factory pattern (`create()`) that accepts the `CodeGeneratorContext`. When types map to different PHP namespaces, they are not considered duplicates.
 
 ## Interactive config generator improvements
 

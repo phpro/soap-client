@@ -50,8 +50,9 @@ class GenerateClassmapCommand extends Command
         // All types should be listed with namespace and name, even if that means there will be a duplicate entry.
         $config->setDuplicateTypeIntersectStrategy(new TypesManipulatorChain());
 
+        $generatorContext = $config->getCodeGeneratorContext();
         $typeMap = TypeMap::fromMetadata(
-            $config->getTypeNamespaceMap(),
+            $generatorContext,
             $config->getManipulatedMetadata()->getTypes(),
         );
 

@@ -6,9 +6,7 @@ use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\ParameterGenerator;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
-use Phpro\SoapClient\CodeGenerator\Model\Parameter;
 use Phpro\SoapClient\CodeGenerator\Model\Property;
-use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Phpro\SoapClient\Exception\AssemblerException;
 use Laminas\Code\Generator\MethodGenerator;
 
@@ -51,15 +49,16 @@ class FluentSetterAssembler implements AssemblerInterface
         $class = $context->getClass();
         $property = $context->getProperty();
         try {
-            $methodName = Normalizer::generatePropertyMethod('set', $property->getName());
+            $methodName = $property->methodName('set');
             $class->removeMethod($methodName);
 
             $methodGenerator = new MethodGenerator($methodName);
             $methodGenerator->setParameter($this->getParameter($property));
             $methodGenerator->setVisibility(MethodGenerator::VISIBILITY_PUBLIC);
             $methodGenerator->setBody(sprintf(
-                '$this->%1$s = $%1$s;%2$sreturn $this;',
+                '$this->%s = $%s;%sreturn $this;',
                 $property->getName(),
+                $property->parameterName(),
                 $class::LINE_FEED
             ));
             if ($this->options->useReturnType()) {
@@ -72,7 +71,11 @@ class FluentSetterAssembler implements AssemblerInterface
                         ->setTags([
                             [
                                 'name'        => 'param',
-                                'description' => sprintf('%s $%s', $property->getDocBlockType(), $property->getName()),
+                                'description' => sprintf(
+                                    '%s $%s',
+                                    $property->getDocBlockType(),
+                                    $property->parameterName()
+                                ),
                             ],
                             [
                                 'name'        => 'return',
@@ -89,7 +92,7 @@ class FluentSetterAssembler implements AssemblerInterface
 
     private function getParameter(Property $property): ParameterGenerator
     {
-        $param = (new ParameterGenerator($property->getName()));
+        $param = (new ParameterGenerator($property->parameterName()));
         if ($this->options->useTypeHints()) {
             $param->setType($property->getPhpType());
         }

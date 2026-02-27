@@ -9,7 +9,8 @@ final readonly class TypeContext implements ContextInterface
 {
     public function __construct(
         private ClassGenerator $class,
-        private Type $type
+        private Type $type,
+        private CodeGeneratorContext $codeGeneratorContext,
     ) {
     }
 
@@ -21,5 +22,10 @@ final readonly class TypeContext implements ContextInterface
     public function getType(): Type
     {
         return $this->type;
+    }
+
+    public function getCodeGeneratorContext(): CodeGeneratorContext
+    {
+        return $this->codeGeneratorContext;
     }
 }

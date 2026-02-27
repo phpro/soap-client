@@ -44,8 +44,9 @@ class ClientMethodAssembler implements AssemblerInterface
         }
         $class = $context->getClass();
         $method = $context->getMethod();
+        $codingStandards = $context->getCodeGeneratorContext()->codingStandards;
         try {
-            $phpMethodName = Normalizer::normalizeMethodName($method->getMethodName());
+            $phpMethodName = $codingStandards->normalizeOperationName($method->getMethodName());
             $param = $this->createParamsFromContext($context);
             $class->removeMethod($phpMethodName);
             $docblock = $method->shouldGenerateAsMultiArgumentsRequest()

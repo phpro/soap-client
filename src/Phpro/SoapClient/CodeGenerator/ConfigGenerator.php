@@ -20,7 +20,7 @@ use Phpro\SoapClient\Soap\EngineOptions;
 class ConfigGenerator implements GeneratorInterface
 {
     const BODY = <<<BODY
-return Config::create()
+return (\$config = Config::create())
 
 BODY;
 
@@ -75,7 +75,7 @@ EOENGINE;
         }
 
         $lines[] = sprintf(
-            '%s%s// ->withStrategy(new PrefixBasedTypeNamespaceStrategy())',
+            '%s%s// ->withStrategy(new PrefixBasedTypeNamespaceStrategy($config->getCodingStandards()))',
             $indentation,
             $indentation
         );

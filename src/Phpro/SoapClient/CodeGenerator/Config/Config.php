@@ -4,6 +4,9 @@ namespace Phpro\SoapClient\CodeGenerator\Config;
 
 use Closure;
 use Phpro\SoapClient\CodeGenerator\Assembler;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\CodingStandardsStrategyInterface;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Rules;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleInterface;
 use Phpro\SoapClient\CodeGenerator\Rules\RuleSet;
@@ -34,7 +37,7 @@ final class Config
     protected ?Engine $engine = null;
 
     /**
-     * @var TypesManipulatorInterface|Closure(?TypeNamespaceMap): TypesManipulatorInterface
+     * @var TypesManipulatorInterface|Closure(CodeGeneratorContext): TypesManipulatorInterface
      */
     protected TypesManipulatorInterface|Closure $duplicateTypeIntersectStrategy;
 
@@ -46,9 +49,11 @@ final class Config
 
     protected ?ClassMapConfig $classMap = null;
     protected EnumerationGenerationStrategy $enumerationGenerationStrategy;
+    protected CodingStandardsStrategyInterface $codingStandards;
 
     public function __construct()
     {
+        $this->codingStandards = new DefaultCodingStandardsStrategy();
         $this->typeReplacementStrategy = TypeReplacers::defaults();
 
         // Working with duplicate types is hard (see FAQ).
@@ -185,7 +190,7 @@ final class Config
      *
      * @param (
      *  TypesManipulatorInterface|
-     *  Closure(?TypeNamespaceMap): TypesManipulatorInterface
+     *  Closure(CodeGeneratorContext): TypesManipulatorInterface
      * ) $duplicateTypeIntersectStrategy
      */
     public function setDuplicateTypeIntersectStrategy(
@@ -231,10 +236,32 @@ final class Config
         return $this->enumerationGenerationStrategy;
     }
 
+    public function setCodingStandards(CodingStandardsStrategyInterface $codingStandards): self
+    {
+        $this->codingStandards = $codingStandards;
+
+        return $this;
+    }
+
+    public function getCodingStandards(): CodingStandardsStrategyInterface
+    {
+        return $this->codingStandards;
+    }
+
+    public function getCodeGeneratorContext(): CodeGeneratorContext
+    {
+        return new CodeGeneratorContext(
+            $this->getTypeNamespaceMap(),
+            $this->codingStandards,
+        );
+    }
+
     private function resolveDuplicateTypeStrategy(): TypesManipulatorInterface
     {
         if ($this->duplicateTypeIntersectStrategy instanceof Closure) {
-            return ($this->duplicateTypeIntersectStrategy)($this->typeNamespaceMap);
+            return ($this->duplicateTypeIntersectStrategy)(
+                $this->getCodeGeneratorContext()
+            );
         }
 
         return $this->duplicateTypeIntersectStrategy;

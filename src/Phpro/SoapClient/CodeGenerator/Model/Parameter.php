@@ -2,7 +2,7 @@
 
 namespace Phpro\SoapClient\CodeGenerator\Model;
 
-use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\TypeEnhancer\Calculator\TypeNameCalculator;
 use Phpro\SoapClient\CodeGenerator\Util\Normalizer;
 use Soap\Engine\Metadata\Model\Parameter as MetadataParameter;
@@ -25,22 +25,24 @@ final readonly class Parameter
     public function __construct(
         private string $name,
         private string $type,
-        private TypeNamespaceMap $namespaces,
-        private XsdType $xsdType
+        private CodeGeneratorContext $codeGeneratorContext,
+        private XsdType $xsdType,
     ) {
         $this->meta = $xsdType->getMeta();
     }
 
-    public static function fromMetadata(TypeNamespaceMap $typeNamespaceMap, MetadataParameter $parameter): Parameter
-    {
+    public static function fromMetadata(
+        CodeGeneratorContext $codeGeneratorContext,
+        MetadataParameter $parameter,
+    ): Parameter {
         $type = $parameter->getType();
         $typeName = (new TypeNameCalculator())($type);
 
         return new self(
             Normalizer::normalizeProperty(non_empty_string()->assert($parameter->getName())),
             Normalizer::normalizeDataType(non_empty_string()->assert($typeName)),
-            $typeNamespaceMap,
-            $type
+            $codeGeneratorContext,
+            $type,
         );
     }
 
@@ -61,7 +63,9 @@ final readonly class Parameter
             return $this->type;
         }
 
-        return '\\'.$this->getNamespace().'\\'.Normalizer::normalizeClassname($this->type);
+        $normalized = $this->codeGeneratorContext->codingStandards->normalizeTypeName($this->type);
+
+        return '\\'.$this->getNamespace().'\\'.$normalized;
     }
 
     /**
@@ -69,7 +73,7 @@ final readonly class Parameter
      */
     public function getNamespace(): string
     {
-        return $this->namespaces->detectDestinationForType($this->xsdType)->namespace;
+        return $this->codeGeneratorContext->typeNamespaceMap->detectDestinationForType($this->xsdType)->namespace;
     }
 
     public function getXsdType(): XsdType

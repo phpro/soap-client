@@ -2,8 +2,10 @@
 
 namespace spec\Phpro\SoapClient\CodeGenerator\Context;
 
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
 use Phpro\SoapClient\CodeGenerator\Model\Type;
@@ -25,14 +27,15 @@ class TypeContextSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $context = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $this->type = new Type(
-            $namespaceMap,
+            $context,
             'MyType',
             'MyType',
             [],
             XsdType::create('MyType')
         );
-        $this->beConstructedWith($class, $this->type);
+        $this->beConstructedWith($class, $this->type, $context);
     }
 
     function it_is_initializable()

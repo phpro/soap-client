@@ -613,4 +613,16 @@ Possible contexts:
 - `ClassMapContext`: Triggered during the `generate:classmap` command.
 - `TypeContext`: Triggered during the `generate:types` command for every type in the SOAP scheme.
 - `PropertyContext`: Triggered during the `generate:types` command for every property in a SOAP type.
-- 'FileContext': Triggered during every `generate:*` command.
+- `ClientMethodContext`: Triggered during the `generate:client` command for every method.
+- `FileContext`: Triggered during every `generate:*` command.
+
+`TypeContext`, `PropertyContext`, `ClientMethodContext`, and `ClassMapContext` expose a `getCodeGeneratorContext(): CodeGeneratorContext` method.
+Through the `CodeGeneratorContext`, you can access the `TypeNamespaceMap` and `CodingStandardsStrategyInterface`:
+
+```php
+// Access the namespace map:
+$context->getCodeGeneratorContext()->typeNamespaceMap;
+
+// Access the coding standards:
+$context->getCodeGeneratorContext()->codingStandards;
+```

@@ -3,8 +3,10 @@
 namespace spec\Phpro\SoapClient\CodeGenerator;
 
 use Laminas\Code\Generator\Exception\ClassNotFoundException;
+use Phpro\SoapClient\CodeGenerator\CodingStandards\DefaultCodingStandardsStrategy;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
 use Phpro\SoapClient\CodeGenerator\Config\TypeNamespaceMap;
+use Phpro\SoapClient\CodeGenerator\Context\CodeGeneratorContext;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\FileContext;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
@@ -48,11 +50,12 @@ class TypeGeneratorSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $type = new Type(
-            $namespaceMap,
+            $codeGeneratorContext,
             'MyType',
             'MyType',
-            [new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))],
+            [new Property('prop1', 'string', $codeGeneratorContext, 'MyNamespace', XsdType::create('string'))],
             XsdType::create('MyType')
         );
         $property = $type->getProperties()[0];
@@ -75,11 +78,12 @@ class TypeGeneratorSpec extends ObjectBehavior
     {
         $destination = new Destination('src/type', 'MyNamespace');
         $namespaceMap = TypeNamespaceMap::create($destination);
+        $codeGeneratorContext = new CodeGeneratorContext($namespaceMap, new DefaultCodingStandardsStrategy());
         $type = new Type(
-            $namespaceMap,
+            $codeGeneratorContext,
             'MyType',
             'MyType',
-            [new Property('prop1', 'string', $namespaceMap, 'MyNamespace', XsdType::create('string'))],
+            [new Property('prop1', 'string', $codeGeneratorContext, 'MyNamespace', XsdType::create('string'))],
             XsdType::create('MyType')
         );
         $property = $type->getProperties()[0];
