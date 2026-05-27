@@ -2,6 +2,7 @@
 
 namespace Phpro\SoapClient\Console\Command;
 
+use Laminas\Code\Generator\FileGenerator;
 use Phpro\SoapClient\CodeGenerator\Config\ClassMapConfig;
 use Phpro\SoapClient\CodeGenerator\Config\ClientConfig;
 use Phpro\SoapClient\CodeGenerator\Config\Destination;
@@ -18,7 +19,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Laminas\Code\Generator\FileGenerator;
 
 class GenerateConfigCommand extends Command
 {
@@ -45,13 +45,13 @@ class GenerateConfigCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $context = new ConfigContext();
+        $context = new ConfigContext;
         $io = new SymfonyStyle($input, $output);
-        $required = new NotBlankValidator();
+        $required = new NotBlankValidator;
 
         // Ask for config location:
         $destination = $input->getOption('config');
-        if (!$destination) {
+        if (! $destination) {
             $destination = $io->ask(
                 'config location (Where to put the config, including .php)',
                 'config/soap-client.php'
@@ -62,11 +62,19 @@ class GenerateConfigCommand extends Command
         $context->setWsdl($wsdlUri);
 
         $io->warning('Attempting to load WSDL... (this might take a while)');
-        $wsdl = $this->loadWsdl($wsdlUri);
-
-        if (!$wsdl) {
+        try {
+            $wsdl = $this->loadWsdl($wsdlUri);
+        } catch (\Throwable $e) {
             $io->warning('Could not load the provided WSDL with default engine options.');
+            if ($output->isVerbose()) {
+                $io->text('<fg=red>'.$e::class.'</>');
+                $io->text($e->getMessage());
+            }
+            if ($output->isVeryVerbose()) {
+                $io->text($e->getTraceAsString());
+            }
             $io->info('Continuing generating configuration...');
+            $wsdl = null;
         }
 
         $context->setDetectedXmlNamespaces($wsdl?->namespaces->namespaceToNameMap ?? []);
@@ -80,24 +88,24 @@ class GenerateConfigCommand extends Command
         $namespace = Normalizer::normalizeNamespace($io->ask('Namespace for your client', null, $required));
 
         // Create configuration objects
-        $typeDestination = new Destination($baseDir . DIRECTORY_SEPARATOR . 'Type', $namespace . '\\Type');
+        $typeDestination = new Destination($baseDir.DIRECTORY_SEPARATOR.'Type', $namespace.'\\Type');
         $context->setTypeDestination($typeDestination);
 
         $clientDestination = new Destination($baseDir, $namespace);
-        $clientConfig = new ClientConfig($name . 'Client', $clientDestination);
+        $clientConfig = new ClientConfig($name.'Client', $clientDestination);
         $context->setClientConfig($clientConfig);
 
-        $classMapConfig = new ClassMapConfig($name . 'Classmap', $clientDestination);
+        $classMapConfig = new ClassMapConfig($name.'Classmap', $clientDestination);
         $context->setClassMapConfig($classMapConfig);
 
         // Create the config
-        $generator = new ConfigGenerator();
-        $this->filesystem->putFileContents($destination, $generator->generate(new FileGenerator(), $context));
-        $io->success('Config has been written to ' . $destination);
+        $generator = new ConfigGenerator;
+        $this->filesystem->putFileContents($destination, $generator->generate(new FileGenerator, $context));
+        $io->success('Config has been written to '.$destination);
 
-        if (!$wsdl) {
+        if (! $wsdl) {
             $io->warning(
-                'The WSDL could not be loaded with default options.' .
+                'The WSDL could not be loaded with default options.'.
                 'You may need to configure custom engine options or verify the WSDL file manually before continuing.'
             );
 
@@ -107,15 +115,11 @@ class GenerateConfigCommand extends Command
         return self::SUCCESS;
     }
 
-    private function loadWsdl(string $wsdl): ?Wsdl1
+    private function loadWsdl(string $wsdl): Wsdl1
     {
-        try {
-            $options = EngineOptions::defaults($wsdl);
-            $loader = $options->getWsdlLoader();
+        $options = EngineOptions::defaults($wsdl);
+        $loader = $options->getWsdlLoader();
 
-            return (new Wsdl1Reader($loader))($wsdl);
-        } catch (\Throwable) {
-            return null;
-        }
+        return (new Wsdl1Reader($loader))($wsdl);
     }
 }
