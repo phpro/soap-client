@@ -67,11 +67,9 @@ class GenerateConfigCommand extends Command
             $wsdl = $this->loadWsdl($wsdlUri);
         } catch (\Throwable $e) {
             $io->warning('Could not load the provided WSDL with default engine options.');
-            if ($output->isVerbose()) {
-                $io->error($e::class.': ' . $e->getMessage());
-            }
+            $io->error([$e::class,$e->getMessage()]);
             if ($output->isVeryVerbose()) {
-                $io->text($e->getTraceAsString());
+                $io->text(explode("\n", $e->getTraceAsString()));
             }
             $io->info('Continuing generating configuration...');
             $wsdl = null;
