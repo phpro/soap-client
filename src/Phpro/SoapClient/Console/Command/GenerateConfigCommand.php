@@ -68,8 +68,7 @@ class GenerateConfigCommand extends Command
         } catch (\Throwable $e) {
             $io->warning('Could not load the provided WSDL with default engine options.');
             if ($output->isVerbose()) {
-                $io->text('<fg=red>'.$e::class.'</>');
-                $io->text($e->getMessage());
+                $io->error($e::class.': ' . $e->getMessage());
             }
             if ($output->isVeryVerbose()) {
                 $io->text($e->getTraceAsString());
