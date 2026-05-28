@@ -62,12 +62,19 @@ class GenerateConfigCommand extends Command
         $context->setWsdl($wsdlUri);
 
         $io->warning('Attempting to load WSDL... (this might take a while)');
-        $wsdl = $this->loadWsdl($wsdlUri);
 
-        if (!$wsdl) {
+        try {
+            $wsdl = $this->loadWsdl($wsdlUri);
+        } catch (\Throwable $e) {
             $io->warning('Could not load the provided WSDL with default engine options.');
+            $io->error([$e::class,$e->getMessage()]);
+            if ($output->isVeryVerbose()) {
+                $io->text(explode("\n", $e->getTraceAsString()));
+            }
             $io->info('Continuing generating configuration...');
+            $wsdl = null;
         }
+
 
         $context->setDetectedXmlNamespaces($wsdl?->namespaces->namespaceToNameMap ?? []);
         $context->setGenerateDocblocks($io->confirm('Should methods be generated with docblocks?', true));
@@ -107,15 +114,11 @@ class GenerateConfigCommand extends Command
         return self::SUCCESS;
     }
 
-    private function loadWsdl(string $wsdl): ?Wsdl1
+    private function loadWsdl(string $wsdl): Wsdl1
     {
-        try {
             $options = EngineOptions::defaults($wsdl);
             $loader = $options->getWsdlLoader();
 
             return (new Wsdl1Reader($loader))($wsdl);
-        } catch (\Throwable) {
-            return null;
-        }
     }
 }
