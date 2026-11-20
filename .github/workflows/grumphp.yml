@@ -36,7 +36,8 @@ jobs:
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
                   restore-keys: ${{ runner.os }}-composer-
             - name: Install dependencies
-              run: composer update --prefer-dist --no-progress ${{ matrix.composer-options }}
+              # phpspec 8 and phpspec/prophecy do not allow PHP 8.6 yet. Drop this once they do.
+              run: composer update --prefer-dist --no-progress ${{ matrix.composer-options }} ${{ matrix.php-versions == '8.6' && '--ignore-platform-req=php+' || '' }}
             - name: Set git variables
               run: |
                   git config --global user.email "you@example.com"
