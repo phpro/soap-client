@@ -8,7 +8,7 @@ jobs:
         strategy:
             matrix:
                 operating-system: ['ubuntu-latest']
-                php-versions: ['8.4', '8.5']
+                php-versions: ['8.4', '8.5', '8.6']
                 composer-options: ['', '--prefer-lowest']
             fail-fast: false
         name: PHP ${{ matrix.php-versions }} @ ${{ matrix.operating-system }} with ${{ matrix.composer-options }}
@@ -36,7 +36,8 @@ jobs:
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
                   restore-keys: ${{ runner.os }}-composer-
             - name: Install dependencies
-              run: composer update --prefer-dist --no-progress ${{ matrix.composer-options }} --ignore-platform-req=php+
+              # phpspec 8 and phpspec/prophecy do not allow PHP 8.6 yet. Drop this once they do.
+              run: composer update --prefer-dist --no-progress ${{ matrix.composer-options }} ${{ matrix.php-versions == '8.6' && '--ignore-platform-req=php+' || '' }}
             - name: Set git variables
               run: |
                   git config --global user.email "you@example.com"

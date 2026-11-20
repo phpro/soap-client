@@ -24,7 +24,7 @@ final class ApacheMapReplacerTest extends TestCase
     {
         yield 'map' => [
             $baseType = (new XsdType(''))
-                ->withXmlNamespace(ApacheMapDetector::NAMESPACE)
+                ->withXmlNamespace(ApacheMapDetector::NAMESPACE_URI)
                 ->withXmlTypeName('Map'),
             $baseType->copy('array')
                 ->withBaseType('array')
