@@ -12,7 +12,7 @@ final class ApacheMapReplacer implements TypeReplacer
 {
     public function __invoke(XsdType $xsdType): XsdType
     {
-        $check = new IsOfType(ApacheMapDetector::NAMESPACE, 'Map');
+        $check = new IsOfType(ApacheMapDetector::NAMESPACE_URI, 'Map');
         if (!$check($xsdType)) {
             return $xsdType;
         }
